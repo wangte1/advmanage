@@ -130,7 +130,27 @@
                                 </div>
                             </div>
 
+                            <div class="form-group">
+                                <label class="col-sm-3 control-label no-padding-right" for="form-field-1">  腾讯地图坐标（经纬度）： </label>
 
+                                <div class="col-sm-8">
+                                    <input type="text" name="tx_coordinate" placeholder="" class="col-xs-10 col-sm-5">
+                                     <span class="help-inline col-xs-12 col-sm-7 form-field-description-block">
+                                       <span class="middle"><a href="http://lbs.qq.com/tool/getpoint/index.html" target="_blank">点击这里</a>手动拾取坐标</span>
+									</span>
+                                </div>
+                            </div>
+                            
+                            <div class="form-group">
+                                <label class="col-sm-3 control-label no-padding-right" for="form-field-1">  腾讯街景地图id： </label>
+
+                                <div class="col-sm-8">
+                                    <input type="text" name="tx_jiejingid" placeholder="" class="col-xs-10 col-sm-5">
+                                     <span class="help-inline col-xs-12 col-sm-7 form-field-description-block">
+                                       <span class="middle"><a href="http://lbs.qq.com/tool/streetview/index.html" target="_blank">点击这里</a>手动拾取街景id</span>
+									</span>
+                                </div>
+                            </div>
 
                             <div class="form-group">
                                 <label class="col-sm-3 control-label no-padding-right" for="form-field-1">  点位编号： </label>
