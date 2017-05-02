@@ -151,6 +151,20 @@
 									</span>
                                 </div>
                             </div>
+                            
+                            <div class="form-group">
+                                <label class="col-sm-3 control-label no-padding-right" for="form-input-readonly"> 点位图集： </label>
+                                <div class="col-sm-9">
+
+                                    <ul class="ace-thumbnails" id="uploader_cover_img">
+                                        <li class="pic pic-add add-pic" id="<?php if(isset($info['seal_img'])&&!empty($info['seal_img'])){ echo 'hidden-div';}?>" style="float: left;width: 220px;height: 150px;clear:none; border: 1px solid #f18a1b">
+                                            <a href="javascript:;" class="up-img"  id="file_cover_img"><span>+</span><br>添加照片</a>
+
+                                        </li>
+
+                                    </ul>
+                                </div>
+                            </div>
 
                             <div class="form-group">
                                 <label class="col-sm-3 control-label no-padding-right" for="form-field-1">  点位编号： </label>
@@ -345,6 +359,48 @@
             });
         });
     </script>
+    
+    <script type="text/javascript">
+    var baseUrl = "<?php echo $domain['admin']['url'];?>";
+    var staticUrl = "<?php echo $domain['static']['url']?>";
+</script>
+<script src="<?php echo css_js_url('jquery.colorbox-min.js','admin');?>"></script>
+<script type="text/javascript" src="<?php echo css_js_url('jquery.swfupload.js', 'common');?>"></script>
+<script type="text/javascript" src="<?php echo css_js_url('swfupload.js', 'admin')?>"></script>
+<script type="text/javascript" src="<?php echo css_js_url('admin_upload.js', 'admin');?>"></script>
+<script>
+    $(function(){
+        var colorbox_params = {
+            reposition:true,
+            scalePhotos:true,
+            scrolling:false,
+            previous:'<i class="icon-arrow-left"></i>',
+            next:'<i class="icon-arrow-right"></i>',
+            close:'&times;',
+            current:'{current} of {total}',
+            maxWidth:'100%',
+            maxHeight:'100%',
+            onOpen:function(){
+                document.body.style.overflow = 'hidden';
+            },
+            onClosed:function(){
+                document.body.style.overflow = 'auto';
+            },
+            onComplete:function(){
+                $.colorbox.resize();
+            }
+        };
+
+        $('.ace-thumbnails [data-rel="colorbox"]').colorbox(colorbox_params);
+        $("#cboxLoadingGraphic").append("<i class='icon-spinner orange'></i>");//let's add a custom loading icon
+
+        // 删除照片
+        $("#uploader_cover_img").on("click",'.icon-remove',function(){
+            $(this).parents("li").remove();
+            $(".add-pic").show();
+        });
+    });
+</script>
 <!-- 底部 -->
 <?php $this->load->view("common/bottom");?>
 

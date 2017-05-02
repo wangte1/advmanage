@@ -93,6 +93,10 @@ class Points extends MY_Controller{
 
         if(IS_POST){
             $post = $this->input->post();
+            if(isset($post['cover_img'])){
+                $post['images'] = implode(';', $post['cover_img']);
+                unset($post['cover_img']);
+            }
             $post['address'] = $post['province'].",".$post['city'].','.$post['area'].",".$post['street_address'];
             unset($post['media_type'], $post['province'], $post['city'], $post['area'], $post['street_address']);
 
@@ -138,7 +142,10 @@ class Points extends MY_Controller{
 
         if(IS_POST){
             $post = $this->input->post();
-
+            if(isset($post['cover_img'])){
+                $post['images'] = implode(';', $post['cover_img']);
+                unset($post['cover_img']);
+            }
             $post['address'] = $post['province'].",".$post['city'].','.$post['area'].",".$post['street_address'];
             unset($post['province']);
             unset($post['city']);
