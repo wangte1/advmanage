@@ -146,7 +146,7 @@
                                 <div class="col-sm-9">
 
                                     <ul class="ace-thumbnails" id="uploader_cover_img">
-                                        <?php if(isset($info['images'])):?>
+                                        <?php if(isset($info['images']) && !empty($info['images'])):?>
                                         <?php foreach (explode(';', $info['images']) as $k => $v):?>
                                         <li id="SWFUpload_0_0" class="pic pro_gre" style="margin-right: 20px; clear: none">
                                             <a data-rel="colorbox" class="cboxElement" href="<?php echo $v?>">
