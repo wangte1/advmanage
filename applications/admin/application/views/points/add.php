@@ -187,7 +187,7 @@
                             </div>
                             
                             <div class="form-group">
-                                <label class="col-sm-3 control-label no-padding-right" for="form-field-1">  材质： </label>
+                                <label class="col-sm-3 control-label no-padding-right" for="form-field-1">  广告材质： </label>
 
                                 <div class="col-sm-8">
                                     <input type="text" name="texture" placeholder="" class="col-xs-10 col-sm-5">
