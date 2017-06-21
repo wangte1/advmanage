@@ -178,6 +178,22 @@
 									</span>
                                 </div>
                             </div>
+                            
+                            <div class="form-group">
+                                <label class="col-sm-3 control-label no-padding-right" for="form-field-1">  展现形式： </label>
+
+                                <div class="col-sm-8">
+                                    <input type="text" name="show_method" value="<?php echo $info['show_method']?>" placeholder="" class="col-xs-10 col-sm-5">
+                                </div>
+                            </div>
+                            
+                            <div class="form-group">
+                                <label class="col-sm-3 control-label no-padding-right" for="form-field-1">  材质： </label>
+
+                                <div class="col-sm-8">
+                                    <input type="text" name="texture" placeholder="" value="<?php echo $info['texture']?>" class="col-xs-10 col-sm-5">
+                                </div>
+                            </div>
 
                             <div class="form-group">
                                 <label class="col-sm-3 control-label no-padding-right" for="form-field-1">  点位价格： </label>
