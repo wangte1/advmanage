@@ -235,6 +235,32 @@ class Scheduledorders extends MY_Controller{
 
         $this->success('解除锁定成功！已释放该订单的所有预定点位！', '/scheduledorders');
     }
+    
+    /**
+     * 订单续期
+     * @author yonghua
+     */
+    public function update_points($id) {
+        $data = $this->data;
+        $info = $this->Mscheduled_orders->get_one("order_status", ['id' => $id]);
+        if($info['order_status'] != 2){
+            $this->error('您只能续期即将到期的订单！', '/scheduledorders');
+        }
+        $time = date('Y-m-d');
+        $end = date('Y-m-d', strtotime('+7 days'));
+        $up =[
+            'order_status' => 1,
+            'lock_start_time' => $time,
+            'lock_end_time' => $end,
+            'update_time' => date('Y-m-d H:i:s'),
+            'update_user' => $data['userInfo']['id']
+        ];
+        $res = $this->Mscheduled_orders->update_info($up, ['id' => $id]);
+        if(!$res){
+            $this->error('操作失败！', '/scheduledorders');
+        }
+        $this->success('续期成功！', '/scheduledorders');
+    }
 
 
     /**

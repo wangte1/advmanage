@@ -178,6 +178,12 @@
                                                             <i class="icon-unlock bigger-130" aria-hidden="true"></i>
                                                         </a>
                                                         <?php endif;?>
+                                                        
+                                                        <?php if($value['order_status'] == 2):?>
+                                                        <a class="grey tooltip-info update" href="javascript:;" data-id="<?php echo $value['id'];?>"  data-rel="tooltip" data-placement="top" data-original-title="续期">
+                                                            <i class="ace-icon glyphicon glyphicon-upload bigger-130" aria-hidden="true"></i>
+                                                        </a>
+                                                        <?php endif;?>
                                                     </div>
                                                 </td>
                                             </tr>
@@ -211,6 +217,22 @@
             okValue: '确定',
             ok: function () {
                 window.location.href = '/scheduledorders/release_points/' + _self.attr('data-id');
+            },
+            cancelValue: '取消',
+            cancel: function () {}
+        });
+        d.width(420);
+        d.showModal();
+    });
+
+    $('.update').click(function(){
+        var _self = $(this);
+        var d = dialog({
+            title: "提示",
+            content: '请谨慎操作！确定要续期吗？',
+            okValue: '确定',
+            ok: function () {
+                window.location.href = '/scheduledorders/update_points/' + _self.attr('data-id');
             },
             cancelValue: '取消',
             cancel: function () {}
