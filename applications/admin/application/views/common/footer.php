@@ -35,6 +35,8 @@
 
 <script src="<?php echo css_js_url('common.js','common');?>"></script>
 
+<script src="<?php echo css_js_url('layer/layer.js','admin');?>"></script>
+
 
 <!--[if lt IE 9]>
     <script src="<?php echo css_js_url('html5shiv.js','admin');?>"></script>

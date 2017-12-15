@@ -22,6 +22,22 @@ $config = array(
         '2'=>"高杆广告",
         '3'=>"LED广告",
     ),
+		
+	//楼盘类型
+	"houses_type"=>array(
+		'1'=>"topGrade",	//高级楼盘
+		'2'=>"middleGrade",	//中级楼盘
+		'3'=>"lowGrade",	//一般楼盘
+	),
+		
+	//社区客户类型
+	"houses_customer_type"=>array(
+		'1'=>"地产",
+		'2'=>"医疗",
+		'3'=>"农业",
+		'4'=>"运输",
+		'5'=>"美容",
+	),
 
     //客户类型
     "customer_type"=>array(

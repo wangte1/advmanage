@@ -3,7 +3,7 @@ if(! defined('BASEPATH')) exit('No direct script access allowed');
 $config = array(
     'menu' => array(
 
-        '资源管理' => array(
+        '户外资源管理' => array(
             'code' => 'resources_manage',
             'icon' => 'icon-asterisk  menu-i',
             'list' => array(
@@ -37,16 +37,103 @@ $config = array(
                     'name'=> '制作公司管理',
                     'active'=> 'make_company_list'
                 ),
-
+            	
                 array(
                     'url'=>'/salesman',
                     'name'=> '业务员管理',
                     'active'=> 'salesman_list'
                 ),
-
+            	
+            	array(
+            		'url'=>'/makereport',
+            		'name'=> '生成验收报告',
+            		'active'=> 'make_report'
+            	),
+            		
             )
         ),
-        '订单管理' => array(
+    		
+    	'网络资源管理' => array(
+    		'code' => 'net_manage',
+    		'icon' => 'icon-globe  menu-i',
+    		'list' => array(
+    			/*array(
+    				'url'=>'/networkmanage?mod=1', //mod=1是腾讯
+    				'name'=> '腾讯网络排班',
+    				'active'=> 'network_manage_list'
+    			),
+    			array(
+    				'url'=>'/networkmanage?mod=2', //mod=2是凤凰
+    				'name'=> '凤凰网络排班',
+    				'active'=> 'network_manage_fh_list'
+    			),*/
+    				
+    			array(
+    				 'url'=>'/networkmanage/goindex1', //mod=1是腾讯
+    				 'name'=> '腾讯网络排班',
+    				 'active'=> 'network_manage_list'
+    			),
+    			array(
+    				'url'=>'/networkmanage/goindex2', //mod=2是凤凰
+    				'name'=> '凤凰网络排班',
+    				'active'=> 'network_manage_fh_list'
+    			),
+    			array(
+    				'url'=>'/networkapply',
+    				'name'=> '排班申请',
+    				'active'=> 'network_apply_list'
+    			),
+    			array(
+    				'url'=>'/networklog',
+    				'name'=> '排班日志',
+    				'active'=> 'network_log_list'
+    			),
+    			array(
+    				'url'=>'/networkset',
+    				'name'=> '排班设置',
+    				'active'=> 'network_set_list'
+    			),
+    			array(
+    				'url'=>'/networktype',
+    				'name'=> 'tab设置',
+    				'active'=> 'network_type_list'
+    			),
+    		)
+    	),
+    	'社区资源管理' => array(
+    		'code' => 'community_manage',
+    		'icon' => 'icon-globe  menu-i',
+    		'list' => array(
+    			array(
+    				'url'=>'/housespoints',
+    				'name'=> '点位管理',
+    				'active'=> 'houses_points_list'
+    			),
+    			
+    			array(
+    				'url'=>'/housescustomers',
+    				'name'=> '客户管理',
+    				'active'=> 'houses_customers_list'
+    			),
+    			array(
+    				'url'=>'/housesformat',
+    				'name'=> '点位规格管理',
+    				'active'=> 'points_type_list'
+    			),
+    			array(
+	    			'url'=>'/houses',
+	    			'name'=> '楼盘管理',
+	    			'active'=> 'houses_list'
+    			),
+    			array(
+    				'url'=>'/housesarea',
+    				'name'=> '楼盘区域管理',
+    				'active'=> 'houses_area_lists'
+    			),
+    		)
+    	),
+    	
+        '户外订单管理' => array(
             'code' => 'orders_manage',
             'icon' => 'icon-book  menu-i',
             'list' => array(
@@ -67,6 +154,28 @@ $config = array(
                 ),
             )
         ),
+    		
+    	'社区订单管理' => array(
+    		'code' => 'horders_manage',
+    		'icon' => 'icon-book  menu-i',
+    		'list' => array(
+    			array(
+    				'url'=>'/scheduledorders',
+    				'name'=> '预定订单',
+    				'active'=> 'scheduled_order_list'
+    			),
+    			array(
+			    	'url'=>'/housesorders',
+			    	'name'=> '订单列表',
+			    	'active'=> 'houses_orders_list'
+			    ),
+    			array(
+    				'url'=>'/changepicorders',
+    				'name'=> '换画订单',
+    				'active'=> 'change_pic_order_list'
+    			),
+    		)
+    	),
         '数据统计' => array(
             'code' => 'statistics_manage',
             'icon' => 'icon-bar-chart menu-i',
