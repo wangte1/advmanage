@@ -160,7 +160,7 @@
                                             <?php foreach ($list as $key => $value) : ?>
                                             <tr>
                                                 <td>
-                                                    <a href="/orders/detail/<?php echo $value['id'];?>"><?php echo $value['order_code'];?></a>
+                                                    <a href="/housesorders/detail/<?php echo $value['id'];?>"><?php echo $value['order_code'];?></a>
                                                     <!--<?php if($value['order_status'] == 7):?>
                                                     <a class="green tooltip-info" href="/changepicorders/add/<?php echo $value['order_type'];?>/<?php echo $value['order_code'];?>"  data-rel="tooltip" data-placement="top" data-original-title="新建换画">
                                                         <i class="fa fa-plus-square bigger-130" aria-hidden="true"></i>
@@ -424,7 +424,7 @@
     	layer.prompt({title: '请输入删除口令！', formType: 1}, function(pass, index){
         		if(pass == 'adminnn123') { //等时间充裕以后改到后台获取 yangxiong 2017-0-14
         			$.ajax({
-                        url:'/orders/del_order',
+                        url:'/housesorders/del_order',
                         data: {
                             'id':id
                         },

@@ -155,11 +155,11 @@
                                                                 <div class="col-sm-6">
                                                                     <label class="col-sm-4 control-label" for="form-field-1"> 楼盘区域： </label>
                                                                     <div class="col-sm-8" style="padding:0">
-                                                                        <select name="area_id" id="media_id" class="select2 media-sel">
+                                                                        <select name="area_id" id="area_id" class="select2">
                                                                             <option value="">请选择楼盘区域</option>
-                                                                            <?php foreach($media_list as $val):?>
+                                                                            <!--<?php foreach($media_list as $val):?>
                                                                             <option value="<?php echo $val['id'];?>" <?php if(isset($info['media_id']) && $val['id'] == $info['media_id']){ echo "selected"; }?>><?php echo $val['name'].'('.$val['code'].')';?></option>
-                                                                            <?php endforeach;?>
+                                                                            <?php endforeach;?>-->
                                                                         </select>
                                                                     </div>
                                                                 </div>
@@ -398,11 +398,11 @@
                                                 <input type="hidden" name="order_type" value="<?php echo $order_type;?>" />
                                                 <input type="hidden" name="point_ids" value="<?php if(isset($info['point_ids'])) { echo $info['point_ids']; } ?>" />
                                                 
-                                                <?php if(isset($info['id']) && ($order_type == 1 || $order_type == 2)):?>
+                                                <!--<?php if(isset($info['id']) && ($order_type == 1 || $order_type == 2)):?>
                                                     <?php foreach ($points_make_num as $key => $value): ?>
                                                     <input type="hidden" name="make_num[<?php echo $value['point_id'];?>]" value="<?php echo $value['make_num'];?>" />
                                                     <?php endforeach;?>
-                                                <?php endif;?>
+                                                <?php endif;?>-->
                                                 <button class="btn btn-info btn-save" type="submit">
                                                     <i class="icon-ok bigger-110"></i>
                                                     保 存
@@ -452,12 +452,10 @@
                                                     <?php if(isset($selected_points)):?>
                                                         <?php foreach($selected_points as $value):?>
                                                         <tr point-id="<?php echo $value['id'];?>">
-                                                            <td class="col-sm-2"><?php echo $value['points_code'];?></td>
-                                                            <td class="col-sm-3"><?php echo $value['media_name'].'('.$value['media_code'].')';?></td>
-                                                            <td class="col-sm-3"><?php echo $value['size'];?></td>
-                                                            <?php if($order_type == 1):?>
-                                                            <td class="col-sm-2"><?php echo $value['make_num'];?></td>
-                                                            <?php endif;?>
+                                                            <td class="col-sm-2"><?php echo $value['code'];?></td>
+                                                            <td class="col-sm-3"><?php echo $value['houses_name'];?></td>
+                                                            <td class="col-sm-3"><?php echo $value['area_name'];?></td>
+                                                            <td class="col-sm-2"></td>
                                                             <td class="col-sm-2"><button class="btn btn-xs btn-info do-sel" type="button" data-id="<?php echo $value['id'];?>">移除<i class="fa fa-remove" aria-hidden="true"></i></button></td>
                                                         </tr>
                                                         <?php endforeach;?>
@@ -498,27 +496,35 @@ $(function(){
         $(this).prev().focus();
     });
 	
-	$('#houses_id').change(function(){
+	$('#houses_id,#is_lock,#area_id').change(function(){
+		if($(this).attr('id') == 'houses_id') {
+			$("#area_id").html('');
+		}
+		
 		var houses_id = $('#houses_id').val();
 		var is_lock = $('#is_lock').val();
 
 		$.post('/housesorders/get_points', {order_type:order_type, houses_id:houses_id, is_lock:is_lock}, function(data){
-			var pointStr = '';
+			var pointStr =  '';
+			var areaStr = ''; 
 			if(data.flag == true) {
-
 				$("#all_points_num").text(data.count);
 				
 				for(var i = 0; i < (data.points_lists).length; i++) {
-					pointStr += "<tr point-id='"+(data.points_lists)['id']+"'><td class='col-sm-2 center'>"+(data.points_lists)[i]['code']+"</td>";
+					pointStr += "<tr point-id='"+(data.points_lists)[i]['id']+"'><td class='col-sm-2 center'>"+(data.points_lists)[i]['code']+"</td>";
 					pointStr += "<td class='col-sm-3 center'>"+(data.points_lists)[i]['houses_name']+"</td>";
 					pointStr += "<td class='col-sm-3 center'>"+(data.points_lists)[i]['area_name']+"</td>";
 					pointStr += "<td class='col-sm-2 center'></td>";
 					pointStr += "<td class='col-sm-2 center'><button class='btn btn-xs btn-info do-sel' type='button'>选择<i class='icon-arrow-right icon-on-right'></button></td></tr>";
 				}
-				
+
+				for(var j = 0; j < (data.area_lists).length; j++) {
+					areaStr += "<option value="+(data.area_lists)[j]['id']+">"+(data.area_lists)[j]['name']+"</option>";
+				}
 			}
 			
 			$("#points_lists").html(pointStr);
+			$("#area_id").html(areaStr);
 		});
 	});
 
@@ -534,6 +540,9 @@ $(function(){
         
         $("#selected_points button").html('移除<i class="fa fa-remove" aria-hidden="true"></i>');
         var point_ids = $("input[name='point_ids']").val() ? $("input[name='point_ids']").val() + ',' + $(this).parent().parent().attr('point-id') :  $(this).parent().parent().attr('point-id');
+
+
+        
         $("input[name='point_ids']").val(point_ids);
     });
 
