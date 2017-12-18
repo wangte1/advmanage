@@ -36,20 +36,14 @@ class Housesscheduledorders extends MY_Controller{
         $pageconfig = C('page.page_lists');
         $this->load->library('pagination');
         $page = $this->input->get_post('per_page') ? : '1';
-        
-        $order_type = $this->input->get('order_type');
-        $customer_id = $this->input->get('customer_id');
-        $order_status= $this->input->get('order_status');
-        $admin_id = $this->input->get('admin_id');
-        
-        $where =  array();
-        if ($order_type) $where['A.order_type'] = $order_type;
-        if ($customer_id) $where['A.customer_id'] = $customer_id;
-        if ($order_status) $where['A.order_status'] = $order_status;
-        if ($admin_id) $where['C.id'] = $admin_id;
+        $where = array();
+        if ($this->input->get('order_type')) $where['A.order_type'] = $this->input->get('order_type');
+        if ($this->input->get('lock_customer_id')) $where['A.lock_customer_id'] = $this->input->get('lock_customer_id');
+        if ($this->input->get('admin_id')) $where['C.id'] = $this->input->get('admin_id');
+        if ($this->input->get('order_status')) $where['A.order_status'] = $this->input->get('order_status');
         
         $data['order_type'] = $this->input->get('order_type');
-        $data['customer_id'] = $this->input->get('customer_id');
+        $data['lock_customer_id'] = $this->input->get('lock_customer_id');
         $data['admin_id'] = $this->input->get('admin_id');
         $data['order_status'] = $this->input->get('order_status');
         
@@ -88,6 +82,50 @@ class Housesscheduledorders extends MY_Controller{
      */
     public function addpreorder($order_type=1){
         $data = $this->data;
+        if(IS_POST){
+            $post_data = $this->input->post();
+            if (isset($post_data['area_id'])) unset($post_data['area_id']);
+            //判断这个客户是否已锁定点位
+            $order_type = (int) $post_data['order_type'];
+            $where['is_del'] = 0;
+            $where['lock_customer_id'] = $post_data['lock_customer_id'];
+            $where['order_type'] = $order_type;
+            $where['order_status'] = C('scheduledorder.order_status.code.in_lock');
+            $count = $this->Mhouses_scheduled_orders->count($where);
+            if ($count > 0) {
+                $this->success("该客户已存在锁定中的".$data['order_type_text'][$order_type]."订单！", '/housesscheduledorders/addpreorder/'.$order_type);
+                exit;
+            }
+            
+            //判断该客户是否存在正在锁定日期范围内的已释放的订单
+            $where['order_status'] = C('scheduledorder.order_status.code.done_release');
+            $where['lock_end_time>'] = date('Y-m-d');
+            $orderinfo = $this->Mhouses_scheduled_orders->get_one('*', $where);
+            if ($orderinfo) {
+                $this->success("该客户上一次释放的订单还未到锁定结束日期，不能新建预定订单！", '/housesscheduledorders/addpreorder/'.$order_type);
+                exit;
+            }
+            
+            $post_data['create_user'] = $post_data['update_user'] = $data['userInfo']['id'];
+            $post_data['create_time'] = $post_data['update_time'] = date('Y-m-d H:i:s');
+            $id = $this->Mhouses_scheduled_orders->create($post_data);
+            if ($id) {
+                //下单成功更新点位相关锁定字段
+                $update_data['order_id'] = $id;
+                $update_data['customer_id'] = $post_data['lock_customer_id'];
+                $update_data['lock_start_time'] = $post_data['lock_start_time'];
+                $update_data['lock_end_time'] = $post_data['lock_end_time'];
+                $expire_time = strtotime($post_data['lock_end_time']." 23:59:59");
+                $update_data['expire_time'] = $expire_time-86400;
+                $update_data['is_lock'] = 1;
+                $this->Mhouses_points->update_info($update_data, array('in' => array('id' => explode(',', $post_data['point_ids']))));
+                
+                $this->write_log($data['userInfo']['id'], 1, "新增".$data['order_type_text'][$post_data['order_type']]."预定订单,订单id【".$id."】");
+                $this->success("添加成功！","/housesscheduledorders");
+            } else {
+                $this->success("添加失败！");
+            }
+        }
         $data['order_type'] = $order_type;
         $data['status_text'] = C('order.order_status.text');
         //获取指定类型的点位
