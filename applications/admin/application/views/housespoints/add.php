@@ -101,6 +101,13 @@
                             </div>
                             
                             <div class="form-group">
+                                <label class="col-sm-3 control-label no-padding-right" for="form-field-1"> 地址： </label>
+                                <div class="col-sm-9">
+                                	<input type="text" name="addr" placeholder="请输入详细的地址"  class="col-xs-10 col-sm-3">
+                                </div>
+                            </div>
+                            
+                            <div class="form-group">
                                 <label class="col-sm-3 control-label no-padding-right" for="form-field-1"> 点位图： </label>
                                 <div class="col-sm-9">
                                     <select>
@@ -110,15 +117,28 @@
                             </div>
                             
                             <div class="form-group">
+                                <label class="col-sm-3 control-label no-padding-right" for="form-field-1"> 展现形式： </label>
+                                <div class="col-sm-9">
+                                    <input type="text" name="show_method"  id="form-field-1" placeholder=""  class="col-xs-10 col-sm-3">
+                                </div>
+                            </div>
+                            
+                            <div class="form-group">
+                                <label class="col-sm-3 control-label no-padding-right" for="form-field-1"> 广告材质： </label>
+                                <div class="col-sm-9">
+                                    <input type="text" name="texture"  id="form-field-1" placeholder=""  class="col-xs-10 col-sm-3">
+                                </div>
+                            </div>
+                            
+                            <div class="form-group">
                                 <label class="col-sm-3 control-label no-padding-right" for="form-field-1"> 点位价格： </label>
                                 <div class="col-sm-9">
-                                    <input type="text" name="price" required id="form-field-1" placeholder="" class="col-xs-10 col-sm-3">
+                                    <input type="text" name="price" required id="form-field-1" value="0.00" placeholder="" class="col-xs-10 col-sm-3">
                                     <span class="help-inline col-xs-12 col-sm-7 form-field-description-block">
                                        元
 									</span>
                                 </div>
                             </div>
-                            
                             
                             <div class="form-group">
                                 <label class="col-sm-3 control-label no-padding-right" for="form-field-1">  备注： </label>

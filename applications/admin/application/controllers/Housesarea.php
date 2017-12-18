@@ -101,7 +101,7 @@ class Housesarea extends MY_Controller{
             $result = $this->Mhouses_area->update_info($post,array("id"=>$id));
             if($result){
                 $this->write_log($data['userInfo']['id'],2,"编辑站台：".$post['name']);
-                $this->success("编辑成功","/mediamanage");
+                $this->success("编辑成功","/housesarea");
             }else{
                 $this->error("编辑失败");
             }

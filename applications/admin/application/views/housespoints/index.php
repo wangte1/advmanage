@@ -74,6 +74,15 @@
 				                                    </select>
                                                 </div>
                                             </div>
+                                            
+                                            <div class="col-sm-4">
+                                                <label class="col-sm-3 control-label no-padding-right" for="form-field-1"> 所属楼盘区域 </label>
+                                                <div class="col-sm-9">
+                                                	<select class="select2" data-placeholder="Click to Choose..." name="area_id">
+                                                		<option value="">全部</option>
+				                                    </select>
+                                                </div>
+                                            </div>
                                         </div>
                                         
                                         
@@ -104,6 +113,7 @@
                                                 <th>点位编号</th>
                                                 <th>所属楼盘</th>
                                                 <th>所属楼盘区域</th>
+                                                <th>地址</th>
                                                 <th>类型</th>
                                                 <th>占用客户</th>
                                                 <th>点位属性</th>
@@ -131,6 +141,9 @@
                                                     			<?php echo $v['name'];break;?>
                                                     		<?php }?>
                                                     	<?php }?>
+                                                    </td>
+                                                    <td>
+                                                    	<?php echo $val['addr'];?>
                                                     </td>
                                                     <td>
                                                     	<?php foreach ($tlist as $k => $v) {?>
