@@ -548,7 +548,7 @@
     $(".btn-export").click(function(){
         var id = $(this).attr('data-id');
         var type = $(this).attr('data-type');
-        window.location.href = '/orders/export/' + id + '/' + type;
+        window.location.href = '/housesorders/export/' + id + '/' + type;
     });
 
     //更新订单状态
@@ -561,7 +561,7 @@
                 content: '请先上传广告画面！',
                 okValue: '立即上传',
                 ok: function () {
-                    window.location.href = '/orders/upload_adv_img/<?php echo $info["id"];?>';
+                    window.location.href = '/housesorders/upload_adv_img/<?php echo $info["id"];?>';
                 },
             });
             d.width(320);
@@ -575,7 +575,7 @@
                 content: '您还没有上传验收图片进行验收！',
                 okValue: '立即上传',
                 ok: function () {
-                    window.location.href = '/orders/check_upload_img/<?php echo $info["id"];?>';
+                    window.location.href = '/housesorders/check_upload_img/<?php echo $info["id"];?>';
                 },
             });
             d.width(320);
@@ -585,9 +585,9 @@
 
         $("#exampleModal").modal('show');
         $("#lock-add").click(function(){
-            var remark = $("#remark").val();
+            var remark = $("#remarks").val();
             $.ajax( {
-                url:'/orders/ajax_update_status',
+                url:'/housesorders/ajax_update_status',
                 data: {
                     'id':order_id,
                     'status':status,
