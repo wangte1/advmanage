@@ -17,7 +17,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 | environments.
 |
 */
-$config['base_url'] = 'http://admin.huiminanju.com/';
+$config['base_url'] = 'http://wesogou.com/';
 
 /*
 |--------------------------------------------------------------------------
@@ -387,7 +387,7 @@ $config['sess_regenerate_destroy'] = FALSE;
 |
 */
 $config['cookie_prefix']	= '';
-$config['cookie_domain']	= 'huiminanju.com';
+$config['cookie_domain']	= 'wesogou.com';
 $config['cookie_path']		= '/';
 $config['cookie_secure']	= FALSE;
 $config['cookie_httponly'] 	= TRUE;

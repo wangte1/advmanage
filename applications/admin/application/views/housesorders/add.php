@@ -509,7 +509,7 @@ $(function(){
 				$("#all_points_num").text(data.count);
 				
 				for(var i = 0; i < (data.points_lists).length; i++) {
-					pointStr += "<tr point-id='"+(data.points_lists)['id']+"'><td class='col-sm-2 center'>"+(data.points_lists)[i]['code']+"</td>";
+					pointStr += "<tr point-id='"+(data.points_lists)[i]['id']+"'><td class='col-sm-2 center'>"+(data.points_lists)[i]['code']+"</td>";
 					pointStr += "<td class='col-sm-3 center'>"+(data.points_lists)[i]['houses_name']+"</td>";
 					pointStr += "<td class='col-sm-3 center'>"+(data.points_lists)[i]['area_name']+"</td>";
 					pointStr += "<td class='col-sm-2 center'></td>";
@@ -534,6 +534,9 @@ $(function(){
         
         $("#selected_points button").html('移除<i class="fa fa-remove" aria-hidden="true"></i>');
         var point_ids = $("input[name='point_ids']").val() ? $("input[name='point_ids']").val() + ',' + $(this).parent().parent().attr('point-id') :  $(this).parent().parent().attr('point-id');
+
+
+        
         $("input[name='point_ids']").val(point_ids);
     });
 

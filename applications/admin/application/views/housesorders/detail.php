@@ -90,7 +90,7 @@
                                                     <div class="profile-info-name"> 客户 </div>
 
                                                     <div class="profile-info-value">
-                                                        <span class="editable editable-click"><?php echo $info['customer_name'];?><?php if($info['project_name']) { echo '-'.$info['project_name']; } ?></span>
+                                                        <span class="editable editable-click"><?php echo $info['customer_name'];?></span>
                                                     </div>
                                                 </div>
 

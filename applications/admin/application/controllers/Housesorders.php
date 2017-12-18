@@ -18,6 +18,7 @@ class Housesorders extends MY_Controller{
         	'Model_salesman' => 'Msalesman',
         	'Model_make_company' => 'Mmake_company',
         	'Model_admins' => 'Madmins',
+        	'Model_houses_order_inspect_images' => 'Mhouses_order_inspect_images',
 //              'Model_medias' => 'Mmedias',
 //              'Model_customers' => 'Mcustomers',
 //              'Model_customer_project' => 'Mcustomer_project',
@@ -736,10 +737,10 @@ class Housesorders extends MY_Controller{
         $data['info']['selected_points'] = $this->Mhouses_points->get_points_lists(array('in' => array('A.id' => explode(',', $data['info']['point_ids']))));
 
         //广告画面
-        //$data['info']['adv_img'] = $data['info']['adv_img'] ? explode(',', $data['info']['adv_img']) : array();
+        $data['info']['adv_img'] = $data['info']['adv_img'] ? explode(',', $data['info']['adv_img']) : array();
 
         //验收图片
-        //$data['info']['inspect_img'] = $this->Morder_inspect_images->get_inspect_img(array('A.order_id' => $id, 'A.type' => 1));
+        $data['info']['inspect_img'] = $this->Mhouses_order_inspect_images->get_inspect_img(array('A.order_id' => $id, 'A.type' => 1));
 
         //每个媒体对应套数
 //         $where_point['in'] = array('B.id' => explode(',', $data['info']['point_ids']));
@@ -759,13 +760,13 @@ class Housesorders extends MY_Controller{
 //             $data['info']['change_points_record'][$key]['add_points'] = implode(',', array_column($add_points, 'points_code'));
 //         }
 
-//         if($data['info']['order_type'] == 3 || $data['info']['order_type'] == 4){
-//             $data['status_text'] = C('order.order_status.led_text');
-//         }else{
-//             //制作公司
-//             $data['info']['make_company'] = $this->Mmake_company->get_one('company_name', array('id' => $data['info']['make_company_id']))['company_name'];
-//             $data['status_text'] = C('order.order_status.text');
-//         }
+        if($data['info']['order_type'] == 3 || $data['info']['order_type'] == 4){
+            $data['status_text'] = C('order.order_status.led_text');
+        }else{
+            //制作公司
+            $data['info']['make_company'] = $this->Mmake_company->get_one('company_name', array('id' => $data['info']['make_company_id']))['company_name'];
+            $data['status_text'] = C('order.order_status.text');
+        }
 
 //         //获取对应订单状态的操作信息
 //         $operate_time = $this->Mstatus_operate_time->get_lists("value,operate_remark,operate_time",array("order_id" => $id , 'type' => 1));
@@ -776,7 +777,7 @@ class Housesorders extends MY_Controller{
 
         $data['id'] = $id;
 
-        $this->load->view('orders/detail', $data);
+        $this->load->view('housesorders/detail', $data);
     }
     
     /*
