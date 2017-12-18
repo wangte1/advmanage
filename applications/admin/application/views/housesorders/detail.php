@@ -231,7 +231,7 @@
                                                     <div class="profile-info-name"> 联系单与确认函</div>
 
                                                     <div class="profile-info-value">
-                                                        <a href="/orders/contact_list/<?php echo $info['id'];?>" target="_blank">查看联系单</a>
+                                                        <a href="/housesorders/contact_list/<?php echo $info['id'];?>" target="_blank">查看联系单</a>
 
                                                         <?php if($info['order_status'] > 6):?>
                                                         <a href="/orders/confirmation/<?php echo $info['id'];?>" target="_blank">查看确认函</a>
@@ -250,16 +250,20 @@
                                                 <thead>
                                                     <tr>
                                                         <th class="center">点位编号</th>
-                                                        <th>媒体名称</th>
+                                                        <th>楼盘名称</th>
+                                                        <th>楼盘区域</th>
+                                                        <th>地址</th>
                                                         <th class="hidden-xs">规格</th>
                                                     </tr>
                                                 </thead>
                                                 <tbody>
                                                     <?php foreach($info['selected_points'] as $value):?>
                                                     <tr>
-                                                        <td class="center"><?php echo $value['points_code'];?></td>
-                                                        <td><?php echo $value['media_name'].'('.$value['media_code'].')';?></td>
-                                                        <td><?php echo $value['size'];?><?php if($info['order_type'] == 1) { echo '('.$value['specification_name'].')'; }?></td>
+                                                        <td class="center"><?php echo $value['code'];?></td>
+                                                        <td><?php echo $value['houses_name'];?></td>
+                                                        <td><?php echo $value['area_name'];?></td>
+                                                        <td><?php echo $value['addr'];?></td>
+                                                        <td></td>
                                                     </tr>
                                                     <?php endforeach;?>
                                                 </tbody>
