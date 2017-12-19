@@ -12,9 +12,9 @@ class Model_houses_order_inspect_images extends MY_Model {
      * 获取验收图片列表
      */
     public function get_inspect_img ($where = array()) {
-    	$this->db->select('A.*, B.name AS houses_name');
+    	$this->db->select('A.*, B.houses_id, B.area_id, B.addr');
         $this->db->from('t_houses_order_inspect_images A');
-        $this->db->join('t_houses B', 'A.houses_id = B.id', 'right');
+        $this->db->join('t_houses_points B', 'A.point_id = B.id', 'right');
 
         if ($where) {
             $this->db->where($where);

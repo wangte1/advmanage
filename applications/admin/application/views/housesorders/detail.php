@@ -261,7 +261,7 @@
                                                     <tr>
                                                         <td class="center"><?php echo $value['code'];?></td>
                                                         <td><?php echo $value['houses_name'];?></td>
-                                                        <td><?php echo $value['area_name'];?></td>
+                                                        <td><?php echo $value['houses_area_name'];?></td>
                                                         <td><?php echo $value['addr'];?></td>
                                                         <td></td>
                                                     </tr>
