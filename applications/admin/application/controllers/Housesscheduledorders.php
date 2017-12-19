@@ -100,7 +100,7 @@ class Housesscheduledorders extends MY_Controller{
             
             //判断该客户是否存在正在锁定日期范围内的已释放的订单
             $where['order_status'] = C('scheduledorder.order_status.code.done_release');
-            $where['lock_end_time>'] = date('Y-m-d');
+            $where['lock_end_time >'] = date('Y-m-d');
             $orderinfo = $this->Mhouses_scheduled_orders->get_one('*', $where);
             if ($orderinfo) {
                 $this->success("该客户上一次释放的订单还未到锁定结束日期，不能新建预定订单！", '/housesscheduledorders/addpreorder/'.$order_type);
