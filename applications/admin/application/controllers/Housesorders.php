@@ -590,9 +590,10 @@ class Housesorders extends MY_Controller{
 
             if ($order_type == '1') {    //冷光灯箱
                 $this->load->view('housesorders/contact_list/light', $data);
-            } elseif ($order_type == '2') {   //广告机器
-                $data['media_list'] = $this->Mhouses_points->get_make_high(array('in' => array('B.id' => explode(',', $data['info']['point_ids']))));
-                $this->load->view('housesorders/contact_list/high', $data);
+            } elseif ($order_type == '2') {   //广告机
+                //$data['media_list'] = $this->Mhouses_points->get_make_high(array('in' => array('B.id' => explode(',', $data['info']['point_ids']))));
+                //$this->load->view('housesorders/contact_list/high', $data);
+            	$this->load->view('housesorders/contact_list/light', $data);
             }
         } 
 
@@ -961,7 +962,12 @@ class Housesorders extends MY_Controller{
             $this->success("保存验收图片成功！","/housesorders/detail/".$order_id);
             exit;
         }
-
+        
+        //获取该订单下面的所有楼盘
+        $points = $this->Mhouses_points->get_lists("code,houses_id,area_id,addr,", array('in' => array("id" => explode(",",$order['point_ids']))));
+        //$houses_id = array_unique(array_column($points, "houses_id"));
+        //$area_id = array_unique(array_column($points, "area_id"));
+        
         //获取该订单下面的所有站台
         //$points = $this->Mhouses_points->get_lists("media_id", array('in' => array("id" => explode(",",$order['point_ids']))));
 
@@ -998,10 +1004,10 @@ class Housesorders extends MY_Controller{
 //         $points = $this->Mpoints->get_confirm_points($where_point, array('A.sort' => 'asc', 'B.id' => 'asc'), array('media_code', 'C.size'));
 //         $data['number'] = array_column($points, 'counts', 'media_id');
 
-//         $data['order_type'] = $order['order_type'];
-//         $data['order_info'] = $order;
+        $data['order_type'] = $order['order_type'];
+        $data['order_info'] = $order;
 
-        $this->load->view('orders/check_adv_img', $data);
+        $this->load->view('housesorders/check_adv_img', $data);
     }
 
 

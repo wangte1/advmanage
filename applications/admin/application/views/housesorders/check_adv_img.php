@@ -46,7 +46,7 @@
                                 <table class="table table-striped table-bordered table-hover">
                                     <thead>
                                         <tr>
-                                            <td colspan="3">
+                                            <td colspan="5">
                                                 <div class="col-sm-12">
                                                     <span>
                                                         承办方：
@@ -79,27 +79,25 @@
                                             </td>
                                         </tr>
                                         <tr>
-                                            <th class="col-xs-2 center">媒体名称</th>
-                                            <?php if($order_type == '3' || $order_type == '4'):?>
-                                            <th class="col-xs-5 center">第一张正面图</th>
-                                            <th class="col-xs-5 center">第二张正面图</th>
-                                            <?php else:?>
-                                            <th class="col-xs-5 center">正面图</th>
-                                            <th class="col-xs-5 center">背面图</th>
-                                            <?php endif;?>
+                                        	<th class="col-xs-1 center">点位编号</th>
+                                        	<th class="col-xs-2 center">楼盘名称</th>
+                                            <th class="col-xs-2 center">区域名称</th>
+                                            <th class="col-xs-3 center">详细地址</th>
+                                            <th class="col-xs-5 center">图片</th>
                                         </tr>
                                     </thead>
                                     <tbody>
                                         <?php foreach ($list as $key => $value) :?>
-                                        <?php 
+                                        <!--<?php 
                                             $str = '';
                                             if ($order_type == 1) {
                                                 $str .= ' '.$value['code'].'（'.$number[$value['id']].'套）';
                                             } elseif ($order_type == 2) {
                                                 $str .= ' '.$value['code'];
                                             }
-                                        ?>
+                                        ?>-->
                                         <tr>
+                                        	<td style="text-align: center;vertical-align: middle;"></td>
                                             <td style="text-align: center;vertical-align: middle;"><?php echo $value['name'].$str;?></td>
                                             <td>
                                                 <ul class="ace-thumbnails" media-id="<?php echo $value['id'];?>" id="uploader_front_img<?php echo $key;?>">
