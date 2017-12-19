@@ -125,7 +125,7 @@ class Housesscheduledorders extends MY_Controller{
         }
         $data['order_type'] = $order_type;
         $data['status_text'] = C('order.order_status.text');
-        //获取指定类型的点位
+        //获取指定类型的楼盘
         $tmpPoints = $this->Mhouses_points->get_lists("id, houses_id, area_id", ['type_id' => $order_type, 'is_del' => 0]);
         if(count($tmpPoints) > 0) {
             $housesid = array_column($tmpPoints, 'houses_id');
