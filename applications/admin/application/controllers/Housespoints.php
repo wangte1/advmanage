@@ -13,7 +13,8 @@ class Housespoints extends MY_Controller{
         	'Model_houses' => 'Mhouses',
         	'Model_houses_area' => 'Mhouses_area',
         	'Model_area' => 'Marea',
-        	'Model_houses_points_format' => 'Mhouses_points_format'
+        	'Model_houses_points_format' => 'Mhouses_points_format',
+        	'Model_houses_customers' => 'Mhouses_customers',
          ]);
         $this->data['code'] = 'community_manage';
         $this->data['active'] = 'houses_points_list';
@@ -62,7 +63,10 @@ class Housespoints extends MY_Controller{
         $pageconfig['total_rows'] = $data_count;
         $this->pagination->initialize($pageconfig);
         $data['pagestr'] = $this->pagination->create_links(); // 分页信息
-		
+        
+        $data['customers'] = $this->Mhouses_customers->get_lists("id,name", array('is_del' => 0)); //客户列表
+        $data['customer_name'] = array_column($data['customers'], 'name', 'id');
+        
         $data['houses_type'] = C("public.houses_type");
         
         $this->load->view("housespoints/index",$data);

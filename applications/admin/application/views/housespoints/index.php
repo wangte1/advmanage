@@ -152,10 +152,25 @@
                                                     		<?php }?>
                                                     	<?php }?>
                                                     </td>
+													<td><?php if(isset($customer_name[$val['customer_id']])) echo $customer_name[$val['customer_id']];?></td>
 													<td></td>
-													<td></td>
-													<td class="hidden-480">
-                                                        <?php echo $val['remarks'];?>
+													<td>
+                                                        <?php 
+	                                                        switch ($val['point_status']) {
+	                                                            case '1':
+	                                                                $class = 'badge-success';
+	                                                                break;
+	                                                            case '2':
+	                                                                $class = 'badge-warning';
+	                                                                break;
+	                                                            case '3':
+	                                                                $class = 'badge-danger';
+	                                                                break;
+	                                                        }
+	                                                    ?>
+	                                                    <span class="badge <?php echo $class; ?>">
+	                                                        <?php echo C('public.points_status')[$val['point_status']];?>
+	                                                    </span>
                                                     </td>
                                                     <td>
                                                         <div class="visible-md visible-lg hidden-sm hidden-xs action-buttons">
