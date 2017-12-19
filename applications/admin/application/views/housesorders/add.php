@@ -499,6 +499,7 @@ $(function(){
 	$('#houses_id,#is_lock,#area_id').change(function(){
 		if($(this).attr('id') == 'houses_id') {
 			$("#area_id").html('');
+			$(".select2-chosen:eq(2)").text('全部');
 		}
 
 		var houses_id = $('#houses_id').val();
