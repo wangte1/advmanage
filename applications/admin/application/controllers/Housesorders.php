@@ -204,7 +204,7 @@ class Housesorders extends MY_Controller{
 //                     $update_data['lock_start_time'] = '';
 //                     $update_data['lock_end_time'] = '';
 //                     $update_data['expire_time'] = '';
-                    $update_data['status'] = 3;
+                    $update_data['point_status'] = 3;
                     $this->Mhouses_points->update_info($update_data, array('in' => array('id' => explode(',', $post_data['point_ids']))));
 
 //                 } 
@@ -234,6 +234,8 @@ class Housesorders extends MY_Controller{
      */
     public function get_points() {
     	$where['is_del'] = 0;
+    	$where['is_lock'] = 0;
+    	$where['point_status'] = 1;
     	if($this->input->post('order_type')) $where['type_id'] = $this->input->post('order_type');
     	if($this->input->post('houses_id')) $where['houses_id'] = $this->input->post('houses_id');
     	if($this->input->post('is_lock')) $where['is_lock'] = $this->input->post('is_lock');

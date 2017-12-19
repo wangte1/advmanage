@@ -500,7 +500,7 @@ $(function(){
 		if($(this).attr('id') == 'houses_id') {
 			$("#area_id").html('');
 		}
-		
+
 		var houses_id = $('#houses_id').val();
 		var is_lock = $('#is_lock').val();
 
@@ -522,7 +522,7 @@ $(function(){
 					areaStr += "<option value="+(data.area_lists)[j]['id']+">"+(data.area_lists)[j]['name']+"</option>";
 				}
 			}
-			
+
 			$("#points_lists").html(pointStr);
 			$("#area_id").html(areaStr);
 		});
