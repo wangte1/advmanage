@@ -72,7 +72,7 @@
                                         <div class="form-group">
                                             <label class="col-sm-2 control-label no-padding-right" for="form-field-2"> 广告客户： </label>
                                             <div class="col-sm-10">
-                                                <select name="lock_customer_id" class="select2" required>
+                                                <select id="lock_customer_id" name="lock_customer_id" class="select2" required>
                                                     <option value="">请选择客户</option>
                                                     <?php foreach($customers as $val):?>
                                                     <option value="<?php echo $val['id'];?>" <?php if(isset($info['customer_id']) && $val['id'] == $info['customer_id']){ echo "selected"; }?>><?php echo $val['name'];?></option>
@@ -301,6 +301,8 @@ $(function(){
 				for(var j = 0; j < data.area_list.length; j++) {
 					areaStr += "<option value="+data.area_list[j]['id']+">"+data.area_list[j]+"</option>";
 				}
+			}else{
+				alert('暂无空闲 <?php echo $order_type_text[$order_type];?> 点位');
 			}
 			$("#points_lists").html(pointStr);
 			$("#area_id").html(areaStr);
@@ -378,22 +380,29 @@ $(function(){
   	//保存
     $(".btn-save").click(function(){
         var point_ids = $("input[name='point_ids']").val();
+        var lock_customer_id = $('#lock_customer_id').val();
+        if (lock_customer_id == '') {
+            alert('请选择客户！');
+            return false;
+        }
         if (point_ids == '') {
-            var d = dialog({
-                title: '提示信息',
-                content: '您还没有选择点位哦！',
-                okValue: '确定',
-                ok: function () {
-
-                }
-            });
-            d.width(320);
-            d.showModal();
+            alert('您还没有选择点位哦！');
             return false;
         }
     });
 
-    
+    function alert(msg){
+    	var d = dialog({
+            title: '提示信息',
+            content: msg,
+            okValue: '确定',
+            ok: function () {
+
+            }
+        });
+        d.width(320);
+        d.showModal();
+    }
 })
 
 </script>
