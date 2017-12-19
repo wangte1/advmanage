@@ -19,6 +19,9 @@ class Housesorders extends MY_Controller{
         	'Model_make_company' => 'Mmake_company',
         	'Model_admins' => 'Madmins',
         	'Model_houses_order_inspect_images' => 'Mhouses_order_inspect_images',
+        	'Model_status_operate_time' => 'Mstatus_operate_time',
+        		
+        		
 //              'Model_medias' => 'Mmedias',
 //              'Model_customers' => 'Mcustomers',
 //              'Model_customer_project' => 'Mcustomer_project',
@@ -555,15 +558,15 @@ class Housesorders extends MY_Controller{
      */
     public function contact_list($id) {
         $data = $this->data;
-        $data['info'] = $this->Morders->get_one("*", array('id' => $id));
+        $data['info'] = $this->Mhouses_orders->get_one("*", array('id' => $id));
 
         //甲方负责人
-        $admin = $this->Madmins->get_one('fullname, tel', array('id' => $data['info']['create_user']));
-        $data['info']['A_contact_man'] = $admin['fullname'];
-        $data['info']['A_contact_mobile'] = $admin['tel'];
+        $admin = $this->Madmins->get_one('fullname, tel', array('id' => $data['info']['creator']));
+        $data['info']['A_contact_person'] = $admin['fullname'];
+        $data['info']['A_contact_tel'] = $admin['tel'];
 
         //客户名称
-        $data['info']['customer_name'] = $this->Mhouses_customers->get_one('customer_name', array('id' => $data['info']['customer_id']))['customer_name'];
+        //$data['info']['customer_name'] = $this->Mhouses_customers->get_one('name', array('id' => $data['info']['customer_id']))['name'];
         
         //项目
 //         $project = $this->Mcustomer_project->get_one('project_name', array('id' => $data['info']['project_id']));
@@ -573,11 +576,11 @@ class Housesorders extends MY_Controller{
 
         if ($order_type == 1 || $order_type == 2) {
             //制作单位
-            $make_company = $this->Mmake_company->get_one('*', array('id' => $data['info']['make_company_id']));
-            $data['info']['make_company'] = $make_company['company_name'];
-            $data['info']['seal_img'] = $make_company['seal_img'];
-            $data['info']['contact_man'] = $make_company['contact_man']; //乙方联系人
-            $data['info']['contact_mobile'] = $make_company['contact_mobile']; //乙方电话
+//             $make_company = $this->Mmake_company->get_one('*', array('id' => $data['info']['make_company_id']));
+//             $data['info']['make_company'] = $make_company['company_name'];
+//             $data['info']['seal_img'] = $make_company['seal_img'];
+//             $data['info']['contact_man'] = $make_company['contact_man']; //乙方联系人
+//             $data['info']['contact_mobile'] = $make_company['contact_mobile']; //乙方电话
             
             //制作数量
             $make_info = $this->get_make_info($data['info']);
@@ -587,10 +590,10 @@ class Housesorders extends MY_Controller{
             $data['total_num'] = $make_info['total_num'];
 
             if ($order_type == '1') {    //灯箱
-                $this->load->view('orders/contact_list/light', $data);
+                $this->load->view('housesorders/contact_list/light', $data);
             } elseif ($order_type == '2') {   //户外高杆
-                $data['media_list'] = $this->Mpoints->get_make_high(array('in' => array('B.id' => explode(',', $data['info']['point_ids']))));
-                $this->load->view('orders/contact_list/high', $data);
+                $data['media_list'] = $this->Mhouses_points->get_make_high(array('in' => array('B.id' => explode(',', $data['info']['point_ids']))));
+                $this->load->view('housesorders/contact_list/high', $data);
             }
         } elseif ($order_type == '3' || $order_type == '4') {   //LED
             if (empty($data['info']['adv_img'])) {
@@ -823,6 +826,7 @@ class Housesorders extends MY_Controller{
             $status = $this->input->post("status");
             $operate_remark = $this->input->post("remark");
             $order_code = $this->input->post("order_code");
+            
             $count = $this->Mstatus_operate_time->count(array("order_id" => $id, "value" => $status, "type" => 1));
             if($count){
                 $res = $this->Mstatus_operate_time->update_info(
@@ -842,12 +846,13 @@ class Housesorders extends MY_Controller{
                 $post_data['type'] = 1;
                 $this->Mstatus_operate_time->create($post_data);
             }
+            
             $data = $this->data;
             $status_text = C('order.order_status.text');
 
             $this->write_log($data['userInfo']['id'],2,"  更新订单:".$order_code."状态：".$status_text[$status]);
             //同时更新对应的订单
-            $result = $this->Morders->update_info(array("order_status"=>$status),array("id"=>$id));
+            $result = $this->Mhouses_orders->update_info(array("order_status"=>$status),array("id"=>$id));
             if($status == 8){
                 if($result){
                     //如果订单已经下画则释放所有点位
@@ -861,10 +866,10 @@ class Housesorders extends MY_Controller{
                     $this->Mpoints->update_info($update_data,array("order_id"=>$id));
 
                     //更新该订单下所有换画订单的状态为已下画
-                    $order_code = $this->Morders->get_one('order_code', array('id' => $id))['order_code'];
-                    $change_count = $this->Mchange_pic_orders->count(array('order_code' => $order_code));
+                    $order_code = $this->Mhouses_orders->get_one('order_code', array('id' => $id))['order_code'];
+                    $change_count = $this->Mhouses_change_pic_orders->count(array('order_code' => $order_code));
                     if ($change_count) {
-                        $this->Mchange_pic_orders->update_info(array('order_status' => 8), array('order_code' => $order_code));
+                        $this->Mhouses_change_pic_orders->update_info(array('order_status' => 8), array('order_code' => $order_code));
                     }
                 }
             }
@@ -875,7 +880,7 @@ class Housesorders extends MY_Controller{
 
     private function get_make_info($data) {
         //制作数量
-        $make_num = $this->Mpoints->get_make_info(array('in' => array('A.id' => explode(',', $data['point_ids'])), 'C.order_id' => $data['id'], 'C.type' => 1));
+        $make_num = $this->Mhouses_points->get_make_info(array('in' => array('A.id' => explode(',', $data['point_ids'])), 'C.order_id' => $data['id'], 'C.type' => 1));
 
         //计算总套数和总张数
         $high_count = 0;
@@ -928,16 +933,16 @@ class Housesorders extends MY_Controller{
      */
     public function check_upload_img($order_id){
         $data = $this->data;
-        $order = $this->Morders->get_one("*",array("id" => $order_id));
+        $order = $this->Mhouses_orders->get_one("*",array("id" => $order_id));
         if(IS_POST){
             $post_data = $this->input->post();
             foreach ($post_data as $key => $value) {
                 $where = array('order_id' => $order_id, 'media_id' => $key, 'type' => 1);
-                $img = $this->Morder_inspect_images->get_one('*', $where);
+                $img = $this->Mhouses_order_inspect_images->get_one('*', $where);
 
                 //如果是修改验收图片，则先删除该订单下所有验收图片，再重新添加
                 if ($img) {
-                    $this->Morder_inspect_images->delete($where);
+                    $this->Mhouses_order_inspect_images->delete($where);
                 }
 
                 if (isset($value['front_img']) && count($value['front_img']) > 0) {
@@ -960,48 +965,48 @@ class Housesorders extends MY_Controller{
 
             $this->write_log($data['userInfo']['id'], 2, "上传订单验收图片，订单id【".$order_id."】");
 
-            $this->success("保存验收图片成功！","/orders/detail/".$order_id);
+            $this->success("保存验收图片成功！","/housesorders/detail/".$order_id);
             exit;
         }
 
         //获取该订单下面的所有站台
-        $points = $this->Mpoints->get_lists("media_id", array('in' => array("id" => explode(",",$order['point_ids']))));
+        //$points = $this->Mhouses_points->get_lists("media_id", array('in' => array("id" => explode(",",$order['point_ids']))));
 
-        $media_id = array_unique(array_column($points, "media_id"));
+        //$media_id = array_unique(array_column($points, "media_id"));
 
-        $data['media_list'] = $this->Mmedias->get_lists("id,name,code", array('in' => array("id"=>$media_id)), array('sort' => 'asc'));
+        //$data['media_list'] = $this->Mmedias->get_lists("id,name,code", array('in' => array("id"=>$media_id)), array('sort' => 'asc'));
 
         //根据媒体ID获取对应的图片
         $data['images'] = "";
-        if($data['media_list']){
-            $where['in'] = array("media_id"=>array_column($data['media_list'],"id"));
-            $where['order_id'] = $order_id;
-            $where['type'] = 1;
-            $data['images'] = $this->Morder_inspect_images->get_lists("*",$where);
-        }
+//         if($data['media_list']){
+//             $where['in'] = array("media_id"=>array_column($data['media_list'],"id"));
+//             $where['order_id'] = $order_id;
+//             $where['type'] = 1;
+//             $data['images'] = $this->Morder_inspect_images->get_lists("*",$where);
+//         }
 
-        $list = array();
-        foreach($data['media_list'] as $key=>$val){
-            $val['image'] = array();
-            if($data['images']){
-                foreach($data['images'] as $k=>$v){
-                    if($val['id'] == $v['media_id']){
-                        $val['image'][] = $v;
-                    }
-                }
-            }
-           $list[] = $val;
-        }
+//         $list = array();
+//         foreach($data['media_list'] as $key=>$val){
+//             $val['image'] = array();
+//             if($data['images']){
+//                 foreach($data['images'] as $k=>$v){
+//                     if($val['id'] == $v['media_id']){
+//                         $val['image'][] = $v;
+//                     }
+//                 }
+//             }
+//            $list[] = $val;
+//         }
 
-        $data['list'] = $list;
+        //$data['list'] = $list;
 
         //每个媒体对应套数
-        $where_point['in'] = array('B.id' => explode(',', $order['point_ids']));
-        $points = $this->Mpoints->get_confirm_points($where_point, array('A.sort' => 'asc', 'B.id' => 'asc'), array('media_code', 'C.size'));
-        $data['number'] = array_column($points, 'counts', 'media_id');
+//         $where_point['in'] = array('B.id' => explode(',', $order['point_ids']));
+//         $points = $this->Mpoints->get_confirm_points($where_point, array('A.sort' => 'asc', 'B.id' => 'asc'), array('media_code', 'C.size'));
+//         $data['number'] = array_column($points, 'counts', 'media_id');
 
-        $data['order_type'] = $order['order_type'];
-        $data['order_info'] = $order;
+//         $data['order_type'] = $order['order_type'];
+//         $data['order_info'] = $order;
 
         $this->load->view('orders/check_adv_img', $data);
     }

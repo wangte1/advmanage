@@ -108,11 +108,16 @@
                             </div>
                             
                             <div class="form-group">
-                                <label class="col-sm-3 control-label no-padding-right" for="form-field-1"> 点位图： </label>
+                                <label class="col-sm-3 control-label no-padding-right" for="form-input-readonly"> 点位图集： </label>
                                 <div class="col-sm-9">
-                                    <select>
-                                    	<option></option>
-                                    </select>
+
+                                    <ul class="ace-thumbnails" id="uploader_cover_img">
+                                        <li class="pic pic-add add-pic" id="<?php if(isset($info['seal_img'])&&!empty($info['seal_img'])){ echo 'hidden-div';}?>" style="float: left;width: 220px;height: 150px;clear:none; border: 1px solid #f18a1b">
+                                            <a href="javascript:;" class="up-img"  id="file_cover_img"><span>+</span><br>添加照片</a>
+
+                                        </li>
+
+                                    </ul>
                                 </div>
                             </div>
                             
@@ -253,6 +258,15 @@
 
 	
 </script>
+
+<script type="text/javascript">
+    var baseUrl = "<?php echo $domain['admin']['url'];?>";
+    var staticUrl = "<?php echo $domain['static']['url']?>";
+</script>
+<script src="<?php echo css_js_url('jquery.colorbox-min.js','admin');?>"></script>
+<script type="text/javascript" src="<?php echo css_js_url('jquery.swfupload.js', 'common');?>"></script>
+<script type="text/javascript" src="<?php echo css_js_url('swfupload.js', 'admin')?>"></script>
+<script type="text/javascript" src="<?php echo css_js_url('admin_upload.js', 'admin');?>"></script>
 
 <!-- 底部 -->
 <?php $this->load->view("common/bottom");?>

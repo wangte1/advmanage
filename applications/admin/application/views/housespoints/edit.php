@@ -41,16 +41,16 @@
 
                 <div class="row">
                     <div class="col-xs-12">
-                        <form  action="" method="post" class="form-horizontal" role="form">
+                        <form id="add_form" action="" method="post" class="form-horizontal" role="form">
 
 
                             <div class="form-group">
                                 <label class="col-sm-3 control-label no-padding-right" for="form-field-1"> 点位编号： </label>
 
                                 <div class="col-sm-9">
-                                    <input type="text" name="code" required id="form-field-1" value="<?php echo $info['code'];?>" placeholder="请输入点位编号" class="col-xs-10 col-sm-3">
+                                    <input type="text" id="code" name="code" required id="form-field-1" value="<?php echo $info['code'];?>" placeholder="请输入点位编号" class="col-xs-10 col-sm-3">
                                 	<span class="help-inline col-xs-12 col-sm-7 form-field-description-block">
-                                       <span class="middle" style="color: red">*</span>
+                                       <span class="middle" style="color: red" id="points_code_msg">*</span>
 									</span>
                                 </div>
                             </div>
@@ -75,6 +75,16 @@
 									  <select id="city"></select>
 									  <select id="area"></select>
 									</div>
+                                </div>
+                            </div>
+                            
+                            <div class="form-group" id="tishi" style="display: none">
+                                <label class="col-sm-3 control-label no-padding-right" for="form-field-1"></label>
+
+                                <div class="col-sm-9" id="address-info">
+                                  <span class="help-inline col-xs-12 col-sm-7 form-field-description-block">
+                                       <span class="middle" style="color:red"></span>
+									</span>
                                 </div>
                             </div>
                             
@@ -108,11 +118,28 @@
                             </div>
                             
                             <div class="form-group">
-                                <label class="col-sm-3 control-label no-padding-right" for="form-field-1"> 点位图： </label>
+                                <label class="col-sm-3 control-label no-padding-right" for="form-input-readonly"> 点位图： </label>
                                 <div class="col-sm-9">
-                                    <select>
-                                    	<option></option>
-                                    </select>
+
+                                    <ul class="ace-thumbnails" id="uploader_cover_img">
+                                        <?php if(isset($info['images']) && !empty($info['images'])):?>
+                                        <?php foreach (explode(';', $info['images']) as $k => $v):?>
+                                        <li id="SWFUpload_0_0" class="pic pro_gre" style="margin-right: 20px; clear: none">
+                                            <a data-rel="colorbox" class="cboxElement" href="<?php echo $v?>">
+                                            <img src="<?php echo $v?>" style="width: 215px; height: 150px"></a> 
+                                            <div class="tools"> 
+                                                <a href="javascript:;"> <i class="icon-remove red"></i> </a>
+                                            </div>
+                                            <input type="hidden" name="cover_img[]" value="<?php echo $v?>">
+                                        </li>
+                                        <?php endforeach;?>
+                                        <?php endif;?>
+                                        <li class="pic pic-add add-pic" id="<?php if(isset($info['seal_img'])&&!empty($info['seal_img'])){ echo 'hidden-div';}?>" style="float: left;width: 220px;height: 150px;clear:none; border: 1px solid #f18a1b">
+                                            <a href="javascript:;" class="up-img"  id="file_cover_img"><span>+</span><br>添加照片</a>
+
+                                        </li>
+
+                                    </ul>
                                 </div>
                             </div>
                             
@@ -133,9 +160,9 @@
                             <div class="form-group">
                                 <label class="col-sm-3 control-label no-padding-right" for="form-field-1"> 点位价格： </label>
                                 <div class="col-sm-9">
-                                    <input type="text" name="price" required id="form-field-1" value="<?php if($info['price']) {echo $info['price'];}else {?>0.00<?php }?>" placeholder="" class="col-xs-10 col-sm-3">
-                                    <span class="help-inline col-xs-12 col-sm-7 form-field-description-block">
-                                       元
+                                    <input type="text" id="price" name="price" required id="form-field-1" value="<?php if($info['price']) {echo $info['price'];}else {?>0.00<?php }?>" placeholder="" class="col-xs-10 col-sm-3">
+                                   	<span class="help-inline col-xs-12 col-sm-7 form-field-description-block">
+                                       <span class="middle">元/日 <i id="price_msg" style="font-style: normal"></i></span>
 									</span>
                                 </div>
                             </div>
@@ -150,9 +177,9 @@
 
                             <div class="clearfix form-actions">
                                 <div class="col-md-offset-3 col-md-9">
-                                    <button class="btn btn-info" type="submit">
+                                    <button class="btn btn-info" type="button" id="subbtn">
                                         <i class="icon-ok bigger-110"></i>
-                                        添加
+                                        保存
                                     </button>
 
                                     &nbsp; &nbsp; &nbsp;
@@ -218,6 +245,45 @@
 
 				
             });
+
+
+            $("#subbtn").click(function(){
+//                 var points_code_type = parseInt($("#points_code_type").val());
+//                 if(points_code_type == 1){
+//                     $("#points_code").css("border-color","red");
+//                     $("#points_code_msg").css("color","red").html("编号已经存在,请确保编号唯一性！");
+//                     return false;
+//                 }
+
+            	if($("#code").val() == ""){
+                    $("#code").css("border-color","red");
+                    $("#points_code_msg").css("color","red").html("点位编号不能为空！");
+                    return false;
+                }
+
+                //判断用户是否选择城市和地区
+                if($("#province").val() == ""){
+                    $("#tishi").slideDown().find(".middle").html("请选择省份!");
+                    return false;
+                }
+
+                if($("#city").val() == ""){
+                    $("#tishi").slideDown().find(".middle").html("请选择城市!");
+                    return false;
+                }
+                if($("#area").val() == ""){
+                    $("#tishi").slideDown().find(".middle").html("请选择地区!");
+                    return false;
+                }
+
+                if($("#price").val() == ""){
+                    $("#price").css("border-color","red");
+                    $("#price_msg").css("color","red").html("点位价格不能为空！");
+                    return false;
+                }
+
+                $("#add_form").submit();
+            });
             
         });
 
@@ -260,6 +326,48 @@
 	});
 
 	
+</script>
+
+<script type="text/javascript">
+    var baseUrl = "<?php echo $domain['admin']['url'];?>";
+    var staticUrl = "<?php echo $domain['static']['url']?>";
+</script>
+<script src="<?php echo css_js_url('jquery.colorbox-min.js','admin');?>"></script>
+<script type="text/javascript" src="<?php echo css_js_url('jquery.swfupload.js', 'common');?>"></script>
+<script type="text/javascript" src="<?php echo css_js_url('swfupload.js', 'admin')?>"></script>
+<script type="text/javascript" src="<?php echo css_js_url('admin_upload.js', 'admin');?>"></script>
+<script>
+    $(function(){
+        var colorbox_params = {
+            reposition:true,
+            scalePhotos:true,
+            scrolling:false,
+            previous:'<i class="icon-arrow-left"></i>',
+            next:'<i class="icon-arrow-right"></i>',
+            close:'&times;',
+            current:'{current} of {total}',
+            maxWidth:'100%',
+            maxHeight:'100%',
+            onOpen:function(){
+                document.body.style.overflow = 'hidden';
+            },
+            onClosed:function(){
+                document.body.style.overflow = 'auto';
+            },
+            onComplete:function(){
+                $.colorbox.resize();
+            }
+        };
+
+        $('.ace-thumbnails [data-rel="colorbox"]').colorbox(colorbox_params);
+        $("#cboxLoadingGraphic").append("<i class='icon-spinner orange'></i>");//let's add a custom loading icon
+
+        // 删除照片
+        $("#uploader_cover_img").on("click",'.icon-remove',function(){
+            $(this).parents("li").remove();
+            $(".add-pic").show();
+        });
+    });
 </script>
 
 <!-- 底部 -->

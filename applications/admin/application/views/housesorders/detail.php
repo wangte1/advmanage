@@ -291,7 +291,7 @@
                                         <div id="inspect_img" class="tab-pane">
                                             <?php if(count($info['inspect_img']) > 0):?>
                                                 <?php if($info['order_status'] != 8):?>
-                                                <a class="btn btn-xs btn-info" href="/orders/check_upload_img/<?php echo $info['id'];?>" style="margin-bottom:10px">
+                                                <a class="btn btn-xs btn-info" href="/housesorders/check_upload_img/<?php echo $info['id'];?>" style="margin-bottom:10px">
                                                     修改验收图片
                                                     <i class="icon-arrow-right icon-on-right"></i>
                                                 </a>
@@ -341,7 +341,7 @@
                                                         <i class="icon-warning-sign bigger-120"></i> 您还未上传验收图片！
                                                     </strong>
                                                     <?php if($info['order_status'] == 6):?>
-                                                    <a class="btn btn-xs btn-info" href="/orders/check_upload_img/<?php echo $info['id'];?>">
+                                                    <a class="btn btn-xs btn-info" href="/housesorders/check_upload_img/<?php echo $info['id'];?>">
                                                         立即上传
                                                         <i class="icon-arrow-right icon-on-right"></i>
                                                     </a>
@@ -585,7 +585,7 @@
 
         $("#exampleModal").modal('show');
         $("#lock-add").click(function(){
-            var remark = $("#remarks").val();
+            var remark = $("#remark").val();
             $.ajax( {
                 url:'/housesorders/ajax_update_status',
                 data: {

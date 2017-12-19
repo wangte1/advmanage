@@ -83,8 +83,8 @@ class Housespoints extends MY_Controller{
 
             $result = $this->Mhouses_points->create($post);
             if($result){
-                $this->write_log($data['userInfo']['id'],1,"新增楼盘：".$post['name']);
-                $this->success("添加成功","/houses");
+                $this->write_log($data['userInfo']['id'],1,"新增点位：".$post['code']);
+                $this->success("添加成功","/housespoints");
             }else{
                 $this->error("添加失败");
             }
@@ -112,12 +112,16 @@ class Housespoints extends MY_Controller{
 
         if(IS_POST){
             $post = $this->input->post();
+            if(isset($post['cover_img'])){
+            	$post['images'] = implode(';', $post['cover_img']);
+            	unset($post['cover_img']);
+            }
             //$post['update_user'] = $data['userInfo']['id'];
             //$post['update_time'] = date("Y-m-d H:i:s");
             $result = $this->Mhouses_points->update_info($post,array("id"=>$id));
             if($result){
-                $this->write_log($data['userInfo']['id'],2,"编辑楼盘：".$post['name']);
-                $this->success("编辑成功","/houses");
+                $this->write_log($data['userInfo']['id'],2,"编辑点位：".$post['code']);
+                $this->success("编辑成功","/housespoints");
             }else{
                 $this->error("编辑失败");
             }
