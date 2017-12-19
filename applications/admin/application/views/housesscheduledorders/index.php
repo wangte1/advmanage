@@ -132,7 +132,7 @@
                                                 <th>锁定点位</th>
                                                 <th>锁定时间</th>
                                                 <th>锁定人</th>
-                                                <th>订单日期</th>
+                                                <th>订单创建日期</th>
                                                 <th>状态</th>
                                                 <th>操作</th>
                                             </tr>
@@ -142,7 +142,15 @@
                                             <?php foreach ($list as $key => $value) : ?>
                                             <tr>
                                                 <td><?php echo $order_type_text[$value['order_type']];?></td>
-                                                <td><?php echo $value['customer_name'];?></td>
+                                                <td>
+                                                	<?php if($customer_list):?>
+                                                	<?php foreach ($customer_list as $key => $val):?>
+                                                		<?php if($val['id'] == $value['lock_customer_id']):?>
+                                                		<?php echo $val['name'];break;?>
+                                                		<?php endif;?>
+                                                	<?php endforeach;?>
+                                                	<?php endif;?>
+                                                </td>
                                                 <td><?php echo $value['point_ids'] ? count(explode(',', $value['point_ids'])) : 0;?>个点位</td>
                                                 <td>
                                                     <?php echo $value['lock_start_time'].'至'.$value['lock_end_time'];?>
