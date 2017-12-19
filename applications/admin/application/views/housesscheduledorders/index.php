@@ -169,11 +169,11 @@
                                                 </td>
                                                 <td>
                                                     <div class="visible-md visible-lg hidden-sm hidden-xs action-buttons">
-                                                        <a class="green tooltip-info" href="/scheduledorders/detail/<?php echo $value['id'];?>"  data-rel="tooltip" data-placement="top" data-original-title="详情">
+                                                        <a class="green tooltip-info" href="/housesscheduledorders/detail/<?php echo $value['id'];?>"  data-rel="tooltip" data-placement="top" data-original-title="详情">
                                                             <i class="icon-eye-open bigger-130"></i>
                                                         </a> 
-                                                        <?php if($value['order_status'] < C('scheduledorder.order_status.code.done_release')):?>
-                                                        <a class="green tooltip-info" href="/scheduledorders/edit/<?php echo $value['id'];?>"  data-rel="tooltip" data-placement="top" data-original-title="修改">
+                                                        <?php if($value['order_status'] < C('housesscheduledorder.order_status.code.done_release')):?>
+                                                        <a class="green tooltip-info" href="/housesscheduledorders/edit/<?php echo $value['id'];?>"  data-rel="tooltip" data-placement="top" data-original-title="修改">
                                                             <i class="icon-pencil bigger-130"></i>
                                                         </a>
                                                         <a class="grey tooltip-info release-points" href="javascript:;" data-id="<?php echo $value['id'];?>"  data-rel="tooltip" data-placement="top" data-original-title="解除锁定">
@@ -219,7 +219,7 @@
             content: '解锁之后需等待当前订单锁定结束时间到期后才能再次给该客户新建预定订单，请谨慎操作！确定要解锁吗？',
             okValue: '确定',
             ok: function () {
-                window.location.href = '/scheduledorders/release_points/' + _self.attr('data-id');
+                window.location.href = '/housesscheduledorders/release_points/' + _self.attr('data-id');
             },
             cancelValue: '取消',
             cancel: function () {}
@@ -235,7 +235,7 @@
             content: '请谨慎操作！确定要续期吗？',
             okValue: '确定',
             ok: function () {
-                window.location.href = '/scheduledorders/update_points/' + _self.attr('data-id');
+                window.location.href = '/housesscheduledorders/update_points/' + _self.attr('data-id');
             },
             cancelValue: '取消',
             cancel: function () {}
