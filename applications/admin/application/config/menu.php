@@ -160,9 +160,9 @@ $config = array(
     		'icon' => 'icon-book  menu-i',
     		'list' => array(
     			array(
-    				'url'=>'/scheduledorders',
+    				'url'=>'/housesscheduledorders',
     				'name'=> '预定订单',
-    				'active'=> 'scheduled_order_list'
+    				'active'=> 'housesscheduledorders_list'
     			),
     			array(
 			    	'url'=>'/housesorders',
