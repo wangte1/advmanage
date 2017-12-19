@@ -307,6 +307,8 @@ class Housesscheduledorders extends MY_Controller{
                 
             }
         }
-        $this->return_json(array('flag' => true, 'points_lists' => $points_lists, 'count' => count($points_lists)));
+        $areaList = array_unique(array_column($points_lists, 'area_name'));
+        //获取去重的楼盘区域
+        $this->return_json(array('flag' => true, 'points_lists' => $points_lists, 'count' => count($points_lists), 'area_list' => $areaList));
     }
 }

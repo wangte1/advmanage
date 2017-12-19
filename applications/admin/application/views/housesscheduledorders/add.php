@@ -143,9 +143,6 @@
                                                                     <div class="col-sm-8" style="padding:0">
                                                                         <select name="area_id" id="area_id" class="select2">
                                                                             <option value="">请选择楼盘区域</option>
-                                                                            <!--<?php foreach($media_list as $val):?>
-                                                                            <option value="<?php echo $val['id'];?>" <?php if(isset($info['media_id']) && $val['id'] == $info['media_id']){ echo "selected"; }?>><?php echo $val['name'].'('.$val['code'].')';?></option>
-                                                                            <?php endforeach;?>-->
                                                                         </select>
                                                                     </div>
                                                                 </div>
@@ -285,31 +282,26 @@ $(function(){
         $(this).prev().focus();
     });
 	
-	$('#houses_id,#is_lock,#area_id').change(function(){
-		if($(this).attr('id') == 'houses_id') {
-			$("#area_id").html('');
-		}
-		
+	$('#houses_id,#area_id').change(function(){
 		var houses_id = $('#houses_id').val();
-
 		$.post('/housesscheduledorders/get_points', {order_type:order_type, houses_id:houses_id}, function(data){
 			var pointStr =  '';
-			var areaStr = ''; 
-			if(data.flag == true && data.count >= 1) {
+			var areaStr = '<option value="">请选择楼盘区域</option>'; 
+			if(data.flag == true && data.count > 0) {
 				$("#all_points_num").text(data.count);
-				for(var i = 0; i < (data.points_lists).length; i++) {
-					pointStr += "<tr point-id='"+(data.points_lists)[i]['id']+"'><td class='col-sm-2 center'>"+(data.points_lists)[i]['code']+"</td>";
-					pointStr += "<td class='col-sm-3 center'>"+(data.points_lists)[i]['houses_name']+"</td>";
-					pointStr += "<td class='col-sm-3 center'>"+(data.points_lists)[i]['area_name']+"</td>";
+				var tmpList = data.points_lists
+				for(var i = 0; i < data.points_lists.length; i++) {
+					pointStr += "<tr point-id='"+tmpList[i]['id']+"'><td class='col-sm-2 center'>"+tmpList[i]['code']+"</td>";
+					pointStr += "<td class='col-sm-3 center'>"+tmpList[i]['houses_name']+"</td>";
+					pointStr += "<td class='col-sm-3 center'>"+tmpList[i]['area_name']+"</td>";
 					pointStr += "<td class='col-sm-2 center'></td>";
 					pointStr += "<td class='col-sm-2 center'><button class='btn btn-xs btn-info do-sel' type='button'>选择<i class='icon-arrow-right icon-on-right'></button></td></tr>";
 				}
-
-				for(var j = 0; j < (data.area_lists).length; j++) {
-					areaStr += "<option value="+(data.area_lists)[j]['id']+">"+(data.area_lists)[j]['name']+"</option>";
+				$('#area').html();
+				for(var j = 0; j < data.area_list.length; j++) {
+					areaStr += "<option value="+data.area_list[j]['id']+">"+data.area_list[j]+"</option>";
 				}
 			}
-			
 			$("#points_lists").html(pointStr);
 			$("#area_id").html(areaStr);
 		});
