@@ -78,14 +78,7 @@
                                                     <option value="<?php echo $val['id'];?>" <?php if(isset($info['customer_id']) && $val['id'] == $info['customer_id']){ echo "selected"; }?>><?php echo $val['name'];?></option>
                                                     <?php endforeach;?>
                                                 </select>
-                                                <!-- <select name="project_id" class="select2">
-                                                    <option value="">请选择项目</option>
-                                                    <?php if(isset($project)):?>
-                                                        <?php foreach($project as $value):?>
-                                                        <option value="<?php echo $value['id'];?>" <?php if($value['id'] == $info['project_id']){ echo "selected"; }?>><?php echo $value['project_name'];?></option>
-                                                        <?php endforeach;?>
-                                                    <?php endif;?>
-                                                </select> -->
+                                                
                                                 <span class="help-inline form-field-description-block">
                                                    <span class="middle" style="color: red">*</span>
                                                 </span>
@@ -156,18 +149,6 @@
                                                                         </select>
                                                                     </div>
                                                                 </div>
-                                                                <div class="col-sm-6">
-                                                                    <label class="col-sm-4 control-label no-padding-right" for="form-field-1" style="padding-left:0"> 锁定： </label>
-                                                                    <div class="col-sm-8" style="padding-left:0;padding-top: 10px">
-                                                                        <select id="is_lock">
-                                                                            <option value="0">未锁定</option>
-                                                                            <option value="1">已锁定</option>
-                                                                        </select>
-                                                                        </span>
-                                                                            <a href="javascript:;" class="popover-lock" data-rel="popover" title="说明" data-trigger="hover" data-content="如果锁定的点位中含有正在被占用的点位，需等待这些点位到期并下画之后您才能下单。"><i class="fa fa-question-circle-o" aria-hidden="true"></i></a>
-                                                                        </span> 
-                                                                    </div>
-                                                                </div>
                                                             </div>
                                                             <div id="scrollTable">
                                                                 <div class="div-thead">
@@ -209,15 +190,8 @@
                                                 <input type="hidden" name="id" value="<?php echo $info['id'];?>" />
                                                 <input type="hidden" name="point_ids_old" value="<?php echo $info['point_ids'];?>" />
                                                 <?php endif;?>
-
                                                 <input type="hidden" name="order_type" value="<?php echo $order_type;?>" />
                                                 <input type="hidden" name="point_ids" value="<?php if(isset($info['point_ids'])) { echo $info['point_ids']; } ?>" />
-                                                
-                                                <!--<?php if(isset($info['id']) && ($order_type == 1 || $order_type == 2)):?>
-                                                    <?php foreach ($points_make_num as $key => $value): ?>
-                                                    <input type="hidden" name="make_num[<?php echo $value['point_id'];?>]" value="<?php echo $value['make_num'];?>" />
-                                                    <?php endforeach;?>
-                                                <?php endif;?>-->
                                                 <button class="btn btn-info btn-save" type="submit">
                                                     <i class="icon-ok bigger-110"></i>
                                                     保 存
@@ -317,14 +291,12 @@ $(function(){
 		}
 		
 		var houses_id = $('#houses_id').val();
-		var is_lock = $('#is_lock').val();
 
-		$.post('/housesorders/get_points', {order_type:order_type, houses_id:houses_id, is_lock:is_lock}, function(data){
+		$.post('/housesscheduledorders/get_points', {order_type:order_type, houses_id:houses_id}, function(data){
 			var pointStr =  '';
 			var areaStr = ''; 
-			if(data.flag == true) {
+			if(data.flag == true && data.count >= 1) {
 				$("#all_points_num").text(data.count);
-				
 				for(var i = 0; i < (data.points_lists).length; i++) {
 					pointStr += "<tr point-id='"+(data.points_lists)[i]['id']+"'><td class='col-sm-2 center'>"+(data.points_lists)[i]['code']+"</td>";
 					pointStr += "<td class='col-sm-3 center'>"+(data.points_lists)[i]['houses_name']+"</td>";
