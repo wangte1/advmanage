@@ -2,7 +2,7 @@
 <html>
 <head>
     <meta charset="utf-8">
-    <title>公交站台灯箱广告制作联系单</title>
+    <title>冷光灯箱广告制作联系单</title>
     <meta name="keywords" content="">
     <meta name="description" content="">
 
@@ -32,13 +32,13 @@
 </head>
 <body>
     <div class="content">
-        <?php $this->load->view('orders/common/header');?>
-        <center class="title">公交站台灯箱广告制作联系单</center>
+        <?php $this->load->view('housesorders/common/header');?>
+        <center class="title">冷光灯箱广告制作联系单</center>
         <table class="detail-info">
             <tbody>
                 <tr>
                     <td class="info-item" width="200">客户单位</td>
-                    <td class="right-content" width="390"><?php echo $info['customer_name'];?><?php if($info['project_name']) { echo '-'.$info['project_name']; } ?><?php if(isset($info['is_change_pic'])) { echo '<span style="color:red; font-weight: bolder">换画</span>'; } ?></td>
+                    <td class="right-content" width="390"><?php echo $info['customer_name'];?><?php if(isset($info['is_change_pic'])) { echo '<span style="color:red; font-weight: bolder">换画</span>'; } ?></td>
                     <td class="info-item" width="200">下单时间</td>
                     <td class="right-content"><?php echo date('Y-m-d',strtotime($info['create_time']));?></td>
                 </tr>

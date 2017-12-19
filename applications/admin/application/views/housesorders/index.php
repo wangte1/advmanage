@@ -345,7 +345,7 @@
         $("#expire-add").click(function(){
             var release_end_time = $(".release_end_time").val();
             $.ajax( {
-                url:'/orders/extend_time',
+                url:'/housesorders/extend_time',
                 data: {
                     'id':id,
                     'order_code':order,

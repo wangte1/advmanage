@@ -565,25 +565,21 @@ class Housesorders extends MY_Controller{
 
         //甲方负责人
         $admin = $this->Madmins->get_one('fullname, tel', array('id' => $data['info']['creator']));
-        $data['info']['A_contact_person'] = $admin['fullname'];
-        $data['info']['A_contact_tel'] = $admin['tel'];
+        $data['info']['A_contact_man'] = $admin['fullname'];
+        $data['info']['A_contact_mobile'] = $admin['tel'];
 
         //客户名称
-        //$data['info']['customer_name'] = $this->Mhouses_customers->get_one('name', array('id' => $data['info']['customer_id']))['name'];
+        $data['info']['customer_name'] = $this->Mhouses_customers->get_one('name', array('id' => $data['info']['customer_id']))['name'];
         
-        //项目
-//         $project = $this->Mcustomer_project->get_one('project_name', array('id' => $data['info']['project_id']));
-//         $data['info']['project_name'] = $project ? $project['project_name'] : '';
-
         $order_type = $data['info']['order_type'];
 
         if ($order_type == 1 || $order_type == 2) {
             //制作单位
-//             $make_company = $this->Mmake_company->get_one('*', array('id' => $data['info']['make_company_id']));
-//             $data['info']['make_company'] = $make_company['company_name'];
-//             $data['info']['seal_img'] = $make_company['seal_img'];
-//             $data['info']['contact_man'] = $make_company['contact_man']; //乙方联系人
-//             $data['info']['contact_mobile'] = $make_company['contact_mobile']; //乙方电话
+            $make_company = $this->Mmake_company->get_one('*', array('id' => $data['info']['make_company_id']));
+            $data['info']['make_company'] = $make_company['company_name'];
+            $data['info']['seal_img'] = $make_company['seal_img'];
+            $data['info']['contact_man'] = $make_company['contact_man']; //乙方联系人
+            $data['info']['contact_mobile'] = $make_company['contact_mobile']; //乙方电话
             
             //制作数量
             $make_info = $this->get_make_info($data['info']);
@@ -592,19 +588,13 @@ class Housesorders extends MY_Controller{
             $data['high_count'] = $make_info['high_count'];
             $data['total_num'] = $make_info['total_num'];
 
-            if ($order_type == '1') {    //灯箱
+            if ($order_type == '1') {    //冷光灯箱
                 $this->load->view('housesorders/contact_list/light', $data);
-            } elseif ($order_type == '2') {   //户外高杆
+            } elseif ($order_type == '2') {   //广告机器
                 $data['media_list'] = $this->Mhouses_points->get_make_high(array('in' => array('B.id' => explode(',', $data['info']['point_ids']))));
                 $this->load->view('housesorders/contact_list/high', $data);
             }
-        } elseif ($order_type == '3' || $order_type == '4') {   //LED
-            if (empty($data['info']['adv_img'])) {
-                $this->success("请先上传广告画面！","/orders");
-            }
-            $data['adv_img'] = explode(',', $data['info']['adv_img']);
-            $this->load->view('housesorders/contact_list/led', $data);
-        }
+        } 
 
     }
 
@@ -963,10 +953,10 @@ class Housesorders extends MY_Controller{
             }
 
             //更新订单
-            $this->Morders->update_info(array('sponsor' => $post_data['sponsor'], 'draw_finish_time' => $post_data['draw_finish_time'], 
+            $this->Mhouses_orders->update_info(array('sponsor' => $post_data['sponsor'], 'draw_finish_time' => $post_data['draw_finish_time'], 
                     'release_start_time' => $post_data['release_start_time'], 'release_end_time' => $post_data['release_end_time']), array('id' => $order_id));
 
-            $this->write_log($data['userInfo']['id'], 2, "上传订单验收图片，订单id【".$order_id."】");
+            $this->write_log($data['userInfo']['id'], 2, "社区上传订单验收图片，订单id【".$order_id."】");
 
             $this->success("保存验收图片成功！","/housesorders/detail/".$order_id);
             exit;
@@ -1028,10 +1018,10 @@ class Housesorders extends MY_Controller{
             $id = intval($this->input->post("id"));
             $order_code = $this->input->post("order_code");
             $release_end_time = $this->input->post("release_end_time");
-            $res = $this->Morders->update_info(array("release_end_time"=>$release_end_time), array("id"=>$id));
+            $res = $this->Mhouses_orders->update_info(array("release_end_time"=>$release_end_time), array("id"=>$id));
             if($res){
                 $data = $this->data;
-                $this->write_log($data['userInfo']['id'],2,"订单续期，订单编号为".$order_code);
+                $this->write_log($data['userInfo']['id'],2,"社区订单续期，订单编号为".$order_code);
                 $this->return_success();
             }else{
                 $this->return_failed();
