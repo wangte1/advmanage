@@ -104,6 +104,7 @@ class Housesorders extends MY_Controller{
         $admins = $this->Madmins->get_lists("id,name");
         $data['admins'] = array_column($admins,"name","id");
         $data['status_text'] = C('order.order_status.text');
+        
         $this->load->view("housesorders/index", $data);
     }
 
