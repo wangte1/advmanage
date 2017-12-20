@@ -24,6 +24,7 @@ class Housesorders extends MY_Controller{
         	'Model_houses_orders_log' => 'Mhouses_orders_log',
         	'Model_houses_order_inspect_images_log' => 'Mhouses_order_inspect_images_log',
         	'Model_houses_change_pic_orders' => 'Mhouses_change_pic_orders',
+        	'Model_houses_scheduled_orders' => 'Mhouses_scheduled_orders'
         		
         		
 //              'Model_medias' => 'Mmedias',
@@ -186,15 +187,16 @@ class Housesorders extends MY_Controller{
             if ($id) {
                     //如果选择的点位包含预定点位，则把对应的预定订单释放掉
                     $where['is_del'] = 0;
-                    $where['customer_id'] = $post_data['customer_id'];
+                    $where['lock_customer_id'] = $post_data['customer_id'];
                     $where['order_type'] = $order_type;
                     $where['order_status!='] = C('scheduledorder.order_status.code.done_release');
                     $info = $this->Mhouses_scheduled_orders->get_one("*", $where);
                     if ($info && count(array_intersect(explode(',', $post_data['point_ids']), explode(',', $info['point_ids']))) > 0) {
                         //释放该预定订单的所有点位
-                        $update_data['lock_customer_id'] = $update_data['lock_start_time'] = $update_data['lock_end_time'] = $update_data['expire_time'] = '';
-                        $update_data['is_lock'] = 0;
-                        $this->Mpoints->update_info($update_data, array('in' => array('id' => explode(',', $info['point_ids']))));
+                        //$update_data['lock_customer_id'] = $update_data['lock_start_time'] = $update_data['lock_end_time'] = $update_data['expire_time'] = '';
+                    	$update_data['lock_customer_id'] = 0;
+                    	$update_data['is_lock'] = 0;
+                        $this->Mhouses_points->update_info($update_data, array('in' => array('id' => explode(',', $info['point_ids']))));
 
                         //更新该订单的状态为“已释放”
                         $this->Mhouses_scheduled_orders->update_info(array('order_status' => C('scheduledorder.order_status.code.done_release')), array('id' => $info['id']));
@@ -822,14 +824,14 @@ class Housesorders extends MY_Controller{
             if($status == 8){
                 if($result){
                     //如果订单已经下画则释放所有点位
-                    $update_data['order_id'] = "";
-                    $update_data['customer_id'] = "";
+                    $update_data['order_id'] = 0;
+                    $update_data['customer_id'] = 0;
                     $update_data['point_status'] = 1;
-                    $update_data['lock_start_time'] = "";
-                    $update_data['lock_end_time'] = "";
-                    $update_data['expire_time'] = "";
+                    //$update_data['lock_start_time'] = "";
+                    //$update_data['lock_end_time'] = "";
+                    //$update_data['expire_time'] = "";
 
-                    $this->Mpoints->update_info($update_data,array("order_id"=>$id));
+                    $this->Mhouses_points->update_info($update_data,array("order_id"=>$id));
 
                     //更新该订单下所有换画订单的状态为已下画
                     $order_code = $this->Mhouses_orders->get_one('order_code', array('id' => $id))['order_code'];

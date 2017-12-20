@@ -170,9 +170,9 @@ $config = array(
 			    	'active'=> 'houses_orders_list'
 			    ),
     			array(
-    				'url'=>'/changepicorders',
+    				'url'=>'/houseschangepicorders',
     				'name'=> '换画订单',
-    				'active'=> 'change_pic_order_list'
+    				'active'=> 'houses_change_pic_order_list'
     			),
     		)
     	),
