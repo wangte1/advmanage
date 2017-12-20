@@ -213,20 +213,28 @@
                                                     <div class="widget-body" style="height:580px">
                                                         <div class="widget-main">
                                                             <div class="form-group">
-                                                                <div class="col-sm-7">
-                                                                    <label class="col-sm-3 control-label" for="form-field-1"> 媒体： </label>
-                                                                    <div class="col-sm-9" style="padding:0">
-                                                                        <select name="media_id" id="media_id" class="select2 media-sel">
-                                                                            <option value="">请选择媒体</option>
-                                                                            <?php foreach($media_list as $val):?>
-                                                                            <option value="<?php echo $val['id'];?>" <?php if(isset($info['media_id']) && $val['id'] == $info['media_id']){ echo "selected"; }?>><?php echo $val['name'].'('.$val['code'].')';?></option>
+                                                                <div class="col-sm-6">
+                                                                    <label class="col-sm-4 control-label" for="form-field-1"> 楼盘名称： </label>
+                                                                    <div class="col-sm-8" style="padding:0">
+                                                                        <select  id="houses_id" class="select2 ">
+                                                                            <option value="">请选择楼盘</option>
+                                                                            <?php foreach($housesList as $val):?>
+                                                                            <option value="<?php echo $val['id'];?>" <?php if(isset($info['houses_id']) && $val['id'] == $info['houses_id']){ echo "selected"; }?>><?php echo $val['name'];?></option>
                                                                             <?php endforeach;?>
                                                                         </select>
                                                                     </div>
                                                                 </div>
-                                                                <div class="col-sm-5">
-                                                                    <label class="col-sm-3 control-label no-padding-right" for="form-field-1" style="padding-left:0"> 状态： </label>
-                                                                    <div class="col-sm-9" style="padding:0">
+                                                                <div class="col-sm-6">
+                                                                    <label class="col-sm-4 control-label" for="form-field-1"> 楼盘区域： </label>
+                                                                    <div class="col-sm-8" style="padding:0">
+                                                                        <select name="area_id" id="area_id" class="select2">
+                                                                            <option value="">请选择楼盘区域</option>
+                                                                        </select>
+                                                                    </div>
+                                                                </div>
+                                                                <div class="col-sm-6">
+                                                                    <label class="col-sm-4 control-label no-padding-right" for="form-field-1" style="padding-left:0"> 状态： </label>
+                                                                    <div class="col-sm-8" style="padding-left:0;padding-top: 10px">
                                                                         <select class="input-medium" id="point_status">
                                                                             <option value="1">空闲</option>
                                                                             <option value="2">预定</option>
@@ -240,20 +248,11 @@
                                                                     <table id="sample-table-1" class="table table-striped table-bordered table-hover">
                                                                         <thead>
                                                                             <tr>
-                                                                                <th class="col-sm-2">点位编号</th>
-                                                                                <th class="col-sm-3">媒体名称</th>
-                                                                                <th class="col-sm-3">规格</th>
-                                                                                <?php if($order_type == 1 || $order_type == 2):?>
-                                                                                <th class="col-sm-2">
-                                                                                    面数
-                                                                                    <select name="make_num">
-                                                                                        <option value="1">单面</option>
-                                                                                        <option value="2" selected>双面</option>
-                                                                                        <?php if($order_type == 2):?><option value="3">三面</option><?php endif;?>
-                                                                                    </select>
-                                                                                </th>
-                                                                                <?php endif;?>
-                                                                                <th class="col-sm-2"><button class="btn btn-xs btn-info select-all" type="button" data-id="3">选择全部<i class="icon-arrow-right icon-on-right"></i></button></th>
+                                                                                <th class="col-sm-2 center">点位编号</th>
+                                                                                <th class="col-sm-3 center">楼盘名称</th>
+                                                                                <th class="col-sm-3 center">楼盘区域</th>
+                                                                                <th class="col-sm-2 center">规格</th>
+                                                                                <th class="col-sm-2 center"><button class="btn btn-xs btn-info select-all" type="button" data-id="3">选择全部<i class="icon-arrow-right icon-on-right"></i></button></th>
                                                                             </tr>
                                                                         </thead>
                                                                     </table>
@@ -282,9 +281,9 @@
                                                 <input type="hidden" name="order_type" value="<?php echo $order_type;?>" />
                                                 <input type="hidden" name="point_ids" value="<?php if(isset($info['point_ids'])) { echo $info['point_ids']; } ?>" />
                                                 <?php if(isset($info['id'])):?>
-                                                    <?php foreach ($points_make_num as $key => $value): ?>
+                                                    <!--<?php foreach ($points_make_num as $key => $value): ?>
                                                     <input type="hidden" name="make_num[<?php echo $value['point_id'];?>]" value="<?php echo $value['make_num'];?>" />
-                                                    <?php endforeach;?>
+                                                    <?php endforeach;?>-->
                                                 <?php endif;?>
                                                 <button class="btn btn-info" type="submit">
                                                     <i class="icon-ok bigger-110"></i>
@@ -320,11 +319,11 @@
                                             <table id="sample-table-1" class="table table-striped table-bordered table-hover">
                                                 <thead>
                                                     <tr>
-                                                        <th class="col-sm-2">点位编号</th>
-                                                        <th class="col-sm-3">媒体名称</th>
-                                                        <th class="col-sm-3">规格</th>
-                                                        <th class="col-sm-2">面数</th>
-                                                        <th class="col-sm-2"><button class="btn btn-xs btn-info remove-all" type="button" data-id="3">移除全部<i class="fa fa-remove" aria-hidden="true"></i></button></th>
+                                                        <th class="col-sm-2 center">点位编号</th>
+                                                        <th class="col-sm-3 center">楼盘名称</th>
+                                                        <th class="col-sm-3 center">楼盘区域</th>
+                                                        <th class="col-sm-2 center">规格</th>
+                                                        <th class="col-sm-2 center"><button class="btn btn-xs btn-info remove-all" type="button">移除全部<i class="fa fa-remove" aria-hidden="true"></i></button></th>
                                                     </tr>
                                                 </thead>
                                             </table>
@@ -335,13 +334,11 @@
                                                     <?php if(isset($selected_points)):?>
                                                         <?php foreach($selected_points as $value):?>
                                                         <tr point-id="<?php echo $value['id'];?>">
-                                                            <td class="col-sm-2"><?php echo $value['points_code'];?></td>
-                                                            <td class="col-sm-3"><?php echo $value['media_name'].'('.$value['media_code'].')';?></td>
-                                                            <td class="col-sm-3"><?php echo $value['size'].'('.$value['specification_name'].')';?></td>
-                                                            <?php if($order_type == 1 || $order_type == 2):?>
-                                                            <td class="col-sm-2"><?php echo $value['make_num'];?></td>
-                                                            <?php endif;?>
-                                                            <td class="col-sm-2"><button class="btn btn-xs btn-info do-sel" type="button" data-id="<?php echo $value['id'];?>">移除<i class="fa fa-remove" aria-hidden="true"></i></button></td>
+                                                            <td class="col-sm-2 center"><?php echo $value['code'];?></td>
+                                                            <td class="col-sm-3 center"><?php echo $value['houses_name'];?></td>
+                                                            <td class="col-sm-3 center"><?php echo $value['houses_area_name'];?></td>
+                                                            <td class="col-sm-2 center"></td>
+                                                            <td class="col-sm-2 center"><button class="btn btn-xs btn-info do-sel" type="button" data-id="<?php echo $value['id'];?>">移除<i class="fa fa-remove" aria-hidden="true"></i></button></td>
                                                         </tr>
                                                         <?php endforeach;?>
                                                     <?php endif;?>
@@ -363,9 +360,153 @@
 <?php $this->load->view("common/footer");?>
 <script src="<?php echo css_js_url('bootstrap-timepicker.min.js','admin');?>"></script>
 <script src="<?php echo css_js_url('select2.min.js','admin');?>"></script>
-<script src="<?php echo css_js_url('order.js','admin');?>"></script>
+<!-- <script src="<?php echo css_js_url('order.js','admin');?>"></script>-->
 <script type="text/javascript">
-    var order_type = "<?php echo $order_type;?>";
+$(function(){
+	
+	var order_type = '<?php echo $order_type;?>';
+	$('.popover-lock').popover({html:true, placement:'bottom'});
+    $('[data-rel=popover]').popover({html:true});
+
+    $(".select2").css('width','220px').select2({allowClear:true});
+    $('#timepicker1').timepicker({
+        minuteStep: 1,
+        showSeconds: true,
+        showMeridian: false,
+        defaultTime: '18:00:00'
+    }).next().on(ace.click_event, function(){
+        $(this).prev().focus();
+    });
+	
+	$('#houses_id,#point_status,#area_id').change(function(){
+		if($(this).attr('id') == 'houses_id') {
+			$("#area_id").html('');
+			$(".select2-chosen:eq(2)").text('全部');
+		}
+
+		var houses_id = $('#houses_id').val();
+		var point_status = $('#point_status').val();
+		var customer_id = $('#customer_id').val();
+
+		$.post('/housesorders/get_points', {order_type:order_type, houses_id:houses_id, point_status:point_status, customer_id:customer_id}, function(data){
+			var pointStr =  '';
+			var areaStr = ''; 
+			if(data.flag == true) {
+				$("#all_points_num").text(data.count);
+				
+				for(var i = 0; i < (data.points_lists).length; i++) {
+					pointStr += "<tr point-id='"+(data.points_lists)[i]['id']+"'><td class='col-sm-2 center'>"+(data.points_lists)[i]['code']+"</td>";
+					pointStr += "<td class='col-sm-3 center'>"+(data.points_lists)[i]['houses_name']+"</td>";
+					pointStr += "<td class='col-sm-3 center'>"+(data.points_lists)[i]['area_name']+"</td>";
+					pointStr += "<td class='col-sm-2 center'></td>";
+					pointStr += "<td class='col-sm-2 center'><button class='btn btn-xs btn-info do-sel' type='button'>选择<i class='icon-arrow-right icon-on-right'></button></td></tr>";
+				}
+
+				for(var j = 0; j < (data.area_lists).length; j++) {
+					areaStr += "<option value="+(data.area_lists)[j]['id']+">"+(data.area_lists)[j]['name']+"</option>";
+				}
+			}
+
+			$("#points_lists").html(pointStr);
+			$("#area_id").html(areaStr);
+		});
+	});
+
+	//选择点位
+    $('#points_lists').on('click', '.do-sel', function(){
+        $(this).parent().parent().appendTo($("#selected_points"));
+        $("#selected_points_num").html(Number($("#selected_points_num").text()) + 1);  
+
+       	var numObj = $(this).parent().parent().find('td:eq(3)');
+        var inputVal = numObj.children().val();
+        numObj.text(inputVal);
+        //$("input[name='point_ids']").after('<input type="hidden" name="make_num['+$(this).parent().parent().attr('point-id')+']" value="'+inputVal+'">');
+        
+        $("#selected_points button").html('移除<i class="fa fa-remove" aria-hidden="true"></i>');
+        var point_ids = $("input[name='point_ids']").val() ? $("input[name='point_ids']").val() + ',' + $(this).parent().parent().attr('point-id') :  $(this).parent().parent().attr('point-id');
+
+
+        
+        $("input[name='point_ids']").val(point_ids);
+    });
+
+  	//移除点位
+    $('#selected_points').on('click', '.do-sel', function(){
+        $(this).parent().parent().appendTo($("#points_lists"));
+        $("#selected_points_num").html(Number($("#selected_points_num").html()) - 1);
+
+        
+        //$('input[name="make_num['+$(this).parent().parent().attr('point-id')+']"]').remove();
+       
+
+        $("#points_lists button").html('选择<i class="icon-arrow-right icon-on-right"></i>');
+
+        var point_ids = [];
+        var _self = $(this);
+        $("#selected_points tr").each(function(){
+            point_ids.push($(this).attr('point-id'));
+        });
+        var ids = point_ids.length >= 1 ? point_ids.join(',') : '';
+        $("input[name='point_ids']").val(ids);
+    });
+
+  	//选择全部
+    $(".select-all").click(function(){
+        $("#points_lists tr").each(function(){
+            $(this).appendTo($("#selected_points"));
+            $("#selected_points_num").html(Number($("#selected_points_num").text()) + 1);  
+
+            var numObj = $(this).find('td:eq(3)');
+            var inputVal = numObj.children().val();
+            numObj.text(inputVal);
+            //$("input[name='point_ids']").after('<input type="hidden" name="make_num['+$(this).attr('point-id')+']" value="'+inputVal+'">');
+
+            $("#selected_points button").html('移除<i class="fa fa-remove" aria-hidden="true"></i>');
+            var point_ids = $("input[name='point_ids']").val() ? $("input[name='point_ids']").val() + ',' + $(this).attr('point-id') :  $(this).attr('point-id');
+            $("input[name='point_ids']").val(point_ids);
+        });
+    });
+
+  	//移除全部
+    $(".remove-all").click(function(){
+        $("#selected_points tr").each(function(){
+            $(this).appendTo($("#points_lists"));
+            $("#selected_points_num").html('0');
+
+            //$('input[name="make_num['+$(this).attr('point-id')+']"]').remove();
+
+            $("input[name='point_ids']").val('');
+            $("#points_lists button").html('选择<i class="icon-arrow-right icon-on-right"></i>');
+        });
+    });
+
+  	//保存
+    $(".btn-save").click(function(){
+        var point_ids = $("input[name='point_ids']").val();
+        if (point_ids == '') {
+            var d = dialog({
+                title: '提示信息',
+                content: '您还没有选择点位哦！',
+                okValue: '确定',
+                ok: function () {
+
+                }
+            });
+            d.width(320);
+            d.showModal();
+            return false;
+        }
+    });
+
+    
+})
+	
+
+                                                
+                                                
+   // var order_type = "<?php echo $order_type;?>";
+    //$('.popover-lock').popover({html:true, placement:'bottom'});
+    //$('[data-rel=popover]').popover({html:true});
 </script>
 <!-- 底部 -->
 <?php $this->load->view("common/bottom");?>

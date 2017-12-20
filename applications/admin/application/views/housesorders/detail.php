@@ -261,7 +261,7 @@
                                                     <tr>
                                                         <td class="center"><?php echo $value['code'];?></td>
                                                         <td><?php echo $value['houses_name'];?></td>
-                                                        <td><?php echo $value['area_name'];?></td>
+                                                        <td><?php echo $value['houses_area_name'];?></td>
                                                         <td><?php echo $value['addr'];?></td>
                                                         <td></td>
                                                     </tr>
@@ -299,36 +299,24 @@
                                                 <table class="table table-striped table-bordered table-hover">
                                                     <thead>
                                                         <tr>
-                                                            <th class="col-xs-2 center">媒体名称</th>
-                                                            <?php if($info['order_type'] == '3' || $info['order_type'] == '4'):?>
-                                                            <th class="col-xs-5 center">第一张正面图</th>
-                                                            <th class="col-xs-5 center">第二章正面图</th>
-                                                            <?php else:?>
-                                                            <th class="col-xs-5 center">正面图</th>
-                                                            <th class="col-xs-5 center">背面图</th>
-                                                            <?php endif;?>
+                                                            <th class="col-xs-2 center">点位编号</th>
+                                                            <th class="col-xs-2 center">楼盘名称</th>
+                                                            <th class="col-xs-2 center">楼盘区域</th>
+                                                            <th class="col-xs-2 center">详细地址</th>
+                                                            <th class="col-xs-5 center">图片</th>
+                                                            
                                                         </tr>
                                                     </thead>
                                                     <tbody>
                                                         <?php foreach ($info['inspect_img'] as $key => $value) :?>
-                                                        <?php 
-                                                            $str = '';
-                                                            if ($info['order_type'] == 1) {
-                                                                $str .= ' '.$value['media_code'].'（'.$number[$value['media_id']].'套）';
-                                                            } elseif ($info['order_type'] == 2) {
-                                                                $str .= ' '.$value['media_code'];
-                                                            }
-                                                        ?>
                                                         <tr>
-                                                            <td style="text-align: center;vertical-align: middle;"><?php echo $value['media_name'].$str;?></td>
+                                                            <td style="text-align: center;vertical-align: middle;"><?php echo $value['point_code'];?></td>
+                                                            <td style="text-align: center;vertical-align: middle;"><?php echo $value['houses_name'];?></td>
+                                                            <td style="text-align: center;vertical-align: middle;"><?php echo $value['houses_area_name'];?></td>
+                                                            <td style="text-align: center;vertical-align: middle;"><?php echo $value['addr'];?></td>
                                                             <td class="center">
                                                                 <a href="<?php echo $value['front_img'];?>" target="_blank" title="点击查看原图">
                                                                     <img style="width: 215px; height: 150px" src="<?php echo $value['front_img'];?>">
-                                                                </a>
-                                                            </td>
-                                                            <td class="center">
-                                                                <a href="<?php echo $value['back_img'];?>" target="_blank" title="点击查看原图">
-                                                                    <img style="width: 215px; height: 150px" src="<?php echo $value['back_img'];?>">
                                                                 </a>
                                                             </td>
                                                         </tr>

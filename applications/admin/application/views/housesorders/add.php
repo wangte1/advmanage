@@ -72,7 +72,7 @@
                                         <div class="form-group">
                                             <label class="col-sm-2 control-label no-padding-right" for="form-field-2"> 广告客户： </label>
                                             <div class="col-sm-10">
-                                                <select name="customer_id" class="select2" required>
+                                                <select id="customer_id" name="customer_id" class="select2" required>
                                                     <option value="">请选择客户</option>
                                                     <?php foreach($customers as $val):?>
                                                     <option value="<?php echo $val['id'];?>" <?php if(isset($info['customer_id']) && $val['id'] == $info['customer_id']){ echo "selected"; }?>><?php echo $val['name'];?></option>
@@ -157,9 +157,6 @@
                                                                     <div class="col-sm-8" style="padding:0">
                                                                         <select name="area_id" id="area_id" class="select2">
                                                                             <option value="">请选择楼盘区域</option>
-                                                                            <!--<?php foreach($media_list as $val):?>
-                                                                            <option value="<?php echo $val['id'];?>" <?php if(isset($info['media_id']) && $val['id'] == $info['media_id']){ echo "selected"; }?>><?php echo $val['name'].'('.$val['code'].')';?></option>
-                                                                            <?php endforeach;?>-->
                                                                         </select>
                                                                     </div>
                                                                 </div>
@@ -454,7 +451,7 @@
                                                         <tr point-id="<?php echo $value['id'];?>">
                                                             <td class="col-sm-2"><?php echo $value['code'];?></td>
                                                             <td class="col-sm-3"><?php echo $value['houses_name'];?></td>
-                                                            <td class="col-sm-3"><?php echo $value['area_name'];?></td>
+                                                            <td class="col-sm-3"><?php echo $value['houses_area_name'];?></td>
                                                             <td class="col-sm-2"></td>
                                                             <td class="col-sm-2"><button class="btn btn-xs btn-info do-sel" type="button" data-id="<?php echo $value['id'];?>">移除<i class="fa fa-remove" aria-hidden="true"></i></button></td>
                                                         </tr>
@@ -502,10 +499,20 @@ $(function(){
 			$(".select2-chosen:eq(2)").text('全部');
 		}
 
+		if($(this).attr('id') == 'is_lock' && $('#is_lock').val() == 1) {
+			if($('#customer_id').val() == '') {
+				layer.alert("请先选择客户");
+				$("#is_lock").val(0);
+				return;
+			}
+			
+		}
+
 		var houses_id = $('#houses_id').val();
 		var is_lock = $('#is_lock').val();
+		var customer_id = $('#customer_id').val();
 
-		$.post('/housesorders/get_points', {order_type:order_type, houses_id:houses_id, is_lock:is_lock}, function(data){
+		$.post('/housesorders/get_points', {order_type:order_type, houses_id:houses_id, is_lock:is_lock, customer_id:customer_id}, function(data){
 			var pointStr =  '';
 			var areaStr = ''; 
 			if(data.flag == true) {
