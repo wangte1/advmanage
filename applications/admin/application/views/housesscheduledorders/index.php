@@ -95,7 +95,7 @@
                                                 <div class="col-sm-9">
                                                     <select name="order_status" class="select2">
                                                         <option value="">全部</option>
-                                                        <?php foreach(C('scheduledorder.order_status.text') as $key => $value): ?>
+                                                        <?php foreach(C('housesscheduledorder.order_status.text')as $key => $value): ?>
                                                         <option value="<?php echo $key;?>" <?php if($key == $order_status){ echo "selected"; }?>><?php echo $value;?></option>
                                                         <?php endforeach;?>
                                                     </select>
