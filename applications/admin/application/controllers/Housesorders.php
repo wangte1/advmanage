@@ -931,7 +931,7 @@ class Housesorders extends MY_Controller{
         if(IS_POST){
             $post_data = $this->input->post();
             foreach ($post_data as $key => $value) {
-                $where = array('order_id' => $order_id, 'media_id' => $key, 'type' => 1);
+                $where = array('order_id' => $order_id, 'point_id' => $key, 'type' => 1);
                 $img = $this->Mhouses_order_inspect_images->get_one('*', $where);
 
                 //如果是修改验收图片，则先删除该订单下所有验收图片，再重新添加
@@ -942,13 +942,13 @@ class Housesorders extends MY_Controller{
                 if (isset($value['front_img']) && count($value['front_img']) > 0) {
                     foreach ($value['front_img'] as $k => $v) {
                         $insert_data['order_id'] = $order_id;
-                        $insert_data['media_id'] = $key;
+                        $insert_data['point_id'] = $key;
                         $insert_data['front_img'] = $v;
                         $insert_data['back_img'] = isset($value['back_img'][$k]) ? $value['back_img'][$k] : '';
                         $insert_data['type'] = 1;
                         $insert_data['create_user'] = $insert_data['update_user'] = $data['userInfo']['id'];
                         $insert_data['create_time'] = $insert_data['update_time'] = date('Y-m-d H:i:s');
-                        $this->Morder_inspect_images->create($insert_data);
+                        $this->Mhouses_order_inspect_images->create($insert_data);
                     }
                 }
             }
@@ -964,7 +964,7 @@ class Housesorders extends MY_Controller{
         }
         
         //获取该订单下面的所有楼盘
-        $points = $this->Mhouses_points->get_lists("code,houses_id,area_id,addr,", array('in' => array("id" => explode(",",$order['point_ids']))));
+        $points = $this->Mhouses_points->get_points_lists(array('in' => array("A.id" => explode(",",$order['point_ids']))));
         //$houses_id = array_unique(array_column($points, "houses_id"));
         //$area_id = array_unique(array_column($points, "area_id"));
         
@@ -974,9 +974,35 @@ class Housesorders extends MY_Controller{
         //$media_id = array_unique(array_column($points, "media_id"));
 
         //$data['media_list'] = $this->Mmedias->get_lists("id,name,code", array('in' => array("id"=>$media_id)), array('sort' => 'asc'));
-
-        //根据媒体ID获取对应的图片
+		
+        //根据点位id获取对应的图片
         $data['images'] = "";
+        if(count($points) > 0) {
+        	$where['in'] = array("point_id"=>array_column($points,"id"));
+        	$where['order_id'] = $order_id;
+        	$where['type'] = 1;
+        	$data['images'] = $this->Mhouses_order_inspect_images->get_lists("*",$where);
+        }
+        
+        $list = array();
+        foreach ($points as $key => $val) {
+        	$val['image'] = array();
+        	if($data['images']){
+	        	foreach($data['images'] as $k=>$v){
+		        	if($val['id'] == $v['point_id']){
+		        		$val['image'][] = $v;
+		        	}
+	        	}
+        	}
+        	$list[] = $val;
+        }
+        
+        $data['list'] = $list;
+        //var_dump($list);
+        
+        
+        //根据媒体ID获取对应的图片
+//        $data['images'] = "";
 //         if($data['media_list']){
 //             $where['in'] = array("media_id"=>array_column($data['media_list'],"id"));
 //             $where['order_id'] = $order_id;
