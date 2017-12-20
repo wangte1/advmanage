@@ -263,7 +263,7 @@
                                                         <td><?php echo $value['houses_name'];?></td>
                                                         <td><?php echo $value['houses_area_name'];?></td>
                                                         <td><?php echo $value['addr'];?></td>
-                                                        <td></td>
+                                                        <td><?php echo $value['size'];?></td>
                                                     </tr>
                                                     <?php endforeach;?>
                                                 </tbody>

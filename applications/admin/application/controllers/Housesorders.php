@@ -256,17 +256,21 @@ class Housesorders extends MY_Controller{
     		}
     	}
     	
-    	$points_lists = $this->Mhouses_points->get_lists("id,code,houses_id,area_id", $where);
+    	$points_lists = $this->Mhouses_points->get_lists("id,code,houses_id,area_id,type_id", $where);
     	$areaList = [];
     	if(count($points_lists) > 0) {
     		$housesid = array_column($points_lists, 'houses_id');
     		$area_id = array_column($points_lists, 'area_id');
+    		$type_id = array_column($points_lists, 'type_id');
     		
     		$whereh['in']['id'] = $housesid;
     		$housesList = $this->Mhouses->get_lists("id, name", $whereh);
     		
     		$wherea['in']['id'] = $area_id;
     		$areaList = $this->Mhouses_area->get_lists("id, name", $wherea);
+    		
+    		$wheref['in']['type'] = $type_id;
+    		$formatList = $this->Mhouses_points_format->get_lists("type,size", $wheref);
     		
     		foreach ($points_lists as $k => &$v) {
     			foreach($housesList as $k1 => $v1) {
@@ -279,6 +283,13 @@ class Housesorders extends MY_Controller{
     			foreach($areaList as $k2 => $v2) {
     				if($v['area_id'] == $v2['id']) {
     					$v['area_name'] = $v2['name'];
+    					break;
+    				}
+    			}
+    			
+    			foreach($formatList as $k3 => $v3) {
+    				if($v['type_id'] == $v3['type']) {
+    					$v['size'] = $v3['size'];
     					break;
     				}
     			}
@@ -354,15 +365,6 @@ class Housesorders extends MY_Controller{
                 $update_data['point_status'] = 3;
                 $this->Mhouses_points->update_info($update_data, array('in' => array('id' => explode(',', $post_data['point_ids']))));
 
-                //先清空点位制作张数表t_points_make_num，再添加进去
-//                 $this->Mpoints_make_num->delete(array('order_id' => $id, 'type' => 1));
-//                 foreach ($post_data['make_num'] as $key => $value) {
-//                     $make_num_data['order_id'] = $id;
-//                     $make_num_data['point_id'] = $key;
-//                     $make_num_data['make_num'] = $value;
-//                     $make_num_data['type'] = 1;
-//                     $this->Mpoints_make_num->create($make_num_data);
-//                 }
             }
 
             unset($post_data['media_id'], $post_data['point_status'], $post_data['point_ids_old'], $post_data['make_num'], $post_data['hour'], $post_data['minute'], $post_data['second']);
@@ -389,29 +391,10 @@ class Housesorders extends MY_Controller{
             }
             
 
-//             $data['order_type'] = $data['info']['order_type'];
-
-            //项目
-            //$data['project'] = $this->Mcustomer_project->get_lists('id, project_name', array('customer_id' => $data['info']['customer_id']));
-
-            //媒体列表
-            //$data['media_list'] = $this->Mmedias->get_lists("id, code, name", array('type' => $data['order_type'], 'is_del' => 0), array('sort' => 'asc'));
-
             //已选择点位列表
             $where['in']['A.id'] = explode(',', $data['info']['point_ids']);
             $data['selected_points'] = $this->Mhouses_points->get_points_lists($where);
             
-//             if ($data['order_type'] == 1 || $data['order_type'] == 2) {
-//                 //点位制作张数（灯箱和高杆）
-//                 $data['points_make_num'] = $this->Mpoints_make_num->get_lists('order_id, point_id, make_num', array('order_id' => $data['info']['id'], 'type' => 1));
-//                 foreach ($data['selected_points'] as $key => $value) {
-//                     foreach ($data['points_make_num'] as $k => $v) {
-//                         if ($value['id'] == $v['point_id']) {
-//                             $data['selected_points'][$key]['make_num'] = $data['points_make_num'][$k]['make_num'];
-//                         }
-//                     }
-//                 }
-//             }
 
            
             
@@ -1019,19 +1002,13 @@ class Housesorders extends MY_Controller{
         $this->load->library("PHPExcel");
 
         //设置表头
-        if ($type == 1) {
-            $table_header =  array(
-                '点位编号'=>"points_code",
-                '站台名称'=>"media_name",
-                '规格'=>"spec",
-            );
-        } else {
-            $table_header =  array(
-                '点位编号'=>"points_code",
-                '高杆名称'=>"media_name",
-                '规格'=>"spec",
-            );
-        }
+        $table_header =  array(
+	        '点位编号'=>"code",
+	       	'楼盘名称'=>"houses_name",
+	        '楼盘区域'=>"houses_area_name",
+	        '地址'=>"addr",
+	        '规格'=>"size",
+       	);
 
         $i = 0;
         foreach($table_header as  $k=>$v){
@@ -1040,31 +1017,32 @@ class Housesorders extends MY_Controller{
             $i++;
         }
 
-        $order = $this->Morders->get_one('*', array('id' => $id));
+        $order = $this->Mhouses_orders->get_one('*', array('id' => $id));
 
         $where['in']['A.id'] = explode(',', $order['point_ids']);
 
-        $customers = array_column($this->Mcustomers->get_lists("id,customer_name", array('is_del' => 0)), 'customer_name', 'id'); //客户列表
+        $customers = array_column($this->Mhouses_customers->get_lists("id,name", array('is_del' => 0)), 'name', 'id'); //客户列表
 
-        $list = $this->Mpoints->lists($where);
+        $list = $this->Mhouses_points->get_points_lists($where);
 
         $h = 2;
         foreach($list as $key=>$val){
             $j = 0;
             foreach($table_header as $k => $v){
                 $cell = PHPExcel_Cell::stringFromColumnIndex($j++).$h;
-
-                switch ($v) {
-                    case 'spec':
-                        $value = $type == 1 ? $val['size'].'（'.$val['spec_name'].'）' : $val['size'];
-                        break;
-                    case 'media_name':
-                        $value = $val['media_name'].'（'.$val['media_code'].'）';
-                        break;
-                    default:
-                        $value = $val[$v];
-                        break;
-                }
+				
+                $value = $val[$v];
+//                 switch ($v) {
+//                     case 'spec':
+//                         $value = $type == 1 ? $val['size'].'（'.$val['spec_name'].'）' : $val['size'];
+//                         break;
+//                     case 'media_name':
+//                         $value = $val['media_name'].'（'.$val['media_code'].'）';
+//                         break;
+//                     default:
+//                         $value = $val[$v];
+//                         break;
+//                 }
                 
                 $this->phpexcel->getActiveSheet(0)->setCellValue($cell, $value);
             }
