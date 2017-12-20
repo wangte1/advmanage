@@ -138,6 +138,7 @@
                                                         <th class="center">点位编号</th>
                                                         <th>楼盘区域</th>
                                                         <th class="hidden-xs">价格</th>
+                                                        <th class="hidden-xs">规格</th>
                                                     </tr>
                                                 </thead>
                                                 <tbody>
@@ -146,6 +147,7 @@
                                                         <td class="center"><?php echo $value['code'];?></td>
                                                         <td><?php echo $value['houses_name']?></td>
                                                         <td><?php echo $value['price'];?></td>
+                                                        <td><?php echo $value['size'];?></td>
                                                     </tr>
                                                     <?php endforeach;?>
                                                 </tbody>

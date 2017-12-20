@@ -17,7 +17,8 @@ class Housesscheduledorders extends MY_Controller{
             'Model_houses_area' => 'Mhouses_area',
             'Model_salesman' => 'Msalesman',
             'Model_make_company' => 'Mmake_company',
-            'Model_houses_points' => 'Mhouses_points'
+            'Model_houses_points' => 'Mhouses_points',
+            'Model_houses_points_format' => 'Mhouses_points_format'
         ]);
         $this->data['code'] = 'horders_manage';
         $this->data['active'] = 'housesscheduledorders_list';
@@ -125,8 +126,6 @@ class Housesscheduledorders extends MY_Controller{
         }
         $data['order_type'] = $order_type;
         $data['status_text'] = C('order.order_status.text');
-        //获取指定类型的楼盘
-        $tmpPoints = $this->Mhouses_points->get_lists("id, houses_id, area_id", ['type_id' => $order_type, 'is_del' => 0]);
        
         $data['housesList'] = $this->Mhouses->get_lists("id, name", ['is_del' => 0]);
 
@@ -269,6 +268,8 @@ class Housesscheduledorders extends MY_Controller{
         
         //预定点位列表
         $data['info']['selected_points'] = $this->Mhouses_points->get_points_lists(array('in' => array('A.id' => explode(',', $data['info']['point_ids']))));
+        //获取规格列表
+        $this->Mhouses_points_format->get_lists('id,size', ['is_del' => 0]);
         $this->load->view('housesscheduledorders/detail', $data);
     }
     
