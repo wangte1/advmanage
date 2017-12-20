@@ -88,14 +88,6 @@
                                     </thead>
                                     <tbody>
                                         <?php if(isset($list))foreach ($list as $key => $value) :?>
-                                        <!--<?php 
-                                            $str = '';
-                                            if ($order_type == 1) {
-                                                $str .= ' '.$value['code'].'（'.$number[$value['id']].'套）';
-                                            } elseif ($order_type == 2) {
-                                                $str .= ' '.$value['code'];
-                                            }
-                                        ?>-->
                                         <tr>
                                         	<td style="text-align: center;vertical-align: middle;"><?php echo $value['code'];?></td>
                                             <td style="text-align: center;vertical-align: middle;"><?php echo $value['houses_name'];?></td>
@@ -123,28 +115,6 @@
                                                     </li>
                                                 </ul>
                                             </td>
-                                            <!-- <td>
-                                                <ul class="ace-thumbnails" media-id="<?php echo $value['id'];?>" id="uploader_back_img<?php echo $key;?>">
-                                                    <?php if(isset($value['image']) && count($value['image']) > 0): ?>
-                                                        <?php foreach($value['image']  as $val):?>
-                                                        <li>
-                                                            <a href="<?php echo $val['back_img'];?>" title="Photo Title" data-rel="colorbox" class="cboxElement">
-                                                                <img style="width: 215px; height: 150px" src="<?php echo $val['back_img'];?>">
-                                                            </a>
-                                                            <div class="tools">
-                                                                <a href="javascript:;">
-                                                                    <i class="icon-remove red"></i>
-                                                                </a>
-                                                            </div>
-                                                            <input type="hidden" name="<?php echo $value['id'];?>[back_img][]" value="<?php echo $val['back_img'];?>"/>
-                                                        </li>
-                                                        <?php endforeach;?>
-                                                    <?php endif;?>
-                                                    <li class="pic pic-add add-pic" style="float: left;width: 220px;height: 150px;clear:none; border: 1px solid #f18a1b">
-                                                        <a href="javascript:;" class="up-img"  id="file_back_img<?php echo $key;?>"><span>+</span><br>添加照片</a>
-                                                    </li>
-                                                </ul>
-                                            </td> -->
                                         </tr>
                                         <?php endforeach;?>
                                     </tbody>

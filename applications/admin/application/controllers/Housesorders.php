@@ -723,16 +723,9 @@ class Housesorders extends MY_Controller{
         //客户名称
         $data['info']['customer_name'] = $this->Mhouses_customers->get_one('name', array('id' => $data['info']['customer_id']))['name'];
 
-        //项目
-//         $project = $this->Mcustomer_project->get_one('project_name', array('id' => $data['info']['project_id']));
-//         $data['info']['project_name'] = $project ? $project['project_name'] : '';
-
         //业务员
         $data['info']['salesman'] = $this->Msalesman->get_one('name, phone_number', array('id' => $data['info']['sales_id']));
 		
-        
-        //var_dump($data['info']['point_ids']);
-        
         //投放点位
         $data['info']['selected_points'] = $this->Mhouses_points->get_points_lists(array('in' => array('A.id' => explode(',', $data['info']['point_ids']))));
 
@@ -741,7 +734,7 @@ class Housesorders extends MY_Controller{
 
         //验收图片
         $data['info']['inspect_img'] = $this->Mhouses_order_inspect_images->get_inspect_img(array('A.order_id' => $id, 'A.type' => 1));
-
+		
         //每个媒体对应套数
 //         $where_point['in'] = array('B.id' => explode(',', $data['info']['point_ids']));
 //         $points = $this->Mhouses_points->get_confirm_points($where_point, array('A.sort' => 'asc', 'B.id' => 'asc'), array('media_code', 'C.size'));
