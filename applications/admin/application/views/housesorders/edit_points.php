@@ -319,11 +319,11 @@
                                             <table id="sample-table-1" class="table table-striped table-bordered table-hover">
                                                 <thead>
                                                     <tr>
-                                                        <th class="col-sm-2">点位编号</th>
-                                                        <th class="col-sm-3">楼盘名称</th>
-                                                        <th class="col-sm-3">楼盘区域</th>
-                                                        <th class="col-sm-2">规格</th>
-                                                        <th class="col-sm-2"><button class="btn btn-xs btn-info remove-all" type="button">移除全部<i class="fa fa-remove" aria-hidden="true"></i></button></th>
+                                                        <th class="col-sm-2 center">点位编号</th>
+                                                        <th class="col-sm-3 center">楼盘名称</th>
+                                                        <th class="col-sm-3 center">楼盘区域</th>
+                                                        <th class="col-sm-2 center">规格</th>
+                                                        <th class="col-sm-2 center"><button class="btn btn-xs btn-info remove-all" type="button">移除全部<i class="fa fa-remove" aria-hidden="true"></i></button></th>
                                                     </tr>
                                                 </thead>
                                             </table>
@@ -334,11 +334,11 @@
                                                     <?php if(isset($selected_points)):?>
                                                         <?php foreach($selected_points as $value):?>
                                                         <tr point-id="<?php echo $value['id'];?>">
-                                                            <td class="col-sm-2"><?php echo $value['code'];?></td>
-                                                            <td class="col-sm-3"><?php echo $value['houses_name'];?></td>
-                                                            <td class="col-sm-3"><?php echo $value['houses_area_name'];?></td>
-                                                            <td class="col-sm-2"></td>
-                                                            <td class="col-sm-2"><button class="btn btn-xs btn-info do-sel" type="button" data-id="<?php echo $value['id'];?>">移除<i class="fa fa-remove" aria-hidden="true"></i></button></td>
+                                                            <td class="col-sm-2 center"><?php echo $value['code'];?></td>
+                                                            <td class="col-sm-3 center"><?php echo $value['houses_name'];?></td>
+                                                            <td class="col-sm-3 center"><?php echo $value['houses_area_name'];?></td>
+                                                            <td class="col-sm-2 center"></td>
+                                                            <td class="col-sm-2 center"><button class="btn btn-xs btn-info do-sel" type="button" data-id="<?php echo $value['id'];?>">移除<i class="fa fa-remove" aria-hidden="true"></i></button></td>
                                                         </tr>
                                                         <?php endforeach;?>
                                                     <?php endif;?>
@@ -378,26 +378,17 @@ $(function(){
         $(this).prev().focus();
     });
 	
-	$('#houses_id,#is_lock,#area_id').change(function(){
+	$('#houses_id,#point_status,#area_id').change(function(){
 		if($(this).attr('id') == 'houses_id') {
 			$("#area_id").html('');
 			$(".select2-chosen:eq(2)").text('全部');
 		}
 
-		if($(this).attr('id') == 'is_lock' && $('#is_lock').val() == 1) {
-			if($('#customer_id').val() == '') {
-				layer.alert("请先选择客户");
-				$("#is_lock").val(0);
-				return;
-			}
-			
-		}
-
 		var houses_id = $('#houses_id').val();
-		var is_lock = $('#is_lock').val();
+		var point_status = $('#point_status').val();
 		var customer_id = $('#customer_id').val();
 
-		$.post('/housesorders/get_points', {order_type:order_type, houses_id:houses_id, is_lock:is_lock, customer_id:customer_id}, function(data){
+		$.post('/housesorders/get_points', {order_type:order_type, houses_id:houses_id, point_status:point_status, customer_id:customer_id}, function(data){
 			var pointStr =  '';
 			var areaStr = ''; 
 			if(data.flag == true) {
