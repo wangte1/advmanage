@@ -156,6 +156,7 @@
                                                                                 <th class="col-sm-3 center">楼盘名称</th>
                                                                                 <th class="col-sm-3 center">楼盘区域</th>
                                                                                 <th class="col-sm-2 center">规格</th>
+                                                                                <th class="col-sm-2 center">状态</th>
                                                                                 <th class="col-sm-2 center"><button class="btn btn-xs btn-info select-all" type="button" data-id="3">选择全部<i class="icon-arrow-right icon-on-right"></i></button></th>
                                                                             </tr>
                                                                         </thead>
@@ -227,6 +228,7 @@
                                                         <th class="col-sm-3">楼盘名称</th>
                                                         <th class="col-sm-3">楼盘区域</th>
                                                         <th class="col-sm-2">规格</th>
+                                                        <th class="col-sm-2">状态</th>
                                                         <th class="col-sm-2"><button class="btn btn-xs btn-info remove-all" type="button">移除全部<i class="fa fa-remove" aria-hidden="true"></i></button></th>
                                                     </tr>
                                                 </thead>
@@ -242,6 +244,21 @@
                                                             <td class="col-sm-3"><?php echo $value['houses_name'];?></td>
                                                             <td class="col-sm-3"><?php echo $value['houses_area_name'];?></td>
                                                             <td class="col-sm-2"><?php echo $value['size'];?></td>
+                                                            <td class="col-sm-2">
+                                                            	<?php 
+                                                                    switch ($value['point_status']) {
+                                                                        case '1':
+                                                                            $class = 'badge-success';
+                                                                            break;
+                                                                        case '3':
+                                                                            $class = 'badge-danger';
+                                                                            break;
+                                                                    }
+                                                                ?>
+                                                                <span class="badge <?php echo $class; ?>">
+                                                                    <?php echo C('public.points_status')[$value['point_status']];?>
+                                                                </span>
+                                                            </td>
                                                             <td class="col-sm-2"><button class="btn btn-xs btn-info do-sel" type="button" data-id="<?php echo $value['id'];?>">移除<i class="fa fa-remove" aria-hidden="true"></i></button></td>
                                                         </tr>
                                                         <?php endforeach;?>
@@ -295,6 +312,15 @@ $(function(){
 					pointStr += "<td class='col-sm-3 center'>"+tmpList[i]['houses_name']+"</td>";
 					pointStr += "<td class='col-sm-3 center'>"+tmpList[i]['area_name']+"</td>";
 					pointStr += "<td class='col-sm-2 center'>"+tmpList[i]['size']+"</td>";
+					switch (tmpList[i]['point_status']) {
+                        case '1':
+                            $class = 'badge-success';
+                            break;
+                        case '3':
+                            $class = 'badge-danger';
+                            break;
+                	}
+					pointStr += "<td class='col-sm-2 center'><span class='badge "+$class+"'>"+tmpList[i]['point_status_txt']+"</span></td>";
 					pointStr += "<td class='col-sm-2 center'><button class='btn btn-xs btn-info do-sel' type='button'>选择<i class='icon-arrow-right icon-on-right'></button></td></tr>";
 				}
 				$('#area').html();
@@ -302,7 +328,7 @@ $(function(){
 					areaStr += "<option value="+data.area_list[j]['id']+">"+data.area_list[j]+"</option>";
 				}
 			}else{
-				alert('暂无空闲 <?php echo $order_type_text[$order_type];?> 点位');
+				alert('该楼盘暂无可预约 <?php echo $order_type_text[$order_type];?> 点位');
 			}
 			$("#points_lists").html(pointStr);
 			$("#area_id").html(areaStr);

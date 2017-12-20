@@ -169,6 +169,9 @@
                                                             case '3':
                                                                 $class = 'badge-grey';
                                                                 break;
+                                                            case '4':
+                                                                $class = 'badge-grey';
+                                                                break;
                                                         }
                                                     ?>
                                                     <span class="badge <?php echo $class; ?>">

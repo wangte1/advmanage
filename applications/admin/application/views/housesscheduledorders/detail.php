@@ -119,6 +119,9 @@
                                                                 case '3':
                                                                     $class = 'badge-grey';
                                                                     break;
+                                                                case '4':
+                                                                    $class = 'badge-grey';
+                                                                    break;
                                                             }
                                                         ?>
                                                         <span class="badge <?php echo $class; ?>">
@@ -141,6 +144,7 @@
                                                         <th>详细地址</th>
                                                         <th class="hidden-xs">价格</th>
                                                         <th class="hidden-xs">规格</th>
+                                                        <th class="hidden-xs">点位状态</th>
                                                     </tr>
                                                 </thead>
                                                 <tbody>
@@ -152,6 +156,21 @@
                                                         <td><?php echo $value['addr'];?></td>
                                                         <td><?php echo $value['price'];?></td>
                                                         <td><?php echo $value['size'];?></td>
+                                                        <td>
+                                                        	<?php 
+                                                                    switch ($value['point_status']) {
+                                                                        case '1':
+                                                                            $class = 'badge-success';
+                                                                            break;
+                                                                        case '3':
+                                                                            $class = 'badge-danger';
+                                                                            break;
+                                                                    }
+                                                                ?>
+                                                                <span class="badge <?php echo $class; ?>">
+                                                                    <?php echo C('public.points_status')[$value['point_status']];?>
+                                                                </span>
+                                                        </td>
                                                     </tr>
                                                     <?php endforeach;?>
                                                 </tbody>

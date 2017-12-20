@@ -10,12 +10,13 @@ $config = array(
         'code' => array(
             'in_lock' => 1,
             'to_expire' => 2,
-            'done_release' => 3,
+            'done_release' => 3
         ),
         'text' => array(
             '1' => '锁定中',
             '2' => '即将到期',
             '3' => '已释放',
+            '4' => '已到期'
         ),
     ),
 )

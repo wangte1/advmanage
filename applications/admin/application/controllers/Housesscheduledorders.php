@@ -39,7 +39,7 @@ class Housesscheduledorders extends MY_Controller{
         $page = $this->input->get_post('per_page') ? : '1';
         $where = array();
         if ($this->input->get('order_type')) $where['A.order_type'] = $this->input->get('order_type');
-        if ($this->input->get('lock_customer_id')) $where['A.lock_customer_id'] = $this->input->get('lock_customer_id');
+        if ($this->input->get('customer_id')) $where['A.lock_customer_id'] = $this->input->get('customer_id');
         if ($this->input->get('admin_id')) $where['C.id'] = $this->input->get('admin_id');
         if ($this->input->get('order_status')) $where['A.order_status'] = $this->input->get('order_status');
         
@@ -100,7 +100,7 @@ class Housesscheduledorders extends MY_Controller{
             }
             
             //判断该客户是否存在正在锁定日期范围内的已释放的订单
-            $where['order_status'] = C('scheduledorder.order_status.code.done_release');
+            $where['order_status'] = C('housesscheduledorder.order_status.code.done_release');
             $where['lock_end_time >'] = date('Y-m-d');
             $orderinfo = $this->Mhouses_scheduled_orders->get_one('*', $where);
             if ($orderinfo) {
@@ -110,11 +110,11 @@ class Housesscheduledorders extends MY_Controller{
             
             $post_data['create_user'] = $post_data['update_user'] = $data['userInfo']['id'];
             $post_data['create_time'] = $post_data['update_time'] = date('Y-m-d H:i:s');
+            $post_data['point_ids'] = implode(',', array_unique(explode(',', $post_data['point_ids'])));
             $id = $this->Mhouses_scheduled_orders->create($post_data);
             if ($id) {
-                //下单成功更新点位相关锁定字段
-                $update_data['order_id'] = $id;
-                $update_data['customer_id'] = $post_data['lock_customer_id'];
+                //更新点位的lock_customer_id和状态和is_lock
+                $update_data['lock_customer_id'] = $post_data['lock_customer_id'];
                 $update_data['is_lock'] = 1;
                 $this->Mhouses_points->update_info($update_data, array('in' => array('id' => explode(',', $post_data['point_ids']))));
                 
@@ -156,9 +156,8 @@ class Housesscheduledorders extends MY_Controller{
             $this->db->query('lock table t_houses_points write');
             $this->Mhouses_points->update_info(
                 array(
-                    'order_id' => '0', 
-                    'customer_id' => '0', 
-                    'is_lock' => 0  
+                    'is_lock' => '0',
+                    'lock_customer_id' => '0',
                 ),
                 array(
                     'in' => array(
@@ -166,15 +165,14 @@ class Housesscheduledorders extends MY_Controller{
                     )
                 )
             );
-            $update_data['order_id'] = $id;
-            $update_data['customer_id'] = $post_data['lock_customer_id'];
+            $update_data['lock_customer_id'] = $post_data['lock_customer_id'];
             $update_data['is_lock'] = 1;
-            
             $this->Mhouses_points->update_info($update_data, array('in' => array('id' => explode(',', $post_data['point_ids']))));
             //释放
             $this->db->query('unlock table');
             unset($post_data['point_ids_old']);
             unset($post_data['area_id']);
+            $post_data['point_ids'] = implode(',', array_unique(explode(',', $post_data['point_ids'])));
             $result = $this->Mhouses_scheduled_orders->update_info($post_data, array('id' => $id));
             if ($result) {
                 $this->write_log($data['userInfo']['id'], 2, "编辑".$data['order_type_text'][$post_data['order_type']]."订单,订单id【".$id."】");
@@ -215,7 +213,7 @@ class Housesscheduledorders extends MY_Controller{
             exit;
         }
         
-        $update_data['order_id'] = $update_data['customer_id'] = '0';
+        $update_data['lock_customer_id'] = '0';
         $update_data['is_lock'] = 0;
         $result = $this->Mhouses_points->update_info($update_data, array('in' => array('id' => explode(',', $info['point_ids']))));
         if (!$result) {
@@ -234,9 +232,10 @@ class Housesscheduledorders extends MY_Controller{
      */
     public function update_points($id) {
         $data = $this->data;
-        $info = $this->Mhouses_scheduled_orders->get_one("order_status", ['id' => $id]);
-        if($info['order_status'] != 2){
-            $this->error('您只能续期即将到期的订单！', '/housesscheduledorders');
+        $info = $this->Mhouses_scheduled_orders->get_one("order_status, lock_end_time", ['id' => $id]);
+        if($info['order_status'] !=2){
+            $this->success('只有即将到期的订单才能够进行续期操作！', '/housesscheduledorders');
+            exit;
         }
         $time = date('Y-m-d');
         $end = date('Y-m-d', strtotime('+7 days'));
@@ -261,6 +260,7 @@ class Housesscheduledorders extends MY_Controller{
     public function detail($id) {
         $data = $this->data;
         $data['info'] = $this->Mhouses_scheduled_orders->get_one('*', array('id' => $id));
+        $ret = strtotime($data['info']['lock_end_time']) - strtotime(date('Y-m-d'));
         //预定客户
         $data['info']['customer_name'] = $this->Mhouses_customers->get_one('name', array('id' => $data['info']['lock_customer_id']))['name'];
         
@@ -276,13 +276,12 @@ class Housesscheduledorders extends MY_Controller{
      * 根据条件获取点位的列表和数量
      */
     public function get_points() {
-        $where['is_del'] = 0;
+
         if($this->input->post('order_type')) $where['type_id'] = $this->input->post('order_type');
         if($this->input->post('houses_id')) $where['houses_id'] = $this->input->post('houses_id');
-        //预定订单只查询没有被锁定的点位
-        $where['is_lock'] = 0;
         
-        $points_lists = $this->Mhouses_points->get_lists("id,code,houses_id,area_id,type_id", $where);
+        $where['is_del'] = $where['is_lock'] = 0;
+        $points_lists = $this->Mhouses_points->get_lists("id,code,houses_id,is_lock,area_id,type_id,point_status", $where);
         
         if(count($points_lists) > 0) {
             
@@ -297,6 +296,8 @@ class Housesscheduledorders extends MY_Controller{
             //获取规格列表
             $size_list = $this->Mhouses_points_format->get_lists('id,type,size', ['is_del' => 0]);
             foreach ($points_lists as $k => &$v) {
+                //设置状态
+                $v['point_status_txt'] = C('public.points_status')[$v['point_status']];
                 foreach($housesList as $k1 => $v1) {
                     if($v['houses_id'] == $v1['id']) {
                         $v['houses_name'] = $v1['name'];
@@ -309,7 +310,8 @@ class Housesscheduledorders extends MY_Controller{
                         $v['area_name'] = $v2['name'];
                         break;
                     }
-                } 
+                }
+                
                 $v['size'] = '';
                 if($size_list){
                     foreach ($size_list as $key => $val){
