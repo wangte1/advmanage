@@ -301,44 +301,7 @@ class Housesorders extends MY_Controller{
     	}
     	
     	$this->return_json(array('flag' => true, 'points_lists' => $points_lists, 'count' => count($points_lists), 'area_lists' => $areaList));
-    	//$this->return_json(array('flag' => true, 'points_lists' => $points_lists, 'count' => count($points_lists), 'area_lists' => $areaList));
     }
-
-
-//     /**
-//      * 获取投放点位列表和数量
-//      */
-//     public function get_points() {
-//         $where['A.point_status'] = 1;
-//         if($this->input->post('media_type')) $where['B.type'] = $this->input->post('media_type');
-//         if($this->input->post('media_id')) $where['A.media_id'] = $this->input->post('media_id');
-//         if($this->input->post('is_lock') != '') $where['A.is_lock'] = $this->input->post('is_lock');
-//         if ($this->input->post('lock_customer_id'))  $where['A.lock_customer_id'] = $this->input->post('lock_customer_id');
-//         $points_lists = $this->Mpoints->get_points_lists($where);
-//         $this->return_json(array('flag' => true, 'points_lists' => $points_lists, 'count' => count($points_lists)));
-//     }
-
-
-
-//     /**
-//      * 根据订单类型获取媒体列表
-//      */
-//     public function get_media() {
-//         $type = $this->input->post("type");
-//         $media_list = $this->Mmedias->get_lists("id, code, name", array('type' => $type, 'is_del' => 0), array('sort' => 'asc'));
-
-//         $option = "<option value=''>请选择媒体</option>";
-//         if ($media_list) {
-//             foreach ($media_list as $key => $value) {
-//                 $option .= '<option value="'.$value['id'].'">'.$value['name'].'('.$value['code'].')'.'</option>';
-//             }
-//         }
-
-//         $this->return_json(array('flag' => true, 'option' => $option));
-//     }
-
-
-
 
     /* 
      * 编辑订单
@@ -1034,18 +997,6 @@ class Housesorders extends MY_Controller{
                 $cell = PHPExcel_Cell::stringFromColumnIndex($j++).$h;
 				
                 $value = $val[$v];
-//                 switch ($v) {
-//                     case 'spec':
-//                         $value = $type == 1 ? $val['size'].'（'.$val['spec_name'].'）' : $val['size'];
-//                         break;
-//                     case 'media_name':
-//                         $value = $val['media_name'].'（'.$val['media_code'].'）';
-//                         break;
-//                     default:
-//                         $value = $val[$v];
-//                         break;
-//                 }
-                
                 $this->phpexcel->getActiveSheet(0)->setCellValue($cell, $value);
             }
             $h++;

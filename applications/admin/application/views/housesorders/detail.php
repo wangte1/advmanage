@@ -281,7 +281,7 @@
                                                     <strong>
                                                         <i class="icon-warning-sign bigger-120"></i> 您还未上传广告画面！
                                                     </strong>
-                                                    <a class="btn btn-xs btn-info" href="/orders/upload_adv_img/<?php echo $info['id'];?>">
+                                                    <a class="btn btn-xs btn-info" href="/housesorders/upload_adv_img/<?php echo $info['id'];?>">
                                                         立即上传
                                                         <i class="icon-arrow-right icon-on-right"></i>
                                                     </a>
