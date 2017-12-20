@@ -91,8 +91,8 @@
                                         <tr>
                                         	<td style="text-align: center;vertical-align: middle;"><?php echo $value['code'];?></td>
                                             <td style="text-align: center;vertical-align: middle;"><?php echo $value['houses_name'];?></td>
-                                            <td style="text-align: center;vertical-align: middle;"><?php echo $value['houses_name'];?></td>
                                             <td style="text-align: center;vertical-align: middle;"><?php echo $value['houses_area_name'];?></td>
+                                            <td style="text-align: center;vertical-align: middle;"><?php echo $value['addr'];?></td>
                                             <td class="center">
                                                 <ul class="ace-thumbnails" media-id="<?php echo $value['id'];?>" id="uploader_front_img<?php echo $key;?>">
                                                     <?php if(isset($value['image']) && count($value['image']) > 0): ?>
