@@ -136,7 +136,9 @@
                                                 <thead>
                                                     <tr>
                                                         <th class="center">点位编号</th>
+                                                        <th>楼盘</th>
                                                         <th>楼盘区域</th>
+                                                        <th>详细地址</th>
                                                         <th class="hidden-xs">价格</th>
                                                         <th class="hidden-xs">规格</th>
                                                     </tr>
@@ -146,6 +148,8 @@
                                                     <tr>
                                                         <td class="center"><?php echo $value['code'];?></td>
                                                         <td><?php echo $value['houses_name']?></td>
+                                                        <td><?php echo $value['houses_area_name']?></td>
+                                                        <td><?php echo $value['addr'];?></td>
                                                         <td><?php echo $value['price'];?></td>
                                                         <td><?php echo $value['size'];?></td>
                                                     </tr>
@@ -172,7 +176,7 @@
     $(".btn-export").click(function(){
         var id = $(this).attr('data-id');
         var type = $(this).attr('data-type');
-        window.location.href = '/housescheduledorders/export/' + id + '/' + type;
+        window.location.href = '/housesscheduledorders/export/' + id + '/' + type;
     });
 </script>
 

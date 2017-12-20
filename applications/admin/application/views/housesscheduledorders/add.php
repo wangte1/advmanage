@@ -241,7 +241,7 @@
                                                             <td class="col-sm-2"><?php echo $value['code'];?></td>
                                                             <td class="col-sm-3"><?php echo $value['houses_name'];?></td>
                                                             <td class="col-sm-3"><?php echo $value['area_name'];?></td>
-                                                            <td class="col-sm-2"></td>
+                                                            <td class="col-sm-2"><?php echo $value['size'];?></td>
                                                             <td class="col-sm-2"><button class="btn btn-xs btn-info do-sel" type="button" data-id="<?php echo $value['id'];?>">移除<i class="fa fa-remove" aria-hidden="true"></i></button></td>
                                                         </tr>
                                                         <?php endforeach;?>
@@ -294,7 +294,7 @@ $(function(){
 					pointStr += "<tr point-id='"+tmpList[i]['id']+"'><td class='col-sm-2 center'>"+tmpList[i]['code']+"</td>";
 					pointStr += "<td class='col-sm-3 center'>"+tmpList[i]['houses_name']+"</td>";
 					pointStr += "<td class='col-sm-3 center'>"+tmpList[i]['area_name']+"</td>";
-					pointStr += "<td class='col-sm-2 center'></td>";
+					pointStr += "<td class='col-sm-2 center'>"+tmpList[i]['size']+"</td>";
 					pointStr += "<td class='col-sm-2 center'><button class='btn btn-xs btn-info do-sel' type='button'>选择<i class='icon-arrow-right icon-on-right'></button></td></tr>";
 				}
 				$('#area').html();

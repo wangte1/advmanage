@@ -268,8 +268,7 @@ class Housesscheduledorders extends MY_Controller{
         
         //预定点位列表
         $data['info']['selected_points'] = $this->Mhouses_points->get_points_lists(array('in' => array('A.id' => explode(',', $data['info']['point_ids']))));
-        //获取规格列表
-        $this->Mhouses_points_format->get_lists('id,size', ['is_del' => 0]);
+        
         $this->load->view('housesscheduledorders/detail', $data);
     }
     
@@ -283,7 +282,7 @@ class Housesscheduledorders extends MY_Controller{
         //预定订单只查询没有被锁定的点位
         $where['is_lock'] = 0;
         
-        $points_lists = $this->Mhouses_points->get_lists("id,code,houses_id,area_id", $where);
+        $points_lists = $this->Mhouses_points->get_lists("id,code,houses_id,area_id,type_id", $where);
         
         if(count($points_lists) > 0) {
             
@@ -295,7 +294,8 @@ class Housesscheduledorders extends MY_Controller{
             
             $wherea['in']['id'] = $area_id;
             $areaList = $this->Mhouses_area->get_lists("id, name", $wherea);
-            
+            //获取规格列表
+            $size_list = $this->Mhouses_points_format->get_lists('id,type,size', ['is_del' => 0]);
             foreach ($points_lists as $k => &$v) {
                 foreach($housesList as $k1 => $v1) {
                     if($v['houses_id'] == $v1['id']) {
@@ -309,13 +309,72 @@ class Housesscheduledorders extends MY_Controller{
                         $v['area_name'] = $v2['name'];
                         break;
                     }
+                } 
+                $v['size'] = '';
+                if($size_list){
+                    foreach ($size_list as $key => $val){
+                        if($val['type'] == $v['type_id']){
+                            $v['size'] = $val['size'];break;
+                        }
+                    }
                 }
-                
-                
             }
         }
         $areaList = array_unique(array_column($points_lists, 'area_name'));
         //获取去重的楼盘区域
         $this->return_json(array('flag' => true, 'points_lists' => $points_lists, 'count' => count($points_lists), 'area_list' => $areaList));
+    }
+    
+    
+    /**
+     * 导出预定点位列表
+     */
+    public function export($id, $type) {
+        //加载phpexcel
+        $this->load->library("PHPExcel");
+        //设置表头
+        $table_header =  array(
+            '点位id' => 'id',
+            '点位编号' => "code",
+            '所属楼盘' => "houses_name",
+            '所属区域' => "houses_area_name",
+            '详细地址' => "addr",
+            '价格' => 'price',
+            '规格' => "size"
+        );
+        $i = 0;
+        foreach($table_header as  $k=>$v){
+            $cell = PHPExcel_Cell::stringFromColumnIndex($i).'1';
+            $this->phpexcel->setActiveSheetIndex(0)->setCellValue($cell, $k);
+            $i++;
+        }
+        
+        $scheduledorder = $this->Mhouses_scheduled_orders->get_one('*', array('id' => $id));
+        
+        $where['in']['A.id'] = explode(',', $scheduledorder['point_ids']);
+        
+        $customers = $this->Mhouses_customers->get_one("name", array('id' => $scheduledorder['lock_customer_id'], 'is_del' => 0)); //客户
+        
+        $list = $this->Mhouses_points->get_points_lists($where);
+                
+        $h = 2;
+        foreach($list as $key=>$val){
+            $j = 0;
+            foreach($table_header as $k => $v){
+                $cell = PHPExcel_Cell::stringFromColumnIndex($j++).$h;
+                $value = $val[$v];
+                $this->phpexcel->getActiveSheet(0)->setCellValue($cell, $value);
+            }
+            $h++;
+        }
+        
+        $this->phpexcel->setActiveSheetIndex(0);
+        // 输出
+        header('Content-Type: application/vnd.ms-excel');
+        header('Content-Disposition: attachment;filename=预定点位表（客户：'.$customers['name'].'）.xls');
+        header('Cache-Control: max-age=0');
+        
+        $objWriter = PHPExcel_IOFactory::createWriter($this->phpexcel, 'Excel5');
+        $objWriter->save('php://output');
     }
 }
