@@ -83,7 +83,7 @@
 <script type="text/javascript">
     $(".btn-next").click(function(){
         var order_type = $("input[name='order_type']:checked").val();
-        window.location.href = '/changepicorders/add/' + order_type;
+        window.location.href = '/houseschangepicorders/add/' + order_type;
     });
 </script>
 
