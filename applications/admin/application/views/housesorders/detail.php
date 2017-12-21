@@ -352,7 +352,7 @@
                                                     <?php foreach($info['change_pic_record'] as $value):?>
                                                     <tr>
                                                         <td class="center"><?php echo date('Y-m-d', strtotime($value['create_time']));?></td>
-                                                        <td class="center"><?php echo count(explode(',', $value['point_ids']));?>个点位</td>
+                                                        <td class="center"><?php echo count(array_unique(explode(',', $value['point_ids'])));?>个点位</td>
                                                         <td class="center">
                                                             <?php 
                                                                 switch ($value['order_status']) {
@@ -388,7 +388,7 @@
                                                         </td>
                                                         <td class="center">
                                                             <div class="visible-md visible-lg hidden-sm hidden-xs action-buttons">
-                                                                <a class="green tooltip-info" href="/changepicorders/detail/<?php echo $value['id'];?>"  data-rel="tooltip" data-placement="top" title="" data-original-title="详情">
+                                                                <a class="green tooltip-info" href="/houseschangepicorders/detail/<?php echo $value['id'];?>"  data-rel="tooltip" data-placement="top" title="" data-original-title="详情">
                                                                     <i class="icon-eye-open bigger-130"></i>
                                                                 </a> 
                                                             </div>

@@ -684,17 +684,17 @@ class Housesorders extends MY_Controller{
 //         $data['number'] = array_column($points, 'counts', 'media_id');
 
         //换画记录
-        //$data['info']['change_pic_record'] = $this->Mchange_pic_orders->get_order_lists(array('A.order_code' => $data['info']['order_code']));
+        $data['info']['change_pic_record'] = $this->Mhouses_change_pic_orders->get_order_lists(array('A.order_code' => $data['info']['order_code']));
 
         //换点记录
-//         $data['info']['change_points_record'] = $this->Mchange_points_record->get_lists('*', array('order_id' => $id), array('operate_time' => 'desc'));
-//         foreach ($data['info']['change_points_record'] as $key => $value) {
-//             $remove_points = $this->Mpoints->get_lists('points_code', array('in' => array('id' => explode(',', $value['remove_points']))));
-//             $data['info']['change_points_record'][$key]['remove_points'] = implode(',', array_column($remove_points, 'points_code'));
+        $data['info']['change_points_record'] = $this->Mhouses_change_points_record->get_lists('*', array('order_id' => $id), array('operate_time' => 'desc'));
+        foreach ($data['info']['change_points_record'] as $key => $value) {
+            $remove_points = $this->Mhouses_points->get_lists('code', array('in' => array('id' => explode(',', $value['remove_points']))));
+            $data['info']['change_points_record'][$key]['remove_points'] = implode(',', array_column($remove_points, 'code'));
 
-//             $add_points= $this->Mpoints->get_lists('points_code', array('in' => array('id' => explode(',', $value['add_points']))));
-//             $data['info']['change_points_record'][$key]['add_points'] = implode(',', array_column($add_points, 'points_code'));
-//         }
+            $add_points= $this->Mhouses_points->get_lists('code', array('in' => array('id' => explode(',', $value['add_points']))));
+            $data['info']['change_points_record'][$key]['add_points'] = implode(',', array_column($add_points, 'code'));
+        }
 
         if($data['info']['order_type'] == 3 || $data['info']['order_type'] == 4){
             $data['status_text'] = C('order.order_status.led_text');
