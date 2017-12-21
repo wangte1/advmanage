@@ -154,17 +154,9 @@
                                                                         <thead>
                                                                             <tr>
                                                                                 <th class="col-sm-2">点位编号</th>
-                                                                                <th class="col-sm-3">媒体名称</th>
-                                                                                <th class="col-sm-3">规格</th>
-                                                                                <?php if($order_type == 1):?>
-                                                                                <th class="col-sm-2">
-                                                                                    面数
-                                                                                    <select class="make-counts">
-                                                                                        <option value="1">单面</option>
-                                                                                        <option value="2" selected>双面</option>
-                                                                                    </select>
-                                                                                </th>
-                                                                                <?php endif;?>
+                                                                                <th class="col-sm-3">楼盘名称</th>
+                                                                                <th class="col-sm-3">楼盘区域</th>
+                                                                                <th class="col-sm-2">规格</th>
                                                                                 <th class="col-sm-2"><button class="btn btn-xs btn-info select-all" type="button" data-id="3">选择全部<i class="icon-arrow-right icon-on-right"></i></button></th>
                                                                             </tr>
                                                                         </thead>
@@ -173,7 +165,7 @@
                                                                 <div class="div-tbody">
                                                                     <table id="sample-table-1" class="table table-striped table-bordered table-hover">
                                                                         <tbody id="points_lists">
-                                                                            <?php if(isset($points_lists)):?>
+                                                                            <!--<?php if(isset($points_lists)):?>
                                                                                 <?php foreach($points_lists as $value):?>
                                                                                 <tr point-id="<?php echo $value['id'];?>">
                                                                                     <td class="col-sm-2"><?php echo $value['points_code'];?></td>
@@ -185,7 +177,7 @@
                                                                                     <td class="col-sm-2"><button class="btn btn-xs btn-info do-sel" type="button" data-id="<?php echo $value['id'];?>">选择<i class="icon-arrow-right icon-on-right"></i></button></td>
                                                                                 </tr>
                                                                                 <?php endforeach;?>
-                                                                            <?php endif;?>
+                                                                            <?php endif;?>-->
                                                                         </tbody>
                                                                     </table>
                                                                 </div>
@@ -415,11 +407,9 @@
                                                 <thead>
                                                     <tr>
                                                         <th class="col-sm-2">点位编号</th>
-                                                        <th class="col-sm-3">媒体名称</th>
-                                                        <th class="col-sm-3">规格</th>
-                                                        <?php if($order_type == 1):?>
-                                                        <th class="col-sm-2">面数</th>
-                                                        <?php endif;?>
+                                                        <th class="col-sm-3">楼盘名称</th>
+                                                        <th class="col-sm-3">楼盘区域</th>
+                                                        <th class="col-sm-2">规格</th>
                                                         <th class="col-sm-2"><button class="btn btn-xs btn-info remove-all" type="button" data-id="3">移除全部<i class="fa fa-remove" aria-hidden="true"></i></button></th>
                                                     </tr>
                                                 </thead>
@@ -428,7 +418,7 @@
                                         <div class="div-tbody" style="height: 1466px">
                                             <table id="sample-table-1" class="table table-striped table-bordered table-hover">
                                                 <tbody id="selected_points">
-                                                    <?php if(isset($selected_points)):?>
+                                                    <!--<?php if(isset($selected_points)):?>
                                                         <?php foreach($selected_points as $value):?>
                                                         <tr point-id="<?php echo $value['id'];?>">
                                                             <td class="col-sm-2"><?php echo $value['points_code'];?></td>
@@ -440,7 +430,7 @@
                                                             <td class="col-sm-2"><button class="btn btn-xs btn-info do-sel" type="button" data-id="<?php echo $value['id'];?>">移除<i class="fa fa-remove" aria-hidden="true"></i></button></td>
                                                         </tr>
                                                         <?php endforeach;?>
-                                                    <?php endif;?>
+                                                    <?php endif;?>-->
                                                 </tbody>
                                             </table>
                                         </div>
@@ -459,10 +449,190 @@
 <?php $this->load->view("common/footer");?>
 <script src="<?php echo css_js_url('bootstrap-timepicker.min.js','admin');?>"></script>
 <script src="<?php echo css_js_url('select2.min.js','admin');?>"></script>
-<script src="<?php echo css_js_url('changepicorder.js','admin');?>"></script>
+<!-- <script src="<?php echo css_js_url('changepicorder.js','admin');?>"></script>-->
 <script type="text/javascript">
     var order_type = "<?php echo $order_type;?>";
     $('[data-rel=popover]').popover({html:true});
+
+
+    $(function(){
+    	$(".select2").css('width','220px').select2({allowClear:true});
+
+        $('#timepicker1').timepicker({
+            minuteStep: 1,
+            showSeconds: true,
+            showMeridian: false,
+            defaultTime: '18:00:00'
+        }).next().on(ace.click_event, function(){
+            $(this).prev().focus();
+        });
+
+        //根据订单编号查询订单信息点位列表
+        $('.search-point').click(function(){
+            if ($("input[name='order_code']").val()) {
+                $.post('/houseschangepicorders/get_points', {order_code: $("input[name='order_code']").val(), order_type: $("input[name='order_type']").val()}, function(data){
+					console.log(data);
+
+                    if (data.flag && data.points_lists.length > 0) {
+                        //订单信息显示
+                        $("#order_info").css('display', 'block');
+                        $("#order_type").html(data.order_info['order_type']);
+                        $("#points").html(data.count+"个点位");
+                        $("#price").html(data.order_info['total_price']+'元');
+                        $("#customer_name").html(data.order_info['name']);
+                        $("#sales_name").html(data.order_info['sales_name']);
+                        $("#sales_mobile").html(data.order_info['sales_mobile']);
+                        $("#release_time").html(data.order_info['release_start_time']+'至'+data.order_info['release_end_time']);
+                        $("#order_time").html(data.order_info['create_time']);
+
+                        //点位列表显示
+                        $("#points_lists").empty();
+                        var lists = data.points_lists;
+                        var html = '';
+                        for (var i = 0; i < lists.length; i++) {
+                            html += '<tr point-id="'+lists[i]['id']+'">';
+                            html += '<td class="col-sm-2" class="col-sm-2">' + lists[i]['code'] + '</td>';
+                            html += '<td class="col-sm-3">' + lists[i]['houses_name'] + '</td>';
+                            html += '<td class="col-sm-3">' + lists[i]['houses_area_name'] + '</td>';
+                            html += '<td class="col-sm-2">' + lists[i]['size'] + '</td>';
+                            
+                            var point_id = lists[i]['id'];
+                            var point_ids_arr = $('input[name="point_ids"]').val().split(',');
+                            if ($.inArray(point_id, point_ids_arr) != -1) {
+                                html += '<td class="col-sm-2"><button class="btn btn-xs btn-default do-sel" type="button" data-id="'+lists[i]['id']+'" disabled>已选择</button></td>';
+                            } else {
+                                html += '<td class="col-sm-2"><button class="btn btn-xs btn-info do-sel" type="button" data-id="'+lists[i]['id']+'">选择<i class="icon-arrow-right icon-on-right"></i></button></td>';
+                            }
+                            
+                        }
+                        $("#all_points_num").html(data.count);
+                        $("#points_lists").append(html);
+                    } 
+                });
+            }
+        });
+
+      //选择点位
+        $('#points_lists').on('click', '.do-sel', function(){
+            $(this).parent().parent().appendTo($("#selected_points"));
+            $("#selected_points_num").html(Number($("#selected_points_num").text()) + 1);  
+
+            if (order_type == 1) {
+                var numObj = $(this).parent().parent().find('td:eq(3)');
+                var inputVal = numObj.children().val();
+                numObj.text(inputVal);
+                //$("input[name='point_ids']").after('<input type="hidden" name="make_num['+$(this).parent().parent().attr('point-id')+']" value="'+inputVal+'">');
+            } else if (order_type == 2) { //高杆一个点位只对应一张
+                //$("input[name='point_ids']").after('<input type="hidden" name="make_num['+$(this).parent().parent().attr('point-id')+']" value="1">');
+            }
+           
+            $("#selected_points button").html('移除<i class="fa fa-remove" aria-hidden="true"></i>');
+            var point_ids = $("input[name='point_ids']").val() ? $("input[name='point_ids']").val() + ',' + $(this).parent().parent().attr('point-id') :  $(this).parent().parent().attr('point-id');
+            $("input[name='point_ids']").val(point_ids);
+        });
+
+
+      //选择点位
+        $('#points_lists').on('click', '.do-sel', function(){
+            $(this).parent().parent().appendTo($("#selected_points"));
+            $("#selected_points_num").html(Number($("#selected_points_num").text()) + 1);  
+
+           	var numObj = $(this).parent().parent().find('td:eq(3)');
+            var inputVal = numObj.children().val();
+            numObj.text(inputVal);
+            //$("input[name='point_ids']").after('<input type="hidden" name="make_num['+$(this).parent().parent().attr('point-id')+']" value="'+inputVal+'">');
+            
+            $("#selected_points button").html('移除<i class="fa fa-remove" aria-hidden="true"></i>');
+            var point_ids = $("input[name='point_ids']").val() ? $("input[name='point_ids']").val() + ',' + $(this).parent().parent().attr('point-id') :  $(this).parent().parent().attr('point-id');
+
+
+            
+            $("input[name='point_ids']").val(point_ids);
+        });
+
+      	//移除点位
+        $('#selected_points').on('click', '.do-sel', function(){
+            $(this).parent().parent().appendTo($("#points_lists"));
+            $("#selected_points_num").html(Number($("#selected_points_num").html()) - 1);
+
+            
+            //$('input[name="make_num['+$(this).parent().parent().attr('point-id')+']"]').remove();
+           
+
+            $("#points_lists button").html('选择<i class="icon-arrow-right icon-on-right"></i>');
+
+            var point_ids = [];
+            var _self = $(this);
+            $("#selected_points tr").each(function(){
+                point_ids.push($(this).attr('point-id'));
+            });
+            var ids = point_ids.length >= 1 ? point_ids.join(',') : '';
+            $("input[name='point_ids']").val(ids);
+        });
+
+      	//选择全部
+        $(".select-all").click(function(){
+            $("#points_lists tr").each(function(){
+                $(this).appendTo($("#selected_points"));
+                $("#selected_points_num").html(Number($("#selected_points_num").text()) + 1);  
+
+                var numObj = $(this).find('td:eq(3)');
+                var inputVal = numObj.children().val();
+                numObj.text(inputVal);
+                //$("input[name='point_ids']").after('<input type="hidden" name="make_num['+$(this).attr('point-id')+']" value="'+inputVal+'">');
+
+                $("#selected_points button").html('移除<i class="fa fa-remove" aria-hidden="true"></i>');
+                var point_ids = $("input[name='point_ids']").val() ? $("input[name='point_ids']").val() + ',' + $(this).attr('point-id') :  $(this).attr('point-id');
+                $("input[name='point_ids']").val(point_ids);
+            });
+        });
+
+      	//移除全部
+        $(".remove-all").click(function(){
+            $("#selected_points tr").each(function(){
+                $(this).appendTo($("#points_lists"));
+                $("#selected_points_num").html('0');
+
+                //$('input[name="make_num['+$(this).attr('point-id')+']"]').remove();
+
+                $("input[name='point_ids']").val('');
+                $("#points_lists button").html('选择<i class="icon-arrow-right icon-on-right"></i>');
+            });
+        });
+
+        //是否打小样
+        $("input[name='is_sample']").change(function(){
+            if($(this).val() == 0) {
+                $("input[name='sample_color']").val("");
+                $("input[name='sample_color']").hide(); 
+                // $("input[name='sample_color']").removeAttr('required');
+            } else{
+                // $("input[name='sample_color']").attr('required', true);
+                $("input[name='sample_color']").show();
+            }
+        });
+
+        //保存
+        $(".btn-save").click(function(){
+            var point_ids = $("input[name='point_ids']").val();
+            if (point_ids == '') {
+                var d = dialog({
+                    title: '提示信息',
+                    content: '您还没有选择点位哦！',
+                    okValue: '确定',
+                    ok: function () {
+
+                    }
+                });
+                d.width(320);
+                d.showModal();
+                return false;
+            }
+        });
+    });
+    
+
+    
 </script>
 
 <?php if(isset($order_code)):?>

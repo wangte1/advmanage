@@ -48,7 +48,6 @@ class Housesorders extends MY_Controller{
         $this->data['code'] = 'horders_manage';
         $this->data['active'] = 'houses_orders_list';
 
-//         $this->data['medias'] = $this->Mmedias->get_lists("id, code, name", array('is_del' => 0), array('sort' => 'asc'));  //媒体
         $this->data['customers'] = $this->Mhouses_customers->get_lists("id, name", array('is_del' => 0));  //客户
         $this->data['make_company'] = $this->Mmake_company->get_lists('id, company_name, business_scope', array('is_del' => 0));  //制作公司
         $this->data['order_type_text'] = C('order.houses_order_type'); //订单类型
@@ -101,7 +100,7 @@ class Housesorders extends MY_Controller{
         $data['page'] = $page;
 
         //获取分页
-        $pageconfig['base_url'] = "/orders";
+        $pageconfig['base_url'] = "/housesorders";
         $pageconfig['total_rows'] = $data_count;
         $this->pagination->initialize($pageconfig);
         $data['pagestr'] = $this->pagination->create_links(); // 分页信息

@@ -82,7 +82,7 @@
                                                     <div class="profile-info-name"> 客户 </div>
 
                                                     <div class="profile-info-value">
-                                                        <span class="editable editable-click"><?php echo $info['customer_name'];?><?php if($info['project_name']) { echo '-'.$info['project_name']; } ?></span>
+                                                        <span class="editable editable-click"><?php echo $info['customer_name'];?></span>
                                                     </div>
                                                 </div>
 
@@ -223,10 +223,10 @@
                                                     <div class="profile-info-name"> 联系单与确认函</div>
 
                                                     <div class="profile-info-value">
-                                                        <a href="/changepicorders/contact_list/<?php echo $info['id'];?>" target="_blank">查看联系单</a>
+                                                        <a href="/houseschangepicorders/contact_list/<?php echo $info['id'];?>" target="_blank">查看联系单</a>
 
                                                         <?php if($info['order_status'] > 6):?>
-                                                        <a href="/changepicorders/confirmation/<?php echo $info['id'];?>" target="_blank">查看确认函</a>
+                                                        <a href="/houseschangepicorders/confirmation/<?php echo $info['id'];?>" target="_blank">查看确认函</a>
                                                         <?php endif;?>
                                                     </div>
                                                 </div>
@@ -242,16 +242,20 @@
                                                 <thead>
                                                     <tr>
                                                         <th class="center">点位编号</th>
-                                                        <th>媒体名称</th>
+                                                        <th>楼盘名称</th>
+                                                        <th>楼盘区域</th>
+                                                        <th>地址</th>
                                                         <th class="hidden-xs">规格</th>
                                                     </tr>
                                                 </thead>
                                                 <tbody>
                                                     <?php foreach($info['selected_points'] as $value):?>
                                                     <tr>
-                                                        <td class="center"><?php echo $value['points_code'];?></td>
-                                                        <td><?php echo $value['media_name'].'('.$value['media_code'].')';?></td>
-                                                        <td><?php echo $value['size'];?><?php if($info['order_type'] == 1) { echo '('.$value['specification_name'].')'; }?></td>
+                                                        <td class="center"><?php echo $value['code'];?></td>
+                                                        <td><?php echo $value['houses_name'];?></td>
+                                                        <td><?php echo $value['houses_area_name'];?></td>
+                                                        <td><?php echo $value['addr'];?></td>
+                                                        <td><?php echo $value['size'];?></td>
                                                     </tr>
                                                     <?php endforeach;?>
                                                 </tbody>
@@ -269,7 +273,7 @@
                                                     <strong>
                                                         <i class="icon-warning-sign bigger-120"></i> 您还未上传广告画面！
                                                     </strong>
-                                                    <a class="btn btn-xs btn-info" href="/changepicorders/upload_adv_img/<?php echo $info['id'];?>">
+                                                    <a class="btn btn-xs btn-info" href="/houseschangepicorders/upload_adv_img/<?php echo $info['id'];?>">
                                                         立即上传
                                                         <i class="icon-arrow-right icon-on-right"></i>
                                                     </a>
@@ -279,7 +283,7 @@
                                         <div id="inspect_img" class="tab-pane">
                                             <?php if(count($info['inspect_img']) > 0):?>
                                                 <?php if($info['order_status'] != 8):?>
-                                                <a class="btn btn-xs btn-info" href="/changepicorders/check_upload_img/<?php echo $info['id'];?>" style="margin-bottom:10px">
+                                                <a class="btn btn-xs btn-info" href="/houseschangepicorders/check_upload_img/<?php echo $info['id'];?>" style="margin-bottom:10px">
                                                     修改验收图片
                                                     <i class="icon-arrow-right icon-on-right"></i>
                                                 </a>
@@ -287,36 +291,24 @@
                                                 <table class="table table-striped table-bordered table-hover">
                                                     <thead>
                                                         <tr>
-                                                            <th class="col-xs-2 center">媒体名称</th>
-                                                            <?php if($info['order_type'] == '3' || $info['order_type'] == '4'):?>
-                                                            <th class="col-xs-5 center">第一张正面图</th>
-                                                            <th class="col-xs-5 center">第二章正面图</th>
-                                                            <?php else:?>
-                                                            <th class="col-xs-5 center">正面图</th>
-                                                            <th class="col-xs-5 center">背面图</th>
-                                                            <?php endif;?>
+                                                            <th class="col-xs-2 center">点位编号</th>
+                                                            <th class="col-xs-2 center">楼盘名称</th>
+                                                            <th class="col-xs-2 center">楼盘区域</th>
+                                                            <th class="col-xs-2 center">详细地址</th>
+                                                            <th class="col-xs-5 center">图片</th>
+                                                            
                                                         </tr>
                                                     </thead>
                                                     <tbody>
                                                         <?php foreach ($info['inspect_img'] as $key => $value) :?>
-                                                        <?php 
-                                                            $str = '';
-                                                            if ($info['order_type'] == 1) {
-                                                                $str .= ' '.$value['media_code'].'（'.$number[$value['media_id']].'套）';
-                                                            } elseif ($info['order_type'] == 2) {
-                                                                $str .= ' '.$value['media_code'];
-                                                            }
-                                                        ?>
                                                         <tr>
-                                                            <td style="text-align: center;vertical-align: middle;"><?php echo $value['media_name'].$str;?></td>
+                                                            <td style="text-align: center;vertical-align: middle;"><?php echo $value['point_code'];?></td>
+                                                            <td style="text-align: center;vertical-align: middle;"><?php echo $value['houses_name'];?></td>
+                                                            <td style="text-align: center;vertical-align: middle;"><?php echo $value['houses_area_name'];?></td>
+                                                            <td style="text-align: center;vertical-align: middle;"><?php echo $value['addr'];?></td>
                                                             <td class="center">
                                                                 <a href="<?php echo $value['front_img'];?>" target="_blank" title="点击查看原图">
                                                                     <img style="width: 215px; height: 150px" src="<?php echo $value['front_img'];?>">
-                                                                </a>
-                                                            </td>
-                                                            <td class="center">
-                                                                <a href="<?php echo $value['back_img'];?>" target="_blank" title="点击查看原图">
-                                                                    <img style="width: 215px; height: 150px" src="<?php echo $value['back_img'];?>">
                                                                 </a>
                                                             </td>
                                                         </tr>
@@ -329,7 +321,7 @@
                                                         <i class="icon-warning-sign bigger-120"></i> 您还未上传验收图片！
                                                     </strong>
                                                     <?php if($info['order_status'] == 6):?>
-                                                    <a class="btn btn-xs btn-info" href="/changepicorders/check_upload_img/<?php echo $info['id'];?>">
+                                                    <a class="btn btn-xs btn-info" href="/houseschangepicorders/check_upload_img/<?php echo $info['id'];?>">
                                                         立即上传
                                                         <i class="icon-arrow-right icon-on-right"></i>
                                                     </a>
@@ -434,7 +426,7 @@
     $(".btn-export").click(function(){
         var id = $(this).attr('data-id');
         var type = $(this).attr('data-type');
-        window.location.href = '/changepicorders/export/' + id + '/' + type;
+        window.location.href = '/houseschangepicorders/export/' + id + '/' + type;
     });
 
     //更新订单状态
@@ -448,7 +440,7 @@
                 content: '请先上传广告画面！',
                 okValue: '立即上传',
                 ok: function () {
-                    window.location.href = '/changepicorders/upload_adv_img/<?php echo $info["id"];?>';
+                    window.location.href = '/houseschangepicorders/upload_adv_img/<?php echo $info["id"];?>';
                 },
             });
             d.width(320);
@@ -462,7 +454,7 @@
                 content: '您还没有上传验收图片进行验收！',
                 okValue: '立即上传',
                 ok: function () {
-                    window.location.href = '/changepicorders/check_upload_img/<?php echo $info["id"];?>';
+                    window.location.href = '/houseschangepicorders/check_upload_img/<?php echo $info["id"];?>';
                 },
             });
             d.width(320);
@@ -474,7 +466,7 @@
         $("#lock-add").click(function(){
             var remark = $("#remark").val();
              $.ajax( {
-                url:'/changepicorders/ajax_update_status',
+                url:'/houseschangepicorders/ajax_update_status',
                 data: {
                     'id':order_id,
                     'status':status,

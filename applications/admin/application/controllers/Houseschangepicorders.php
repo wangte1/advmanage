@@ -9,27 +9,26 @@ class Houseschangepicorders extends MY_Controller{
     public function __construct(){
         parent::__construct();
         $this->load->model([
-             'Model_orders' => 'Morders',
-             'Model_change_pic_orders' => 'Mchangepicorders',
-             'Model_medias' => 'Mmedias',
-             'Model_customers' => 'Mcustomers',
-             'Model_customer_project' => 'Mcustomer_project',
+             'Model_houses_orders' => 'Mhouses_orders',
+             'Model_houses_change_pic_orders' => 'Mhouses_changepicorders',
+             //'Model_medias' => 'Mmedias',
+             'Model_houses_customers' => 'Mhouses_customers',
              'Model_admins' => 'Madmins',
-             'Model_points' => 'Mpoints',
+             'Model_houses_points' => 'Mhouses_points',
              'Model_make_company' => 'Mmake_company',
              'Model_status_operate_time' => 'Mstatus_operate_time',
              'Model_inspect_images' => 'Minspect_images',
-             'Model_order_inspect_images' => 'Morder_inspect_images',
+             'Model_houses_order_inspect_images' => 'Mhouses_order_inspect_images',
              'Model_salesman' => 'Msalesman',
-             'Model_points_make_num' => 'Mpoints_make_num',
+             //'Model_points_make_num' => 'Mpoints_make_num',
         ]);
         $this->data['code'] = 'horders_manage';
         $this->data['active'] = 'houses_change_pic_order_list';
 
-        $this->data['medias'] = $this->Mmedias->get_lists("id, code, name", array('is_del' => 0));  //站台
-        $this->data['customers'] = $this->Mcustomers->get_lists("id, customer_name", array('is_del' => 0));  //客户
+        //$this->data['medias'] = $this->Mmedias->get_lists("id, code, name", array('is_del' => 0));  //站台
+        $this->data['customers'] = $this->Mhouses_customers->get_lists("id, name", array('is_del' => 0));  //客户
         $this->data['make_company'] = $this->Mmake_company->get_lists('id, company_name, business_scope', array('is_del' => 0));  //制作公司
-        $this->data['order_type_text'] = C('order.order_type'); //订单类型
+        $this->data['order_type_text'] = C('order.houses_order_type'); //订单类型
     }
     
 
@@ -53,13 +52,13 @@ class Houseschangepicorders extends MY_Controller{
         $data['customer_id'] = $this->input->get('customer_id');
         $data['order_status'] = $this->input->get('order_status');
 
-        $data['list'] = $this->Mchangepicorders->get_order_lists($where, ($page-1)*$pageconfig['per_page'], $pageconfig['per_page']);
-        $data_count = $this->Mchangepicorders->get_order_count($where);
+        $data['list'] = $this->Mhouses_changepicorders->get_order_lists($where, ($page-1)*$pageconfig['per_page'], $pageconfig['per_page']);
+        $data_count = $this->Mhouses_changepicorders->get_order_count($where);
         $data['data_count'] = $data_count;
         $data['page'] = $page;
 
         //获取分页
-        $pageconfig['base_url'] = "/changepicorders";
+        $pageconfig['base_url'] = "/houseschangepicorders";
         $pageconfig['total_rows'] = $data_count;
         $this->pagination->initialize($pageconfig);
         $data['pagestr'] = $this->pagination->create_links(); // 分页信息
@@ -78,8 +77,7 @@ class Houseschangepicorders extends MY_Controller{
         $data = $this->data;
         if (IS_POST) {
             $post_data = $this->input->post();
-            $make_num_arr = isset($post_data['make_num']) ? $post_data['make_num'] : array(); //每个点位对应制作张数
-
+            
             if (isset($post_data['make_complete_time'])) {
                 $post_data['make_complete_time'] = $post_data['make_complete_time'].' '.$post_data['hour'].':'.$post_data['minute'].':'.$post_data['second'];
             }
@@ -87,24 +85,14 @@ class Houseschangepicorders extends MY_Controller{
             $post_data['create_user'] = $post_data['update_user'] = $data['userInfo']['id'];
             $post_data['create_time'] = $post_data['update_time'] = date('Y-m-d H:i:s');
             unset($post_data['order_type'], $post_data['media_id'], $post_data['make_num'], $post_data['hour'], $post_data['minute'], $post_data['second']);
-            $id = $this->Mchangepicorders->create($post_data);
+            $id = $this->Mhouses_changepicorders->create($post_data);
             if ($id) {
-                //把制作张数写进点位制作张数表t_points_make_num，方便生成联系单的时候计算张数(只针对公交灯箱和户外高杆)
-                if ($order_type == 1 || $order_type == 2) {
-                    foreach ($make_num_arr as $key => $value) {
-                        $make_num_data['order_id'] = $id;
-                        $make_num_data['point_id'] = $key;
-                        $make_num_data['make_num'] = $value;
-                        $make_num_data['type'] = 2;
-                        $this->Mpoints_make_num->create($make_num_data);
-                    }
-                }
 
                 $this->write_log($data['userInfo']['id'], 1, "新增".$data['order_type_text'][$order_type]."换画订单,订单id【".$id."】");
                 
-                $this->success("添加成功！","/changepicorders");
+                $this->success("添加成功！","/houseschangepicorders");
             } else {
-                $this->success("添加失败！","/changepicorders");
+                $this->success("添加失败！","/houseschangepicorders");
             }
         } else {
             $data['order_type'] = $order_type;
@@ -135,20 +123,20 @@ class Houseschangepicorders extends MY_Controller{
         );
 
         //订单信息
-        $order = $this->Morders->get_order_lists($where)[0];
+        $order = $this->Mhouses_orders->get_order_lists($where)[0];
 
         $where_point['in']['A.id'] = explode(',', $order['point_ids']);
-        $points_lists = $this->Mpoints->get_points_lists($where_point);
-        if ($points_lists) {
-            $make_num = $this->Mpoints_make_num->get_lists('order_id, point_id, make_num', array('order_id' => $order['id'], 'type' => 1));
-            foreach ($points_lists as $key => $value) {
-                foreach ($make_num as $k => $v) {
-                    if ($v['point_id'] == $value['id']) {
-                        $points_lists[$key]['make_num'] = $v['make_num'];
-                    }
-                }
-            }
-        }
+        $points_lists = $this->Mhouses_points->get_points_lists($where_point);
+//         if ($points_lists) {
+//             $make_num = $this->Mpoints_make_num->get_lists('order_id, point_id, make_num', array('order_id' => $order['id'], 'type' => 1));
+//             foreach ($points_lists as $key => $value) {
+//                 foreach ($make_num as $k => $v) {
+//                     if ($v['point_id'] == $value['id']) {
+//                         $points_lists[$key]['make_num'] = $v['make_num'];
+//                     }
+//                 }
+//             }
+//         }
         $order['order_type'] = $this->data['order_type_text'][$order['order_type']];
         $this->return_json(array('flag' => true, 'order_info' => $order, 'points_lists' => $points_lists, 'count' => count($points_lists)));
     }
@@ -244,8 +232,8 @@ class Houseschangepicorders extends MY_Controller{
      */
     public function contact_list($id) {
         $data = $this->data;
-        $data['info'] = $this->Mchangepicorders->get_one("*", array('id' => $id));
-        $order = $this->Morders->get_one('*', array('order_code' => $data['info']['order_code']));
+        $data['info'] = $this->Mhouses_changepicorders->get_one("*", array('id' => $id));
+        $order = $this->Mhouses_orders->get_one('*', array('order_code' => $data['info']['order_code']));
 
         //甲方负责人
         $admin = $this->Madmins->get_one('fullname, tel', array('id' => $data['info']['create_user']));
@@ -253,10 +241,7 @@ class Houseschangepicorders extends MY_Controller{
         $data['info']['A_contact_mobile'] = $admin['tel'];
 
         //客户名称
-        $data['info']['customer_name'] = $this->Mcustomers->get_one('customer_name', array('id' => $order['customer_id']))['customer_name'];
-        
-        $project = $this->Mcustomer_project->get_one('project_name', array('id' => $order['project_id']));
-        $data['info']['project_name'] = $project ? $project['project_name'] : '';
+        $data['info']['customer_name'] = $this->Mhouses_customers->get_one('name', array('id' => $order['customer_id']))['name'];
 
         $data['info']['release_start_time'] = $order['release_start_time'];
         $data['info']['release_end_time'] = $order['release_end_time'];
@@ -279,19 +264,13 @@ class Houseschangepicorders extends MY_Controller{
             $data['high_count'] = $make_info['high_count'];
             $data['total_num'] = $make_info['total_num'];
 
-            if ($data['info']['order_type'] == 1) {         //灯箱
-                $this->load->view('orders/contact_list/light', $data);
-            } elseif ($data['info']['order_type'] == 2) {   //户外高杆
-                $data['media_list'] = $this->Mpoints->get_make_high(array('in' => array('B.id' => explode(',', $data['info']['point_ids']))));
-                $this->load->view('orders/contact_list/high', $data);
+        	if ($data['info']['order_type'] == '1') {    //冷光灯箱
+                $this->load->view('housesorders/contact_list/light', $data);
+            } elseif ($data['info']['order_type'] == '2') {   //广告机
+                //$data['media_list'] = $this->Mhouses_points->get_make_high(array('in' => array('B.id' => explode(',', $data['info']['point_ids']))));
+                //$this->load->view('housesorders/contact_list/high', $data);
+            	$this->load->view('housesorders/contact_list/light', $data);
             }
-
-        } elseif ($data['info']['order_type'] == '3' || $data['info']['order_type'] == '4') {   //LED
-            if (empty($data['info']['adv_img'])) {
-                $this->success("请先上传广告画面！","/orders");
-            }
-            $data['adv_img'] = explode(',', $data['info']['adv_img']);
-            $this->load->view('housesorders/contact_list/led', $data);
 
         }
 
@@ -303,17 +282,17 @@ class Houseschangepicorders extends MY_Controller{
      */
     public function confirmation($id) {
         $data = $this->data;
-        $data['info'] = $this->Mchangepicorders->get_one("*", array('id' => $id));
+        $data['info'] = $this->Mhouses_changepicorders->get_one("*", array('id' => $id));
 
-        $images = $this->Morder_inspect_images->get_lists("*", array('order_id' => $id, 'type' => 2));
+        $images = $this->Mhouses_order_inspect_images->get_lists("*", array('order_id' => $id, 'type' => 2));
         if (!$images) {
-            $this->success("请先上传验收图片！","/changepicorders");
+            $this->success("请先上传验收图片！","/houseschangepicorders");
         }
 
-        $order = $this->Morders->get_one('*', array('order_code' => $data['info']['order_code']));
+        $order = $this->Mhouses_orders->get_one('*', array('order_code' => $data['info']['order_code']));
 
         //甲方-委托方（客户名称）
-        $data['info']['customer_name'] = $this->Mcustomers->get_one('customer_name', array('id' => $order['customer_id']))['customer_name'];
+        $data['info']['customer_name'] = $this->Mhouses_customers->get_one('name', array('id' => $order['customer_id']))['name'];
             
         //投放起止时间
         $data['info']['release_start_time'] = $order['release_start_time'];
@@ -323,11 +302,11 @@ class Houseschangepicorders extends MY_Controller{
         $data['complete_date'] = date('Y年m月d日', strtotime($data['info']['draw_finish_time']));
 
         /********验收图片**********/
-        $data['inspect_images'] = $this->Morder_inspect_images->get_inspect_img(array('A.order_id' => $id, 'A.type' => 2));
+        $data['inspect_images'] = $this->Mhouses_order_inspect_images->get_inspect_img(array('A.order_id' => $id, 'A.type' => 2));
 
         //获取点位列表
         $where['in'] = array('B.id' => explode(',', $data['info']['point_ids']));
-        $data['points'] = $this->Mpoints->get_confirm_points($where, array('A.id' => 'asc', 'B.id' => 'asc'), array('media_code', 'C.size'));
+        $data['points'] = $this->Mhouses_points->get_confirm_points($where, array('A.id' => 'asc', 'B.id' => 'asc'), array('media_code', 'C.size'));
 
         $data['info']['order_type'] = $order['order_type'];
         if ($data['info']['order_type'] == '1') {    //灯箱
@@ -364,19 +343,16 @@ class Houseschangepicorders extends MY_Controller{
      */
     public function detail($id){
         $data = $this->data;
-        $data['info'] = $this->Mchangepicorders->get_one('*',array('id' => $id));
+        $data['info'] = $this->Mhouses_changepicorders->get_one('*',array('id' => $id));
 
-        $order = $this->Morders->get_one('*', array('order_code' => $data['info']['order_code']));
+        $order = $this->Mhouses_orders->get_one('*', array('order_code' => $data['info']['order_code']));
 
         //订单总价
         $data['info']['total_price'] = $order['total_price'];
 
         //客户名称
-        $data['info']['customer_name'] = $this->Mcustomers->get_one('customer_name', array('id' => $order['customer_id']))['customer_name'];
+        $data['info']['customer_name'] = $this->Mhouses_customers->get_one('name', array('id' => $order['customer_id']))['name'];
 
-        //项目
-        $project = $this->Mcustomer_project->get_one('project_name', array('id' => $order['project_id']));
-        $data['info']['project_name'] = $project ? $project['project_name'] : '';
 
         //业务员
         $data['info']['salesman'] = $this->Msalesman->get_one('name, phone_number', array('id' => $order['sales_id']));
@@ -386,18 +362,18 @@ class Houseschangepicorders extends MY_Controller{
         $data['info']['release_end_time'] = $order['release_end_time'];
 
         //换画点位
-        $data['info']['selected_points'] = $this->Mpoints->get_points_lists(array('in' => array('A.id' => explode(',', $data['info']['point_ids']))));
+        $data['info']['selected_points'] = $this->Mhouses_points->get_points_lists(array('in' => array('A.id' => explode(',', $data['info']['point_ids']))));
 
         //广告画面
         $data['info']['adv_img'] = $data['info']['adv_img'] ? explode(',', $data['info']['adv_img']) : array();
 
         //验收图片
-        $data['info']['inspect_img'] = $this->Morder_inspect_images->get_inspect_img(array('A.order_id' => $id, 'A.type' => 2));
+        $data['info']['inspect_img'] = $this->Mhouses_order_inspect_images->get_inspect_img(array('A.order_id' => $id, 'A.type' => 2));
 
         //每个媒体对应套数
-        $where_point['in'] = array('B.id' => explode(',', $data['info']['point_ids']));
-        $points = $this->Mpoints->get_confirm_points($where_point, array('A.id' => 'asc', 'B.id' => 'asc'), array('media_code', 'C.size'));
-        $data['number'] = array_column($points, 'counts', 'media_id');
+//         $where_point['in'] = array('B.id' => explode(',', $data['info']['point_ids']));
+//         $points = $this->Mhouses_points->get_confirm_points($where_point, array('A.id' => 'asc', 'B.id' => 'asc'), array('media_code', 'C.size'));
+//         $data['number'] = array_column($points, 'counts', 'media_id');
 
         $data['info']['order_type'] = $order['order_type'];
         if($data['info']['order_type'] == 3 || $data['info']['order_type'] == 4){
@@ -459,14 +435,14 @@ class Houseschangepicorders extends MY_Controller{
 
             $this->write_log($data['userInfo']['id'],2,"  更新订单:".$order_code."状态：".$status_text[$status]);
             //同时更新对应的订单
-            $result = $this->Mchangepicorders->update_info(array("order_status"=>$status),array("id"=>$id));
+            $result = $this->Mhouses_changepicorders->update_info(array("order_status"=>$status),array("id"=>$id));
             $this->return_success();
         }
     }
 
     private function get_make_info($data) {
         //制作数量
-        $make_num = $this->Mpoints->get_make_info(array('in' => array('A.id' => explode(',', $data['point_ids'])), 'C.order_id' => $data['id'], 'C.type' => 2));
+        $make_num = $this->Mhouses_points->get_make_info(array('in' => array('A.id' => explode(',', $data['point_ids'])), 'C.order_id' => $data['id'], 'C.type' => 2));
 
         //计算总套数和总张数
         $high_count = 0;
@@ -491,15 +467,15 @@ class Houseschangepicorders extends MY_Controller{
         if(IS_POST){
             $cover_img = $this->input->post("cover_img");
             $adv_img = implode(",",$cover_img);
-            $res = $this->Mchangepicorders->update_info(array("adv_img"=>$adv_img), array("id"=>$order_id));
+            $res = $this->Mhouses_changepicorders->update_info(array("adv_img"=>$adv_img), array("id"=>$order_id));
             if ($res) {
-                $this->success("保存广告画面成功！", "/changepicorders/detail/".$order_id);
+                $this->success("保存广告画面成功！", "/houseschangepicorders/detail/".$order_id);
             } else {
                 $this->error("操作失败！请重试！");
             }
         } else {
             //获取广告画面的图片
-            $info = $this->Mchangepicorders->get_one("adv_img",array("id"=>$order_id));
+            $info = $this->Mhouses_changepicorders->get_one("adv_img",array("id"=>$order_id));
             $data['adv_img'] = "";
             $data['order_id'] = $order_id;
             if($info['adv_img']){
@@ -516,64 +492,60 @@ class Houseschangepicorders extends MY_Controller{
      */
     public function check_upload_img($order_id){
         $data = $this->data;
-        $changeorder = $this->Mchangepicorders->get_one("*",array("id"=>$order_id));
+        $changeorder = $this->Mhouses_changepicorders->get_one("*",array("id"=>$order_id));
         if(IS_POST){
             $post_data = $this->input->post();
 
             foreach ($post_data as $key => $value) {
-                $where = array('order_id' => $order_id, 'media_id' => $key, 'type' => 2);
-                $img = $this->Morder_inspect_images->get_one('*', $where);
+                $where = array('order_id' => $order_id, 'point_id' => $key, 'type' => 2);
+                $img = $this->Mhouses_order_inspect_images->get_one('*', $where);
 
                 //如果是修改验收图片，则先删除该订单下所有验收图片，再重新添加
                 if ($img) {
-                    $this->Morder_inspect_images->delete($where);
+                    $this->Mhouses_order_inspect_images->delete($where);
                 }
 
                 if (isset($value['front_img']) && count($value['front_img']) > 0) {
                     foreach ($value['front_img'] as $k => $v) {
                         $insert_data['order_id'] = $order_id;
-                        $insert_data['media_id'] = $key;
+                        $insert_data['point_id'] = $key;
                         $insert_data['front_img'] = $v;
                         $insert_data['back_img'] = isset($value['back_img'][$k]) ? $value['back_img'][$k] : '';
                         $insert_data['type'] = 2;
                         $insert_data['create_user'] = $insert_data['update_user'] = $data['userInfo']['id'];
                         $insert_data['create_time'] = $insert_data['update_time'] = date('Y-m-d H:i:s');
-                        $this->Morder_inspect_images->create($insert_data);
+                        $this->Mhouses_order_inspect_images->create($insert_data);
                     }
                 }
             }
 
             //更新订单
-            $this->Mchangepicorders->update_info(array('sponsor' => $post_data['sponsor'], 'draw_finish_time' => $post_data['draw_finish_time']), array('id' => $order_id));
+            $this->Mhouses_changepicorders->update_info(array('sponsor' => $post_data['sponsor'], 'draw_finish_time' => $post_data['draw_finish_time']), array('id' => $order_id));
 
-            $this->write_log($data['userInfo']['id'], 2, "上传换画订单验收图片，订单id【".$order_id."】");
+            $this->write_log($data['userInfo']['id'], 2, "社区上传换画订单验收图片，订单id【".$order_id."】");
 
-            $this->success("保存验收图片成功！","/changepicorders/detail/".$order_id);
+            $this->success("保存验收图片成功！","/houseschangepicorders/detail/".$order_id);
             exit;
         }
 
         //获取该订单下面的所有站台
-        $points = $this->Mpoints->get_lists("media_id", array('in' => array("id"=>explode(",",$changeorder['point_ids']))));
-
-        $media_id = array_unique(array_column($points, "media_id"));
-
-        $data['media_list'] = $this->Mmedias->get_lists("id,name,code", array('in' => array("id"=>$media_id)));
+        $points = $this->Mhouses_points->get_points_lists(array('in' => array("A.id"=>explode(",",$changeorder['point_ids']))));
 
         //根据媒体ID获取对应的图片
         $data['images'] = "";
-        if($data['media_list']){
-            $where['in'] = array("media_id"=>array_column($data['media_list'],"id"));
+        if($points){
+            $where['in'] = array("point_id"=>array_column($points,"id"));
             $where['order_id'] = $order_id;
             $where['type'] = 2;
-            $data['images'] = $this->Morder_inspect_images->get_lists("*",$where);
+            $data['images'] = $this->Mhouses_order_inspect_images->get_lists("*",$where);
         }
 
         $list = array();
-        foreach($data['media_list'] as $key=>$val){
+        foreach($points as $key=>$val){
             $val['image'] = array();
             if($data['images']){
                 foreach($data['images'] as $k=>$v){
-                    if($val['id'] == $v['media_id']){
+                    if($val['id'] == $v['point_id']){
                         $val['image'][] = $v;
                     }
                 }
@@ -583,12 +555,8 @@ class Houseschangepicorders extends MY_Controller{
 
         $data['list'] = $list;
 
-        //每个媒体对应套数
-        $where_point['in'] = array('B.id' => explode(',', $changeorder['point_ids']));
-        $points = $this->Mpoints->get_confirm_points($where_point, array('A.id' => 'asc', 'B.id' => 'asc'), array('media_code', 'C.size'));
-        $data['number'] = array_column($points, 'counts', 'media_id');
 
-        $order = $this->Morders->get_one('*', array('order_code' => $changeorder['order_code']));
+        $order = $this->Mhouses_orders->get_one('*', array('order_code' => $changeorder['order_code']));
         $data['order_type'] = $order['order_type'];
         $data['order_info'] = $order;
         $data['order_info']['sponsor'] = $changeorder['sponsor'];
@@ -603,24 +571,18 @@ class Houseschangepicorders extends MY_Controller{
     /**
      * 导出换画点位列表
      */
-    public function export($id, $type) {
+public function export($id, $type) {
         //加载phpexcel
         $this->load->library("PHPExcel");
 
         //设置表头
-        if ($type == 1) {
-            $table_header =  array(
-                '点位编号'=>"points_code",
-                '站台名称'=>"media_name",
-                '规格'=>"spec",
-            );
-        } else {
-            $table_header =  array(
-                '点位编号'=>"points_code",
-                '高杆名称'=>"media_name",
-                '规格'=>"spec",
-            );
-        }
+        $table_header =  array(
+	        '点位编号'=>"code",
+	       	'楼盘名称'=>"houses_name",
+	        '楼盘区域'=>"houses_area_name",
+	        '地址'=>"addr",
+	        '规格'=>"size",
+       	);
 
         $i = 0;
         foreach($table_header as  $k=>$v){
@@ -629,33 +591,21 @@ class Houseschangepicorders extends MY_Controller{
             $i++;
         }
 
-        $changeorder = $this->Mchangepicorders->get_one('*', array('id' => $id));
-        $order = $this->Morders->get_one('*', array('order_code' => $changeorder['order_code']));
+        $order = $this->Mhouses_orders->get_one('*', array('id' => $id));
 
-        $where['in']['A.id'] = explode(',', $changeorder['point_ids']);
+        $where['in']['A.id'] = explode(',', $order['point_ids']);
 
-        $customers = array_column($this->Mcustomers->get_lists("id,customer_name", array('is_del' => 0)), 'customer_name', 'id'); //客户列表
+        $customers = array_column($this->Mhouses_customers->get_lists("id,name", array('is_del' => 0)), 'name', 'id'); //客户列表
 
-        $list = $this->Mpoints->lists($where);
+        $list = $this->Mhouses_points->get_points_lists($where);
 
         $h = 2;
         foreach($list as $key=>$val){
             $j = 0;
             foreach($table_header as $k => $v){
                 $cell = PHPExcel_Cell::stringFromColumnIndex($j++).$h;
-
-                switch ($v) {
-                    case 'spec':
-                        $value = $type == 1 ? $val['size'].'（'.$val['spec_name'].'）' : $val['size'];
-                        break;
-                    case 'media_name':
-                        $value = $val['media_name'].'（'.$val['media_code'].'）';
-                        break;
-                    default:
-                        $value = $val[$v];
-                        break;
-                }
-                
+				
+                $value = $val[$v];
                 $this->phpexcel->getActiveSheet(0)->setCellValue($cell, $value);
             }
             $h++;
@@ -664,7 +614,7 @@ class Houseschangepicorders extends MY_Controller{
         $this->phpexcel->setActiveSheetIndex(0);
         // 输出
         header('Content-Type: application/vnd.ms-excel');
-        header('Content-Disposition: attachment;filename=换画点位表（客户：'.$customers[$order['customer_id']].'）.xls');
+        header('Content-Disposition: attachment;filename=投放点位表（客户：'.$customers[$order['customer_id']].'）.xls');
         header('Cache-Control: max-age=0');
 
         $objWriter = PHPExcel_IOFactory::createWriter($this->phpexcel, 'Excel5');

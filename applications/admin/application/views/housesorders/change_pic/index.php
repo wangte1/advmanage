@@ -34,7 +34,7 @@
 
             <div class="page-content">
                 <div class="page-header">
-                    <a href="/changepicorders/order_type" class="btn btn-sm btn-primary"><i class="fa fa-plus-square" aria-hidden="true"></i> 新建换画</a>
+                    <a href="/houseschangepicorders/order_type" class="btn btn-sm btn-primary"><i class="fa fa-plus-square" aria-hidden="true"></i> 新建换画</a>
                 </div> 
 
                 <div class="row">
@@ -78,7 +78,7 @@
                                                     <select name="customer_id" class="select2">
                                                         <option value="">全部</option>
                                                         <?php foreach($customers as $val):?>
-                                                        <option value="<?php echo $val['id'];?>" <?php if($val['id'] == $customer_id){ echo "selected"; }?>><?php echo $val['customer_name'];?></option>
+                                                        <option value="<?php echo $val['id'];?>" <?php if($val['id'] == $customer_id){ echo "selected"; }?>><?php echo $val['name'];?></option>
                                                         <?php endforeach;?>
                                                     </select>
                                                 </div>
@@ -141,7 +141,7 @@
                                         <tbody>
                                             <?php foreach ($list as $key => $value) : ?>
                                             <tr>
-                                                <td><a href="/changepicorders/detail/<?php echo $value['id'];?>"><?php echo $value['order_code'];?></a></td>
+                                                <td><a href="/houseschangepicorders/detail/<?php echo $value['id'];?>"><?php echo $value['order_code'];?></a></td>
                                                 <td><?php echo $order_type_text[$value['order_type']];?></td>
                                                 <td><?php echo $value['point_ids'] ? count(explode(',', $value['point_ids'])) : 0;?>个点位</td>
                                                 <td><?php echo $value['total_price'];?></td>
@@ -198,27 +198,27 @@
                                                 <td><?php echo $admins[$value['create_user']];?></td>
                                                 <td>
                                                     <div class="visible-md visible-lg hidden-sm hidden-xs action-buttons">
-                                                        <a class="green tooltip-info" href="/changepicorders/detail/<?php echo $value['id'];?>"  data-rel="tooltip" data-placement="top" title="" data-original-title="详情">
+                                                        <a class="green tooltip-info" href="/houseschangepicorders/detail/<?php echo $value['id'];?>"  data-rel="tooltip" data-placement="top" title="" data-original-title="详情">
                                                             <i class="icon-eye-open bigger-130"></i>
                                                         </a> 
                                                         <?php if($value['order_status'] == 1): ?>
-                                                            <a class="green tooltip-info" href="/changepicorders/edit/<?php echo $value['id'];?>"  data-rel="tooltip" data-placement="top" title="" data-original-title="修改">
+                                                            <a class="green tooltip-info" href="/houseschangepicorders/edit/<?php echo $value['id'];?>"  data-rel="tooltip" data-placement="top" title="" data-original-title="修改">
                                                                 <i class="icon-pencil bigger-130"></i>
                                                             </a>
-                                                            <a class="green tooltip-info" href="/changepicorders/upload_adv_img/<?php echo $value['id'];?>"  data-rel="tooltip" data-placement="top" title="" data-original-title="广告画面">
+                                                            <a class="green tooltip-info" href="/houseschangepicorders/upload_adv_img/<?php echo $value['id'];?>"  data-rel="tooltip" data-placement="top" title="" data-original-title="广告画面">
                                                                 <i class="fa fa-file-image-o bigger-130"></i>
                                                             </a>
-                                                            <a class="green tooltip-info" href="/changepicorders/contact_list/<?php echo $value['id'];?>" target="_blank" data-rel="tooltip" data-placement="top" title="" data-original-title="生成联系单">
+                                                            <a class="green tooltip-info" href="/houseschangepicorders/contact_list/<?php echo $value['id'];?>" target="_blank" data-rel="tooltip" data-placement="top" title="" data-original-title="生成联系单">
                                                                 <i class="fa fa-building-o bigger-130"></i>
                                                             </a>
                                                         <?php endif;?>
                                                         <?php if($value['order_status'] == 6 || $value['order_status'] == 7):?>
-                                                        <a class="green tooltip-info" href="/changepicorders/check_upload_img/<?php echo $value['id'];?>"  data-rel="tooltip" data-placement="top" title="" data-original-title="验收图片">
+                                                        <a class="green tooltip-info" href="/houseschangepicorders/check_upload_img/<?php echo $value['id'];?>"  data-rel="tooltip" data-placement="top" title="" data-original-title="验收图片">
                                                             <i class="fa fa-picture-o bigger-130"></i>
                                                         </a>
                                                         <?php endif;?>
                                                         <?php if($value['order_status'] == 6): ?>
-                                                        <a class="green tooltip-info" href="/changepicorders/confirmation/<?php echo $value['id'];?>" target="_blank" data-rel="tooltip" data-placement="top" title="" data-original-title="生成确认函">
+                                                        <a class="green tooltip-info" href="/houseschangepicorders/confirmation/<?php echo $value['id'];?>" target="_blank" data-rel="tooltip" data-placement="top" title="" data-original-title="生成确认函">
                                                             <i class="fa fa-clone bigger-130"></i>
                                                         </a>
                                                         <?php endif;?>
