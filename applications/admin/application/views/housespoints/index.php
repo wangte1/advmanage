@@ -51,7 +51,7 @@
                                 <div class="widget-main">
                                     <form class="form-horizontal" role="form">
                                         <div class="form-group">
-                                            <div class="col-sm-4">
+                                            <div class="col-sm-3">
                                                 <label class="col-sm-3 control-label no-padding-right" for="form-field-1"> 点位类型 </label>
                                                 <div class="col-sm-9">
                                                 	<select class="select2" data-placeholder="Click to Choose..." name="type_id">
@@ -63,10 +63,10 @@
                                                 </div>
                                             </div>
                                             
-                                            <div class="col-sm-4">
+                                            <div class="col-sm-3">
                                                 <label class="col-sm-3 control-label no-padding-right" for="form-field-1"> 所属楼盘 </label>
                                                 <div class="col-sm-9">
-                                                	<select class="select2" data-placeholder="Click to Choose..." name="houses_id">
+                                                	<select id="houses" class="select2" data-placeholder="Click to Choose..." name="houses_id">
                                                 		<option value="">全部</option>
 				                                    	<?php foreach ($hlist as $k => $v) {?>
 				                                    		<option value="<?php echo $v['id'];?>" <?php if($v['id'] == $houses_id) {?>selected="selected"<?php }?>><?php echo $v['name'];?></option>
@@ -75,11 +75,27 @@
                                                 </div>
                                             </div>
                                             
-                                            <div class="col-sm-4">
+                                            <div class="col-sm-3">
                                                 <label class="col-sm-3 control-label no-padding-right" for="form-field-1"> 所属楼盘区域 </label>
                                                 <div class="col-sm-9">
-                                                	<select class="select2" data-placeholder="Click to Choose..." name="area_id">
+                                                	<select id="area" class="select2" data-placeholder="Click to Choose..." name="area_id">
                                                 		<option value="">全部</option>
+                                                		<?php if(isset($houses_id) && isset($area_list)):?>
+                                                		<?php foreach ($area_list as $k => $v):?>
+                                                		<option value="<?php echo $v['id'];?>" <?php if(isset($area_id) && $area_id == $v['id']){echo 'selected="selected"';}?>><?php echo $v['name'];?></option>
+				                                    	<?php endforeach;?>
+				                                    	<?php endif;?>
+				                                    </select>
+                                                </div>
+                                            </div>
+                                            <div class="col-sm-3">
+                                                <label class="col-sm-3 control-label no-padding-right" for="form-field-1"> 锁定状态 </label>
+                                                <div class="col-sm-9">
+                                                	<select id="area" class="select2" data-placeholder="Click to Choose..." name="is_lock">
+                                                		<option value="">全部</option>
+                                                		<?php foreach (C('housesscheduledorder.point_status') as $k => $v):?>
+                                                		<option value="<?php echo $k;?>" <?php if(isset($is_lock) && $is_lock == $k){echo 'selected="selected"';}?>><?php echo $v;?></option>
+				                                    	<?php endforeach;?>
 				                                    </select>
                                                 </div>
                                             </div>
@@ -118,6 +134,7 @@
                                                 <th>占用客户</th>
                                                 <th>点位属性</th>
                                                 <th>状态</th>
+                                                <th>锁定状态</th>
                                                 <th>操作</th>
                                             </tr>
                                         </thead>
@@ -173,6 +190,20 @@
 	                                                    </span>
                                                     </td>
                                                     <td>
+                                                        <?php 
+	                                                        switch ($val['is_lock']) {
+	                                                            case '1':
+	                                                                $class = 'badge-warning';
+	                                                                break;
+	                                                            default:
+	                                                                $class = 'badge-success';
+	                                                        }
+	                                                    ?>
+	                                                    <span class="badge <?php echo $class; ?>">
+	                                                        <?php echo C('housesscheduledorder.point_status')[$val['is_lock']];?>
+	                                                    </span>
+                                                    </td>
+                                                    <td>
                                                         <div class="visible-md visible-lg hidden-sm hidden-xs action-buttons">
                                                             <a class="green tooltip-info" href="/housespoints/edit/<?php echo $val['id'];?>" data-rel="tooltip" data-placement="top" data-original-title="修改">
                                                                 <i class="icon-pencil bigger-130"></i>
@@ -206,6 +237,19 @@
 <script type="text/javascript">
     $(function(){
        $(".select2").css('width','230px').select2({allowClear:true});
+    });
+    $('#houses').change(function(){
+        $('#area').html();
+        var areaStr = '<option value="">请选择楼盘区域</option>';
+    	var houses_id = $(this).val();
+    	$.post('/housespoints/get_area', {'houses_id':houses_id}, function(data){
+    		if(data.code == 1){
+				for(var i=0; i < data.list.length; i++){
+					areaStr += '<option value="'+data.list[i]["id"]+'">'+data.list[i]["name"]+'</option>';
+				}
+        	}
+    		$("#area").html(areaStr);
+    	});
     });
 </script>
 <!-- 底部 -->

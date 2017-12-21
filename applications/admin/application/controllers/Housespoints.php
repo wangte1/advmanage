@@ -34,20 +34,22 @@ class Housespoints extends MY_Controller{
         $page =  intval($this->input->get("per_page",true)) ?  : 1;
         $size = $pageconfig['per_page'];
         $where['is_del'] = 0;
-
+        
+        $is_lock = $this->input->get('is_lock');
+        if(strlen($is_lock)){
+            $where['is_lock'] = (int) $this->input->get('is_lock');
+            $data['is_lock'] = $this->input->get('is_lock');
+        }
+        
         if ($this->input->get('type_id')) $where['type_id'] = $this->input->get('type_id');
         if ($this->input->get('houses_id')) $where['houses_id'] = $this->input->get('houses_id');
-//         if ($this->input->get('province')) $where['province'] = $this->input->get('province');
-//         if ($this->input->get('city')) $where['city'] = $this->input->get('city');
-//         if ($this->input->get('area')) $where['area'] = $this->input->get('area');
-
-//         if ($this->input->get('type') != 'all' && !empty($this->input->get('type'))) {
-//             $where['type'] = $this->input->get('type') ? $this->input->get('type') : 1;
-//         }
-
+        if ($this->input->get('area_id')) $where['area_id'] = $this->input->get('area_id');
+        
+        
+        $data['area_id'] = $this->input->get('area_id');
         $data['type_id'] = $this->input->get('type_id');
         $data['houses_id'] = $this->input->get('houses_id');
-       
+        if($data['houses_id']) $data['area_list'] = $this->get_area_info($data['houses_id']);
 
         $data['list'] = $this->Mhouses_points->get_lists('*',$where,[],$size,($page-1)*$size);
         $data_count = $this->Mhouses_points->count($where);
@@ -217,6 +219,20 @@ class Housespoints extends MY_Controller{
     	return $list;
     	
     }
-
+    
+    /*
+     * 获取楼盘区域信息
+     * @author yonghua 
+     */
+    public function get_area() {
+        
+        $where['is_del'] = 0;
+        $houses_id = (int) $this->input->post('houses_id');
+        if ($houses_id) $where['houses_id'] = $houses_id;
+        $list = $this->Mhouses_area->get_lists('id,name',$where);
+        if(!$list) $this->return_json(['code' => 0]);
+        $this->return_json(['code' => 1, 'list' => $list]);
+        
+    }
 
 }
