@@ -99,6 +99,30 @@
 				                                    </select>
                                                 </div>
                                             </div>
+                                            <div class="col-sm-3">
+                                            	<br>
+                                                <label class="col-sm-3 control-label no-padding-right" for="form-field-1"> 点位状态 </label>
+                                                <div class="col-sm-9">
+                                                	<select id="area" class="select2" data-placeholder="Click to Choose..." name="point_status">
+                                                		<option value="">全部</option>
+                                                		<?php foreach (C('public.points_status') as $k => $v):?>
+                                                		<option value="<?php echo $k;?>" <?php if(isset($point_status) && $point_status== $k){echo 'selected="selected"';}?>><?php echo $v;?></option>
+				                                    	<?php endforeach;?>
+				                                    </select>
+                                                </div>
+                                            </div>
+                                            <div class="col-sm-3">
+                                            	<br>
+                                                <label class="col-sm-3 control-label no-padding-right" for="form-field-1"> 占用客户 </label>
+                                                <div class="col-sm-9">
+                                                	<select id="area" class="select2" data-placeholder="Click to Choose..." name="customer_id">
+                                                		<option value="">全部</option>
+                                                		<?php foreach ($customers as $k => $v):?>
+                                                		<option value="<?php echo $v['id'];?>" <?php if(isset($customer_id) && $customer_id== $v['id']){echo 'selected="selected"';}?>><?php echo $v['name'];?></option>
+				                                    	<?php endforeach;?>
+				                                    </select>
+                                                </div>
+                                            </div>
                                         </div>
                                         
                                         
@@ -169,7 +193,9 @@
                                                     		<?php }?>
                                                     	<?php }?>
                                                     </td>
-													<td><?php if(isset($customer_name[$val['customer_id']])) echo $customer_name[$val['customer_id']];?></td>
+													<td>
+														<?php if(isset($customer_name[$val['customer_id']])) echo $customer_name[$val['customer_id']];?>
+													</td>
 													<td></td>
 													<td>
                                                         <?php 

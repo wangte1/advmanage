@@ -44,13 +44,16 @@ class Housespoints extends MY_Controller{
         if ($this->input->get('type_id')) $where['type_id'] = $this->input->get('type_id');
         if ($this->input->get('houses_id')) $where['houses_id'] = $this->input->get('houses_id');
         if ($this->input->get('area_id')) $where['area_id'] = $this->input->get('area_id');
+        if ($this->input->get('point_status')) $where['point_status'] = $this->input->get('point_status');
+        if ($this->input->get('customer_id')) $where['customer_id'] = $this->input->get('customer_id');
         
-        
+        $data['point_status'] = $this->input->get('point_status');
         $data['area_id'] = $this->input->get('area_id');
         $data['type_id'] = $this->input->get('type_id');
+        $data['customer_id'] = $this->input->get('customer_id');
         $data['houses_id'] = $this->input->get('houses_id');
         if($data['houses_id']) $data['area_list'] = $this->get_area_info($data['houses_id']);
-
+        
         $data['list'] = $this->Mhouses_points->get_lists('*',$where,[],$size,($page-1)*$size);
         $data_count = $this->Mhouses_points->count($where);
         $data['page'] = $page;
@@ -68,9 +71,8 @@ class Housespoints extends MY_Controller{
         
         $data['customers'] = $this->Mhouses_customers->get_lists("id,name", array('is_del' => 0)); //客户列表
         $data['customer_name'] = array_column($data['customers'], 'name', 'id');
-        
         $data['houses_type'] = C("public.houses_type");
-        
+
         $this->load->view("housespoints/index",$data);
     }
 
