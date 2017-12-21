@@ -35,12 +35,17 @@ class Housespoints extends MY_Controller{
         $size = $pageconfig['per_page'];
         $where['is_del'] = 0;
         
-        $where['is_lock'] = (int) $this->input->get('is_lock');
+        $is_lock = $this->input->get('is_lock');
+        if(strlen($is_lock)){
+            $where['is_lock'] = (int) $this->input->get('is_lock');
+            $data['is_lock'] = $this->input->get('is_lock');
+        }
+        
         if ($this->input->get('type_id')) $where['type_id'] = $this->input->get('type_id');
         if ($this->input->get('houses_id')) $where['houses_id'] = $this->input->get('houses_id');
         if ($this->input->get('area_id')) $where['area_id'] = $this->input->get('area_id');
         
-        $data['is_lock'] = $this->input->get('is_lock');
+        
         $data['area_id'] = $this->input->get('area_id');
         $data['type_id'] = $this->input->get('type_id');
         $data['houses_id'] = $this->input->get('houses_id');
