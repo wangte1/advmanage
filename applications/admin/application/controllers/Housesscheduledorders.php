@@ -297,7 +297,7 @@ class Housesscheduledorders extends MY_Controller{
                 $data['page'] = $page;
                 $totalCount = count(explode(',', $data['info']['point_ids']));
                 $data['data_count'] = $totalCount;
-                $pageconfig['base_url'] = "/housesscheduledorders/detail/{$id}/tab/1";
+                $pageconfig['base_url'] = "/housesscheduledorders/detail/{$id}/tab";
                 $pageconfig['total_rows'] = $totalCount;
                 $this->pagination->initialize($pageconfig);
                 $data['pagestr'] = $this->pagination->create_links();// 分页信息
