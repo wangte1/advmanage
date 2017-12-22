@@ -127,19 +127,9 @@ $config = array(
 	    			'active'=> 'houses_list'
     			),
     			array(
-    				'url'=>'/housesgroup',
-    				'name'=> '组团管理',
-    				'active'=> 'houses_group_list'
-    			),
-    			array(
     				'url'=>'/housesarea',
-    				'name'=> '楼栋管理',
+    				'name'=> '组团管理',
     				'active'=> 'houses_area_lists'
-    			),
-    			array(
-    				'url'=>'/housesunit',
-    				'name'=> '单元管理',
-    				'active'=> 'houses_unit_lists'
     			),
     		)
     	),

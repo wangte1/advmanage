@@ -4,6 +4,16 @@
 <!-- 头部 -->
 <?php $this->load->view('common/top');?>
 
+<style>
+.padding0 {
+	padding: 0;
+}
+
+.padding-right0 {
+	padding-right: 0;
+}
+</style>
+
 <div class="main-container" id="main-container">
         <div class="main-container-inner">
             <?php $this->load->view("common/left");?>
@@ -100,7 +110,7 @@
                             </div>
                             
                             <div class="form-group">
-                                <label class="col-sm-3 control-label no-padding-right" for="form-field-1"> 所属区域： </label>
+                                <label class="col-sm-3 control-label no-padding-right" for="form-field-1"> 所属组团： </label>
                                 <div class="col-sm-9">
                                     <select class="" name="area_id">
                                     	<?php foreach ($alist as $k => $v) {?>
@@ -110,10 +120,54 @@
                                 </div>
                             </div>
                             
+                            
                             <div class="form-group">
-                                <label class="col-sm-3 control-label no-padding-right" for="form-field-1"> 地址： </label>
+                                <label class="col-sm-3 control-label no-padding-right" for="form-field-1"> 楼栋： </label>
+                                <div class="col-sm-3 padding-right0">
+                                    <input type="text" name="ban" value="<?php echo $info['ban'];?>" placeholder=""  class="form-control input-sm">
+                                </div>
+                                <div class="col-sm-2 padding0">
+                                    <select class="">
+                                    	<option>选择楼栋</option>
+                                    	<option>1栋</option>
+                                    	<option>2栋</option>
+                                    </select>
+                                </div>
+                                 
+                            </div>
+                            
+                            <div class="form-group">
+                                <label class="col-sm-3 control-label no-padding-right" for="form-field-1"> 单元： </label>
+                                <div class="col-sm-3 padding-right0">
+                                    <input type="text" name="unit" value="<?php echo $info['unit'];?>" placeholder=""  class="form-control input-sm">
+                                </div>
+                                <div class="col-sm-2 padding0">
+                                    <select class="">
+                                    	<option>选择单元</option>
+                                    	<option>1单元</option>
+                                    	<option>2单元</option>
+                                    </select>
+                                </div>
+                            </div>
+                            
+                            <div class="form-group">
+                                <label class="col-sm-3 control-label no-padding-right" for="form-field-1"> 楼层： </label>
+                                <div class="col-sm-3 padding-right0">
+                                    <input type="text" name="floor" value="<?php echo $info['floor'];?>" placeholder=""  class="form-control input-sm">
+                                </div>
+                                <div class="col-sm-2 padding0">
+                                    <select class="">
+                                    	<option>选择楼层</option>
+                                    	<option>-1层</option>
+                                    	<option>32层</option>
+                                    </select>
+                                </div>
+                            </div>
+                            
+                            <div class="form-group">
+                                <label class="col-sm-3 control-label no-padding-right" for="form-field-1"> 补充地址： </label>
                                 <div class="col-sm-9">
-                                	<input type="text" name="addr"  value="<?php echo $info['addr'];?>" class="col-xs-10 col-sm-3">
+                                	<input type="text" name="addr"  value="<?php echo $info['addr'];?>" class="col-xs-10 col-sm-5">
                                 </div>
                             </div>
                             

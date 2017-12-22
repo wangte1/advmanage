@@ -23,7 +23,7 @@
                     </li>
                     
                     <li>
-                        <span>楼栋管理</span>
+                        <span>组团管理</span>
                     </li>
 
                 </ul>
@@ -33,7 +33,7 @@
 
             <div class="page-content">
                 <div class="page-header">
-                    <a href="/housesarea/add" class="btn btn-sm btn-primary"><i class="fa fa-plus-square" aria-hidden="true"></i> 添加楼栋</a>
+                    <a href="/housesarea/add" class="btn btn-sm btn-primary"><i class="fa fa-plus-square" aria-hidden="true"></i> 添加组团</a>
                 </div>
                 <div class="row">
                     <div class="col-xs-12">
@@ -70,17 +70,6 @@
                                                 </div>
                                             </div>
                                             
-                                            <div class="col-sm-4">
-                                                <label class="col-sm-3 control-label no-padding-right" for="form-field-1"> 所属组团 </label>
-                                                <div class="col-sm-9">
-                                                	<select class="select2" data-placeholder="Click to Choose..." name="group_id">
-				                                    	<option>全部</option>
-				                                    	<?php foreach ($group_arr as $k => $v) {?>
-				                                    		<option value="<?php echo $v['id'];?>" <?php if($group_id == $v['id']){?>selected="selected"<?php }?>><?php echo $v['group_name'];?></option>
-				                                    	<?php }?>
-				                                    </select>
-                                                </div>
-                                            </div>
                                         </div>
                                         
                                         
@@ -109,9 +98,8 @@
                                         <thead>
                                             <tr>
                                                 <th>序号</th>
-                                                <th>楼栋名称</th>
+                                                <th>组团名称</th>
                                                 <th>所属楼盘</th>
-                                                <th>所属组团</th>
                                                 <th>坐标</th>
                                                 <th>腾讯坐标</th>
                                                 <th>备注</th>
@@ -128,9 +116,6 @@
                                                     <td><a href=""><?php echo $val['name'];?></a></td>
                                                     <td>
                                                     	<?php echo $houses_name[$val['id']]?>
-                                                    </td>
-                                                    <td>
-                                                    	<?php echo $group_name[$val['id']]?>
                                                     </td>
                                                     <td><?php echo $val['coordinate'];?></td>
 													<td><?php echo $val['t_coordinate'];?></td>
@@ -171,21 +156,6 @@
 <script type="text/javascript">
     $(function(){
        	$(".select2").css('width','230px').select2({allowClear:true});
-
-       	$("select[name='houses_id']").change(function(){
-    	   	var houses_id = $('select[name="houses_id"]').val();
-    	   	$('.select2-chosen:eq(1)').text('全部');
-			$.post('/housesarea/ajax_get_info', {'houses_id':houses_id}, function(data) {
-				if(data.group_arr) {
-					var group_str = '<option value="">全部</option>';
-					for(var i = 0; i < data.group_arr.length; i++) {
-						group_str += '<option value="'+(data.group_arr)[i]['id']+'">'+(data.group_arr)[i]['group_name']+'</option>';
-					}
-					
-					$('select[name="group_id"]').html(group_str);
-				}
-			});
-       	});
     });
 </script>
 <!-- 底部 -->

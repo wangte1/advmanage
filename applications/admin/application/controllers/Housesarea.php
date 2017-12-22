@@ -1,6 +1,6 @@
 <?php
 /**
- * 楼盘区域管理控制器
+ * 楼盘组团管理控制器
  * 867332352@qq.com
  */
 defined('BASEPATH') or exit('No direct script access allowed');
@@ -63,7 +63,6 @@ class Housesarea extends MY_Controller{
         	$join_arr = $this->Mhouses_area->get_join_info($where1);
         
         	$data['houses_name'] = array_column($join_arr, 'houses_name', 'id');
-        	$data['group_name'] = array_column($join_arr, 'group_name', 'id');
         }
         
         $this->load->view("housesarea/index",$data);
@@ -126,9 +125,6 @@ class Housesarea extends MY_Controller{
         }
         $data['info'] = $info;
 		
-        if(isset($info['houses_id'])) {
-        	$data['group_arr'] = $this->Mhouses_group->get_lists('id,group_name',['houses_id'=>$info['houses_id']]);
-        }
         $where['is_del'] = 0;
         $data['list'] = $this->Mhouses->get_lists('id,name',$where);
 
@@ -158,19 +154,6 @@ class Housesarea extends MY_Controller{
         }
     }
     
-    /*
-     * ajax获取组团、楼栋等信息
-     */
-    public function ajax_get_info() {
-    	$houses_id = $this->input->post('houses_id');
-    	 
-    	if($houses_id) {
-    		$where['houses_id'] = $houses_id;
-    		$group_arr = $this->Mhouses_group->get_lists('id,group_name', $where);
-    	}
-    	 
-    	$this->return_json(['group_arr' => $group_arr]);
-    }
 
 
 }

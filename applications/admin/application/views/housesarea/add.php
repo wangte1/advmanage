@@ -23,9 +23,9 @@
                     </li>
 
                     <li>
-                        <a href="/housesarea">楼栋管理</a>
+                        <a href="/housesarea">组团管理</a>
                     </li>
-                    <li class="active">新增楼栋</li>
+                    <li class="active">新增组团</li>
                 </ul><!-- .breadcrumb -->
 
 
@@ -34,7 +34,7 @@
             <div class="page-content">
                 <div class="page-header">
                     <h1>
-                       新增楼栋
+                       新增组团
                         <a  href="/housesarea" style="float: right; margin-right: 50px" class="btn btn-sm btn-primary">《返回列表页</a>
                     </h1>
                 </div><!-- /.page-header -->
@@ -45,7 +45,7 @@
 
 
                             <div class="form-group">
-                                <label class="col-sm-3 control-label no-padding-right" for="form-field-1"> 楼栋名称： </label>
+                                <label class="col-sm-3 control-label no-padding-right" for="form-field-1"> 组团名称： </label>
 
                                 <div class="col-sm-9">
                                     <input type="text" name="name" required id="form-field-1" placeholder="请输入楼栋名称" class="col-xs-10 col-sm-3">
@@ -67,17 +67,6 @@
                                     </select>
                                 </div>
                             </div>
-                            
-                            <div class="form-group">
-                                <label class="col-sm-3 control-label no-padding-right" for="form-field-1"> 所属组团： </label>
-
-                                <div class="col-sm-9">
-                                    <select class="select2" name="group_id">
-                                    	<option value="">请选择组团</option>
-                                    </select>
-                                </div>
-                            </div>
-
                             
                             <div class="form-group">
                                 <label class="col-sm-3 control-label no-padding-right" for="form-field-1"> 坐标： </label>
@@ -135,21 +124,6 @@
 <script type="text/javascript">
     $(function(){
        	$(".select2").css('width','230px').select2({allowClear:true});
-
-       	$("select[name='houses_id']").change(function(){
-    	   	var houses_id = $('select[name="houses_id"]').val();
-    	   	$('.select2-chosen:eq(1)').text('请选择组团');
-			$.post('/housesarea/ajax_get_info', {'houses_id':houses_id}, function(data) {
-				if(data.group_arr) {
-					var group_str = '<option value="">请选择组团</option>';
-					for(var i = 0; i < data.group_arr.length; i++) {
-						group_str += '<option value="'+(data.group_arr)[i]['id']+'">'+(data.group_arr)[i]['group_name']+'</option>';
-					}
-					
-					$('select[name="group_id"]').html(group_str);
-				}
-			});
-       	});
     });
 </script>
 

@@ -9,10 +9,9 @@ class Model_houses_area extends MY_Model {
     }
     
     public function get_join_info($where = array()) {
-    	$this->db->select('A.id, B.name AS houses_name, C.group_name');
+    	$this->db->select('A.id, B.name AS houses_name');
     	$this->db->from('t_houses_area A');
     	$this->db->join('t_houses B', 'A.houses_id = B.id', 'left');
-    	$this->db->join('t_houses_group C', 'A.group_id = C.id', 'left');
     	$this->db->where(array('A.is_del' => 0, 'B.is_del' => 0));
     	 
     	if(isset($where['like'])) {

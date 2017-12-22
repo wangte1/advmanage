@@ -4,6 +4,15 @@
 <!-- 头部 -->
 <?php $this->load->view('common/top');?>
 
+<style>
+.padding0 {
+	padding: 0;
+}
+
+.padding-right0 {
+	padding-right: 0;
+}
+</style>
 <div class="main-container" id="main-container">
         <div class="main-container-inner">
             <?php $this->load->view("common/left");?>
@@ -48,7 +57,7 @@
                                 <label class="col-sm-3 control-label no-padding-right" for="form-field-1"> 点位编号： </label>
 
                                 <div class="col-sm-9">
-                                    <input type="text" name="code" required id="form-field-1" placeholder="请输入点位编号" class="col-xs-10 col-sm-3">
+                                    <input type="text" name="code" required id="form-field-1" placeholder="请输入点位编号" class="col-xs-6 col-sm-3">
                                 	<span class="help-inline col-xs-12 col-sm-7 form-field-description-block">
                                        <span class="middle" style="color: red">*</span>
 									</span>
@@ -81,7 +90,8 @@
                             <div class="form-group">
                                 <label class="col-sm-3 control-label no-padding-right" for="form-field-1"> 所属楼盘： </label>
                                 <div class="col-sm-9">
-                                    <select class="" name="houses_id" onchange="getArea();">
+                                    <select class="select2" name="houses_id" onchange="getArea();">
+                                    	<option value="">--请选择楼盘--</option>
                                     	<?php foreach ($hlist as $k => $v) {?>
                                     		<option value="<?php echo $v['id'];?>"><?php echo $v['name'];?></option>
                                     	<?php }?>
@@ -90,20 +100,61 @@
                             </div>
                             
                             <div class="form-group">
-                                <label class="col-sm-3 control-label no-padding-right" for="form-field-1"> 所属区域： </label>
+                                <label class="col-sm-3 control-label no-padding-right" for="form-field-1"> 所属组团： </label>
                                 <div class="col-sm-9">
-                                    <select class="" name="area_id">
-                                    	<?php foreach ($alist as $k => $v) {?>
-                                    		<option value="<?php echo $v['id'];?>"><?php echo $v['name'];?></option>
-                                    	<?php }?>
+                                    <select class="select2" name="area_id" onchange="get_buf_info();">
+                                    	<option value="">--请选择组团--</option>
                                     </select>
                                 </div>
                             </div>
                             
                             <div class="form-group">
-                                <label class="col-sm-3 control-label no-padding-right" for="form-field-1"> 地址： </label>
+                                <label class="col-sm-3 control-label no-padding-right" for="form-field-1"> 楼栋： </label>
+                                <div class="col-sm-3 padding-right0">
+                                    <input type="text" name="ban" placeholder=""  class="form-control input-sm">
+                                </div>
+                                <div class="col-sm-2 padding0">
+                                    <select class="">
+                                    	<option>选择楼栋</option>
+                                    	<option>1栋</option>
+                                    	<option>2栋</option>
+                                    </select>
+                                </div>
+                                 
+                            </div>
+                            
+                            <div class="form-group">
+                                <label class="col-sm-3 control-label no-padding-right" for="form-field-1"> 单元： </label>
+                                <div class="col-sm-3 padding-right0">
+                                    <input type="text" name="unit" placeholder=""  class="form-control input-sm">
+                                </div>
+                                <div class="col-sm-2 padding0">
+                                    <select class="">
+                                    	<option>选择单元</option>
+                                    	<option>1单元</option>
+                                    	<option>2单元</option>
+                                    </select>
+                                </div>
+                            </div>
+                            
+                            <div class="form-group">
+                                <label class="col-sm-3 control-label no-padding-right" for="form-field-1"> 楼层： </label>
+                                <div class="col-sm-3 padding-right0">
+                                    <input type="text" name="floor" placeholder=""  class="form-control input-sm">
+                                </div>
+                                <div class="col-sm-2 padding0">
+                                    <select class="">
+                                    	<option>选择楼层</option>
+                                    	<option>-1层</option>
+                                    	<option>32层</option>
+                                    </select>
+                                </div>
+                            </div>
+                            
+                            <div class="form-group">
+                                <label class="col-sm-3 control-label no-padding-right" for="form-field-1"> 地址补充： </label>
                                 <div class="col-sm-9">
-                                	<input type="text" name="addr" placeholder="请输入详细的地址"  class="col-xs-10 col-sm-3">
+                                	<input type="text" name="addr" placeholder=""  class="col-xs-6 col-sm-5">
                                 </div>
                             </div>
                             
@@ -124,21 +175,21 @@
                             <div class="form-group">
                                 <label class="col-sm-3 control-label no-padding-right" for="form-field-1"> 展现形式： </label>
                                 <div class="col-sm-9">
-                                    <input type="text" name="show_method"  id="form-field-1" placeholder=""  class="col-xs-10 col-sm-3">
+                                    <input type="text" name="show_method"  id="form-field-1" placeholder=""  class="col-xs-6 col-sm-3">
                                 </div>
                             </div>
                             
                             <div class="form-group">
                                 <label class="col-sm-3 control-label no-padding-right" for="form-field-1"> 广告材质： </label>
                                 <div class="col-sm-9">
-                                    <input type="text" name="texture"  id="form-field-1" placeholder=""  class="col-xs-10 col-sm-3">
+                                    <input type="text" name="texture"  id="form-field-1" placeholder=""  class="col-xs-6 col-sm-3">
                                 </div>
                             </div>
                             
                             <div class="form-group">
                                 <label class="col-sm-3 control-label no-padding-right" for="form-field-1"> 点位价格： </label>
                                 <div class="col-sm-9">
-                                    <input type="text" name="price" required id="form-field-1" value="0.00" placeholder="" class="col-xs-10 col-sm-3">
+                                    <input type="text" name="price" required id="form-field-1" value="0.00" placeholder="" class="col-xs-6 col-sm-3">
                                     <span class="help-inline col-xs-12 col-sm-7 form-field-description-block">
                                        元
 									</span>
@@ -148,7 +199,7 @@
                             <div class="form-group">
                                 <label class="col-sm-3 control-label no-padding-right" for="form-field-1">  备注： </label>
                                 <div class="col-sm-9">
-                                    <textarea id="form-field-11" rows="5" name="remarks" placeholder="（选填）备注信息。最多200个字。" class="autosize-transition col-xs-10 col-sm-3" style="overflow: hidden; word-wrap: break-word; resize: horizontal;"></textarea>
+                                    <textarea id="form-field-11" rows="5" name="remarks" placeholder="（选填）备注信息。最多200个字。" class="autosize-transition col-xs-6 col-sm-3" style="overflow: hidden; word-wrap: break-word; resize: horizontal;"></textarea>
                                 </div>
                             </div>
 
@@ -190,13 +241,8 @@
     <script type="text/javascript">
         $(function(){
             $(".select2").css('width','230px').select2({allowClear:true});
-
-            $(".address").on('change', function(){
-                var _obj = $(this);
-                var str = "----请选择----";
-                getinfo(_obj,str);
-            });
-
+			$('#area').find('option:eq(0)').attr("selected",true);
+			
             $("#distpicker1 select").change(function(){
 				var province = $("#province").val();
 				var city = $("#city").val();
@@ -204,22 +250,18 @@
 				
 				$.post('/housespoints/ajax_houses_info',{province:province,city:city,area:area},function(data){
 					if(data) {
-						var housesStr = '';
+						$('.select2-chosen:eq(1)').text('--请选择楼盘--');
+						var housesStr = '<option value="">--请选择楼盘--</option>';
 						for(var i = 0; i < data.length; i++) {
 
-							if(i == 0) {
-								housesStr += '<option value="' + data[i].id + '" selected = "selected">' + data[i].name + '</option>';
-							}else {
-								housesStr += '<option value="' + data[i].id + '">' + data[i].name + '</option>';
-							}
+							housesStr += '<option value="' + data[i].id + '">' + data[i].name + '</option>';
 						}
 						
 						$("select[name='houses_id']").html(housesStr);
 
-						getArea();
+						//getArea();
 					}
 				});
-
 				
             });
             
@@ -230,20 +272,28 @@
         	var houses_id = $("select[name='houses_id']").val();
         	$.post('/housespoints/ajax_area_info',{houses_id:houses_id},function(data){
 				if(data) {
-					var areaStr = '';
+					$('.select2-chosen:eq(2)').text('--请选择组团--');
+					var areaStr = '<option value="">--请选择组团--</option>';
 					for(var i = 0; i < data.length; i++) {
-
-						if(i == 0) {
-							areaStr += '<option value="' + data[i].id + '" selected = "selected">' + data[i].name + '</option>';
-						}else {
-							areaStr += '<option value="' + data[i].id + '">' + data[i].name + '</option>';
-						}
+						areaStr += '<option value="' + data[i].id + '">' + data[i].name + '</option>';
 					}
 					
 					$("select[name='area_id']").html(areaStr);
 
 				}
 			});
+        }
+
+        function get_buf_info() {
+        	var houses_id = $("select[name='houses_id']").val();
+        	var area_id = $("select[name='area_id']").val();
+
+        	$.post('/housespoints/get_buf_info',{houses_id:houses_id, area_id:area_id},function(data){
+				if(data) {
+					console.log(data);
+				}
+			});
+        	
         }
      </script>
 
@@ -253,7 +303,7 @@
 <script>
 	$("#distpicker1").distpicker({
 		province: "贵州省",
-		city: "贵阳市"
+		city: "贵阳市",
 	});
 
 	

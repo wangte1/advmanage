@@ -141,7 +141,7 @@ class Housespoints extends MY_Controller{
             die("非法参数");
         }
         $data['info'] = $info;
-		
+        
         $tmplist = $this->Mhouses->get_lists('id,name,province,city,area', ['id' => $info['houses_id']]);
         
         if(count($tmplist) > 0 ) {
@@ -196,6 +196,18 @@ class Housespoints extends MY_Controller{
     	if ($this->input->post('houses_id')) $where['houses_id'] = $this->input->post('houses_id');
     	$list = $this->get_area_info($where['houses_id']);
     	$this->return_json($list);
+    }
+    
+    /*
+     * ajax获取楼栋、单元、楼层信息
+     */
+    public function get_buf_info() {
+    	if ($this->input->post('houses_id')) $where['houses_id'] = $this->input->post('houses_id');
+    	if ($this->input->post('area_id')) $where['area_id'] = $this->input->post('area_id');
+    	
+    	$list = $this->Mhouses_points->get_lists('ban,unit,floor',$where);
+    	
+    	$this->return_json(['code' => 1, 'list' => $list]);
     }
     
     /*

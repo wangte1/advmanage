@@ -152,8 +152,11 @@
                                             <tr>
                                                 <th>点位编号</th>
                                                 <th>所属楼盘</th>
-                                                <th>所属楼盘区域</th>
-                                                <th>地址</th>
+                                                <th>所属组团</th>
+                                                <th>楼栋</th>
+                                                <th>单元</th>
+                                                <th>楼层</th>
+                                                <th>地址补充</th>
                                                 <th>类型</th>
                                                 <th>占用客户</th>
                                                 <th>点位属性</th>
@@ -183,6 +186,9 @@
                                                     		<?php }?>
                                                     	<?php }?>
                                                     </td>
+                                                    <td><?php echo $val['ban'];?></td>
+                                                    <td><?php echo $val['unit'];?></td>
+                                                    <td><?php echo $val['floor'];?></td>
                                                     <td>
                                                     	<?php echo $val['addr'];?>
                                                     </td>
