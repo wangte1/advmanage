@@ -23,9 +23,9 @@
                     </li>
 
                     <li>
-                        <a href="/houses">楼盘管理</a>
+                        <a href="/housesgroup">组团管理</a>
                     </li>
-                    <li class="active">新增楼盘</li>
+                    <li class="active">新增组团</li>
                 </ul><!-- .breadcrumb -->
 
 
@@ -34,8 +34,8 @@
             <div class="page-content">
                 <div class="page-header">
                     <h1>
-                       新增楼盘
-                        <a  href="/houses" style="float: right; margin-right: 50px" class="btn btn-sm btn-primary">《返回列表页</a>
+                       新增组团
+                        <a  href="/housesgroup" style="float: right; margin-right: 50px" class="btn btn-sm btn-primary">《返回列表页</a>
                     </h1>
                 </div><!-- /.page-header -->
 
@@ -43,10 +43,10 @@
                     <div class="col-xs-12">
                         <form  action="" method="post" class="form-horizontal" role="form">
                             <div class="form-group">
-                                <label class="col-sm-3 control-label no-padding-right" for="form-field-1"> 楼盘名称： </label>
+                                <label class="col-sm-3 control-label no-padding-right" for="form-field-1"> 组团名称： </label>
 
                                 <div class="col-sm-9">
-                                    <input type="text" name="name" required id="form-field-1" placeholder="请输入楼盘名称" class="col-xs-10 col-sm-3">
+                                    <input type="text" name="group_name" required id="form-field-1" placeholder="请输入组团名称" class="col-xs-10 col-sm-3">
                                     <span class="help-inline col-xs-12 col-sm-7 form-field-description-block">
                                        <span class="middle" style="color: red">*</span> 最多可输入100个字符
 									</span>
@@ -54,40 +54,19 @@
                             </div>
 
                             <div class="form-group">
-                                <label class="col-sm-3 control-label no-padding-right" for="form-field-1"> 所属地区： </label>
-
+                                <label class="col-sm-3 control-label no-padding-right" for="form-field-1"> 所属楼盘： </label>
                                 <div class="col-sm-9">
-                                    <div id="distpicker1">
-									  <select name="province"></select>
-									  <select name="city"></select>
-									  <select name="area"></select>
-									</div>
-                                </div>
-                            </div>
-
-                            
-                            <div class="form-group">
-                                <label class="col-sm-3 control-label no-padding-right" for="form-field-1"> 楼盘类型： </label>
-                                <div class="col-sm-9">
-                                    <select class="col-xs-2 " name="type" id="select-font-size " >
-                                        <?php foreach($houses_type as $key=>$val){ ?>
-                                            <option value="<?php echo $key;?>"><?php echo $val;?></option>
+                                    <select class="col-xs-2 " name="houses_id" id="select-font-size " >
+                                        <?php foreach($houses_list as $key=>$val){ ?>
+                                            <option value="<?php echo $val['id'];?>"><?php echo $val['name'];?></option>
                                         <?php } ?>
                                     </select>
                                     <span class="help-inline col-xs-12 col-sm-7">
-										<span class="middle" style="color: red">*</span>
+										<span class="middle" style="color:red;">*</span>
 									</span>
                                 </div>
                             </div>
                             
-                            
-                            <div class="form-group">
-                                <label class="col-sm-3 control-label no-padding-right" for="form-field-1">  备注： </label>
-                                <div class="col-sm-9">
-                                    <textarea id="form-field-11" rows="5" name="remarks" placeholder="（选填）备注信息。最多200个字。" class="autosize-transition col-xs-10 col-sm-3" style="overflow: hidden; word-wrap: break-word; resize: horizontal;"></textarea>
-                                </div>
-                            </div>
-
                             <div class="clearfix form-actions">
                                 <div class="col-md-offset-3 col-md-9">
                                     <button class="btn btn-info" type="submit">

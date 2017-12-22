@@ -54,7 +54,7 @@
                                             <div class="col-sm-4">
                                                 <label class="col-sm-3 control-label no-padding-right" for="form-field-1"> 组团名称</label>
                                                 <div class="col-sm-9">
-                                                    <input type="text" name="houses_name" value=""  class="col-xs-10 col-sm-12" />
+                                                    <input type="text" name="group_name" value="<?php if(isset($group_name)){echo $group_name;}?>"  class="col-xs-10 col-sm-12" />
                                                 </div>
                                             </div>
                                         </div>
@@ -118,15 +118,15 @@
                                                     	<?php endif;?>
                                                     	<?php endforeach;?>
                                                     </td>
-                                                    <td><?php echo $v['group_name'];?></td>
-                                                    <td><?php echo $v['create_time'];?></td>
+                                                    <td><?php echo $val['group_name'];?></td>
+                                                    <td><?php echo $val['create_time'];?></td>
 			
                                                     <td>
                                                         <div class="visible-md visible-lg hidden-sm hidden-xs action-buttons">
                                                             <a class="green tooltip-info" href="/housesgroup/edit/<?php echo $val['id'];?>" data-rel="tooltip" data-placement="top" data-original-title="修改">
                                                                 <i class="icon-pencil bigger-130"></i>
                                                             </a>
-                                                           <a class="red tooltip-info del" href="javascript:;" data-url="/housesgroup/del/<?php echo $val['id']?>" data-id="<?php echo $val['id'];?>" data-rel="tooltip" data-placement="top" data-original-title="删除">
+                                                           <a class="red tooltip-info del_houses_group" href="javascript:;" data-url="/housesgroup/del/<?php echo $val['id']?>" data-id="<?php echo $val['id'];?>" data-rel="tooltip" data-placement="top" data-original-title="删除">
                                                                 <i class="icon-trash bigger-130"></i>
                                                             </a>
                                                         </div>
@@ -152,15 +152,15 @@
 
 <script src="<?php echo css_js_url('jqdistpicker/distpicker.data.js','admin');?>"></script>
 <script src="<?php echo css_js_url('jqdistpicker/distpicker.js','admin');?>"></script>
-
-<script>
-	$("#distpicker1").distpicker({
-		autoSelect: false,
-		province: "<?php if(isset($province)) { echo $province;}else{?>贵州省<?php }?>",
-		city: "<?php if(isset($city)) { echo $city;}else{?>贵阳市<?php }?>",
-		district : "<?php if(isset($area)) { echo $area;}?>",
+<script type="text/javascript">
+	$(".del_houses_group").on('click', function(){
+		var url = $(this).attr('data-url');
+		layer.confirm('您确认要删除该组团吗？', {
+			  btn: ['确认']
+		}, function(){
+			  window.location.href=url;
+		});
 	});
 </script>
-
 <!-- 底部 -->
 <?php $this->load->view("common/bottom");?>
