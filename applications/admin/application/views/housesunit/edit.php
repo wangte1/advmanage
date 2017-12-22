@@ -55,26 +55,35 @@
                                 <label class="col-sm-3 control-label no-padding-right" for="form-field-1"> 所属楼盘： </label>
 
                                 <div class="col-sm-9">
-                                    <select class="col-xs-10 col-sm-3" name="houses_id">
+                                    <select class="select2" name="houses_id">
+                                    	<option value="">请选择楼盘</option>
                                     	<?php foreach ($list as $k => $v) {?>
                                     		<option value="<?php echo $v['id'];?>" <?php if($v['id'] == $info['houses_id']) {?>selected="selected"<?php }?>><?php echo $v['name'];?></option>
                                     	<?php }?>
                                     </select>
                                 </div>
                             </div>
-
                             
                             <div class="form-group">
-                                <label class="col-sm-3 control-label no-padding-right" for="form-field-1"> 坐标： </label>
+                                <label class="col-sm-3 control-label no-padding-right" for="form-field-1"> 所属组团： </label>
+
                                 <div class="col-sm-9">
-                                    <input type="text" class="col-xs-10 col-sm-3" name="coordinate" value="<?php echo $info['coordinate'];?>">
+                                    <select class="select2" name="group_id">
+                                    	<option value="">请选择组团</option>
+                                    	<?php foreach ($group_arr as $k => $v) {?>
+                                    		<option value="<?php echo $v['id'];?>" <?php if($v['id'] == $info['group_id']) {?>selected="selected"<?php }?>><?php echo $v['group_name'];?></option>
+                                    	<?php }?>
+                                    </select>
                                 </div>
                             </div>
                             
                             <div class="form-group">
-                                <label class="col-sm-3 control-label no-padding-right" for="form-field-1"> 腾讯坐标： </label>
+                                <label class="col-sm-3 control-label no-padding-right" for="form-field-1"> 所属楼栋： </label>
+
                                 <div class="col-sm-9">
-                                    <input type="text" class="col-xs-10 col-sm-3" name="t_coordinate" value="<?php echo $info['t_coordinate'];?>">
+                                    <select class="select2" name="area_id">
+                                    	<option value="">请选择楼栋</option>
+                                    </select>
                                 </div>
                             </div>
                             
@@ -110,6 +119,65 @@
 
 <!-- 加载尾部公用js -->
 <?php $this->load->view("common/footer");?>
+
+<script src="<?php echo css_js_url('select2.min.js','admin');?>"></script>
+<script type="text/javascript">
+    $(function(){
+       	$(".select2").css('width','230px').select2({allowClear:true});
+
+
+       	$(".select2").change(function(){
+			var houses_id = $('select[name="houses_id"]').val();
+			var group_id = $('select[name="group_id"]').val();
+			
+			if($(this).attr('name') == 'houses_id') {
+
+				$('.select2-chosen:eq(1)').text('全部');
+				$('.select2-chosen:eq(2)').text('全部');
+				$.post('/housesunit/ajax_get_info', {'houses_id':houses_id,'group_id':group_id}, function(data) {
+					if(data.group_arr) {
+						var group_str = '<option value="">全部</option>';
+						for(var i = 0; i < data.group_arr.length; i++) {
+							group_str += '<option>'+(data.group_arr)[i]['group_name']+'</option>';
+						}
+
+						$('select[name="group_id"]').html(group_str);
+					}
+
+					if(data.area_arr) {
+						var area_str = '<option value="">全部</option>';
+						for(var i = 0; i < data.area_arr.length; i++) {
+							area_str += '<option>'+(data.area_arr)[i]['name']+'</option>';
+						}
+						
+						$('select[name="area_id"]').html(area_str);
+					}
+				});
+			}
+
+
+			if($(this).attr('name') == 'group_id') {
+
+				$('.select2-chosen:eq(2)').text('全部');
+				$.post('/housesunit/ajax_get_info', {'houses_id':houses_id,'group_id':group_id}, function(data) {
+					if(data.area_arr) {
+						var area_str = '<option value="">全部</option>';
+						for(var i = 0; i < data.area_arr.length; i++) {
+							area_str += '<option>'+(data.area_arr)[i]['name']+'</option>';
+						}
+						
+						$('select[name="area_id"]').html(area_str);
+					}
+				});
+			}
+
+       });
+
+
+       	
+    });
+</script>
+
 
     <!-- 底部 -->
 <?php $this->load->view("common/bottom");?>

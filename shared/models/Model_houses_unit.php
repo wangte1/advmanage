@@ -8,11 +8,13 @@ class Model_houses_unit extends MY_Model {
         parent::__construct($this->_table);
     }
     
-    public function  get_unit_join($where = array()) {
-    	$this->db->select('A.id,  B.name AS houses_area_name, C.name AS houses_name');
+    public function  get_join_info($where = array()) {
+    	$this->db->select('A.id, B.name AS houses_name, C.group_name, D.name AS area_name');
     	$this->db->from('t_houses_unit A');
-    	$this->db->join('t_houses_area B', 'A.area_id = B.id');
-    	$this->db->join('t_houses C', 'A.houses_id = C.id');
+    	$this->db->join('t_houses B', 'A.houses_id = B.id', 'left');
+    	$this->db->join('t_houses_group C', 'A.group_id = C.id', 'left');
+    	$this->db->join('t_houses_area D', 'A.area_id = D.id', 'left');
+    	
     	$this->db->where(array('A.is_del' => 0, 'B.is_del' => 0));
     	
     	if(isset($where['like'])) {

@@ -10,7 +10,8 @@ class Housesarea extends MY_Controller{
         parent::__construct();
         $this->load->model([
         	'Model_houses' => 'Mhouses',
-            'Model_houses_area' => 'Mhouses_area'
+            'Model_houses_area' => 'Mhouses_area',
+        	'Model_houses_group' => 'Mhouses_group'
          ]);
         $this->data['code'] = 'community_manage';
         $this->data['active'] = 'houses_area_lists';
@@ -32,11 +33,14 @@ class Housesarea extends MY_Controller{
         if ($this->input->get('name')) $where['like']['name'] = $this->input->get('name');
         if ($this->input->get('houses_id') != 'all' && !empty($this->input->get('houses_id'))) {
         	$where['houses_id'] = $this->input->get('houses_id') ? $this->input->get('houses_id') : 1;
+        	$data['group_arr'] = $this->Mhouses_group->get_lists('id,group_name', $where);
         }
+        if ($this->input->get('group_id')) $where['group_id'] = $this->input->get('group_id');
         
 
         $data['name'] = $this->input->get('name');
         $data['houses_id'] = $this->input->get('houses_id');
+        $data['group_id'] = $this->input->get('group_id');
 
         $data['list'] = $this->Mhouses_area->get_lists('*',$where,[],$size,($page-1)*$size);
         $data_count = $this->Mhouses_area->count($where);
@@ -50,9 +54,17 @@ class Housesarea extends MY_Controller{
         $data['pagestr'] = $this->pagination->create_links(); // 分页信息
 		
         $data['houses_type'] = C("public.houses_type");
-        $where = [];
-        $where['is_del'] = 0;
-        $data['list1'] = $this->Mhouses->get_lists('id,name',$where);
+        
+        $data['list1'] = $this->Mhouses->get_lists('id,name',['is_del' => 0]);
+        
+        if(count($data['list']) > 0) {
+        	$area_ids = array_column($data['list'], 'id');
+        	$where1['in']['A.id'] = $area_ids;
+        	$join_arr = $this->Mhouses_area->get_join_info($where1);
+        
+        	$data['houses_name'] = array_column($join_arr, 'houses_name', 'id');
+        	$data['group_name'] = array_column($join_arr, 'group_name', 'id');
+        }
         
         $this->load->view("housesarea/index",$data);
     }
@@ -113,7 +125,10 @@ class Housesarea extends MY_Controller{
             die("非法参数");
         }
         $data['info'] = $info;
-
+		
+        if(isset($info['houses_id'])) {
+        	$data['group_arr'] = $this->Mhouses_group->get_lists('id,group_name',['houses_id'=>$info['houses_id']]);
+        }
         $where['is_del'] = 0;
         $data['list'] = $this->Mhouses->get_lists('id,name',$where);
 
@@ -141,6 +156,20 @@ class Housesarea extends MY_Controller{
         }else{
             $this->error("删除失败！");
         }
+    }
+    
+    /*
+     * ajax获取组团、楼栋等信息
+     */
+    public function ajax_get_info() {
+    	$houses_id = $this->input->post('houses_id');
+    	 
+    	if($houses_id) {
+    		$where['houses_id'] = $houses_id;
+    		$group_arr = $this->Mhouses_group->get_lists('id,group_name', $where);
+    	}
+    	 
+    	$this->return_json(['group_arr' => $group_arr]);
     }
 
 

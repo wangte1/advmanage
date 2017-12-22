@@ -115,11 +115,7 @@ $config = array(
     				'name'=> '客户管理',
     				'active'=> 'houses_customers_list'
     			),
-    		    array(
-    		        'url'=>'/housesgroup',
-    		        'name'=> '组团管理',
-    		        'active'=> 'houses_group_list'
-    		    ),
+    		    
     			array(
     				'url'=>'/housesformat',
     				'name'=> '点位规格管理',
@@ -129,6 +125,11 @@ $config = array(
 	    			'url'=>'/houses',
 	    			'name'=> '楼盘管理',
 	    			'active'=> 'houses_list'
+    			),
+    			array(
+    				'url'=>'/housesgroup',
+    				'name'=> '组团管理',
+    				'active'=> 'houses_group_list'
     			),
     			array(
     				'url'=>'/housesarea',

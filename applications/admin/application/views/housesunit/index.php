@@ -74,7 +74,7 @@
                                             <div class="col-sm-4">
                                                 <label class="col-sm-3 control-label no-padding-right" for="form-field-1"> 所属组团 </label>
                                                 <div class="col-sm-9">
-                                                	<select class="select2" data-placeholder="Click to Choose..." name="area_id">
+                                                	<select class="select2" data-placeholder="Click to Choose..." name="group_id">
                                                 		<option value="all">全部</option>
 				                                    </select>
                                                 </div>
@@ -138,23 +138,23 @@
                                                     <td><a href=""><?php echo $key+1;?></a></td>
                                                     <td><a href=""><?php echo $val['name'];?></a></td>
                                                     <td>
-                                                    	<?php if(isset($houses)) echo $houses[$val['id']];?>
+                                                    	<?php if(isset($houses_name)) echo $houses_name[$val['id']];?>
                                                     </td>
                                                     <td>
-                                                    	<!--<?php if(isset($houses_area)) echo $houses_area[$val['id']];?>-->
+                                                    	<?php if(isset($group_name)) echo $group_name[$val['id']];?>
                                                     </td>
 													<td>
-														<?php if(isset($houses_area)) echo $houses_area[$val['id']];?>
+														<?php if(isset($area_name)) echo $area_name[$val['id']];?>
 													</td>
 													<td class="hidden-480">
                                                         <?php echo $val['remarks'];?>
                                                     </td>
                                                     <td>
                                                         <div class="visible-md visible-lg hidden-sm hidden-xs action-buttons">
-                                                            <a class="green tooltip-info" href="/housesarea/edit/<?php echo $val['id'];?>" data-rel="tooltip" data-placement="top" data-original-title="修改">
+                                                            <a class="green tooltip-info" href="/housesunit/edit/<?php echo $val['id'];?>" data-rel="tooltip" data-placement="top" data-original-title="修改">
                                                                 <i class="icon-pencil bigger-130"></i>
                                                             </a>
-                                                           <a class="red tooltip-info del" href="javascript:;" data-url="/housesarea/del/<?php echo $val['id']?>" data-id="<?php echo $val['id'];?>" data-rel="tooltip" data-placement="top" data-original-title="删除">
+                                                           <a class="red tooltip-info del" href="javascript:;" data-url="/housesunit/del/<?php echo $val['id']?>" data-id="<?php echo $val['id'];?>" data-rel="tooltip" data-placement="top" data-original-title="删除">
                                                                 <i class="icon-trash bigger-130"></i>
                                                             </a>
                                                         </div>
@@ -183,13 +183,52 @@
 <script type="text/javascript">
     $(function(){
        $(".select2").css('width','230px').select2({allowClear:true});
-
+	   
        $(".select2").change(function(){
+			var houses_id = $('select[name="houses_id"]').val();
+			var group_id = $('select[name="group_id"]').val();
+			
 			if($(this).attr('name') == 'houses_id') {
-				$.post('housesunit/ajax_get_info', {housesid:housesid}, function(data) {
-					alert();
-				})
+
+				$('.select2-chosen:eq(1)').text('全部');
+				$('.select2-chosen:eq(2)').text('全部');
+				$.post('/housesunit/ajax_get_info', {'houses_id':houses_id,'group_id':group_id}, function(data) {
+					if(data.group_arr) {
+						var group_str = '<option value="">全部</option>';
+						for(var i = 0; i < data.group_arr.length; i++) {
+							group_str += '<option>'+(data.group_arr)[i]['group_name']+'</option>';
+						}
+
+						$('select[name="group_id"]').html(group_str);
+					}
+
+					if(data.area_arr) {
+						var area_str = '<option value="">全部</option>';
+						for(var i = 0; i < data.area_arr.length; i++) {
+							area_str += '<option>'+(data.area_arr)[i]['name']+'</option>';
+						}
+						
+						$('select[name="area_id"]').html(area_str);
+					}
+				});
 			}
+
+
+			if($(this).attr('name') == 'group_id') {
+
+				$('.select2-chosen:eq(2)').text('全部');
+				$.post('/housesunit/ajax_get_info', {'houses_id':houses_id,'group_id':group_id}, function(data) {
+					if(data.area_arr) {
+						var area_str = '<option value="">全部</option>';
+						for(var i = 0; i < data.area_arr.length; i++) {
+							area_str += '<option>'+(data.area_arr)[i]['name']+'</option>';
+						}
+						
+						$('select[name="area_id"]').html(area_str);
+					}
+				});
+			}
+
        });
        
     });

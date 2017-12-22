@@ -21,16 +21,16 @@
                 </li>
 
                 <li>
-                    <a href="/housesarea">楼盘区域管理</a>
+                    <a href="/housesarea">楼栋管理</a>
                 </li>
-                <li class="active">编辑楼盘区域</li>
+                <li class="active">编辑楼栋</li>
             </ul>
         </div>
 
         <div class="page-content">
             <div class="page-header">
                 <h1>
-                   编辑楼盘区域
+                   编辑楼栋
                     <a  href="/housesarea" style="float: right; margin-right: 50px" class="btn btn-sm btn-primary">《返回列表页</a>
                 </h1>
             </div>
@@ -41,7 +41,7 @@
 
 
                         <div class="form-group">
-                                <label class="col-sm-3 control-label no-padding-right" for="form-field-1"> 楼盘区域名称： </label>
+                                <label class="col-sm-3 control-label no-padding-right" for="form-field-1"> 楼栋名称： </label>
 
                                 <div class="col-sm-9">
                                     <input type="text" name="name" required id="form-field-1" value="<?php echo $info['name'];?>" placeholder="请输入楼盘区域名称" class="col-xs-10 col-sm-3">
@@ -55,9 +55,23 @@
                                 <label class="col-sm-3 control-label no-padding-right" for="form-field-1"> 所属楼盘： </label>
 
                                 <div class="col-sm-9">
-                                    <select class="col-xs-10 col-sm-3" name="houses_id">
+                                    <select class="select2" name="houses_id">
+                                    	<option value="">请选择楼盘</option>
                                     	<?php foreach ($list as $k => $v) {?>
                                     		<option value="<?php echo $v['id'];?>" <?php if($v['id'] == $info['houses_id']) {?>selected="selected"<?php }?>><?php echo $v['name'];?></option>
+                                    	<?php }?>
+                                    </select>
+                                </div>
+                            </div>
+                            
+                            <div class="form-group">
+                                <label class="col-sm-3 control-label no-padding-right" for="form-field-1"> 所属组团： </label>
+
+                                <div class="col-sm-9">
+                                    <select class="select2" name="group_id">
+                                    	<option value="">请选择组团</option>
+                                    	<?php foreach ($group_arr as $k => $v) {?>
+                                    		<option value="<?php echo $v['id'];?>" <?php if($v['id'] == $info['group_id']) {?>selected="selected"<?php }?>><?php echo $v['group_name'];?></option>
                                     	<?php }?>
                                     </select>
                                 </div>
@@ -110,6 +124,27 @@
 
 <!-- 加载尾部公用js -->
 <?php $this->load->view("common/footer");?>
+<script src="<?php echo css_js_url('select2.min.js','admin');?>"></script>
+<script type="text/javascript">
+    $(function(){
+       	$(".select2").css('width','230px').select2({allowClear:true});
+
+       	$("select[name='houses_id']").change(function(){
+    	   	var houses_id = $('select[name="houses_id"]').val();
+    	   	$('.select2-chosen:eq(1)').text('请选择组团');
+			$.post('/housesarea/ajax_get_info', {'houses_id':houses_id}, function(data) {
+				if(data.group_arr) {
+					var group_str = '<option value="">请选择组团</option>';
+					for(var i = 0; i < data.group_arr.length; i++) {
+						group_str += '<option value="'+(data.group_arr)[i]['id']+'">'+(data.group_arr)[i]['group_name']+'</option>';
+					}
+					
+					$('select[name="group_id"]').html(group_str);
+				}
+			});
+       	});
+    });
+</script>
 
     <!-- 底部 -->
 <?php $this->load->view("common/bottom");?>
