@@ -46,16 +46,16 @@
                             <div class="col-xs-12">
                                 <div class="tabbable">
                                     <ul class="nav nav-tabs padding-12 tab-color-blue background-blue" id="myTab4">
-                                        <li class="active">
+                                        <li <?php if($tab == 'basic'){echo 'class="active"';}?>>
                                             <a data-toggle="tab" href="#basic">基本信息</a>
                                         </li>
-                                        <li>
+                                        <li <?php if($tab == 'point'){echo 'class="active"';}?>>
                                             <a data-toggle="tab" href="#points">锁定点位</a>
                                         </li>
                                     </ul>
 
                                     <div class="tab-content">
-                                        <div id="basic" class="tab-pane in active">
+                                        <div id="basic" class="tab-pane <?php if($tab == 'basic'){echo 'in active';}?>">
                                             <div class="profile-user-info profile-user-info-striped">
                                                 <div class="profile-info-row">
                                                     <div class="profile-info-name"> 订单类型 </div>
@@ -131,10 +131,11 @@
                                                 </div>
                                             </div>
                                         </div>
-                                        <div id="points" class="tab-pane">
+                                        <div id="points" class="tab-pane <?php if($tab == 'point'){echo 'in active';}?>">
                                             <a href="javascript:;" class="btn btn-xs btn-info btn-export" data-id="<?php echo $info['id'];?>" data-type="<?php echo $info['order_type'];?>" style="margin-bottom:10px">
                                                 <i class="fa fa-download out_excel" aria-hidden="true"></i> 导出预定点位
                                             </a>
+                                            
                                             <table class="table table-striped table-bordered">
                                                 <thead>
                                                     <tr>
@@ -175,6 +176,11 @@
                                                     <?php endforeach;?>
                                                 </tbody>
                                             </table>
+                                            <!--分页start-->
+                                    		<?php $this->load->view('common/page');?>
+                                            <div>
+                                            	<br/><span> 客户确认点位地址： <?php echo 'https://api.wesogou.com/housesscheduledorders/index?token='.encrypt(['id' => $info['id']]);?></span>
+                                            </div>
                                         </div>
                                     </div>
                                 </div>

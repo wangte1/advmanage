@@ -60,6 +60,7 @@ class Housesscheduledorders extends MY_Controller{
         $data['pagestr'] = $this->pagination->create_links(); // 分页信息
         
         $data['status_text'] = C('housesscheduledorder.order_status.text');
+        $data['confirm_text'] = C('housesscheduledorder.customer_status');
         
         $data['admins'] = $this->Madmins->get_lists('id, fullname', array('is_del' => 1));
         
@@ -257,18 +258,52 @@ class Housesscheduledorders extends MY_Controller{
     /**
      * 预定订单详情
      */
-    public function detail($id) {
+    public function detail($id, $tab="") {
         $data = $this->data;
+        $data['tab'] = 'basic';//默认显示基本信息tab
+        if($tab) $data['tab'] = 'point';
+        
+        $pageconfig = C('page.page_lists');
+        $this->load->library('pagination');
+        $page = $this->input->get_post('per_page') ? : '1';
+        $size = $pageconfig['per_page'] = 15;
+        $where = array();
+
         $data['info'] = $this->Mhouses_scheduled_orders->get_one('*', array('id' => $id));
         $ret = strtotime($data['info']['lock_end_time']) - strtotime(date('Y-m-d'));
         //预定客户
         $data['info']['customer_name'] = $this->Mhouses_customers->get_one('name', array('id' => $data['info']['lock_customer_id']))['name'];
         
         $data['status_text'] = C('housesscheduledorder.order_status.text'); //订单状态
-        
+        //将点位分割成数组，再按15个作为分组作为第一页的点位id
+        $point_ids = array_chunk(explode(',', $data['info']['point_ids']), $size);
         //预定点位列表
-        $data['info']['selected_points'] = $this->Mhouses_points->get_points_lists(array('in' => array('A.id' => explode(',', $data['info']['point_ids']))));
-        
+        $data['info']['selected_points'] = [];
+        if(isset($point_ids[($page-1)])){
+            $point_list = $this->Mhouses_points->get_points_lists_page(
+                [
+                    'in' => array(
+                        'A.id' => $point_ids[($page-1)] //模拟分页
+                    )
+                ],
+                [
+                    'A.id' => 'asc'
+                ]
+            );
+            
+            if($point_list){
+                $data['info']['selected_points'] = $point_list;
+                //模拟获取分页
+                $data['page'] = $page;
+                $totalCount = count(explode(',', $data['info']['point_ids']));
+                $data['data_count'] = $totalCount;
+                $pageconfig['base_url'] = "/housesscheduledorders/detail/{$id}/tab/1";
+                $pageconfig['total_rows'] = $totalCount;
+                $this->pagination->initialize($pageconfig);
+                $data['pagestr'] = $this->pagination->create_links();// 分页信息
+            }
+        }
+
         $this->load->view('housesscheduledorders/detail', $data);
     }
     

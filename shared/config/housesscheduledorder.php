@@ -22,6 +22,10 @@ $config = array(
     'point_status' => array(
         '0' => '未锁定',
         '1' => '锁定中'
+    ),
+    'customer_status' => array(
+        '0' => '未确认',
+        '1' => '已确认'
     )
 )
 ;
