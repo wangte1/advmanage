@@ -127,8 +127,13 @@ $config = array(
     			),
     			array(
     				'url'=>'/housesarea',
-    				'name'=> '楼盘区域管理',
+    				'name'=> '楼栋管理',
     				'active'=> 'houses_area_lists'
+    			),
+    			array(
+    				'url'=>'/housesunit',
+    				'name'=> '单元管理',
+    				'active'=> 'houses_unit_lists'
     			),
     		)
     	),
