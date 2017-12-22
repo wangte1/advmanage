@@ -58,7 +58,7 @@
                                                 <div class="col-sm-9">
                                                     <select name="order_type" class="select2">
                                                         <option value="">全部</option>
-                                                        <?php foreach ($status_text as $k => $v):?>
+                                                        <?php foreach (C('order.houses_order_type') as $k => $v):?>
                                                         <option value="<?php echo $k;?>" <?php if($order_type == $k){ echo "selected"; }?>><?php echo $v;?></option>
                                                        	<?php endforeach;?>
                                                     </select>
