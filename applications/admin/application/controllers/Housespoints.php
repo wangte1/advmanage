@@ -82,10 +82,13 @@ class Housespoints extends MY_Controller{
         $data['houses_type'] = C("public.houses_type");
         
         $where1 = [];
-        if ($this->input->get('houses_id')) $where1['houses_id'] = $this->input->get('houses_id');
         if ($this->input->get('area_id')) $where1['area_id'] = $this->input->get('area_id');
+        if ($this->input->get('houses_id')) {
+        	$where1['houses_id'] = $this->input->get('houses_id');
+        	$data['buf'] = $this->Mhouses_points->get_lists('ban,unit,floor',$where1,$order_by = array(), $pagesize = 0,$offset = 0,  $group_by = array('ban','unit','floor'));
+        }
          
-        $data['buf'] = $this->Mhouses_points->get_lists('ban,unit,floor',$where1,$order_by = array(), $pagesize = 0,$offset = 0,  $group_by = array('ban','unit','floor'));
+        
 
         $this->load->view("housespoints/index",$data);
     }
