@@ -696,13 +696,13 @@ class Housesorders extends MY_Controller{
             $data['info']['change_points_record'][$key]['add_points'] = implode(',', array_column($add_points, 'code'));
         }
 
-        if($data['info']['order_type'] == 3 || $data['info']['order_type'] == 4){
-            $data['status_text'] = C('order.order_status.led_text');
-        }else{
+//         if($data['info']['order_type'] == 3 || $data['info']['order_type'] == 4){
+//             $data['status_text'] = C('order.order_status.led_text');
+//         }else{
             //制作公司
             $data['info']['make_company'] = $this->Mmake_company->get_one('company_name', array('id' => $data['info']['make_company_id']))['company_name'];
             $data['status_text'] = C('order.order_status.text');
-        }
+//         }
 
 //         //获取对应订单状态的操作信息
 //         $operate_time = $this->Mstatus_operate_time->get_lists("value,operate_remark,operate_time",array("order_id" => $id , 'type' => 1));

@@ -333,7 +333,7 @@
     });
     $('#houses').change(function(){
         $('#area').html();
-        $('.select2-chosen:eq(2)').text('全部');
+        $('#s2id_area,#s2id_ban-sel,#s2id_unit-sel,#s2id_floor-sel').find('.select2-chosen').text('全部');
         var areaStr = '<option value="">全部</option>';
     	var houses_id = $(this).val();
     	$.post('/housespoints/get_area', {'houses_id':houses_id}, function(data){
