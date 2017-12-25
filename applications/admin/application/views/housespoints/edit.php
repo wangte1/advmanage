@@ -55,13 +55,10 @@
 
 
                             <div class="form-group">
-                                <label class="col-sm-3 control-label no-padding-right" for="form-field-1"> 点位编号： </label>
+                                <label class="col-sm-3 control-label no-padding-right" for="form-field-1"> <span class="middle" style="color: red">*</span>点位编号： </label>
 
                                 <div class="col-sm-9">
                                     <input type="text" id="code" name="code" required id="form-field-1" value="<?php echo $info['code'];?>" placeholder="请输入点位编号" class="col-xs-10 col-sm-3">
-                                	<span class="help-inline col-xs-12 col-sm-7 form-field-description-block">
-                                       <span class="middle" style="color: red" id="points_code_msg">*</span>
-									</span>
                                 </div>
                             </div>
 
@@ -99,9 +96,9 @@
                             </div>
                             
                             <div class="form-group">
-                                <label class="col-sm-3 control-label no-padding-right" for="form-field-1"> 所属楼盘： </label>
+                                <label class="col-sm-3 control-label no-padding-right" for="form-field-1"><span class="middle" style="color: red">*</span>所属楼盘： </label>
                                 <div class="col-sm-9">
-                                    <select class="select2" name="houses_id" onchange="getArea();">
+                                    <select class="select2" required name="houses_id" onchange="getArea();">
                                     	<?php foreach ($hlist as $k => $v) {?>
                                     		<option value="<?php echo $v['id'];?>" <?php if($v['id'] == $info['houses_id']) {?>selected="selected"<?php }?>><?php echo $v['name'];?></option>
                                     	<?php }?>
@@ -112,7 +109,7 @@
                             <div class="form-group">
                                 <label class="col-sm-3 control-label no-padding-right" for="form-field-1"> 所属组团： </label>
                                 <div class="col-sm-9">
-                                    <select class="select2" name="area_id" onchange="get_buf_info();">
+                                    <select class="select2"  name="area_id" onchange="get_buf_info();">
                                     	<?php foreach ($alist as $k => $v) {?>
                                     		<option value="<?php echo $v['id'];?>" <?php if($v['id'] == $info['area_id']) {?>selected="selected"<?php }?>><?php echo $v['name'];?></option>
                                     	<?php }?>
@@ -122,9 +119,9 @@
                             
                             
                             <div class="form-group">
-                                <label class="col-sm-3 control-label no-padding-right" for="form-field-1"> 楼栋： </label>
+                                <label class="col-sm-3 control-label no-padding-right" for="form-field-1"> <span class="middle" style="color: red">*</span>楼栋： </label>
                                 <div class="col-sm-3 padding-right0">
-                                    <input type="text" id="ban" name="ban" value="<?php echo $info['ban'];?>" placeholder=""  class="form-control input-sm">
+                                    <input type="text" id="ban" required name="ban" value="<?php echo $info['ban'];?>" placeholder=""  class="form-control input-sm">
                                 </div>
                                 <div class="col-sm-2 padding0">
                                     <select id="ban-sel" class="">
@@ -159,9 +156,9 @@
                             </div>
                             
                             <div class="form-group">
-                                <label class="col-sm-3 control-label no-padding-right" for="form-field-1"> 楼层： </label>
+                                <label class="col-sm-3 control-label no-padding-right" for="form-field-1"> <span class="middle" style="color: red">*</span>楼层： </label>
                                 <div class="col-sm-3 padding-right0">
-                                    <input type="text" id="floor" name="floor" value="<?php echo $info['floor'];?>" placeholder=""  class="form-control input-sm">
+                                    <input type="text" id="floor" required name="floor" value="<?php echo $info['floor'];?>" placeholder=""  class="form-control input-sm">
                                 </div>
                                 <div class="col-sm-2 padding0">
                                     <select id="floor-sel" class="">

@@ -100,12 +100,18 @@ class Housespoints extends MY_Controller{
 
         if(IS_POST){
             $post = $this->input->post();
+            
+            $tmp_count = $this->Mhouses_points->get_one("count(0)",array("code"=>$post['code']));
+            if($tmp_count > 0) {
+            	$this->error("点位编号已经存在！");
+            }
+            
             $post['creator'] = $data['userInfo']['id'];
             $post['create_time'] = date("Y-m-d H:i:s");
 
             $result = $this->Mhouses_points->create($post);
             if($result){
-                $this->write_log($data['userInfo']['id'],1,"新增点位：".$post['code']);
+                $this->write_log($data['userInfo']['id'],1,"社区新增点位：".$post['code']);
                 $this->success("添加成功","/housespoints");
             }else{
                 $this->error("添加失败");
@@ -133,6 +139,7 @@ class Housespoints extends MY_Controller{
 
         if(IS_POST){
             $post = $this->input->post();
+            
             if(isset($post['cover_img'])){
             	$post['images'] = implode(';', $post['cover_img']);
             	unset($post['cover_img']);
@@ -141,7 +148,7 @@ class Housespoints extends MY_Controller{
             //$post['update_time'] = date("Y-m-d H:i:s");
             $result = $this->Mhouses_points->update_info($post,array("id"=>$id));
             if($result){
-                $this->write_log($data['userInfo']['id'],2,"编辑点位：".$post['code']);
+                $this->write_log($data['userInfo']['id'],2,"社区编辑点位：".$post['code']);
                 $this->success("编辑成功","/housespoints");
             }else{
                 $this->error("编辑失败");
