@@ -44,11 +44,19 @@ class Housespoints extends MY_Controller{
         if ($this->input->get('type_id')) $where['type_id'] = $this->input->get('type_id');
         if ($this->input->get('houses_id')) $where['houses_id'] = $this->input->get('houses_id');
         if ($this->input->get('area_id')) $where['area_id'] = $this->input->get('area_id');
+        if ($this->input->get('ban')) $where['ban'] = $this->input->get('ban');
+        if ($this->input->get('unit')) $where['area_id'] = $this->input->get('unit');
+        if ($this->input->get('floor')) $where['area_id'] = $this->input->get('floor');
+        if ($this->input->get('addr')) $where['addr'] = $this->input->get('addr');
         if ($this->input->get('point_status')) $where['point_status'] = $this->input->get('point_status');
         if ($this->input->get('customer_id')) $where['customer_id'] = $this->input->get('customer_id');
         
         $data['point_status'] = $this->input->get('point_status');
         $data['area_id'] = $this->input->get('area_id');
+        $data['ban'] = $this->input->get('ban');
+        $data['unit'] = $this->input->get('unit');
+        $data['floor'] = $this->input->get('floor');
+        $data['addr'] = $this->input->get('addr');
         $data['type_id'] = $this->input->get('type_id');
         $data['customer_id'] = $this->input->get('customer_id');
         $data['houses_id'] = $this->input->get('houses_id');
@@ -72,6 +80,15 @@ class Housespoints extends MY_Controller{
         $data['customers'] = $this->Mhouses_customers->get_lists("id,name", array('is_del' => 0)); //客户列表
         $data['customer_name'] = array_column($data['customers'], 'name', 'id');
         $data['houses_type'] = C("public.houses_type");
+        
+        $where1 = [];
+        if ($this->input->get('area_id')) $where1['area_id'] = $this->input->get('area_id');
+        if ($this->input->get('houses_id')) {
+        	$where1['houses_id'] = $this->input->get('houses_id');
+        	$data['buf'] = $this->Mhouses_points->get_lists('ban,unit,floor',$where1,$order_by = array(), $pagesize = 0,$offset = 0,  $group_by = array('ban','unit','floor'));
+        }
+         
+        
 
         $this->load->view("housespoints/index",$data);
     }
@@ -86,12 +103,18 @@ class Housespoints extends MY_Controller{
 
         if(IS_POST){
             $post = $this->input->post();
+            
+            $tmp_count = $this->Mhouses_points->get_one("count(0)",array("code"=>$post['code']));
+            if($tmp_count > 0) {
+            	$this->error("点位编号已经存在！");
+            }
+            
             $post['creator'] = $data['userInfo']['id'];
             $post['create_time'] = date("Y-m-d H:i:s");
 
             $result = $this->Mhouses_points->create($post);
             if($result){
-                $this->write_log($data['userInfo']['id'],1,"新增点位：".$post['code']);
+                $this->write_log($data['userInfo']['id'],1,"社区新增点位：".$post['code']);
                 $this->success("添加成功","/housespoints");
             }else{
                 $this->error("添加失败");
@@ -101,9 +124,8 @@ class Housespoints extends MY_Controller{
 
         $data['houses_type'] = C("public.houses_type");
         
-       	$data['hlist'] = $this->get_houses_info("贵州省", "贵阳市", "南明区");
-       	
-       	if(count($data['hlist']) > 0) $data['alist'] = $this->get_area_info($data['hlist'][0]['id']);
+       	//$data['hlist'] = $this->get_houses_info("贵州省", "贵阳市", "南明区");
+        $data['hlist'] = $this->Mhouses->get_lists('id,name',['is_del'=>0]);
        	
        	$data['tlist'] = $this->Mhouses_points_format->get_lists('id,type',['is_del'=>0]);
        	
@@ -120,6 +142,7 @@ class Housespoints extends MY_Controller{
 
         if(IS_POST){
             $post = $this->input->post();
+            
             if(isset($post['cover_img'])){
             	$post['images'] = implode(';', $post['cover_img']);
             	unset($post['cover_img']);
@@ -128,7 +151,7 @@ class Housespoints extends MY_Controller{
             //$post['update_time'] = date("Y-m-d H:i:s");
             $result = $this->Mhouses_points->update_info($post,array("id"=>$id));
             if($result){
-                $this->write_log($data['userInfo']['id'],2,"编辑点位：".$post['code']);
+                $this->write_log($data['userInfo']['id'],2,"社区编辑点位：".$post['code']);
                 $this->success("编辑成功","/housespoints");
             }else{
                 $this->error("编辑失败");
@@ -141,7 +164,7 @@ class Housespoints extends MY_Controller{
             die("非法参数");
         }
         $data['info'] = $info;
-		
+        
         $tmplist = $this->Mhouses->get_lists('id,name,province,city,area', ['id' => $info['houses_id']]);
         
         if(count($tmplist) > 0 ) {
@@ -152,6 +175,11 @@ class Housespoints extends MY_Controller{
         }
         
         $data['tlist'] = $this->Mhouses_points_format->get_lists('id,type', ['is_del'=>0]);
+        
+        if ($info['houses_id']) $where['houses_id'] = $info['houses_id'];
+        if ($info['area_id']) $where['area_id'] = $info['area_id'];
+         
+        $data['buf'] = $this->Mhouses_points->get_lists('ban,unit,floor',$where,$order_by = array(), $pagesize = 0,$offset = 0,  $group_by = array('ban','unit','floor'));
 
         $this->load->view("housespoints/edit",$data);
     }
@@ -196,6 +224,18 @@ class Housespoints extends MY_Controller{
     	if ($this->input->post('houses_id')) $where['houses_id'] = $this->input->post('houses_id');
     	$list = $this->get_area_info($where['houses_id']);
     	$this->return_json($list);
+    }
+    
+    /*
+     * ajax获取楼栋、单元、楼层信息
+     */
+    public function get_buf_info() {
+    	if ($this->input->post('houses_id')) $where['houses_id'] = $this->input->post('houses_id');
+    	if ($this->input->post('area_id')) $where['area_id'] = $this->input->post('area_id');
+    	
+    	$list = $this->Mhouses_points->get_lists('ban,unit,floor',$where,$order_by = array(), $pagesize = 0,$offset = 0,  $group_by = array('ban','unit','floor'));
+    	
+    	$this->return_json(['code' => 1, 'list' => $list]);
     }
     
     /*

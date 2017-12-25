@@ -23,7 +23,7 @@
                     </li>
                     
                     <li>
-                        <span>组团管理</span>
+                        <span>单元管理</span>
                     </li>
 
                 </ul>
@@ -33,7 +33,7 @@
 
             <div class="page-content">
                 <div class="page-header">
-                    <a href="/housesarea/add" class="btn btn-sm btn-primary"><i class="fa fa-plus-square" aria-hidden="true"></i> 添加组团</a>
+                    <a href="/housesunit/add" class="btn btn-sm btn-primary"><i class="fa fa-plus-square" aria-hidden="true"></i> 添加单元</a>
                 </div>
                 <div class="row">
                     <div class="col-xs-12">
@@ -52,20 +52,43 @@
                                     <form class="form-horizontal" role="form">
                                         <div class="form-group">
                                             <div class="col-sm-4">
-                                                <label class="col-sm-3 control-label no-padding-right" for="form-field-1"> 楼栋名称</label>
+                                                <label class="col-sm-3 control-label no-padding-right" for="form-field-1"> 单元名称</label>
                                                 <div class="col-sm-9">
                                                     <input type="text" name="name" value="<?php echo $name;?>"  class="col-xs-10 col-sm-12" />
                                                 </div>
                                             </div>
+                                            
+                                            
                                             <div class="col-sm-4">
                                                 <label class="col-sm-3 control-label no-padding-right" for="form-field-1"> 所属楼盘 </label>
                                                 <div class="col-sm-9">
-                                                	
                                                 	<select class="select2" data-placeholder="Click to Choose..." name="houses_id">
                                                 		<option value="all">全部</option>
 				                                    	<?php foreach ($list1 as $k => $v) {?>
 				                                    		<option value="<?php echo $v['id'];?>" <?php if($v['id'] == $houses_id) {?>selected="selected"<?php }?>><?php echo $v['name'];?></option>
 				                                    	<?php }?>
+				                                    </select>
+                                                </div>
+                                            </div>
+                                            
+                                            <div class="col-sm-4">
+                                                <label class="col-sm-3 control-label no-padding-right" for="form-field-1"> 所属组团 </label>
+                                                <div class="col-sm-9">
+                                                	<select class="select2" data-placeholder="Click to Choose..." name="group_id">
+                                                		<option value="all">全部</option>
+				                                    </select>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        
+                                        <div class="form-group">
+                                        	
+                                        
+                                            <div class="col-sm-4">
+                                                <label class="col-sm-3 control-label no-padding-right" for="form-field-1"> 所属楼栋</label>
+                                                <div class="col-sm-9">
+                                                	<select class="select2" data-placeholder="Click to Choose..." name="area_id">
+                                                		<option value="all">全部</option>
 				                                    </select>
                                                 </div>
                                             </div>
@@ -98,10 +121,10 @@
                                         <thead>
                                             <tr>
                                                 <th>序号</th>
-                                                <th>组团名称</th>
+                                                <th>单元名称</th>
                                                 <th>所属楼盘</th>
-                                                <th>坐标</th>
-                                                <th>腾讯坐标</th>
+                                                <th>所属组团</th>
+                                                <th>所属楼栋</th>
                                                 <th>备注</th>
                                                 <th>操作</th>
                                             </tr>
@@ -115,19 +138,23 @@
                                                     <td><a href=""><?php echo $key+1;?></a></td>
                                                     <td><a href=""><?php echo $val['name'];?></a></td>
                                                     <td>
-                                                    	<?php echo $houses_name[$val['id']]?>
+                                                    	<?php if(isset($houses_name)) echo $houses_name[$val['id']];?>
                                                     </td>
-                                                    <td><?php echo $val['coordinate'];?></td>
-													<td><?php echo $val['t_coordinate'];?></td>
+                                                    <td>
+                                                    	<?php if(isset($group_name)) echo $group_name[$val['id']];?>
+                                                    </td>
+													<td>
+														<?php if(isset($area_name)) echo $area_name[$val['id']];?>
+													</td>
 													<td class="hidden-480">
                                                         <?php echo $val['remarks'];?>
                                                     </td>
                                                     <td>
                                                         <div class="visible-md visible-lg hidden-sm hidden-xs action-buttons">
-                                                            <a class="green tooltip-info" href="/housesarea/edit/<?php echo $val['id'];?>" data-rel="tooltip" data-placement="top" data-original-title="修改">
+                                                            <a class="green tooltip-info" href="/housesunit/edit/<?php echo $val['id'];?>" data-rel="tooltip" data-placement="top" data-original-title="修改">
                                                                 <i class="icon-pencil bigger-130"></i>
                                                             </a>
-                                                           <a class="red tooltip-info del" href="javascript:;" data-url="/housesarea/del/<?php echo $val['id']?>" data-id="<?php echo $val['id'];?>" data-rel="tooltip" data-placement="top" data-original-title="删除">
+                                                           <a class="red tooltip-info del" href="javascript:;" data-url="/housesunit/del/<?php echo $val['id']?>" data-id="<?php echo $val['id'];?>" data-rel="tooltip" data-placement="top" data-original-title="删除">
                                                                 <i class="icon-trash bigger-130"></i>
                                                             </a>
                                                         </div>
@@ -155,7 +182,55 @@
 <script src="<?php echo css_js_url('select2.min.js','admin');?>"></script>
 <script type="text/javascript">
     $(function(){
-       	$(".select2").css('width','230px').select2({allowClear:true});
+       $(".select2").css('width','230px').select2({allowClear:true});
+	   
+       $(".select2").change(function(){
+			var houses_id = $('select[name="houses_id"]').val();
+			var group_id = $('select[name="group_id"]').val();
+			
+			if($(this).attr('name') == 'houses_id') {
+
+				$('.select2-chosen:eq(1)').text('全部');
+				$('.select2-chosen:eq(2)').text('全部');
+				$.post('/housesunit/ajax_get_info', {'houses_id':houses_id,'group_id':group_id}, function(data) {
+					if(data.group_arr) {
+						var group_str = '<option value="">全部</option>';
+						for(var i = 0; i < data.group_arr.length; i++) {
+							group_str += '<option>'+(data.group_arr)[i]['group_name']+'</option>';
+						}
+
+						$('select[name="group_id"]').html(group_str);
+					}
+
+					if(data.area_arr) {
+						var area_str = '<option value="">全部</option>';
+						for(var i = 0; i < data.area_arr.length; i++) {
+							area_str += '<option>'+(data.area_arr)[i]['name']+'</option>';
+						}
+						
+						$('select[name="area_id"]').html(area_str);
+					}
+				});
+			}
+
+
+			if($(this).attr('name') == 'group_id') {
+
+				$('.select2-chosen:eq(2)').text('全部');
+				$.post('/housesunit/ajax_get_info', {'houses_id':houses_id,'group_id':group_id}, function(data) {
+					if(data.area_arr) {
+						var area_str = '<option value="">全部</option>';
+						for(var i = 0; i < data.area_arr.length; i++) {
+							area_str += '<option>'+(data.area_arr)[i]['name']+'</option>';
+						}
+						
+						$('select[name="area_id"]').html(area_str);
+					}
+				});
+			}
+
+       });
+       
     });
 </script>
 <!-- 底部 -->
