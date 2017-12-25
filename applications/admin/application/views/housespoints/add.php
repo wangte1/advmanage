@@ -146,9 +146,13 @@
                             </div>
                             
                             <div class="form-group">
-                                <label class="col-sm-3 control-label no-padding-right" for="form-field-1"> 地址补充： </label>
+                                <label class="col-sm-3 control-label no-padding-right" for="form-field-1"> 点位位置： </label>
                                 <div class="col-sm-9">
-                                	<input type="text" name="addr" placeholder=""  class="col-xs-6 col-sm-5">
+                                	<select id="addr"  data-placeholder="Click to Choose..." name="addr">
+	                                    <option value="">--请选择点位位置--</option>
+	                                    <option value="1">门禁</option>
+	                                    <option value="2">电梯前室</option>
+                                    </select>
                                 </div>
                             </div>
                             

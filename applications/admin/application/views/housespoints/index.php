@@ -124,7 +124,7 @@
                                              <div class="col-sm-3">
                                                 <label class="col-sm-3 control-label no-padding-right" for="form-field-1"> 楼层 </label>
                                                 <div class="col-sm-9">
-                                                	<select id="floor-sel" class="select2" data-placeholder="Click to Choose..." name="unit">
+                                                	<select id="floor-sel" class="select2" data-placeholder="Click to Choose..." name="floor">
                                                 		<option value="">全部</option>
                                                 		<?php $floorArr = array_unique(array_column($buf, 'floor'));?>
 				                                    	<?php foreach ($floorArr as $k => $v) {?>
@@ -132,6 +132,17 @@
 				                                    			<option value="<?php echo $v;?>" <?php if($v == $floor) {?>selected="selected"<?php }?>><?php echo $v;?></option>
 				                                    		<?php }?>
 				                                    	<?php }?>
+				                                    </select>
+                                                </div>
+                                            </div>
+                                            
+                                            <div class="col-sm-3">
+                                                <label class="col-sm-3 control-label no-padding-right" for="form-field-1"> 点位位置</label>
+                                                <div class="col-sm-9">
+                                                	<select id="addr" class="select2" data-placeholder="Click to Choose..." name="addr">
+                                                		<option value="">全部</option>
+                                                		<option value="1" <?php if($addr == 1) {?>selected="selected"<?php }?>>门禁</option>
+                                                		<option value="2" <?php if($addr == 2) {?>selected="selected"<?php }?>>电梯前室</option>
 				                                    </select>
                                                 </div>
                                             </div>
@@ -147,8 +158,10 @@
 				                                    </select>
                                                 </div>
                                             </div>
-                                    	
-                                            <div class="col-sm-3">
+                                            
+                                     	</div>
+                                    	<div class="form-group">
+                                    		<div class="col-sm-3">
                                                 <label class="col-sm-3 control-label no-padding-right" for="form-field-1"> 点位状态 </label>
                                                 <div class="col-sm-9">
                                                 	<select id="area" class="select2" data-placeholder="Click to Choose..." name="point_status">
@@ -159,8 +172,7 @@
 				                                    </select>
                                                 </div>
                                             </div>
-                                     	</div>
-                                    	<div class="form-group">
+                                    		
                                             <div class="col-sm-3">
                                                 <label class="col-sm-3 control-label no-padding-right" for="form-field-1"> 占用客户 </label>
                                                 <div class="col-sm-9">
@@ -205,7 +217,7 @@
                                                 <th>楼栋</th>
                                                 <th>单元</th>
                                                 <th>楼层</th>
-                                                <th>地址补充</th>
+                                                <th>点位位置</th>
                                                 <th>类型</th>
                                                 <th>占用客户</th>
                                                 <th>点位属性</th>
@@ -239,7 +251,7 @@
                                                     <td><?php echo $val['unit'];?></td>
                                                     <td><?php echo $val['floor'];?></td>
                                                     <td>
-                                                    	<?php echo $val['addr'];?>
+                                                    	<?php if($val['addr'] == 1) {echo '门禁';}else if($val['addr'] == 2){echo '电梯前室';}?>
                                                     </td>
                                                     <td>
                                                     	<?php foreach ($tlist as $k => $v) {?>

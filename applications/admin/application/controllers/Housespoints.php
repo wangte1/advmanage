@@ -47,8 +47,7 @@ class Housespoints extends MY_Controller{
         if ($this->input->get('ban')) $where['ban'] = $this->input->get('ban');
         if ($this->input->get('unit')) $where['area_id'] = $this->input->get('unit');
         if ($this->input->get('floor')) $where['area_id'] = $this->input->get('floor');
-        
-        
+        if ($this->input->get('addr')) $where['addr'] = $this->input->get('addr');
         if ($this->input->get('point_status')) $where['point_status'] = $this->input->get('point_status');
         if ($this->input->get('customer_id')) $where['customer_id'] = $this->input->get('customer_id');
         
@@ -57,6 +56,7 @@ class Housespoints extends MY_Controller{
         $data['ban'] = $this->input->get('ban');
         $data['unit'] = $this->input->get('unit');
         $data['floor'] = $this->input->get('floor');
+        $data['addr'] = $this->input->get('addr');
         $data['type_id'] = $this->input->get('type_id');
         $data['customer_id'] = $this->input->get('customer_id');
         $data['houses_id'] = $this->input->get('houses_id');
