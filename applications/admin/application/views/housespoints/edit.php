@@ -101,7 +101,7 @@
                             <div class="form-group">
                                 <label class="col-sm-3 control-label no-padding-right" for="form-field-1"> 所属楼盘： </label>
                                 <div class="col-sm-9">
-                                    <select class="" name="houses_id" onchange="getArea();">
+                                    <select class="select2" name="houses_id" onchange="getArea();">
                                     	<?php foreach ($hlist as $k => $v) {?>
                                     		<option value="<?php echo $v['id'];?>" <?php if($v['id'] == $info['houses_id']) {?>selected="selected"<?php }?>><?php echo $v['name'];?></option>
                                     	<?php }?>
@@ -112,7 +112,7 @@
                             <div class="form-group">
                                 <label class="col-sm-3 control-label no-padding-right" for="form-field-1"> 所属组团： </label>
                                 <div class="col-sm-9">
-                                    <select class="" name="area_id">
+                                    <select class="select2" name="area_id" onchange="get_buf_info();">
                                     	<?php foreach ($alist as $k => $v) {?>
                                     		<option value="<?php echo $v['id'];?>" <?php if($v['id'] == $info['area_id']) {?>selected="selected"<?php }?>><?php echo $v['name'];?></option>
                                     	<?php }?>
@@ -124,13 +124,17 @@
                             <div class="form-group">
                                 <label class="col-sm-3 control-label no-padding-right" for="form-field-1"> 楼栋： </label>
                                 <div class="col-sm-3 padding-right0">
-                                    <input type="text" name="ban" value="<?php echo $info['ban'];?>" placeholder=""  class="form-control input-sm">
+                                    <input type="text" id="ban" name="ban" value="<?php echo $info['ban'];?>" placeholder=""  class="form-control input-sm">
                                 </div>
                                 <div class="col-sm-2 padding0">
-                                    <select class="">
-                                    	<option>选择楼栋</option>
-                                    	<option>1栋</option>
-                                    	<option>2栋</option>
+                                    <select id="ban-sel" class="">
+                                    	<option value="">选择楼栋</option>
+                                    	<?php $banArr = array_unique(array_column($buf, 'ban'));?>
+                                    	<?php foreach ($banArr as $k => $v) {?>
+                                    		<?php if($v != '') {?>
+                                    			<option value="<?php echo $v;?>"><?php echo $v;?></option>
+                                    		<?php }?>
+                                    	<?php }?>
                                     </select>
                                 </div>
                                  
@@ -139,13 +143,17 @@
                             <div class="form-group">
                                 <label class="col-sm-3 control-label no-padding-right" for="form-field-1"> 单元： </label>
                                 <div class="col-sm-3 padding-right0">
-                                    <input type="text" name="unit" value="<?php echo $info['unit'];?>" placeholder=""  class="form-control input-sm">
+                                    <input type="text" id="unit" name="unit" value="<?php echo $info['unit'];?>" placeholder=""  class="form-control input-sm">
                                 </div>
                                 <div class="col-sm-2 padding0">
-                                    <select class="">
-                                    	<option>选择单元</option>
-                                    	<option>1单元</option>
-                                    	<option>2单元</option>
+                                    <select id="unit-sel" class="">
+                                    	<option value="">选择单元</option>
+                                    	<?php $unitArr = array_unique(array_column($buf, 'unit'));?>
+                                    	<?php foreach ($unitArr as $k => $v) {?>
+                                    		<?php if($v != '') {?>
+                                    			<option value="<?php echo $v;?>"><?php echo $v;?></option>
+                                    		<?php }?>
+                                    	<?php }?>
                                     </select>
                                 </div>
                             </div>
@@ -153,19 +161,23 @@
                             <div class="form-group">
                                 <label class="col-sm-3 control-label no-padding-right" for="form-field-1"> 楼层： </label>
                                 <div class="col-sm-3 padding-right0">
-                                    <input type="text" name="floor" value="<?php echo $info['floor'];?>" placeholder=""  class="form-control input-sm">
+                                    <input type="text" id="floor" name="floor" value="<?php echo $info['floor'];?>" placeholder=""  class="form-control input-sm">
                                 </div>
                                 <div class="col-sm-2 padding0">
-                                    <select class="">
-                                    	<option>选择楼层</option>
-                                    	<option>-1层</option>
-                                    	<option>32层</option>
+                                    <select id="floor-sel" class="">
+                                    	<option value="">选择楼层</option>
+                                    	<?php $floorArr = array_unique(array_column($buf, 'floor'));?>
+                                    	<?php foreach ($floorArr as $k => $v) {?>
+                                    		<?php if($v != '') {?>
+                                    			<option value="<?php echo $v;?>"><?php echo $v;?></option>
+                                    		<?php }?>
+                                    	<?php }?>
                                     </select>
                                 </div>
                             </div>
                             
                             <div class="form-group">
-                                <label class="col-sm-3 control-label no-padding-right" for="form-field-1"> 补充地址： </label>
+                                <label class="col-sm-3 control-label no-padding-right" for="form-field-1"> 地址补充： </label>
                                 <div class="col-sm-9">
                                 	<input type="text" name="addr"  value="<?php echo $info['addr'];?>" class="col-xs-10 col-sm-5">
                                 </div>
@@ -265,14 +277,10 @@
 <script src="<?php echo css_js_url('select2.min.js','admin');?>"></script>
 
     <script type="text/javascript">
+    	var buf_info = JSON. parse('<?php echo json_encode($buf);?>');
+    	
         $(function(){
             $(".select2").css('width','230px').select2({allowClear:true});
-
-            $(".address").on('change', function(){
-                var _obj = $(this);
-                var str = "----请选择----";
-                getinfo(_obj,str);
-            });
 
             $("#distpicker1 select").change(function(){
 				var province = $("#province").val();
@@ -281,24 +289,61 @@
 				
 				$.post('/housespoints/ajax_houses_info',{province:province,city:city,area:area},function(data){
 					if(data) {
-						var housesStr = '';
+						$('.select2-chosen:eq(2)').text('--请选择组团--');
+						$('.select2-chosen:eq(1)').text('--请选择楼盘--');
+						var housesStr = '<option value="">--请选择楼盘--</option>';
 						for(var i = 0; i < data.length; i++) {
 
-							if(i == 0) {
-								housesStr += '<option value="' + data[i].id + '" selected = "selected">' + data[i].name + '</option>';
-							}else {
-								housesStr += '<option value="' + data[i].id + '">' + data[i].name + '</option>';
-							}
+							housesStr += '<option value="' + data[i].id + '">' + data[i].name + '</option>';
 						}
 						
 						$("select[name='houses_id']").html(housesStr);
 
-						getArea();
 					}
 				});
-
 				
             });
+
+
+            $('#ban-sel').change(function(){
+                var ban_val = $(this).val();
+
+				$('#ban').val(ban_val);
+                
+                var unitArr = new Array();
+                var unitStr = '<option value="">选择单元</option>';
+				for(var i = 0; i < buf_info.length; i++) {
+					if(buf_info[i]['ban'] != '' && ban_val == buf_info[i]['ban'] && unitArr.indexOf(buf_info[i]['unit']) == -1) {
+						unitArr[i] = buf_info[i]['unit'];
+						unitStr += '<option value="'+buf_info[i]['unit']+'">'+buf_info[i]['unit']+'</option>'
+						$.unique(unitArr);
+					}
+				}
+
+				$('#unit-sel').html(unitStr);
+
+
+				var floorArr = new Array();
+                var floorStr = '<option value="">选择楼层</option>';
+				for(var i = 0; i < buf_info.length; i++) {
+					if(buf_info[i]['ban'] != '' && ban_val == buf_info[i]['ban'] && floorArr.indexOf(buf_info[i]['floor']) == -1) {
+						floorArr[i] = buf_info[i]['floor'];
+						floorStr += '<option value="'+buf_info[i]['floor']+'">'+buf_info[i]['floor']+'</option>'
+						$.unique(floorArr);
+					}
+				}
+
+				$('#floor-sel').html(floorStr);
+				
+            });
+
+            $('#unit-sel').change(function(){
+				$('#unit').val($(this).val());
+           	});
+
+            $('#floor-sel').change(function(){
+				$('#floor').val($(this).val());
+           	});
 
 
             $("#subbtn").click(function(){
@@ -341,31 +386,47 @@
             
         });
 
-        function getArea() {
-            
+		function getArea() {
         	var houses_id = $("select[name='houses_id']").val();
-
-        	if(houses_id == null) {
-        		$("select[name='area_id']").html("");
-        		return;
-            }
-        	
         	$.post('/housespoints/ajax_area_info',{houses_id:houses_id},function(data){
 				if(data) {
-					var areaStr = '';
+					$('.select2-chosen:eq(2)').text('--请选择组团--');
+					var areaStr = '<option value="">--请选择组团--</option>';
 					for(var i = 0; i < data.length; i++) {
-
-						if(i == 0) {
-							areaStr += '<option value="' + data[i].id + '" selected = "selected">' + data[i].name + '</option>';
-						}else {
-							areaStr += '<option value="' + data[i].id + '">' + data[i].name + '</option>';
-						}
+						areaStr += '<option value="' + data[i].id + '">' + data[i].name + '</option>';
 					}
 					
 					$("select[name='area_id']").html(areaStr);
 
 				}
 			});
+
+        	get_buf_info()
+        }
+
+        function get_buf_info() {
+        	var houses_id = $("select[name='houses_id']").val();
+        	var area_id = $("select[name='area_id']").val();
+
+        	$.post('/housespoints/get_buf_info',{houses_id:houses_id, area_id:area_id},function(data){
+				if(data.code == 1) {
+					buf_info = data.list;
+
+					var banArr = new Array();
+					var banStr = '<option value="">选择楼栋</option>';
+					for(var i = 0; i < data.list.length; i++) {
+						if((data.list)[i]['ban'] != '' && banArr.indexOf((data.list)[i]['ban']) == -1) {
+							banArr[i] = (data.list)[i]['ban'];
+							banStr += '<option value="'+(data.list)[i]['ban']+'">'+(data.list)[i]['ban']+'</option>'
+							$.unique(banArr);
+						}
+					}
+
+					$('#ban-sel').html(banStr);
+					
+				}
+			});
+        	
         }
      </script>
 

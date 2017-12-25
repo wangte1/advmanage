@@ -101,9 +101,8 @@ class Housespoints extends MY_Controller{
 
         $data['houses_type'] = C("public.houses_type");
         
-       	$data['hlist'] = $this->get_houses_info("贵州省", "贵阳市", "南明区");
-       	
-       	if(count($data['hlist']) > 0) $data['alist'] = $this->get_area_info($data['hlist'][0]['id']);
+       	//$data['hlist'] = $this->get_houses_info("贵州省", "贵阳市", "南明区");
+        $data['hlist'] = $this->Mhouses->get_lists('id,name',['is_del'=>0]);
        	
        	$data['tlist'] = $this->Mhouses_points_format->get_lists('id,type',['is_del'=>0]);
        	
@@ -152,6 +151,11 @@ class Housespoints extends MY_Controller{
         }
         
         $data['tlist'] = $this->Mhouses_points_format->get_lists('id,type', ['is_del'=>0]);
+        
+        if ($info['houses_id']) $where['houses_id'] = $info['houses_id'];
+        if ($info['area_id']) $where['area_id'] = $info['area_id'];
+         
+        $data['buf'] = $this->Mhouses_points->get_lists('ban,unit,floor',$where,$order_by = array(), $pagesize = 0,$offset = 0,  $group_by = array('ban','unit','floor'));
 
         $this->load->view("housespoints/edit",$data);
     }
@@ -205,7 +209,7 @@ class Housespoints extends MY_Controller{
     	if ($this->input->post('houses_id')) $where['houses_id'] = $this->input->post('houses_id');
     	if ($this->input->post('area_id')) $where['area_id'] = $this->input->post('area_id');
     	
-    	$list = $this->Mhouses_points->get_lists('ban,unit,floor',$where);
+    	$list = $this->Mhouses_points->get_lists('ban,unit,floor',$where,$order_by = array(), $pagesize = 0,$offset = 0,  $group_by = array('ban','unit','floor'));
     	
     	$this->return_json(['code' => 1, 'list' => $list]);
     }

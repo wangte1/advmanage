@@ -111,13 +111,11 @@
                             <div class="form-group">
                                 <label class="col-sm-3 control-label no-padding-right" for="form-field-1"> 楼栋： </label>
                                 <div class="col-sm-3 padding-right0">
-                                    <input type="text" name="ban" placeholder=""  class="form-control input-sm">
+                                    <input type="text" id="ban" name="ban" placeholder=""  class="form-control input-sm">
                                 </div>
                                 <div class="col-sm-2 padding0">
-                                    <select class="">
+                                    <select id="ban-sel" class="">
                                     	<option>选择楼栋</option>
-                                    	<option>1栋</option>
-                                    	<option>2栋</option>
                                     </select>
                                 </div>
                                  
@@ -126,13 +124,11 @@
                             <div class="form-group">
                                 <label class="col-sm-3 control-label no-padding-right" for="form-field-1"> 单元： </label>
                                 <div class="col-sm-3 padding-right0">
-                                    <input type="text" name="unit" placeholder=""  class="form-control input-sm">
+                                    <input type="text" id="unit" name="unit" placeholder=""  class="form-control input-sm">
                                 </div>
                                 <div class="col-sm-2 padding0">
-                                    <select class="">
+                                    <select id="unit-sel" class="">
                                     	<option>选择单元</option>
-                                    	<option>1单元</option>
-                                    	<option>2单元</option>
                                     </select>
                                 </div>
                             </div>
@@ -140,13 +136,11 @@
                             <div class="form-group">
                                 <label class="col-sm-3 control-label no-padding-right" for="form-field-1"> 楼层： </label>
                                 <div class="col-sm-3 padding-right0">
-                                    <input type="text" name="floor" placeholder=""  class="form-control input-sm">
+                                    <input type="text" id="floor" name="floor" placeholder=""  class="form-control input-sm">
                                 </div>
                                 <div class="col-sm-2 padding0">
-                                    <select class="">
+                                    <select id="floor-sel" class="">
                                     	<option>选择楼层</option>
-                                    	<option>-1层</option>
-                                    	<option>32层</option>
                                     </select>
                                 </div>
                             </div>
@@ -239,6 +233,8 @@
 <script src="<?php echo css_js_url('select2.min.js','admin');?>"></script>
 
     <script type="text/javascript">
+    	var buf_info = '';
+    
         $(function(){
             $(".select2").css('width','230px').select2({allowClear:true});
 			$('#area').find('option:eq(0)').attr("selected",true);
@@ -250,6 +246,7 @@
 				
 				$.post('/housespoints/ajax_houses_info',{province:province,city:city,area:area},function(data){
 					if(data) {
+						$('.select2-chosen:eq(2)').text('--请选择组团--');
 						$('.select2-chosen:eq(1)').text('--请选择楼盘--');
 						var housesStr = '<option value="">--请选择楼盘--</option>';
 						for(var i = 0; i < data.length; i++) {
@@ -264,6 +261,46 @@
 				});
 				
             });
+
+            $('#ban-sel').change(function(){
+                var ban_val = $(this).val();
+
+				$('#ban').val(ban_val);
+                
+                var unitArr = new Array();
+                var unitStr = '<option value="">选择单元</option>';
+				for(var i = 0; i < buf_info.length; i++) {
+					if(buf_info[i]['ban'] != '' && ban_val == buf_info[i]['ban'] && unitArr.indexOf(buf_info[i]['unit']) == -1) {
+						unitArr[i] = buf_info[i]['unit'];
+						unitStr += '<option value="'+buf_info[i]['unit']+'">'+buf_info[i]['unit']+'</option>'
+						$.unique(unitArr);
+					}
+				}
+
+				$('#unit-sel').html(unitStr);
+
+
+				var floorArr = new Array();
+                var floorStr = '<option value="">选择楼层</option>';
+				for(var i = 0; i < buf_info.length; i++) {
+					if(buf_info[i]['ban'] != '' && ban_val == buf_info[i]['ban'] && floorArr.indexOf(buf_info[i]['floor']) == -1) {
+						floorArr[i] = buf_info[i]['floor'];
+						floorStr += '<option value="'+buf_info[i]['floor']+'">'+buf_info[i]['floor']+'</option>'
+						$.unique(floorArr);
+					}
+				}
+
+				$('#floor-sel').html(floorStr);
+				
+            });
+
+            $('#unit-sel').change(function(){
+				$('#unit').val($(this).val());
+           	});
+
+            $('#floor-sel').change(function(){
+				$('#floor').val($(this).val());
+           	});
             
         });
 
@@ -282,15 +319,32 @@
 
 				}
 			});
+
+        	get_buf_info()
         }
 
+		
+		
         function get_buf_info() {
         	var houses_id = $("select[name='houses_id']").val();
         	var area_id = $("select[name='area_id']").val();
 
         	$.post('/housespoints/get_buf_info',{houses_id:houses_id, area_id:area_id},function(data){
-				if(data) {
-					console.log(data);
+				if(data.code == 1) {
+					buf_info = data.list;
+
+					var banArr = new Array();
+					var banStr = '<option value="">选择楼栋</option>';
+					for(var i = 0; i < data.list.length; i++) {
+						if((data.list)[i]['ban'] != '' && banArr.indexOf((data.list)[i]['ban']) == -1) {
+							banArr[i] = (data.list)[i]['ban'];
+							banStr += '<option value="'+(data.list)[i]['ban']+'">'+(data.list)[i]['ban']+'</option>'
+							$.unique(banArr);
+						}
+					}
+
+					$('#ban-sel').html(banStr);
+					
 				}
 			});
         	
