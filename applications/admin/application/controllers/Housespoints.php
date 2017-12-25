@@ -44,11 +44,19 @@ class Housespoints extends MY_Controller{
         if ($this->input->get('type_id')) $where['type_id'] = $this->input->get('type_id');
         if ($this->input->get('houses_id')) $where['houses_id'] = $this->input->get('houses_id');
         if ($this->input->get('area_id')) $where['area_id'] = $this->input->get('area_id');
+        if ($this->input->get('ban')) $where['ban'] = $this->input->get('ban');
+        if ($this->input->get('unit')) $where['area_id'] = $this->input->get('unit');
+        if ($this->input->get('floor')) $where['area_id'] = $this->input->get('floor');
+        
+        
         if ($this->input->get('point_status')) $where['point_status'] = $this->input->get('point_status');
         if ($this->input->get('customer_id')) $where['customer_id'] = $this->input->get('customer_id');
         
         $data['point_status'] = $this->input->get('point_status');
         $data['area_id'] = $this->input->get('area_id');
+        $data['ban'] = $this->input->get('ban');
+        $data['unit'] = $this->input->get('unit');
+        $data['floor'] = $this->input->get('floor');
         $data['type_id'] = $this->input->get('type_id');
         $data['customer_id'] = $this->input->get('customer_id');
         $data['houses_id'] = $this->input->get('houses_id');
@@ -72,6 +80,12 @@ class Housespoints extends MY_Controller{
         $data['customers'] = $this->Mhouses_customers->get_lists("id,name", array('is_del' => 0)); //客户列表
         $data['customer_name'] = array_column($data['customers'], 'name', 'id');
         $data['houses_type'] = C("public.houses_type");
+        
+        $where1 = [];
+        if ($this->input->get('houses_id')) $where1['houses_id'] = $this->input->get('houses_id');
+        if ($this->input->get('area_id')) $where1['area_id'] = $this->input->get('area_id');
+         
+        $data['buf'] = $this->Mhouses_points->get_lists('ban,unit,floor',$where1,$order_by = array(), $pagesize = 0,$offset = 0,  $group_by = array('ban','unit','floor'));
 
         $this->load->view("housespoints/index",$data);
     }

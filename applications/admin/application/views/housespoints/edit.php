@@ -401,7 +401,7 @@
 				}
 			});
 
-        	get_buf_info()
+        	get_buf_info();
         }
 
         function get_buf_info() {
