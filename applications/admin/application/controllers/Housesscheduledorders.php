@@ -83,6 +83,7 @@ class Housesscheduledorders extends MY_Controller{
      * @param number $order_type
      */
     public function addpreorder($order_type=1){
+        
         $data = $this->data;
         if(IS_POST){
             $post_data = $this->input->post();
@@ -125,6 +126,8 @@ class Housesscheduledorders extends MY_Controller{
                 $this->success("添加失败！");
             }
         }
+        //获取楼栋单元楼层列表
+        $data['BUFL'] = $this->get_ban_unit_floor_list();
         $data['order_type'] = $order_type;
         $data['status_text'] = C('order.order_status.text');
        
@@ -149,7 +152,7 @@ class Housesscheduledorders extends MY_Controller{
             $post_data['update_user'] = $data['userInfo']['id'];
             $post_data['update_time'] = date('Y-m-d H:i:s');
             $id = $post_data['id'];
-            unset($post_data['id']);
+            unset($post_data['id'], $post_data['ban'], $post_data['unit'], $post_data['floor']);
             //先把之前所有已选择的点位的状态置为未锁定，再把重新选择的点位状态置为锁定
             //此处要求最好锁表，以免刚释放的点位被他人占用
             //禁止其他人写入
@@ -182,18 +185,22 @@ class Housesscheduledorders extends MY_Controller{
                 $this->error("修改失败！请重试！");
             }
         } else {
+            
+            //获取楼栋单元楼层列表
+            $data['BUFL'] = $this->get_ban_unit_floor_list();
+            
             $data['customer'] = $this->Mhouses_customers->get_one('id, name', array('id' => $data['info']['lock_customer_id']));
             
             $data['order_type'] = $data['info']['order_type'];
             
-            //楼盘列表
+            //组团列表
             $data['houses_list'] = $this->Mhouses->get_lists("id, name", array('is_del' => 0));
             
             //已选择点位列表
             $where['in']['A.id'] = explode(',', $data['info']['point_ids']);
             $data['selected_points'] = $this->Mhouses_points->get_points_lists($where);
 
-            $this->load->view("housesscheduledorders/edit", $data);
+            $this->load->view("housesscheduledorders/add", $data);
         }
     }
     
@@ -314,9 +321,12 @@ class Housesscheduledorders extends MY_Controller{
 
         if($this->input->post('order_type')) $where['type_id'] = $this->input->post('order_type');
         if($this->input->post('houses_id')) $where['houses_id'] = $this->input->post('houses_id');
+        if($this->input->post('ban')) $where['ban'] = $this->input->post('ban');
+        if($this->input->post('unit')) $where['unit'] = $this->input->post('unit');
+        if($this->input->post('floor')) $where['floor'] = $this->input->post('floor');
         
         $where['is_del'] = $where['is_lock'] = 0;
-        $points_lists = $this->Mhouses_points->get_lists("id,code,houses_id,is_lock,area_id,type_id,point_status", $where);
+        $points_lists = $this->Mhouses_points->get_lists("id,code,houses_id,is_lock,area_id,ban,unit,floor,type_id,point_status", $where);
         
         if(count($points_lists) > 0) {
             
@@ -358,7 +368,7 @@ class Housesscheduledorders extends MY_Controller{
             }
         }
         $areaList = array_unique(array_column($points_lists, 'area_name'));
-        //获取去重的楼盘区域
+        //获取去重的组团区域
         $this->return_json(array('flag' => true, 'points_lists' => $points_lists, 'count' => count($points_lists), 'area_list' => $areaList));
     }
     
@@ -373,7 +383,7 @@ class Housesscheduledorders extends MY_Controller{
         $table_header =  array(
             '点位id' => 'id',
             '点位编号' => "code",
-            '所属楼盘' => "houses_name",
+            '所属组团' => "houses_name",
             '所属区域' => "houses_area_name",
             '详细地址' => "addr",
             '价格' => 'price',
@@ -414,4 +424,35 @@ class Housesscheduledorders extends MY_Controller{
         $objWriter = PHPExcel_IOFactory::createWriter($this->phpexcel, 'Excel5');
         $objWriter->save('php://output');
     }
+    
+    /**
+     * 获取楼栋，单元， 楼层列表
+     * @author yonghua 254274509@qq.com
+     * @return array[]|array[]
+     */
+    private function get_ban_unit_floor_list(){
+        $array = [];
+        
+        $list = $this->Mhouses_points->get_lists(
+            'ban, unit, floor', 
+            [
+                'ban !=' => '',
+                'unit !=' => '',
+                'floor !=' => '',
+                'is_del' => 0
+            ], 
+            [
+                'ban' => 'asc',
+                'unit' => 'asc',
+                'floor' => 'asc',
+            ]
+        );
+        if(!$list) return $array;
+        $array['ban'] = array_unique(array_column($list, 'ban'));
+        $array['unit'] = array_unique(array_column($list, 'unit'));
+        $array['floor'] = array_unique(array_column($list, 'floor'));
+        
+        return $array;
+    }
+    
 }

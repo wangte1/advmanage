@@ -69,13 +69,14 @@
                                     <form class="form-horizontal" role="form" method="post" action="">
                                         <div class="space-4"></div>
 
+                                        <input type="hidden" name="id" value="<?php if(isset($info)){echo $info['id'];}?>" />
                                         <div class="form-group">
                                             <label class="col-sm-2 control-label no-padding-right" for="form-field-2"> 广告客户： </label>
                                             <div class="col-sm-10">
                                                 <select id="lock_customer_id" name="lock_customer_id" class="select2" required>
                                                     <option value="">请选择客户</option>
                                                     <?php foreach($customers as $val):?>
-                                                    <option value="<?php echo $val['id'];?>" <?php if(isset($info['customer_id']) && $val['id'] == $info['customer_id']){ echo "selected"; }?>><?php echo $val['name'];?></option>
+                                                    <option value="<?php echo $val['id'];?>" <?php if(isset($info['lock_customer_id']) && $val['id'] == $info['lock_customer_id']){ echo "selected"; }?>><?php echo $val['name'];?></option>
                                                     <?php endforeach;?>
                                                 </select>
                                                 
@@ -139,10 +140,53 @@
                                                                     </div>
                                                                 </div>
                                                                 <div class="col-sm-6">
-                                                                    <label class="col-sm-4 control-label" for="form-field-1"> 楼盘区域： </label>
+                                                                    <label class="col-sm-4 control-label" for="form-field-1"> 组团： </label>
                                                                     <div class="col-sm-8" style="padding:0">
                                                                         <select name="area_id" id="area_id" class="select2">
-                                                                            <option value="">请选择楼盘区域</option>
+                                                                            <option value="">请选择楼组团</option>
+                                                                        </select>
+                                                                    </div>
+                                                                </div>
+                                                                
+                                                                <div class="col-sm-6">
+                                                                    <br/>
+                                                                    <label class="col-sm-4 control-label" for="form-field-1"> 楼栋： </label>
+                                                                    <div class="col-sm-8" style="padding:0">
+                                                                        <select name="ban" id="ban" class="select2">
+                                                                            <option value="">请选择楼栋</option>
+                                                                            <?php if(!empty($BUFL['ban'])):?>
+                                                                            <?php foreach ($BUFL['ban'] as $k => $v):?>
+                                                                            <option value="<?php echo $v;?>"><?php echo $v;?></option>
+                                                                            <?php endforeach;?>
+                                                                            <?php endif;?>
+                                                                        </select>
+                                                                    </div>
+                                                                </div>
+                                                                <div class="col-sm-6">
+                                                                    <br/>
+                                                                    <label class="col-sm-4 control-label" for="form-field-1"> 单元： </label>
+                                                                    <div class="col-sm-8" style="padding:0">
+                                                                        <select name="unit" id="unit" class="select2">
+                                                                            <option value="">请选择单元</option>
+                                                                            <?php if(!empty($BUFL['unit'])):?>
+                                                                            <?php foreach ($BUFL['unit'] as $k => $v):?>
+                                                                            <option value="<?php echo $v;?>"><?php echo $v;?></option>
+                                                                            <?php endforeach;?>
+                                                                            <?php endif;?>
+                                                                        </select>
+                                                                    </div>
+                                                                </div>
+                                                                <div class="col-sm-6">
+                                                                    <br/>
+                                                                    <label class="col-sm-4 control-label" for="form-field-1"> 楼层： </label>
+                                                                    <div class="col-sm-8" style="padding:0">
+                                                                        <select name="floor" id="floor" class="select2">
+                                                                            <option value="">请选择楼层</option>
+                                                                            <?php if(!empty($BUFL['floor'])):?>
+                                                                            <?php foreach ($BUFL['floor'] as $k => $v):?>
+                                                                            <option value="<?php echo $v;?>"><?php echo $v;?></option>
+                                                                            <?php endforeach;?>
+                                                                            <?php endif;?>
                                                                         </select>
                                                                     </div>
                                                                 </div>
@@ -152,11 +196,14 @@
                                                                     <table id="sample-table-1" class="table table-striped table-bordered table-hover">
                                                                         <thead>
                                                                             <tr>
-                                                                                <th class="col-sm-2 center">点位编号</th>
-                                                                                <th class="col-sm-3 center">楼盘名称</th>
-                                                                                <th class="col-sm-3 center">楼盘区域</th>
-                                                                                <th class="col-sm-2 center">规格</th>
-                                                                                <th class="col-sm-2 center">状态</th>
+                                                                                <th class="col-sm-2">点位编号</th>
+                                                                                <th class="col-sm-2">楼盘</th>
+                                                                                <th class="col-sm-2">组团</th>
+                                                                                <th class="col-sm-2">楼栋</th>
+                                                                                <th class="col-sm-2">单元</th>
+                                                                                <th class="col-sm-2">楼层</th>
+                                                                                <th class="col-sm-2 ">规格</th>
+                                                                                <th class="col-sm-2 ">状态</th>
                                                                                 <th class="col-sm-2 center"><button class="btn btn-xs btn-info select-all" type="button" data-id="3">选择全部<i class="icon-arrow-right icon-on-right"></i></button></th>
                                                                             </tr>
                                                                         </thead>
@@ -225,8 +272,11 @@
                                                 <thead>
                                                     <tr>
                                                         <th class="col-sm-2">点位编号</th>
-                                                        <th class="col-sm-3">楼盘名称</th>
-                                                        <th class="col-sm-3">楼盘区域</th>
+                                                        <th class="col-sm-2">楼盘</th>
+                                                        <th class="col-sm-2">组团</th>
+                                                        <th class="col-sm-2">楼栋</th>
+                                                        <th class="col-sm-2">单元</th>
+                                                        <th class="col-sm-2">楼层</th>
                                                         <th class="col-sm-2">规格</th>
                                                         <th class="col-sm-2">状态</th>
                                                         <th class="col-sm-2"><button class="btn btn-xs btn-info remove-all" type="button">移除全部<i class="fa fa-remove" aria-hidden="true"></i></button></th>
@@ -241,10 +291,13 @@
                                                         <?php foreach($selected_points as $value):?>
                                                         <tr point-id="<?php echo $value['id'];?>">
                                                             <td class="col-sm-2"><?php echo $value['code'];?></td>
-                                                            <td class="col-sm-3"><?php echo $value['houses_name'];?></td>
-                                                            <td class="col-sm-3"><?php echo $value['area_name'];?></td>
+                                                            <td class="col-sm-2"><?php echo $value['houses_name'];?></td>
+                                                            <td class="col-sm-2"><?php echo $value['houses_area_name'];?></td>
+                                                            <td class="col-sm-2"><?php echo $value['ban'];?></td>
+                                                            <td class="col-sm-2"><?php echo $value['unit'];?></td>
+                                                            <td class="col-sm-2"><?php echo $value['floor'];?></td>
                                                             <td class="col-sm-2"><?php echo $value['size'];?></td>
-                                                            <td class="col-sm-2 ">
+                                                            <td class="col-sm-2">
                                                             	<?php 
                                                                     switch ($value['point_status']) {
                                                                         case '1':
@@ -257,7 +310,8 @@
                                                                 ?>
                                                                 <span class="badge <?php echo $class; ?>">
                                                                     <?php echo C('public.points_status')[$value['point_status']];?>
-                                                                </span></td>
+                                                                </span>
+                                                            </td>
                                                             <td class="col-sm-2"><button class="btn btn-xs btn-info do-sel" type="button" data-id="<?php echo $value['id'];?>">移除<i class="fa fa-remove" aria-hidden="true"></i></button></td>
                                                         </tr>
                                                         <?php endforeach;?>
@@ -298,19 +352,26 @@ $(function(){
         $(this).prev().focus();
     });
 	
-	$('#houses_id,#area_id').change(function(){
+	$('#houses_id,#area_id,#ban,#unit,#floor').change(function(){
 		var houses_id = $('#houses_id').val();
-		$.post('/housesscheduledorders/get_points', {order_type:order_type, houses_id:houses_id}, function(data){
+		var ban = $('#ban').val();
+		var unit = $('#unit').val();
+		var floor = $('#floor').val();
+		var postData = {order_type:order_type, houses_id:houses_id, ban:ban, unit:unit, floor:floor};
+		$.post('/housesscheduledorders/get_points', postData, function(data){
 			var pointStr =  '';
-			var areaStr = '<option value="">请选择楼盘区域</option>'; 
+			var areaStr = '<option value="">请选择组团</option>'; 
 			if(data.flag == true && data.count > 0) {
 				$("#all_points_num").text(data.count);
 				var tmpList = data.points_lists
 				for(var i = 0; i < data.points_lists.length; i++) {
 					pointStr += "<tr point-id='"+tmpList[i]['id']+"'><td class='col-sm-2 center'>"+tmpList[i]['code']+"</td>";
-					pointStr += "<td class='col-sm-3 center'>"+tmpList[i]['houses_name']+"</td>";
-					pointStr += "<td class='col-sm-3 center'>"+tmpList[i]['area_name']+"</td>";
-					pointStr += "<td class='col-sm-2 center'>"+tmpList[i]['size']+"</td>";
+					pointStr += "<td class='col-sm-2 '>"+tmpList[i]['houses_name']+"</td>";
+					pointStr += "<td class='col-sm-2 '>"+tmpList[i]['area_name']+"</td>";
+					pointStr += "<td class='col-sm-2 '>"+tmpList[i]['ban']+"</td>";
+					pointStr += "<td class='col-sm-2 '>"+tmpList[i]['unit']+"</td>";
+					pointStr += "<td class='col-sm-2 '>"+tmpList[i]['floor']+"</td>";
+					pointStr += "<td class='col-sm-2 '>"+tmpList[i]['size']+"</td>";
 					switch (tmpList[i]['point_status']) {
                         case '1':
                             $class = 'badge-success';
@@ -319,7 +380,7 @@ $(function(){
                             $class = 'badge-danger';
                             break;
                 	}
-					pointStr += "<td class='col-sm-2 center'><span class='badge "+$class+"'>"+tmpList[i]['point_status_txt']+"</span></td>";
+					pointStr += "<td class='col-sm-2'><span class='badge "+$class+"'>"+tmpList[i]['point_status_txt']+"</span></td>";
 					pointStr += "<td class='col-sm-2 center'><button class='btn btn-xs btn-info do-sel' type='button'>选择<i class='icon-arrow-right icon-on-right'></button></td></tr>";
 				}
 				$('#area').html();

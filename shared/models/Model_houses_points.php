@@ -14,7 +14,7 @@ class Model_houses_points extends MY_Model {
      */
     public function get_points_lists($where = array()){
 
-        $this->db->select('A.id, A.code, A.price, A.point_status, C.name as houses_area_name, A.addr, A.point_status, B.name AS houses_name, D.size');
+        $this->db->select('A.id, A.code, A.price, A.ban, A.unit, A.floor, A.point_status, C.name as houses_area_name, A.addr, A.point_status, B.name AS houses_name, D.size');
     	$this->db->from('t_houses_points A');
     	$this->db->join('t_houses B', 'A.houses_id = B.id');
     	$this->db->join('t_houses_area C', 'A.houses_id = C.id');
