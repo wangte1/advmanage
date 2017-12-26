@@ -299,7 +299,7 @@
                                                             <a class="green tooltip-info" href="/housespoints/edit/<?php echo $val['id'];?>" data-rel="tooltip" data-placement="top" data-original-title="修改">
                                                                 <i class="icon-pencil bigger-130"></i>
                                                             </a>
-                                                           <a class="red tooltip-info del" href="javascript:;" data-url="/housespoints/del/<?php echo $val['id']?>" data-id="<?php echo $val['id'];?>" data-rel="tooltip" data-placement="top" data-original-title="删除">
+                                                           <a class="red tooltip-info m-del" href="javascript:;" data-url="/housespoints/del/<?php echo $val['id']?>" data-id="<?php echo $val['id'];?>" data-rel="tooltip" data-placement="top" data-original-title="删除">
                                                                 <i class="icon-trash bigger-130"></i>
                                                             </a>
                                                         </div>
@@ -331,6 +331,16 @@
     $(function(){
        $(".select2").css('width','230px').select2({allowClear:true});
     });
+
+	$('.m-del').click(function(){
+		var url = $(this).attr('data-url');
+		layer.confirm('确认要删除该点位吗？', {
+			  btn: ['确认','取消'] //按钮
+			}, function(){
+				location.href = url;
+			});
+	});
+    
     $('#houses').change(function(){
         $('#area').html();
         $('#s2id_area,#s2id_ban-sel,#s2id_unit-sel,#s2id_floor-sel').find('.select2-chosen').text('全部');

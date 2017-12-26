@@ -189,16 +189,16 @@ class Housespoints extends MY_Controller{
     */
     public function del($id = 0){
         $data = $this->data;
-        $name = $this->Mhouses->get_one("name",array("is_del"=>0,"id"=>$id));
-        if(!$name){
+        $code = $this->Mhouses_points->get_one("code",array("is_del"=>0,"id"=>$id));
+        if(!$code){
             die("非法参数");
         }
         $where['id'] = $id;
         $list['is_del'] = 1;
-        $del = $this->Mhouses->update_info($list, $where);
+        $del = $this->Mhouses_points->update_info($list, $where);
         if($del){
-            $this->write_log($data['userInfo']['id'],3," 删除楼盘：".$name['name']);
-            $this->success("删除成功！","/houses");
+            $this->write_log($data['userInfo']['id'],3," 社区删除点位：".$code['code']);
+            $this->success("删除成功！","/housespoints");
 
         }else{
             $this->error("删除失败！");
