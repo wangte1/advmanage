@@ -453,4 +453,11 @@ class Housesscheduledorders extends MY_Controller{
         return $array;
     }
     
+    /**
+     * 给客户发送短信确认点位
+     */
+    public function sendMsg(){
+        
+    }
+    
 }
