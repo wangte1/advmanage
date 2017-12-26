@@ -101,7 +101,7 @@
                                 <label class="col-sm-3 control-label no-padding-right" for="form-field-1"> 所属组团： </label>
                                 <div class="col-sm-9">
                                     <select class="select2" name="area_id" onchange="get_buf_info();">
-                                    	<option value="">--请选择组团--</option>
+                                    	<option value="0">--请选择组团--</option>
                                     </select>
                                 </div>
                             </div>
@@ -147,7 +147,7 @@
                                 <label class="col-sm-3 control-label no-padding-right" for="form-field-1"> 点位位置： </label>
                                 <div class="col-sm-9">
                                 	<select id="addr"  data-placeholder="Click to Choose..." name="addr">
-	                                    <option value="">--请选择点位位置--</option>
+	                                    <option value="0">--请选择点位位置--</option>
 	                                    <option value="1">门禁</option>
 	                                    <option value="2">电梯前室</option>
                                     </select>
@@ -312,7 +312,7 @@
         	$.post('/housespoints/ajax_area_info',{houses_id:houses_id},function(data){
 				if(data) {
 					$('.select2-chosen:eq(2)').text('--请选择组团--');
-					var areaStr = '<option value="">--请选择组团--</option>';
+					var areaStr = '<option value="0">--请选择组团--</option>';
 					for(var i = 0; i < data.length; i++) {
 						areaStr += '<option value="' + data[i].id + '">' + data[i].name + '</option>';
 					}

@@ -103,9 +103,8 @@ class Housespoints extends MY_Controller{
 
         if(IS_POST){
             $post = $this->input->post();
-            
-            $tmp_count = $this->Mhouses_points->get_one("count(0)",array("code"=>$post['code']));
-            if($tmp_count > 0) {
+            $tmpArr = $this->Mhouses_points->get_one("count(0) as count",array("code"=>$post['code']));
+            if($tmpArr['count'] > 0) {
             	$this->error("点位编号已经存在！");
             }
             
