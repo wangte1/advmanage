@@ -175,6 +175,11 @@ $config = array(
     				'name'=> '换画订单',
     				'active'=> 'houses_change_pic_order_list'
     			),
+    			array(
+    				'url'=>'/housesassign',
+    				'name'=> '派单列表',
+    				'active'=> 'houses_assign_list'
+    			),
     		)
     	),
         '数据统计' => array(
