@@ -18,3 +18,5 @@ front-end
 applications/www/application/cache/*
 Uploads/*
 *logs*
+*vendor*
+composer.lock

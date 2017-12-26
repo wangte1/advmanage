@@ -68,8 +68,9 @@
                                 <div class="widget-main">
                                     <form class="form-horizontal" role="form" method="post" action="">
                                         <div class="space-4"></div>
-
-                                        <input type="hidden" name="id" value="<?php if(isset($info)){echo $info['id'];}?>" />
+										<?php if(isset($info)):?>
+                                        <input type="hidden" name="id" value="<?php echo $info['id']?>" />
+                                        <?php endif;?>
                                         <div class="form-group">
                                             <label class="col-sm-2 control-label no-padding-right" for="form-field-2"> 广告客户： </label>
                                             <div class="col-sm-10">
@@ -92,7 +93,7 @@
                                             <label class="col-sm-2 control-label no-padding-right" for="form-input-readonly"> 锁定开始时间： </label>
                                             <div class="col-sm-5">
                                                 <div class="input-group">
-                                                    <input class="form-control" type="text" name="lock_start_time" value="<?php if(isset($info['lock_start_time'])){ echo $info['lock_start_time'];} else { echo date('Y-m-d'); }?>" readonly>
+                                                    <input class="form-control" id="lock_start_time" type="text" name="lock_start_time" value="<?php if(isset($info['lock_start_time'])){ echo $info['lock_start_time'];} else { echo date('Y-m-d'); }?>" readonly>
                                                     <span class="input-group-addon">
                                                         <i class="icon-calendar bigger-110"></i>
                                                     </span>
@@ -357,7 +358,8 @@ $(function(){
 		var ban = $('#ban').val();
 		var unit = $('#unit').val();
 		var floor = $('#floor').val();
-		var postData = {order_type:order_type, houses_id:houses_id, ban:ban, unit:unit, floor:floor};
+		var lock_start_time = $('#lock_start_time').val();
+		var postData = {order_type:order_type, houses_id:houses_id, ban:ban, unit:unit, floor:floor, lock_start_time:lock_start_time};
 		$.post('/housesscheduledorders/get_points', postData, function(data){
 			var pointStr =  '';
 			var areaStr = '<option value="">请选择组团</option>'; 

@@ -6,6 +6,9 @@ class Model_houses_points extends MY_Model {
 
     public function __construct() {
         parent::__construct($this->_table);
+        $this->load->model([
+            'Model_houses_orders' => 'Mhouses_orders'
+        ]);
     }
     
     
@@ -123,6 +126,35 @@ class Model_houses_points extends MY_Model {
         
         return $result->result_array();
     }
+    
+    public function get_usable_point($fields='*', $where=[], $startTime=''){
+        
+        $list = $this->get_lists($fields, $where);
+        if($list){
+            $order_ids = array_column($list, 'order_ids');
+            if(count($order_ids) == 0) return $list;
+            //获取点位对应的所有order_id是否满足新订单
+            $order_ids = array_unique($order_ids);
+            $order_list = $this->Mhouses_orders->get('id, release_end_time, is_del', ['in' => ['id' => $order_ids], 'release_end_time <' => $startTime]);
+            if($order_list){
+                $lists = $list;
+                foreach ($list as $k => $v){
+                    foreach ($order_list as $key => $val){
+                        if($v['order_id'] && $v['order_id'] == $val['id']){
+                            if(strtotime($val['release_end_time']) > strtotime($startTime)){
+                                unset($lists[$k]);
+                            }
+                        }
+                    }
+                }
+                return $lists;
+            }
+        }
+        return [];
+    }
+    
+
+    
     
     /*
      * 获取制作数量

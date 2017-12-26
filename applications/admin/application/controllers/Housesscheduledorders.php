@@ -87,6 +87,7 @@ class Housesscheduledorders extends MY_Controller{
         $data = $this->data;
         if(IS_POST){
             $post_data = $this->input->post();
+            unset($post_data['ban'], $post_data['unit'], $post_data['floor']);
             if (isset($post_data['area_id'])) unset($post_data['area_id']);
             //判断这个客户是否已锁定点位
             $order_type = (int) $post_data['order_type'];
@@ -321,21 +322,18 @@ class Housesscheduledorders extends MY_Controller{
 
         if($this->input->post('order_type')) $where['type_id'] = $this->input->post('order_type');
         if($this->input->post('houses_id')) $where['houses_id'] = $this->input->post('houses_id');
-        if($this->input->post('ban')) $where['ban'] = $this->input->post('ban');
-        if($this->input->post('unit')) $where['unit'] = $this->input->post('unit');
-        if($this->input->post('floor')) $where['floor'] = $this->input->post('floor');
+        if(!empty($this->input->post('ban'))) $where['ban'] = $this->input->post('ban');
+        if(!empty($this->input->post('unit'))) $where['unit'] = $this->input->post('unit');
+        if(!empty($this->input->post('floor'))) $where['floor'] = $this->input->post('floor');
+        $lock_start_time = $this->input->post('lock_start_time');
         
         $where['is_del'] = $where['is_lock'] = 0;
-        $points_lists = $this->Mhouses_points->get_lists("id,code,houses_id,is_lock,area_id,ban,unit,floor,type_id,point_status", $where);
-        
+        $fields = 'id,code,houses_id,is_lock,area_id,ban,unit,floor,type_id,point_status';
+        $points_lists = $this->Mhouses_points->get_usable_point($fields, $where, $lock_start_time);
         if(count($points_lists) > 0) {
-            
-            $housesid = array_column($points_lists, 'houses_id');
-            $area_id = array_column($points_lists, 'area_id');
-            
-            $whereh['in']['id'] = $housesid;
-            $housesList = $this->Mhouses->get_lists("id, name", $whereh);
-            
+            $housesid = array_unique(array_column($points_lists, 'houses_id'));
+            $area_id = array_unique(array_column($points_lists, 'area_id'));
+            $housesList = $this->Mhouses->get_lists("id, name,", ['in' => ['id' => $housesid]]);            
             $wherea['in']['id'] = $area_id;
             $areaList = $this->Mhouses_area->get_lists("id, name", $wherea);
             //获取规格列表
