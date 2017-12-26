@@ -92,6 +92,8 @@
 
                                         </tbody>
                                     </table>
+                                    <!--分页start-->
+                                    <?php $this->load->view('common/page');?>
                                 </div>
                             </div>
                         </div>

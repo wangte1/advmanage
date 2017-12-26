@@ -36,6 +36,12 @@
  * @filesource
  */
 
+ /**
+  * add composer support 
+  * @author yonghua date 2017-12-26
+  */
+  require_once '../../vendor/autoload.php';
+
 /*
  *---------------------------------------------------------------
  * APPLICATION ENVIRONMENT

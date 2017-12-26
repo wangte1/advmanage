@@ -60,6 +60,7 @@ class Housesscheduledorders extends MY_Controller{
         $data['pagestr'] = $this->pagination->create_links(); // 分页信息
         
         $data['status_text'] = C('housesscheduledorder.order_status.text');
+        $data['confirm_text'] = C('housesscheduledorder.customer_status');
         
         $data['admins'] = $this->Madmins->get_lists('id, fullname', array('is_del' => 1));
         
@@ -82,9 +83,11 @@ class Housesscheduledorders extends MY_Controller{
      * @param number $order_type
      */
     public function addpreorder($order_type=1){
+        
         $data = $this->data;
         if(IS_POST){
             $post_data = $this->input->post();
+            unset($post_data['ban'], $post_data['unit'], $post_data['floor']);
             if (isset($post_data['area_id'])) unset($post_data['area_id']);
             //判断这个客户是否已锁定点位
             $order_type = (int) $post_data['order_type'];
@@ -124,6 +127,8 @@ class Housesscheduledorders extends MY_Controller{
                 $this->success("添加失败！");
             }
         }
+        //获取楼栋单元楼层列表
+        $data['BUFL'] = $this->get_ban_unit_floor_list();
         $data['order_type'] = $order_type;
         $data['status_text'] = C('order.order_status.text');
        
@@ -148,7 +153,7 @@ class Housesscheduledorders extends MY_Controller{
             $post_data['update_user'] = $data['userInfo']['id'];
             $post_data['update_time'] = date('Y-m-d H:i:s');
             $id = $post_data['id'];
-            unset($post_data['id']);
+            unset($post_data['id'], $post_data['ban'], $post_data['unit'], $post_data['floor']);
             //先把之前所有已选择的点位的状态置为未锁定，再把重新选择的点位状态置为锁定
             //此处要求最好锁表，以免刚释放的点位被他人占用
             //禁止其他人写入
@@ -181,18 +186,22 @@ class Housesscheduledorders extends MY_Controller{
                 $this->error("修改失败！请重试！");
             }
         } else {
+            
+            //获取楼栋单元楼层列表
+            $data['BUFL'] = $this->get_ban_unit_floor_list();
+            
             $data['customer'] = $this->Mhouses_customers->get_one('id, name', array('id' => $data['info']['lock_customer_id']));
             
             $data['order_type'] = $data['info']['order_type'];
             
-            //楼盘列表
+            //组团列表
             $data['houses_list'] = $this->Mhouses->get_lists("id, name", array('is_del' => 0));
             
             //已选择点位列表
             $where['in']['A.id'] = explode(',', $data['info']['point_ids']);
             $data['selected_points'] = $this->Mhouses_points->get_points_lists($where);
 
-            $this->load->view("housesscheduledorders/edit", $data);
+            $this->load->view("housesscheduledorders/add", $data);
         }
     }
     
@@ -257,18 +266,52 @@ class Housesscheduledorders extends MY_Controller{
     /**
      * 预定订单详情
      */
-    public function detail($id) {
+    public function detail($id, $tab="") {
         $data = $this->data;
+        $data['tab'] = 'basic';//默认显示基本信息tab
+        if($tab) $data['tab'] = 'point';
+        
+        $pageconfig = C('page.page_lists');
+        $this->load->library('pagination');
+        $page = $this->input->get_post('per_page') ? : '1';
+        $size = $pageconfig['per_page'] = 15;
+        $where = array();
+
         $data['info'] = $this->Mhouses_scheduled_orders->get_one('*', array('id' => $id));
         $ret = strtotime($data['info']['lock_end_time']) - strtotime(date('Y-m-d'));
         //预定客户
         $data['info']['customer_name'] = $this->Mhouses_customers->get_one('name', array('id' => $data['info']['lock_customer_id']))['name'];
         
         $data['status_text'] = C('housesscheduledorder.order_status.text'); //订单状态
-        
+        //将点位分割成数组，再按15个作为分组作为第一页的点位id
+        $point_ids = array_chunk(explode(',', $data['info']['point_ids']), $size);
         //预定点位列表
-        $data['info']['selected_points'] = $this->Mhouses_points->get_points_lists(array('in' => array('A.id' => explode(',', $data['info']['point_ids']))));
-        
+        $data['info']['selected_points'] = [];
+        if(isset($point_ids[($page-1)])){
+            $point_list = $this->Mhouses_points->get_points_lists_page(
+                [
+                    'in' => array(
+                        'A.id' => $point_ids[($page-1)] //模拟分页
+                    )
+                ],
+                [
+                    'A.id' => 'asc'
+                ]
+            );
+            
+            if($point_list){
+                $data['info']['selected_points'] = $point_list;
+                //模拟获取分页
+                $data['page'] = $page;
+                $totalCount = count(explode(',', $data['info']['point_ids']));
+                $data['data_count'] = $totalCount;
+                $pageconfig['base_url'] = "/housesscheduledorders/detail/{$id}/tab";
+                $pageconfig['total_rows'] = $totalCount;
+                $this->pagination->initialize($pageconfig);
+                $data['pagestr'] = $this->pagination->create_links();// 分页信息
+            }
+        }
+
         $this->load->view('housesscheduledorders/detail', $data);
     }
     
@@ -279,18 +322,18 @@ class Housesscheduledorders extends MY_Controller{
 
         if($this->input->post('order_type')) $where['type_id'] = $this->input->post('order_type');
         if($this->input->post('houses_id')) $where['houses_id'] = $this->input->post('houses_id');
+        if(!empty($this->input->post('ban'))) $where['ban'] = $this->input->post('ban');
+        if(!empty($this->input->post('unit'))) $where['unit'] = $this->input->post('unit');
+        if(!empty($this->input->post('floor'))) $where['floor'] = $this->input->post('floor');
+        $lock_start_time = $this->input->post('lock_start_time');
         
         $where['is_del'] = $where['is_lock'] = 0;
-        $points_lists = $this->Mhouses_points->get_lists("id,code,houses_id,is_lock,area_id,type_id,point_status", $where);
-        
+        $fields = 'id,code,houses_id,is_lock,area_id,ban,unit,floor,type_id,point_status';
+        $points_lists = $this->Mhouses_points->get_usable_point($fields, $where, $lock_start_time);
         if(count($points_lists) > 0) {
-            
-            $housesid = array_column($points_lists, 'houses_id');
-            $area_id = array_column($points_lists, 'area_id');
-            
-            $whereh['in']['id'] = $housesid;
-            $housesList = $this->Mhouses->get_lists("id, name", $whereh);
-            
+            $housesid = array_unique(array_column($points_lists, 'houses_id'));
+            $area_id = array_unique(array_column($points_lists, 'area_id'));
+            $housesList = $this->Mhouses->get_lists("id, name,", ['in' => ['id' => $housesid]]);            
             $wherea['in']['id'] = $area_id;
             $areaList = $this->Mhouses_area->get_lists("id, name", $wherea);
             //获取规格列表
@@ -323,7 +366,7 @@ class Housesscheduledorders extends MY_Controller{
             }
         }
         $areaList = array_unique(array_column($points_lists, 'area_name'));
-        //获取去重的楼盘区域
+        //获取去重的组团区域
         $this->return_json(array('flag' => true, 'points_lists' => $points_lists, 'count' => count($points_lists), 'area_list' => $areaList));
     }
     
@@ -338,7 +381,7 @@ class Housesscheduledorders extends MY_Controller{
         $table_header =  array(
             '点位id' => 'id',
             '点位编号' => "code",
-            '所属楼盘' => "houses_name",
+            '所属组团' => "houses_name",
             '所属区域' => "houses_area_name",
             '详细地址' => "addr",
             '价格' => 'price',
@@ -379,4 +422,42 @@ class Housesscheduledorders extends MY_Controller{
         $objWriter = PHPExcel_IOFactory::createWriter($this->phpexcel, 'Excel5');
         $objWriter->save('php://output');
     }
+    
+    /**
+     * 获取楼栋，单元， 楼层列表
+     * @author yonghua 254274509@qq.com
+     * @return array[]|array[]
+     */
+    private function get_ban_unit_floor_list(){
+        $array = [];
+        
+        $list = $this->Mhouses_points->get_lists(
+            'ban, unit, floor', 
+            [
+                'ban !=' => '',
+                'unit !=' => '',
+                'floor !=' => '',
+                'is_del' => 0
+            ], 
+            [
+                'ban' => 'asc',
+                'unit' => 'asc',
+                'floor' => 'asc',
+            ]
+        );
+        if(!$list) return $array;
+        $array['ban'] = array_unique(array_column($list, 'ban'));
+        $array['unit'] = array_unique(array_column($list, 'unit'));
+        $array['floor'] = array_unique(array_column($list, 'floor'));
+        
+        return $array;
+    }
+    
+    /**
+     * 给客户发送短信确认点位
+     */
+    public function sendMsg(){
+        
+    }
+    
 }

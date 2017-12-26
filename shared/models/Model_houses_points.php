@@ -6,6 +6,9 @@ class Model_houses_points extends MY_Model {
 
     public function __construct() {
         parent::__construct($this->_table);
+        $this->load->model([
+            'Model_houses_orders' => 'Mhouses_orders'
+        ]);
     }
     
     
@@ -14,7 +17,7 @@ class Model_houses_points extends MY_Model {
      */
     public function get_points_lists($where = array()){
 
-        $this->db->select('A.id, A.code, A.price, A.point_status, C.name as houses_area_name, A.addr, A.point_status, B.name AS houses_name, D.size');
+        $this->db->select('A.id, A.code, A.price, A.ban, A.unit, A.floor, A.point_status, C.name as houses_area_name, A.addr, A.point_status, B.name AS houses_name, D.size');
     	$this->db->from('t_houses_points A');
     	$this->db->join('t_houses B', 'A.houses_id = B.id');
     	$this->db->join('t_houses_area C', 'A.houses_id = C.id');
@@ -60,14 +63,97 @@ class Model_houses_points extends MY_Model {
     	if($where){
     		$this->db->where($where);
     	}
-    
-    	//$this->db->order_by('B.sort', 'asc');
     	$this->db->order_by('A.id', 'asc');
     
     	$result = $this->db->get();
     
     	return $result->result_array();
     }
+    
+    /*
+     * 获取投放点位列表
+     */
+    public function get_points_lists_page($where = array(), $order_by=array()){
+        
+        $this->db->select('A.id, A.code, A.price, A.point_status, C.name as houses_area_name, A.addr, A.point_status, B.name AS houses_name, D.size');
+        $this->db->from('t_houses_points A');
+        $this->db->join('t_houses B', 'A.houses_id = B.id');
+        $this->db->join('t_houses_area C', 'A.houses_id = C.id');
+        $this->db->join('t_houses_points_format D', 'A.type_id = D.type');
+        $this->db->where(array('A.is_del' => 0, 'B.is_del' => 0));
+        
+        if(isset($where['like'])) {
+            foreach($where['like'] as $k => $v) {
+                $this->db->like($k, $v);
+            }
+            unset($where['like']);
+        }
+        
+        if(isset($where['or_like'])) {
+            foreach($where['or_like'] as $k => $v) {
+                $this->db->or_like($k, $v);
+            }
+            unset($where['or_like']);
+        }
+        
+        if(isset($where['in'])) {
+            foreach($where['in'] as $k => $v) {
+                $this->db->where_in($k, $v);
+            }
+            unset($where['in']);
+        }
+        if(isset($where['not_in'])) {
+            foreach($where['not_in'] as $k => $v) {
+                $this->db->where_not_in($k, $v);
+            }
+            unset($where['not_in']);
+        }
+        
+        if(isset($where['or'])) {
+            $this->db->group_start();
+            foreach($where['or'] as $k => $v) {
+                $this->db->or_where($k, $v);
+            }
+            unset($where['or']);
+            $this->db->group_end();
+        }
+        
+        if($where){
+            $this->db->where($where);
+        }
+        
+        $result = $this->db->get();
+        
+        return $result->result_array();
+    }
+    
+    public function get_usable_point($fields='*', $where=[], $startTime=''){
+        
+        $list = $this->get_lists($fields, $where);
+        if($list){
+            $order_ids = array_column($list, 'order_ids');
+            if(count($order_ids) == 0) return $list;
+            //获取点位对应的所有order_id是否满足新订单
+            $order_ids = array_unique($order_ids);
+            $order_list = $this->Mhouses_orders->get('id, release_end_time, is_del', ['in' => ['id' => $order_ids], 'release_end_time <' => $startTime]);
+            if($order_list){
+                $lists = $list;
+                foreach ($list as $k => $v){
+                    foreach ($order_list as $key => $val){
+                        if($v['order_id'] && $v['order_id'] == $val['id']){
+                            if(strtotime($val['release_end_time']) > strtotime($startTime)){
+                                unset($lists[$k]);
+                            }
+                        }
+                    }
+                }
+                return $lists;
+            }
+        }
+        return [];
+    }
+    
+
     
     
     /*

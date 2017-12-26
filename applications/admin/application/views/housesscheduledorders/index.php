@@ -58,7 +58,7 @@
                                                 <div class="col-sm-9">
                                                     <select name="order_type" class="select2">
                                                         <option value="">全部</option>
-                                                        <?php foreach ($status_text as $k => $v):?>
+                                                        <?php foreach (C('order.houses_order_type') as $k => $v):?>
                                                         <option value="<?php echo $k;?>" <?php if($order_type == $k){ echo "selected"; }?>><?php echo $v;?></option>
                                                        	<?php endforeach;?>
                                                     </select>
@@ -134,6 +134,7 @@
                                                 <th>锁定人</th>
                                                 <th>订单创建日期</th>
                                                 <th>状态</th>
+                                                <th>客户确认状态</th>
                                                 <th>操作</th>
                                             </tr>
                                         </thead>
@@ -176,6 +177,21 @@
                                                     ?>
                                                     <span class="badge <?php echo $class; ?>">
                                                         <?php echo $status_text[$value['order_status']];?>
+                                                    </span>
+                                                </td>
+                                                <td>
+                                                	<?php 
+                                                        switch ($value['is_confirm']) {
+                                                            case '0':
+                                                                $class = 'badge-grey';
+                                                                break;
+                                                            case '1':
+                                                                $class = 'badge-yellow';
+                                                                break;
+                                                        }
+                                                    ?>
+                                                    <span class="badge <?php echo $class; ?>">
+                                                        <?php echo $confirm_text[$value['is_confirm']];?>
                                                     </span>
                                                 </td>
                                                 <td>
