@@ -3,7 +3,8 @@
 	"description" : "adv",
 	"require" : {
 		"php" : "^5.6.31 || ^7.0",
-		"flc/alidayu": "^2.0"
+		"flc/alidayu": "^2.0",
+		"yonghua4413/helper": "^0.01.0"
 	},
 	"repositories": {
         "packagist": {
