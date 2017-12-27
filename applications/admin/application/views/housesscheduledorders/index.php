@@ -143,7 +143,7 @@
                                             <?php foreach ($list as $key => $value) : ?>
                                             <tr>
                                                 <td><?php echo $order_type_text[$value['order_type']];?></td>
-                                                <td>
+                                                <td id="order_<?php echo $value['id']?>">
                                                 	<?php if($customer_list):?>
                                                 	<?php foreach ($customer_list as $key => $val):?>
                                                 		<?php if($val['id'] == $value['lock_customer_id']):?>
@@ -213,6 +213,11 @@
                                                             <i class="ace-icon glyphicon glyphicon-upload bigger-130" aria-hidden="true"></i>
                                                         </a>
                                                         <?php endif;?>
+                                                        <?php if(in_array($value['order_status'], [1,2]) && $value['is_confirm'] == 0):?>
+                                                        <a class="grey tooltip-info sendsms" href="javascript:;" data-id="<?php echo $value['id'];?>" data-customer="<?php echo $value['lock_customer_id']?>"  data-rel="tooltip" data-placement="top" data-original-title="发送短信提醒客户确认点位">
+                                                            <i class="ace-icon fa fa-envelope-o bigger-130" aria-hidden="true"></i>
+                                                        </a>
+                                                        <?php endif;?>
                                                     </div>
                                                 </td>
                                             </tr>
@@ -263,6 +268,31 @@
             okValue: '确定',
             ok: function () {
                 window.location.href = '/housesscheduledorders/update_points/' + _self.attr('data-id');
+            },
+            cancelValue: '取消',
+            cancel: function () {}
+        });
+        d.width(420);
+        d.showModal();
+    });
+
+    //给客户发送短信
+    $('.sendsms').on('click', function(){
+    	var _obj = $(this);
+    	var id = _obj.attr('data-id');
+    	var customer = _obj.attr('data-customer');
+    	var customerName = $('#order_'+id).text();
+        var d = dialog({
+            title: "提示",
+            content: '请谨慎操作！确定要给 '+ customerName +'客户发送短信通知吗？',
+            okValue: '确定',
+            ok: function () {
+                var postData = {'order_id':id, 'customer_id':customer};
+                $.post('/housesscheduledorders/sendMsg', postData, function(data){
+					if(data){
+						layer.alert(data.msg);
+					}
+                });
             },
             cancelValue: '取消',
             cancel: function () {}

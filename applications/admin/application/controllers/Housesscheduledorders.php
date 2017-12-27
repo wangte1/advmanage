@@ -475,13 +475,25 @@ class Housesscheduledorders extends MY_Controller{
         if(!preg_match('/^1[3|4|5|8|7][0-9]\d{8}$/', $info['contact_tel'])){
             $this->return_json(['code' => 0, 'msg' => '客户手机号格式不正确！']);
         }
+        //生成短网址
+        $token = encrypt(['id' => $orderid]);
+        $url = 'https://api.wesogou.com/housesscheduledorders/index?token='.$token;
+        try {
+            $urlInfo = $this->getShortUrl($url);
+            if($urlInfo['code'] == 0){
+                $this->return_json(['code' => 0, 'msg' => $urlInfo['msg']]);
+            }
+            $url = $urlInfo['url'];
+        } catch (Exception $e) {
+            $this->return_json(['code' => 0, 'msg' => $e->getMessage()]);
+        }
         // 配置信息
         $sms = C('sms.config');
         $client = new Client(new App(['app_key' => $sms['app_key'], 'app_secret' => $sms['app_secret']]));
         $req    = new AlibabaAliqinFcSmsNumSend();
-        $req->setRecNum('18085187205')
+        $req->setRecNum($info['contact_tel'])
         ->setSmsParam([
-            'code' => rand(100000, 999999)
+            'url' => $url
         ])
         ->setSmsFreeSignName($sms['FreeSignName'])
         ->setSmsTemplateCode($sms['TemplateCode']);
@@ -493,7 +505,7 @@ class Housesscheduledorders extends MY_Controller{
                 $this->return_json(['code' => 1, 'msg' => '发送成功']);
             }
         }
-        $this->return_json(['code' => 0, 'msg' => '发送失败，请稍后再试！']);
+        $this->return_json(['code' => 0, 'msg' => '短信error：'.$sendRes['sub_msg']]);
     }
     
     /**
