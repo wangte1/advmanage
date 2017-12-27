@@ -54,7 +54,7 @@
             <div class="page-content">
                 <div class="page-header">
                     <h1>
-                        <?php if(isset($info['id'])) { echo "编辑"; } else { echo "新建"; }?><?php echo $order_type_text[$order_type];?>订单
+                        <?php if(isset($info['id'])) { echo "编辑"; } else { echo "新建"; }?><?php echo $order_type_text[$order_type];?>预定订单
                         <a href="/housesorders" class="btn btn-sm btn-primary pull-right">《返回列表页</a>
                     </h1>
                 </div>
@@ -191,21 +191,33 @@
                                                                         </select>
                                                                     </div>
                                                                 </div>
+                                                                <div class="col-sm-6">
+                                                                    <br/>
+                                                                    <label class="col-sm-4 control-label" for="form-field-1"> 位置： </label>
+                                                                    <div class="col-sm-8" style="padding:0">
+                                                                        <select name="addr" id="addr" class="select2">
+                                                                            <option value="">请选择位置</option>
+                                                                            <option value="1">门禁</option>
+                                                                            <option value="2">电梯前室</option>
+                                                                        </select>
+                                                                    </div>
+                                                                </div>
                                                             </div>
                                                             <div id="scrollTable">
                                                                 <div class="div-thead">
                                                                     <table id="sample-table-1" class="table table-striped table-bordered table-hover">
                                                                         <thead>
                                                                             <tr>
-                                                                                <th class="col-sm-2">点位编号</th>
-                                                                                <th class="col-sm-2">楼盘</th>
-                                                                                <th class="col-sm-2">组团</th>
-                                                                                <th class="col-sm-2">楼栋</th>
-                                                                                <th class="col-sm-2">单元</th>
-                                                                                <th class="col-sm-2">楼层</th>
-                                                                                <th class="col-sm-2 ">规格</th>
-                                                                                <th class="col-sm-2 ">状态</th>
-                                                                                <th class="col-sm-2 center"><button class="btn btn-xs btn-info select-all" type="button" data-id="3">选择全部<i class="icon-arrow-right icon-on-right"></i></button></th>
+                                                                                <th width="10%">点位编号</th>
+                                                                                <th width="10%">楼盘</th>
+                                                                                <th width="10%">组团</th>
+                                                                                <th width="10%">楼栋</th>
+                                                                                <th width="10%">单元</th>
+                                                                                <th width="10%">楼层</th>
+                                                                                <th width="10%">位置</th>
+                                                                                <th width="10%">规格</th>
+                                                                                <th width="10%">状态</th>
+                                                                                <th width="10%"><button class="btn btn-xs btn-info select-all" type="button" data-id="3">选择全部<i class="icon-arrow-right icon-on-right"></i></button></th>
                                                                             </tr>
                                                                         </thead>
                                                                     </table>
@@ -272,15 +284,16 @@
                                             <table id="sample-table-1" class="table table-striped table-bordered table-hover">
                                                 <thead>
                                                     <tr>
-                                                        <th class="col-sm-2">点位编号</th>
-                                                        <th class="col-sm-2">楼盘</th>
-                                                        <th class="col-sm-2">组团</th>
-                                                        <th class="col-sm-2">楼栋</th>
-                                                        <th class="col-sm-2">单元</th>
-                                                        <th class="col-sm-2">楼层</th>
-                                                        <th class="col-sm-2">规格</th>
-                                                        <th class="col-sm-2">状态</th>
-                                                        <th class="col-sm-2"><button class="btn btn-xs btn-info remove-all" type="button">移除全部<i class="fa fa-remove" aria-hidden="true"></i></button></th>
+                                                        <th width="10%">点位编号</th>
+                                                        <th width="10%">楼盘</th>
+                                                        <th width="10%">组团</th>
+                                                        <th width="10%">楼栋</th>
+                                                        <th width="10%">单元</th>
+                                                        <th width="10%">楼层</th>
+                                                        <th width="10%">位置</th>
+                                                        <th width="10%">规格</th>
+                                                        <th width="10%">状态</th>
+                                                        <th width="10%"><button class="btn btn-xs btn-info remove-all" type="button">移除全部<i class="fa fa-remove" aria-hidden="true"></i></button></th>
                                                     </tr>
                                                 </thead>
                                             </table>
@@ -291,14 +304,19 @@
                                                     <?php if(isset($selected_points)):?>
                                                         <?php foreach($selected_points as $value):?>
                                                         <tr point-id="<?php echo $value['id'];?>">
-                                                            <td class="col-sm-2"><?php echo $value['code'];?></td>
-                                                            <td class="col-sm-2"><?php echo $value['houses_name'];?></td>
-                                                            <td class="col-sm-2"><?php echo $value['houses_area_name'];?></td>
-                                                            <td class="col-sm-2"><?php echo $value['ban'];?></td>
-                                                            <td class="col-sm-2"><?php echo $value['unit'];?></td>
-                                                            <td class="col-sm-2"><?php echo $value['floor'];?></td>
-                                                            <td class="col-sm-2"><?php echo $value['size'];?></td>
-                                                            <td class="col-sm-2">
+                                                            <td width="10%"><?php echo $value['code'];?></td>
+                                                            <td width="10%"><?php echo $value['houses_name'];?></td>
+                                                            <td width="10%"><?php echo $value['houses_area_name'];?></td>
+                                                            <td width="10%"><?php echo $value['ban'];?></td>
+                                                            <td width="10%"><?php echo $value['unit'];?></td>
+                                                            <td width="10%"><?php echo $value['floor'];?></td>
+                                                            <?php if($value['addr'] == 1):?>
+                                                            <td width="10%">门禁</td>
+                                                            <?php else:?>
+                                                            <td width="10%">电梯前室</td>
+                                                            <?php endif;?>
+                                                            <td width="10%"><?php echo $value['size'];?></td>
+                                                            <td width="10%">
                                                             	<?php 
                                                                     switch ($value['point_status']) {
                                                                         case '1':
@@ -313,7 +331,7 @@
                                                                     <?php echo C('public.points_status')[$value['point_status']];?>
                                                                 </span>
                                                             </td>
-                                                            <td class="col-sm-2"><button class="btn btn-xs btn-info do-sel" type="button" data-id="<?php echo $value['id'];?>">移除<i class="fa fa-remove" aria-hidden="true"></i></button></td>
+                                                            <td width="10%"><button class="btn btn-xs btn-info do-sel" type="button" data-id="<?php echo $value['id'];?>">移除点位<i class="fa fa-remove" aria-hidden="true"></i></button></td>
                                                         </tr>
                                                         <?php endforeach;?>
                                                     <?php endif;?>
@@ -353,13 +371,14 @@ $(function(){
         $(this).prev().focus();
     });
 	
-	$('#houses_id,#area_id,#ban,#unit,#floor').change(function(){
+	$('#houses_id,#area_id,#ban,#unit,#floor,#addr').change(function(){
 		var houses_id = $('#houses_id').val();
 		var ban = $('#ban').val();
 		var unit = $('#unit').val();
 		var floor = $('#floor').val();
+		var addr = $('#addr').val();
 		var lock_start_time = $('#lock_start_time').val();
-		var postData = {order_type:order_type, houses_id:houses_id, ban:ban, unit:unit, floor:floor, lock_start_time:lock_start_time};
+		var postData = {order_type:order_type, houses_id:houses_id, ban:ban, unit:unit, floor:floor, lock_start_time:lock_start_time,addr:addr};
 		$.post('/housesscheduledorders/get_points', postData, function(data){
 			var pointStr =  '';
 			var areaStr = '<option value="">请选择组团</option>'; 
@@ -367,13 +386,19 @@ $(function(){
 				$("#all_points_num").text(data.count);
 				var tmpList = data.points_lists
 				for(var i = 0; i < data.points_lists.length; i++) {
-					pointStr += "<tr point-id='"+tmpList[i]['id']+"'><td class='col-sm-2 center'>"+tmpList[i]['code']+"</td>";
-					pointStr += "<td class='col-sm-2 '>"+tmpList[i]['houses_name']+"</td>";
-					pointStr += "<td class='col-sm-2 '>"+tmpList[i]['area_name']+"</td>";
-					pointStr += "<td class='col-sm-2 '>"+tmpList[i]['ban']+"</td>";
-					pointStr += "<td class='col-sm-2 '>"+tmpList[i]['unit']+"</td>";
-					pointStr += "<td class='col-sm-2 '>"+tmpList[i]['floor']+"</td>";
-					pointStr += "<td class='col-sm-2 '>"+tmpList[i]['size']+"</td>";
+					pointStr += "<tr point-id='"+tmpList[i]['id']+"'><td width='10%'>"+tmpList[i]['code']+"</td>";
+					pointStr += "<td width='10%'>"+tmpList[i]['houses_name']+"</td>";
+					pointStr += "<td width='10%'>"+tmpList[i]['area_name']+"</td>";
+					pointStr += "<td width='10%'>"+tmpList[i]['ban']+"</td>";
+					pointStr += "<td width='10%'>"+tmpList[i]['unit']+"</td>";
+					pointStr += "<td width='10%'>"+tmpList[i]['floor']+"</td>";
+					if(tmpList[i]['addr'] == 1){
+						pointStr += "<td width='10%'>门禁</td>";
+					}else{
+						pointStr += "<td width='10%'>电梯前室</td>";
+					}
+					
+					pointStr += "<td width='10%'>"+tmpList[i]['size']+"</td>";
 					switch (tmpList[i]['point_status']) {
                         case '1':
                             $class = 'badge-success';
@@ -382,15 +407,15 @@ $(function(){
                             $class = 'badge-danger';
                             break;
                 	}
-					pointStr += "<td class='col-sm-2'><span class='badge "+$class+"'>"+tmpList[i]['point_status_txt']+"</span></td>";
-					pointStr += "<td class='col-sm-2 center'><button class='btn btn-xs btn-info do-sel' type='button'>选择<i class='icon-arrow-right icon-on-right'></button></td></tr>";
+					pointStr += "<td width='10%'><span class='badge "+$class+"'>"+tmpList[i]['point_status_txt']+"</span></td>";
+					pointStr += "<td width='10%'><button class='btn btn-xs btn-info do-sel' type='button'>选择点位<i class='icon-arrow-right icon-on-right'></button></td></tr>";
 				}
 				$('#area').html();
 				for(var j = 0; j < data.area_list.length; j++) {
 					areaStr += "<option value="+data.area_list[j]['id']+">"+data.area_list[j]+"</option>";
 				}
 			}else{
-				alert('该楼盘暂无可预约 <?php echo $order_type_text[$order_type];?> 点位');
+				alert('暂无可预约 <?php echo $order_type_text[$order_type];?> 点位');
 			}
 			$("#points_lists").html(pointStr);
 			$("#area_id").html(areaStr);
@@ -407,7 +432,7 @@ $(function(){
         numObj.text(inputVal);
         //$("input[name='point_ids']").after('<input type="hidden" name="make_num['+$(this).parent().parent().attr('point-id')+']" value="'+inputVal+'">');
         
-        $("#selected_points button").html('移除<i class="fa fa-remove" aria-hidden="true"></i>');
+        $("#selected_points button").html('移除点位<i class="fa fa-remove" aria-hidden="true"></i>');
         var point_ids = $("input[name='point_ids']").val() ? $("input[name='point_ids']").val() + ',' + $(this).parent().parent().attr('point-id') :  $(this).parent().parent().attr('point-id');
 
 
@@ -424,7 +449,7 @@ $(function(){
         //$('input[name="make_num['+$(this).parent().parent().attr('point-id')+']"]').remove();
        
 
-        $("#points_lists button").html('选择<i class="icon-arrow-right icon-on-right"></i>');
+        $("#points_lists button").html('选择点位<i class="icon-arrow-right icon-on-right"></i>');
 
         var point_ids = [];
         var _self = $(this);
@@ -446,7 +471,7 @@ $(function(){
             numObj.text(inputVal);
             //$("input[name='point_ids']").after('<input type="hidden" name="make_num['+$(this).attr('point-id')+']" value="'+inputVal+'">');
 
-            $("#selected_points button").html('移除<i class="fa fa-remove" aria-hidden="true"></i>');
+            $("#selected_points button").html('移除点位<i class="fa fa-remove" aria-hidden="true"></i>');
             var point_ids = $("input[name='point_ids']").val() ? $("input[name='point_ids']").val() + ',' + $(this).attr('point-id') :  $(this).attr('point-id');
             $("input[name='point_ids']").val(point_ids);
         });
@@ -461,7 +486,7 @@ $(function(){
             //$('input[name="make_num['+$(this).attr('point-id')+']"]').remove();
 
             $("input[name='point_ids']").val('');
-            $("#points_lists button").html('选择<i class="icon-arrow-right icon-on-right"></i>');
+            $("#points_lists button").html('选择点位<i class="icon-arrow-right icon-on-right"></i>');
         });
     });
 

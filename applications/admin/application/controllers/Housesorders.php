@@ -25,25 +25,6 @@ class Housesorders extends MY_Controller{
         	'Model_houses_order_inspect_images_log' => 'Mhouses_order_inspect_images_log',
         	'Model_houses_change_pic_orders' => 'Mhouses_change_pic_orders',
         	'Model_houses_scheduled_orders' => 'Mhouses_scheduled_orders'
-        		
-        		
-//              'Model_medias' => 'Mmedias',
-//              'Model_customers' => 'Mcustomers',
-//              'Model_customer_project' => 'Mcustomer_project',
-//              'Model_admins' => 'Madmins',
-//              'Model_points' => 'Mpoints',
-//              'Model_make_company' => 'Mmake_company',
-//              'Model_status_operate_time' => 'Mstatus_operate_time',
-//              'Model_inspect_images' => 'Minspect_images',
-//              'Model_salesman' => 'Msalesman',
-//              'Model_order_inspect_images' => 'Morder_inspect_images',
-//              'Model_change_pic_orders' => 'Mchange_pic_orders',
-//              'Model_points_make_num' => 'Mpoints_make_num',
-//              'Model_change_points_record' => 'Mchange_points_record',
-//              'Model_orders_log' => 'Morders_log',
-//              'Model_order_inspect_images_log' => 'Morder_inspect_images_log',
-//              'Model_points_make_num_log' => 'Mpoints_make_num_log',
-//              'Model_scheduled_orders' => 'Mscheduled_orders'
         ]);
         $this->data['code'] = 'horders_manage';
         $this->data['active'] = 'houses_orders_list';
@@ -228,7 +209,9 @@ class Housesorders extends MY_Controller{
          		$data['housesList'] = $this->Mhouses->get_lists("id, name", $whereh);
          		
          	}
-
+         	//获取楼栋单元楼层列表
+         	$data['BUFL'] = $this->get_ban_unit_floor_list();
+         	$data['status_text'] = C('order.order_status.text');
             $this->load->view("housesorders/add", $data);
         }
     }
@@ -237,9 +220,7 @@ class Housesorders extends MY_Controller{
      * 根据条件获取点位的列表和数量
      */
     public function get_points() {
-    	if($this->input->post('is_lock')) {
-    		
-    	}
+
     	$where['is_del'] = 0;
     	$where['is_lock'] = 0;
     	if($this->input->post('point_status') == 1) {
@@ -250,6 +231,10 @@ class Housesorders extends MY_Controller{
     	}
     	if($this->input->post('order_type')) $where['type_id'] = $this->input->post('order_type');
     	if($this->input->post('houses_id')) $where['houses_id'] = $this->input->post('houses_id');
+    	if(!empty($this->input->post('ban'))) $where['ban'] = $this->input->post('ban');
+    	if(!empty($this->input->post('unit'))) $where['unit'] = $this->input->post('unit');
+    	if(!empty($this->input->post('floor'))) $where['floor'] = $this->input->post('floor');
+    	if(!empty($this->input->post('addr'))) $where['addr'] = $this->input->post('addr');
     	if($this->input->post('is_lock')) {
     		$where['is_lock'] = $this->input->post('is_lock');
     		if($this->input->post('customer_id')) {
@@ -257,7 +242,7 @@ class Housesorders extends MY_Controller{
     		}
     	}
     	
-    	$points_lists = $this->Mhouses_points->get_lists("id,code,houses_id,area_id,type_id", $where);
+    	$points_lists = $this->Mhouses_points->get_lists("id,code,houses_id,area_id,ban,unit,floor,addr,type_id,point_status", $where);
     	$areaList = [];
     	if(count($points_lists) > 0) {
     		$housesid = array_column($points_lists, 'houses_id');
@@ -274,6 +259,8 @@ class Housesorders extends MY_Controller{
     		$formatList = $this->Mhouses_points_format->get_lists("type,size", $wheref);
     		
     		foreach ($points_lists as $k => &$v) {
+    		    //设置状态
+    		    $v['point_status_txt'] = C('public.points_status')[$v['point_status']];
     			foreach($housesList as $k1 => $v1) {
     				if($v['houses_id'] == $v1['id']) {
     					$v['houses_name'] = $v1['name'];
@@ -1009,6 +996,36 @@ class Housesorders extends MY_Controller{
 
         $objWriter = PHPExcel_IOFactory::createWriter($this->phpexcel, 'Excel5');
         $objWriter->save('php://output');
+    }
+    
+    /**
+     * 获取楼栋，单元， 楼层列表
+     * @author yonghua 254274509@qq.com
+     * @return array[]|array[]
+     */
+    private function get_ban_unit_floor_list(){
+        $array = [];
+        
+        $list = $this->Mhouses_points->get_lists(
+            'ban, unit, floor',
+            [
+                'ban !=' => '',
+                'unit !=' => '',
+                'floor !=' => '',
+                'is_del' => 0
+            ],
+            [
+                'ban' => 'asc',
+                'unit' => 'asc',
+                'floor' => 'asc',
+            ]
+            );
+        if(!$list) return $array;
+        $array['ban'] = array_unique(array_column($list, 'ban'));
+        $array['unit'] = array_unique(array_column($list, 'unit'));
+        $array['floor'] = array_unique(array_column($list, 'floor'));
+        
+        return $array;
     }
 
 }

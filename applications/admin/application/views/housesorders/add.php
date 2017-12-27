@@ -161,28 +161,75 @@
                                                                     </div>
                                                                 </div>
                                                                 <div class="col-sm-6">
-                                                                    <label class="col-sm-4 control-label no-padding-right" for="form-field-1" style="padding-left:0"> 锁定： </label>
-                                                                    <div class="col-sm-8" style="padding-left:0;padding-top: 10px">
-                                                                        <select id="is_lock">
-                                                                            <option value="0">未锁定</option>
-                                                                            <option value="1">已锁定</option>
+                                                                    <br/>
+                                                                    <label class="col-sm-4 control-label" for="form-field-1"> 楼栋： </label>
+                                                                    <div class="col-sm-8" style="padding:0">
+                                                                        <select name="ban" id="ban" class="select2">
+                                                                            <option value="">请选择楼栋</option>
+                                                                            <?php if(!empty($BUFL['ban'])):?>
+                                                                            <?php foreach ($BUFL['ban'] as $k => $v):?>
+                                                                            <option value="<?php echo $v;?>"><?php echo $v;?></option>
+                                                                            <?php endforeach;?>
+                                                                            <?php endif;?>
                                                                         </select>
-                                                                        </span>
-                                                                            <a href="javascript:;" class="popover-lock" data-rel="popover" title="说明" data-trigger="hover" data-content="如果锁定的点位中含有正在被占用的点位，需等待这些点位到期并下画之后您才能下单。"><i class="fa fa-question-circle-o" aria-hidden="true"></i></a>
-                                                                        </span> 
                                                                     </div>
                                                                 </div>
+                                                                <div class="col-sm-6">
+                                                                    <br/>
+                                                                    <label class="col-sm-4 control-label" for="form-field-1"> 单元： </label>
+                                                                    <div class="col-sm-8" style="padding:0">
+                                                                        <select name="unit" id="unit" class="select2">
+                                                                            <option value="">请选择单元</option>
+                                                                            <?php if(!empty($BUFL['unit'])):?>
+                                                                            <?php foreach ($BUFL['unit'] as $k => $v):?>
+                                                                            <option value="<?php echo $v;?>"><?php echo $v;?></option>
+                                                                            <?php endforeach;?>
+                                                                            <?php endif;?>
+                                                                        </select>
+                                                                    </div>
+                                                                </div>
+                                                                <div class="col-sm-6">
+                                                                    <br/>
+                                                                    <label class="col-sm-4 control-label" for="form-field-1"> 楼层： </label>
+                                                                    <div class="col-sm-8" style="padding:0">
+                                                                        <select name="floor" id="floor" class="select2">
+                                                                            <option value="">请选择楼层</option>
+                                                                            <?php if(!empty($BUFL['floor'])):?>
+                                                                            <?php foreach ($BUFL['floor'] as $k => $v):?>
+                                                                            <option value="<?php echo $v;?>"><?php echo $v;?></option>
+                                                                            <?php endforeach;?>
+                                                                            <?php endif;?>
+                                                                        </select>
+                                                                    </div>
+                                                                </div>
+                                                                <div class="col-sm-6">
+                                                                    <br/>
+                                                                    <label class="col-sm-4 control-label" for="form-field-1"> 位置： </label>
+                                                                    <div class="col-sm-8" style="padding:0">
+                                                                        <select name="addr" id="addr" class="select2">
+                                                                            <option value="">请选择位置</option>
+                                                                            <option value="1">门禁</option>
+                                                                            <option value="2">电梯前室</option>
+                                                                        </select>
+                                                                    </div>
+                                                                </div>
+   
                                                             </div>
                                                             <div id="scrollTable">
                                                                 <div class="div-thead">
                                                                     <table id="sample-table-1" class="table table-striped table-bordered table-hover">
                                                                         <thead>
                                                                             <tr>
-                                                                                <th class="col-sm-2 center">点位编号</th>
-                                                                                <th class="col-sm-3 center">楼盘名称</th>
-                                                                                <th class="col-sm-3 center">楼盘区域</th>
-                                                                                <th class="col-sm-2 center">规格</th>
-                                                                                <th class="col-sm-2 center"><button class="btn btn-xs btn-info select-all" type="button" data-id="3">选择全部<i class="icon-arrow-right icon-on-right"></i></button></th>
+                                                                                <th width="10%">点位编号</th>
+                                                                                <th width="10%">楼盘</th>
+                                                                                <th width="10%">组团</th>
+                                                                                <th width="10%">楼栋</th>
+                                                                                <th width="10%">单元</th>
+                                                                                <th width="10%">楼层</th>
+                                                                                <th width="10%">位置</th>
+                                                                                <th width="10%">规格</th>
+                                                                                <th width="10%">状态</th>
+                                                                                <th width="10%"><button class="btn btn-xs btn-info select-all" type="button" data-id="3">选择全部<i class="icon-arrow-right icon-on-right"></i></button></th>
                                                                             </tr>
                                                                         </thead>
                                                                     </table>
@@ -434,11 +481,16 @@
                                             <table id="sample-table-1" class="table table-striped table-bordered table-hover">
                                                 <thead>
                                                     <tr>
-                                                        <th class="col-sm-2">点位编号</th>
-                                                        <th class="col-sm-3">楼盘名称</th>
-                                                        <th class="col-sm-3">楼盘区域</th>
-                                                        <th class="col-sm-2">规格</th>
-                                                        <th class="col-sm-2"><button class="btn btn-xs btn-info remove-all" type="button">移除全部<i class="fa fa-remove" aria-hidden="true"></i></button></th>
+                                                        <th width="10%">点位编号</th>
+                                                                                <th width="10%">楼盘</th>
+                                                                                <th width="10%">组团</th>
+                                                                                <th width="10%">楼栋</th>
+                                                                                <th width="10%">单元</th>
+                                                                                <th width="10%">楼层</th>
+                                                                                <th width="10%">位置</th>
+                                                                                <th width="10%">规格</th>
+                                                                                <th width="10%">状态</th>
+                                                                                <th width="10%"><button class="btn btn-xs btn-info select-all" type="button" data-id="3">选择全部<i class="icon-arrow-right icon-on-right"></i></button></th>
                                                     </tr>
                                                 </thead>
                                             </table>
@@ -493,7 +545,7 @@ $(function(){
         $(this).prev().focus();
     });
 	
-	$('#houses_id,#is_lock,#area_id').change(function(){
+	$('#houses_id,#is_lock,#area_id,#ban,#unit,#floor,#addr').change(function(){
 		if($(this).attr('id') == 'houses_id') {
 			$("#area_id").html('');
 			$(".select2-chosen:eq(2)").text('全部');
@@ -509,21 +561,42 @@ $(function(){
 		}
 
 		var houses_id = $('#houses_id').val();
+		var ban = $('#ban').val();
+		var unit = $('#unit').val();
+		var floor = $('#floor').val();
+		var addr = $('#addr').val();
 		var is_lock = $('#is_lock').val();
 		var customer_id = $('#customer_id').val();
-
-		$.post('/housesorders/get_points', {order_type:order_type, houses_id:houses_id, is_lock:is_lock, customer_id:customer_id}, function(data){
+		var postData = {order_type:order_type, houses_id:houses_id, is_lock:is_lock, customer_id:customer_id,ban:ban,unit:unit,floor:floor,addr:addr};
+		$.post('/housesorders/get_points', postData, function(data){
 			var pointStr =  '';
 			var areaStr = ''; 
 			if(data.flag == true) {
 				$("#all_points_num").text(data.count);
-				
 				for(var i = 0; i < (data.points_lists).length; i++) {
-					pointStr += "<tr point-id='"+(data.points_lists)[i]['id']+"'><td class='col-sm-2 center'>"+(data.points_lists)[i]['code']+"</td>";
-					pointStr += "<td class='col-sm-3 center'>"+(data.points_lists)[i]['houses_name']+"</td>";
-					pointStr += "<td class='col-sm-3 center'>"+(data.points_lists)[i]['area_name']+"</td>";
-					pointStr += "<td class='col-sm-2 center'>"+(data.points_lists)[i]['size']+"</td>";
-					pointStr += "<td class='col-sm-2 center'><button class='btn btn-xs btn-info do-sel' type='button'>选择<i class='icon-arrow-right icon-on-right'></button></td></tr>";
+					pointStr += "<tr point-id='"+(data.points_lists)[i]['id']+"'><td width='10%'>"+(data.points_lists)[i]['code']+"</td>";
+					pointStr += "<td width='10%'>"+(data.points_lists)[i]['houses_name']+"</td>";
+					pointStr += "<td width='10%'>"+(data.points_lists)[i]['area_name']+"</td>";
+					pointStr += "<td width='10%'>"+(data.points_lists)[i]['ban']+"</td>";
+					pointStr += "<td width='10%'>"+(data.points_lists)[i]['unit']+"</td>";
+					pointStr += "<td width='10%'>"+(data.points_lists)[i]['floor']+"</td>";
+					if((data.points_lists)[i]['addr'] == 1){
+						pointStr += "<td width='10%'>门禁</td>";
+					}else{
+						pointStr += "<td width='10%'>电梯前室</td>";
+					}
+					pointStr += "<td width='10%'>"+(data.points_lists)[i]['size']+"</td>";
+					var $class;
+					switch ((data.points_lists)[i]['point_status']) {
+                    case '1':
+                        $class = 'badge-success';
+                        break;
+                    case '3':
+                        $class = 'badge-danger';
+                        break;
+            		}
+					pointStr += "<td width='10%'><span class='badge "+$class+"'>"+(data.points_lists)[i]['point_status_txt']+"</span></td>";
+					pointStr += "<td width='10%'><button class='btn btn-xs btn-info do-sel' type='button'>选择点位<i class='icon-arrow-right icon-on-right'></button></td></tr>";
 				}
 
 				for(var j = 0; j < (data.area_lists).length; j++) {
@@ -546,7 +619,7 @@ $(function(){
         numObj.text(inputVal);
         //$("input[name='point_ids']").after('<input type="hidden" name="make_num['+$(this).parent().parent().attr('point-id')+']" value="'+inputVal+'">');
         
-        $("#selected_points button").html('移除<i class="fa fa-remove" aria-hidden="true"></i>');
+        $("#selected_points button").html('移除点位<i class="fa fa-remove" aria-hidden="true"></i>');
         var point_ids = $("input[name='point_ids']").val() ? $("input[name='point_ids']").val() + ',' + $(this).parent().parent().attr('point-id') :  $(this).parent().parent().attr('point-id');
 
 
@@ -563,7 +636,7 @@ $(function(){
         //$('input[name="make_num['+$(this).parent().parent().attr('point-id')+']"]').remove();
        
 
-        $("#points_lists button").html('选择<i class="icon-arrow-right icon-on-right"></i>');
+        $("#points_lists button").html('选择点位<i class="icon-arrow-right icon-on-right"></i>');
 
         var point_ids = [];
         var _self = $(this);
@@ -585,7 +658,7 @@ $(function(){
             numObj.text(inputVal);
             //$("input[name='point_ids']").after('<input type="hidden" name="make_num['+$(this).attr('point-id')+']" value="'+inputVal+'">');
 
-            $("#selected_points button").html('移除<i class="fa fa-remove" aria-hidden="true"></i>');
+            $("#selected_points button").html('移除点位<i class="fa fa-remove" aria-hidden="true"></i>');
             var point_ids = $("input[name='point_ids']").val() ? $("input[name='point_ids']").val() + ',' + $(this).attr('point-id') :  $(this).attr('point-id');
             $("input[name='point_ids']").val(point_ids);
         });
@@ -600,7 +673,7 @@ $(function(){
             //$('input[name="make_num['+$(this).attr('point-id')+']"]').remove();
 
             $("input[name='point_ids']").val('');
-            $("#points_lists button").html('选择<i class="icon-arrow-right icon-on-right"></i>');
+            $("#points_lists button").html('选择点位<i class="icon-arrow-right icon-on-right"></i>');
         });
     });
 
