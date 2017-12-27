@@ -161,17 +161,59 @@
                                                                     </div>
                                                                 </div>
                                                                 <div class="col-sm-6">
-                                                                    <label class="col-sm-4 control-label no-padding-right" for="form-field-1" style="padding-left:0"> 锁定： </label>
-                                                                    <div class="col-sm-8" style="padding-left:0;padding-top: 10px">
-                                                                        <select id="is_lock">
-                                                                            <option value="0">未锁定</option>
-                                                                            <option value="1">已锁定</option>
+                                                                    <br/>
+                                                                    <label class="col-sm-4 control-label" for="form-field-1"> 楼栋： </label>
+                                                                    <div class="col-sm-8" style="padding:0">
+                                                                        <select name="ban" id="ban" class="select2">
+                                                                            <option value="">请选择楼栋</option>
+                                                                            <?php if(!empty($BUFL['ban'])):?>
+                                                                            <?php foreach ($BUFL['ban'] as $k => $v):?>
+                                                                            <option value="<?php echo $v;?>"><?php echo $v;?></option>
+                                                                            <?php endforeach;?>
+                                                                            <?php endif;?>
                                                                         </select>
-                                                                        </span>
-                                                                            <a href="javascript:;" class="popover-lock" data-rel="popover" title="说明" data-trigger="hover" data-content="如果锁定的点位中含有正在被占用的点位，需等待这些点位到期并下画之后您才能下单。"><i class="fa fa-question-circle-o" aria-hidden="true"></i></a>
-                                                                        </span> 
                                                                     </div>
                                                                 </div>
+                                                                <div class="col-sm-6">
+                                                                    <br/>
+                                                                    <label class="col-sm-4 control-label" for="form-field-1"> 单元： </label>
+                                                                    <div class="col-sm-8" style="padding:0">
+                                                                        <select name="unit" id="unit" class="select2">
+                                                                            <option value="">请选择单元</option>
+                                                                            <?php if(!empty($BUFL['unit'])):?>
+                                                                            <?php foreach ($BUFL['unit'] as $k => $v):?>
+                                                                            <option value="<?php echo $v;?>"><?php echo $v;?></option>
+                                                                            <?php endforeach;?>
+                                                                            <?php endif;?>
+                                                                        </select>
+                                                                    </div>
+                                                                </div>
+                                                                <div class="col-sm-6">
+                                                                    <br/>
+                                                                    <label class="col-sm-4 control-label" for="form-field-1"> 楼层： </label>
+                                                                    <div class="col-sm-8" style="padding:0">
+                                                                        <select name="floor" id="floor" class="select2">
+                                                                            <option value="">请选择楼层</option>
+                                                                            <?php if(!empty($BUFL['floor'])):?>
+                                                                            <?php foreach ($BUFL['floor'] as $k => $v):?>
+                                                                            <option value="<?php echo $v;?>"><?php echo $v;?></option>
+                                                                            <?php endforeach;?>
+                                                                            <?php endif;?>
+                                                                        </select>
+                                                                    </div>
+                                                                </div>
+                                                                <div class="col-sm-6">
+                                                                    <br/>
+                                                                    <label class="col-sm-4 control-label" for="form-field-1"> 楼层： </label>
+                                                                    <div class="col-sm-8" style="padding:0">
+                                                                        <select name="addr" id="addr" class="select2">
+                                                                            <option value="">请选择位置</option>
+                                                                            <option value="1">门禁</option>
+                                                                            <option value="2">电梯前室</option>
+                                                                        </select>
+                                                                    </div>
+                                                                </div>
+   
                                                             </div>
                                                             <div id="scrollTable">
                                                                 <div class="div-thead">

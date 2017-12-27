@@ -228,7 +228,8 @@ class Housesorders extends MY_Controller{
          		$data['housesList'] = $this->Mhouses->get_lists("id, name", $whereh);
          		
          	}
-
+         	//获取楼栋单元楼层列表
+         	$data['BUFL'] = $this->get_ban_unit_floor_list();
             $this->load->view("housesorders/add", $data);
         }
     }
@@ -1009,6 +1010,36 @@ class Housesorders extends MY_Controller{
 
         $objWriter = PHPExcel_IOFactory::createWriter($this->phpexcel, 'Excel5');
         $objWriter->save('php://output');
+    }
+    
+    /**
+     * 获取楼栋，单元， 楼层列表
+     * @author yonghua 254274509@qq.com
+     * @return array[]|array[]
+     */
+    private function get_ban_unit_floor_list(){
+        $array = [];
+        
+        $list = $this->Mhouses_points->get_lists(
+            'ban, unit, floor',
+            [
+                'ban !=' => '',
+                'unit !=' => '',
+                'floor !=' => '',
+                'is_del' => 0
+            ],
+            [
+                'ban' => 'asc',
+                'unit' => 'asc',
+                'floor' => 'asc',
+            ]
+            );
+        if(!$list) return $array;
+        $array['ban'] = array_unique(array_column($list, 'ban'));
+        $array['unit'] = array_unique(array_column($list, 'unit'));
+        $array['floor'] = array_unique(array_column($list, 'floor'));
+        
+        return $array;
     }
 
 }
