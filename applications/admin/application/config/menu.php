@@ -180,6 +180,11 @@ $config = array(
     				'name'=> '派单列表',
     				'active'=> 'houses_assign_list'
     			),
+    			array(
+    				'url'=>'/housesconfirm',
+    				'name'=> '确认派单',
+    				'active'=> 'houses_confirm_list'
+    			),
     		)
     	),
         '数据统计' => array(

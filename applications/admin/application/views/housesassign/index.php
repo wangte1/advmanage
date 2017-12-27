@@ -19,7 +19,7 @@
                     <li>
                         <a href="#">订单管理</a>
                     </li>
-                    <li class="active">订单列表</li>
+                    <li class="active">派单列表</li>
                 </ul>
 
                 <div class="nav-search" id="nav-search">
@@ -33,9 +33,6 @@
             </div>
 
             <div class="page-content">
-                <div class="page-header">
-                    <a href="/housesorders/order_type" class="btn btn-sm btn-primary"><i class="fa fa-plus-square" aria-hidden="true"></i> 新建订单</a>
-                </div> 
 
                 <div class="row">
                     <div class="col-xs-12">
@@ -209,25 +206,23 @@
                                                         <?php echo $houses_assign_status[$value['assign_status']];?>
                                                     </span>
 
-                                                    <?php if($value['order_status'] == 7):?>
-                                                        <?php if((date('Y-m-d') <= $value['release_end_time']) && diff_days(date('Y-m-d'), $value['release_end_time']) <= 7):?>
-                                                        <span class="badge badge-danger">
-                                                            即将到期
-                                                        </span>
-                                                        <?php elseif(date('Y-m-d') > $value['release_end_time']):?>
-                                                        <span class="badge badge-pink">
-                                                            已到期，未下画
-                                                        </span>
-                                                        <?php endif;?>
-                                                    <?php endif;?>
                                                 </td>
                                                 <td></td>
                                                 <td><?php echo $admins[$value['creator']];?></td>
                                                 <td>
                                                     <div class="visible-md visible-lg hidden-sm hidden-xs action-buttons">
-                                                        <a class="green tooltip-info" href="/housesassign/assign/id/<?php echo $value['id'];?>"  data-rel="tooltip" data-placement="top" title="" data-original-title="派单">
-                                                            <i class="icon-hand-right bigger-130"></i>
-                                                        </a> 
+                                                    	<a class="green tooltip-info m-detail" data-id="<?php echo $value['id'];?>"  data-rel="tooltip" data-placement="top" title="" data-original-title="详情">
+                                                            <i class="icon-eye-open bigger-130"></i>
+                                                        </a>
+                                                    	<?php if($value['assign_status'] == 1) {?>
+	                                                        <a class="green tooltip-info m-assign" data-id="<?php echo $value['id'];?>" data-rel="tooltip" data-placement="top" title="" data-original-title="派单">
+	                                                            <i class="icon-hand-right bigger-130"></i>
+	                                                        </a> 
+                                                        <?php }else if($value['assign_status'] == 2) {?>
+                                                        	<a class="green tooltip-info" href="/housesassign/edit/<?php echo $value['id'];?>"  data-rel="tooltip" data-placement="top" title="" data-original-title="改派">
+                                                                <i class="icon-pencil bigger-130"></i>
+                                                            </a>
+                                                        <?php }?>
                                                     </div>
                                                 </td>
                                             </tr>
@@ -288,113 +283,33 @@
 
 <script type="text/javascript">
     $('[data-rel=popover]').popover({html:true});
-
-    $(".expire-time").click(function(){
-        $("#exampleModal").modal('show');
-        var _self = $(this);
-        var id = _self.attr("data-id");
-        var order = _self.attr("data-order");
-        $("#expire-add").click(function(){
-            var release_end_time = $(".release_end_time").val();
-            $.ajax( {
-                url:'/housesorders/extend_time',
-                data: {
-                    'id':id,
-                    'order_code':order,
-                    'release_end_time':release_end_time
-                },
-                type:'POST',
-                dataType:'json',
-                success:function(data) {
-                    if(data.status == 0){
-                        $('.error_msg').html("续期成功！");
-                        setInterval(function(){
-                            window.location.reload();
-                        },2000);
-                    } else {
-                        $('.error_msg').html(data.msg);
-                        setInterval("delInfo('.error_msg')",2000);
-                        return false;
-                    }
-
-                },
-                error : function() {
-
-                }
-            });
-        });
-
-    });
-
     $(".select2").css('width','240px').select2({allowClear:true});
 
-    //修改订单总价
-    $('.edit-price').click(function(){
-        var _self = $(this); 
-        if (_self.children().hasClass('icon-pencil')) {
-            _self.children().removeClass('icon-pencil bigger-130').addClass('fa fa-check bigger-130');
-            $('input[name="total_price'+_self.attr('data-id')+'"]').show();
-            $('.span-price'+_self.attr('data-id')).hide();
-        } else {
-            _self.children().removeClass('fa fa-check bigger-130').addClass('icon-pencil bigger-130');
-            $('input[name="total_price'+_self.attr('data-id')+'"]').hide();
-            $('.span-price'+_self.attr('data-id')).show();
-
-            if ($('input[name="total_price'+_self.attr('data-id')+'"]').val() != _self.attr('data-price')) {
-                $.post(
-                    '/orders/edit_price', 
-                    {
-                        id: _self.attr('data-id'),
-                        total_price: $('input[name="total_price'+_self.attr('data-id')+'"]').val(),
-                    }, 
-                    function(data){
-                        if (data.flag) {
-                            $('.span-price'+_self.attr('data-id')).html(data.total_price);
-                        } else {
-                            var d = dialog({
-                                title: "提示",
-                                content: data.msg,
-                                okValue: '确定',
-                                ok: function () {
-                                },
-                            });
-                            d.width(320);
-                            d.showModal();
-                        }
-                    }
-                );
-            }
-        }
-    });
-
-    //删除提示信息
-    function delInfo(obj) {
-        $(obj).html('');
-    }
-
-    function deleteOrder(id) {
-    	layer.prompt({title: '请输入删除口令！', formType: 1}, function(pass, index){
-        		if(pass == 'adminnn123') { //等时间充裕以后改到后台获取 yangxiong 2017-0-14
-        			$.ajax({
-                        url:'/housesorders/del_order',
-                        data: {
-                            'id':id
-                        },
-                        type:'POST',
-                        dataType:'json',
-                        success:function(data) {
-                            if(data) {
-                            	layer.alert(data.msg);
-                            	location.reload();
-                            }
-                            
-                        }
-                       
-                    });
-            	}
-    		  //layer.close(index);
-    		});
-    }
+	$(function(){
+		$('.m-detail').click(function(){
+			var order_id = $(this).attr('data-id');
+			layer.open({
+				  type: 2,
+				  title: '详情',
+				  shadeClose: true,
+				  shade: 0.6,
+				  area: ['70%', '70%'],
+				  content: 'housesassign/detail?order_id='+order_id //iframe的url
+				}); 
+		});
+	
+		$('.m-assign').click(function(){
+			var order_id = $(this).attr('data-id');
+			layer.open({
+				  type: 2,
+				  title: '派单',
+				  shadeClose: true,
+				  shade: 0.6,
+				  area: ['70%', '70%'],
+				  content: 'housesassign/assign?order_id='+order_id //iframe的url
+				}); 
+		});
+	});
 
 </script>
 
