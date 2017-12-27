@@ -54,7 +54,7 @@
             <div class="page-content">
                 <div class="page-header">
                     <h1>
-                        <?php if(isset($info['id'])) { echo "编辑"; } else { echo "新建"; }?><?php echo $order_type_text[$order_type];?>订单
+                        <?php if(isset($info['id'])) { echo "编辑"; } else { echo "新建"; }?><?php echo $order_type_text[$order_type];?>预定订单
                         <a href="/housesorders" class="btn btn-sm btn-primary pull-right">《返回列表页</a>
                     </h1>
                 </div>
@@ -471,7 +471,7 @@ $(function(){
             numObj.text(inputVal);
             //$("input[name='point_ids']").after('<input type="hidden" name="make_num['+$(this).attr('point-id')+']" value="'+inputVal+'">');
 
-            $("#selected_points button").html('移除<i class="fa fa-remove" aria-hidden="true"></i>');
+            $("#selected_points button").html('移除点位<i class="fa fa-remove" aria-hidden="true"></i>');
             var point_ids = $("input[name='point_ids']").val() ? $("input[name='point_ids']").val() + ',' + $(this).attr('point-id') :  $(this).attr('point-id');
             $("input[name='point_ids']").val(point_ids);
         });
@@ -486,7 +486,7 @@ $(function(){
             //$('input[name="make_num['+$(this).attr('point-id')+']"]').remove();
 
             $("input[name='point_ids']").val('');
-            $("#points_lists button").html('选择<i class="icon-arrow-right icon-on-right"></i>');
+            $("#points_lists button").html('选择点位<i class="icon-arrow-right icon-on-right"></i>');
         });
     });
 
