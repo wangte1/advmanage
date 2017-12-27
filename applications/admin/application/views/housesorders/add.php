@@ -204,7 +204,7 @@
                                                                 </div>
                                                                 <div class="col-sm-6">
                                                                     <br/>
-                                                                    <label class="col-sm-4 control-label" for="form-field-1"> 楼层： </label>
+                                                                    <label class="col-sm-4 control-label" for="form-field-1"> 位置： </label>
                                                                     <div class="col-sm-8" style="padding:0">
                                                                         <select name="addr" id="addr" class="select2">
                                                                             <option value="">请选择位置</option>
