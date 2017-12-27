@@ -10,8 +10,6 @@ class Housescustomers extends MY_Controller{
         parent::__construct();
         $this->load->model([
             'Model_houses_customers' => 'Mhouses_customers',
-            //'Model_customer_project' => 'Mcustomer_project',
-            //'Model_points' => 'Mpoints',
          ]);
         $this->pageconfig = C('page.page_lists');
         $this->load->library('pagination');
@@ -109,7 +107,7 @@ class Housescustomers extends MY_Controller{
             $result = $this->Mhouses_customers->update_info($post,array("id"=>$id));
             if($result){
                 $this->write_log($data['userInfo']['id'],2,"编辑社区客户：".$post['name']);
-                $this->success("编辑成功","/customers");
+                $this->success("编辑成功","/housescustomers");
             }else{
                 $this->error("编辑失败");
             }
@@ -144,7 +142,7 @@ class Housescustomers extends MY_Controller{
         if($del){
             
             $this->write_log($data['userInfo']['id'],3," 删除社区客户：".$customer_name['name']);
-            $this->success("删除成功!!","/customers");
+            $this->success("删除成功!!","/housescustomers");
 
         }else{
             $this->error("删除失败!!");

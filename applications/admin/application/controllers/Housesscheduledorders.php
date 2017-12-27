@@ -3,6 +3,12 @@
 * 预定订单管理控制器
 * @author yonghua 254274509@qq.com
 */
+//阿里大鱼短信
+use Flc\Alidayu\Client;
+use Flc\Alidayu\App;
+use Flc\Alidayu\Requests\AlibabaAliqinFcSmsNumSend;
+use YYHhelper\Http;
+
 defined('BASEPATH') or exit('No direct script access allowed');
 class Housesscheduledorders extends MY_Controller{
 
@@ -455,9 +461,82 @@ class Housesscheduledorders extends MY_Controller{
     
     /**
      * 给客户发送短信确认点位
+     * @author yonghua 254274509@qq.com
      */
     public function sendMsg(){
+        //根据预定订单获取客户电话
+        $orderid = intval($this->input->post('order_id'));
+        $customer_id = intval($this->input->post('customer_id'));
+        $info = $this->Mhouses_customers->get_one('contact_tel', ['id' => $customer_id]);
+        if(!$info) $this->return_json(['code' => 0, 'msg' => '客户不存在']);
+        if(empty($info['contact_tel'])){
+            $this->return_json(['code' => 0, 'msg' => '电话不能为空！']);
+        }
+        if(!preg_match('/^1[3|4|5|8|7][0-9]\d{8}$/', $info['contact_tel'])){
+            $this->return_json(['code' => 0, 'msg' => '客户手机号格式不正确！']);
+        }
+        //生成短网址
+        $token = encrypt(['id' => $orderid]);
+        $url = 'https://api.wesogou.com/housesscheduledorders/index?token='.$token;
+        try {
+            $urlInfo = $this->getShortUrl($url);
+            if($urlInfo['code'] == 0){
+                $this->return_json(['code' => 0, 'msg' => $urlInfo['msg']]);
+            }
+            $url = $urlInfo['url'];
+        } catch (Exception $e) {
+            $this->return_json(['code' => 0, 'msg' => $e->getMessage()]);
+        }
+        // 配置信息
+        $sms = C('sms.config');
+        $client = new Client(new App(['app_key' => $sms['app_key'], 'app_secret' => $sms['app_secret']]));
+        $req    = new AlibabaAliqinFcSmsNumSend();
+        $req->setRecNum($info['contact_tel'])
+        ->setSmsParam([
+            'url' => $url
+        ])
+        ->setSmsFreeSignName($sms['FreeSignName'])
+        ->setSmsTemplateCode($sms['TemplateCode']);
         
+        $sendRes = (array) $client->execute($req);
+        if(isset($sendRes['result'])) {
+            $res = (array) $sendRes['result'];
+            if(isset($res['success']) && $res['success'] == 1){
+                $this->return_json(['code' => 1, 'msg' => '发送成功']);
+            }
+        }
+        $this->return_json(['code' => 0, 'msg' => '短信error：'.$sendRes['sub_msg']]);
     }
     
+    /**
+     * 将url转换成短网址，避免被屏蔽
+     * @author yonghua 254274509@qq.com
+     * @param string $url
+     * @throws Exception
+     * @return number[]|string[]|number[]|mixed[]
+     */
+    private function getShortUrl($url=""){
+        if(empty($url)) return ['code' => 0, 'msg' => 'url不能为空'];
+        $key = C('short_url.user_key');
+        $apiurl = 'https://ni2.org/api/create.json';
+        $info = Http::Request($apiurl, ['url' => $url ,'user_key' => $key], 'POST');
+        if(!$info) throw new Exception('无法连接api服务器');
+        $info = (array) json_decode($info);
+        if($info['result'] == 0){
+            return ['code' => 1, 'url' => $info['url']];
+        }
+        $error = '';
+        switch ($info['result']){
+            case 1 :
+                $error = '生成URL失败';
+                break;
+            case 2 :
+                $error = 'URL不符合格式';
+                break;
+            case 3 :
+                $error = '该域名已被加入黑名单';
+                break;
+        }
+        return ['code' => 0, 'msg' => $error];
+    }
 }

@@ -94,7 +94,7 @@
                                 <label class="col-sm-3 control-label no-padding-right" for="form-field-1">  客户地址： </label>
 
                                 <div class="col-sm-9">
-                                    <input type="text" name="address" value="<?php echo $info['addr'];?>"  id="form-field-1" placeholder="请输入客户地址" class="col-xs-10 col-sm-5">
+                                    <input type="text" name="addr" value="<?php echo $info['addr'];?>"  id="form-field-1" placeholder="请输入客户地址" class="col-xs-10 col-sm-5">
                                      <span class="help-inline col-xs-12 col-sm-7 form-field-description-block">
                                        <span class="middle">* 请输入详细的地址便于联系</span>
 									</span>
