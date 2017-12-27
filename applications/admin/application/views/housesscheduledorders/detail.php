@@ -154,7 +154,11 @@
                                                         <td class="center"><?php echo $value['code'];?></td>
                                                         <td><?php echo $value['houses_name']?></td>
                                                         <td><?php echo $value['houses_area_name']?></td>
-                                                        <td><?php echo $value['addr'];?></td>
+                                                        <?php if($value['addr'] == 1):?>
+                                                        <td>门禁</td>
+                                                        <?php else:?>
+                                                        <td>电梯前室</td>
+                                                        <?php endif;?>
                                                         <td><?php echo $value['price'];?></td>
                                                         <td><?php echo $value['size'];?></td>
                                                         <td>

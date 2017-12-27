@@ -327,14 +327,15 @@ class Housesscheduledorders extends MY_Controller{
     public function get_points() {
 
         if($this->input->post('order_type')) $where['type_id'] = $this->input->post('order_type');
-        if($this->input->post('houses_id')) $where['houses_id'] = $this->input->post('houses_id');
+        if(!empty($this->input->post('houses_id'))) $where['houses_id'] = $this->input->post('houses_id');
         if(!empty($this->input->post('ban'))) $where['ban'] = $this->input->post('ban');
         if(!empty($this->input->post('unit'))) $where['unit'] = $this->input->post('unit');
         if(!empty($this->input->post('floor'))) $where['floor'] = $this->input->post('floor');
+        if(!empty($this->input->post('addr'))) $where['addr'] = $this->input->post('addr');
         $lock_start_time = $this->input->post('lock_start_time');
         
         $where['is_del'] = $where['is_lock'] = 0;
-        $fields = 'id,code,houses_id,is_lock,area_id,ban,unit,floor,type_id,point_status';
+        $fields = 'id,code,houses_id,is_lock,area_id,ban,unit,floor,addr,type_id,point_status';
         $points_lists = $this->Mhouses_points->get_usable_point($fields, $where, $lock_start_time);
         if(count($points_lists) > 0) {
             $housesid = array_unique(array_column($points_lists, 'houses_id'));
