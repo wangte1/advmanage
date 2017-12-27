@@ -23,7 +23,6 @@
 
 <div class="main-container" id="main-container">
 <form class="form-horizontal" role="form" method="post">
-	<input type="hidden" name="order_id" value="<?php echo $order_id;?>">
 	<div id="table-panel">
 	    <table id="sample-table-1" class="table table-striped table-bordered table-hover" >
 			<thead>
@@ -33,6 +32,9 @@
 					<th>楼盘</th>
 					<th>点位数量（个）</th>
 					<th width="15%">负责人</th>
+					<th width="15%">派单人</th>
+					<th width="15%">派单时间</th>
+					<th width="15%">状态</th>
 					<th>操作</th>
 				</tr>
 			</thead>
@@ -41,15 +43,43 @@
 				<tr>
 					<td><?php echo $k+1;?></td>
 					<td><?php echo $v['ad_area'];?></td>
-					<td><?php echo $v['houses_name'];?><input type="hidden" name="houses_id[]" value="<?php echo $v['houses_id'];?>"></td>
-					<td><?php echo $v['count'];?><input type="hidden" name="points_count[]" value="<?php echo $v['count'];?>"></td>
+					<td><?php echo $v['houses_name'];?></td>
+					<td><?php echo $v['count'];?></td>
 					<td>
-						<select class="select2" name="charge_user[]">
-							<option value=""></option>
-							<?php foreach($user_list as $k1 => $v1) {?>
-								<option value="<?php echo $v1['id'];?>"><?php echo $v1['fullname'];?></option>
+						<?php if(isset($assign_list)) {?>
+							<?php foreach ($assign_list as $k1 => $v1) {?>
+								<?php if($v['houses_id'] == $v1['houses_id']) {?>
+									<?php echo $user_list[$v1['charge_user']];?>
+								<?php }?>
 							<?php }?>
-						</select>
+						<?php }?>
+					</td>
+					<td>
+						<?php if(isset($assign_list)) {?>
+							<?php foreach ($assign_list as $k1 => $v1) {?>
+								<?php if($v['houses_id'] == $v1['houses_id']) {?>
+									<?php echo $user_list[$v1['assign_user']];?>
+								<?php }?>
+							<?php }?>
+						<?php }?>
+					</td>
+					<td>
+						<?php if(isset($assign_list)) {?>
+							<?php foreach ($assign_list as $k1 => $v1) {?>
+								<?php if($v['houses_id'] == $v1['houses_id']) {?>
+									<?php echo $v1['assign_time'];?>
+								<?php }?>
+							<?php }?>
+						<?php }?>
+					</td>
+					<td>
+						<?php if(isset($assign_list)) {?>
+							<?php foreach ($assign_list as $k1 => $v1) {?>
+								<?php if($v['houses_id'] == $v1['houses_id']) {?>
+									<?php echo $houses_assign_status[$v1['status']];?>
+								<?php }?>
+							<?php }?>
+						<?php }?>
 					</td>
 					<td><button class="btn btn-xs btn-info" type="button">详情</button></td>
 				</tr>
@@ -58,9 +88,6 @@
 		</table>
 	</div>
 	
-	<center>
-		<button class="btn btn-sm btn-info" type="submit">保存并通知</button>
-	</center>
 </form>
 </div>
 

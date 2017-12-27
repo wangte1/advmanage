@@ -24,7 +24,9 @@ class Housesassign extends MY_Controller{
         	'Model_houses_orders_log' => 'Mhouses_orders_log',
         	'Model_houses_order_inspect_images_log' => 'Mhouses_order_inspect_images_log',
         	'Model_houses_change_pic_orders' => 'Mhouses_change_pic_orders',
-        	'Model_houses_scheduled_orders' => 'Mhouses_scheduled_orders'
+        	'Model_houses_scheduled_orders' => 'Mhouses_scheduled_orders',
+        	'Model_admins' => 'Madmins',
+        	'Model_houses_assign' => 'Mhouses_assign'
         		
         ]);
         $this->data['code'] = 'horders_manage';
@@ -100,7 +102,191 @@ class Housesassign extends MY_Controller{
      */
     public function assign() {
     	$data = $this->data;
+    	
+    	$where['is_del'] = 0;
+    	if ($this->input->get('order_id')) $where['order_id'] = $data['order_id'] =  $this->input->get('order_id');
+    	
+    	if(IS_POST){
+    		$order_id = $this->input->post('order_id');
+    		$houses_ids = $this->input->post('houses_id');
+    		$points_counts = $this->input->post('points_count');
+    		$charge_users = $this->input->post('charge_user');
+    		
+    		$add_data = [];
+    		$i = 0;
+    		foreach ($houses_ids as $k => $v) {
+    			$add_data[$i]['order_id'] = $order_id;
+    			$add_data[$i]['houses_id'] = $v;
+    			$add_data[$i]['points_count'] = $points_counts[$k];
+    			$add_data[$i]['charge_user'] = $charge_users[$k];
+    			$add_data[$i]['assign_user'] = $data['userInfo']['id'];
+    			$add_data[$i]['assign_time'] = date("Y-m-d H:i:s");
+    			$i++;
+    		}
+    		
+    		$res = $this->Mhouses_assign->create_batch($add_data);
+    		
+    		if($res) {
+    			$update_data['assign_status'] = 2;
+    			$res1 = $this->Mhouses_orders->update_info($update_data,array("id" => $order_id));
+    			
+    			if($res1) {
+    				$this->success("保存并通知成功","/housesassign");
+    			}
+    		}
+    		
+    		$this->error("保存失败");
+    		
+    	}
+    	
+    	$group_by = ['houses_id'];
+    	$list = $this->Mhouses_points->get_lists('houses_id,count(0) as count', $where, [],  0,0,  $group_by);  //点位分组
+    	
+    	if($list) {
+    		$houses_ids = array_column($list, 'houses_id');
+    		$where = [];
+    		$where['is_del'] = 0;
+    		$where['in']['id'] = $houses_ids;
+    		$hlist = $this->Mhouses->get_lists('id,name,province,city,area', $where);  //楼盘信息
+    		
+    		if($hlist) {
+    			foreach ($list as $k => &$v) {
+    				foreach ($hlist as $k1 => $v1) {
+    					if($v['houses_id'] == $v1['id']) {
+    						$v['ad_area'] = $v1['province']."-".$v1['city']."-".$v1['area'];
+    						$v['houses_name'] = $v1['name'];
+    					}
+    				}
+    			}
+    		}
+    		
+    	}
+    	
+    	$data['list'] = $list;
+    	
+    	$where = [];
+    	$where['group_id'] = 4;	//工程人员角色
+    	$data['user_list'] = $this->Madmins->get_lists('id,name,fullname', $where);  //工程人员信息
+    	
     	$this->load->view('housesassign/assign', $data);
+    }
+    
+    /*
+     * 详情
+     */
+    public function detail() {
+    	$data = $this->data;
+    	 
+    	$where['is_del'] = 0;
+    	if ($this->input->get('order_id')) $where['order_id'] = $data['order_id'] =  $this->input->get('order_id');
+    	 
+    	$group_by = ['houses_id'];
+    	$list = $this->Mhouses_points->get_lists('houses_id,count(0) as count', $where, [],  0,0,  $group_by);  //点位分组
+    	 
+    	if($list) {
+    		$houses_ids = array_column($list, 'houses_id');
+    		$where = [];
+    		$where['is_del'] = 0;
+    		$where['in']['id'] = $houses_ids;
+    		$hlist = $this->Mhouses->get_lists('id,name,province,city,area', $where);  //楼盘信息
+    
+    		if($hlist) {
+    			foreach ($list as $k => &$v) {
+    				foreach ($hlist as $k1 => $v1) {
+    					if($v['houses_id'] == $v1['id']) {
+    						$v['ad_area'] = $v1['province']."-".$v1['city']."-".$v1['area'];
+    						$v['houses_name'] = $v1['name'];
+    					}
+    				}
+    			}
+    		}
+    
+    	}
+    	 
+    	$data['list'] = $list;
+    	 
+    	$where = [];
+    	$tmp_arr = $this->Madmins->get_lists('id,name,fullname', $where);  //工程人员信息
+    	$data['user_list'] = array_column($tmp_arr, 'fullname', 'id');
+    	
+    	$data['assign_list'] = $this->Mhouses_assign->get_lists('id,houses_id,charge_user,assign_user,assign_time,status', ['order_id' => $data['order_id']]);  //点位分组
+    	
+    	$this->load->view('housesassign/detail', $data);
+    }
+    
+    
+    /*
+     * 改派
+     */
+    public function edit() {
+    	$data = $this->data;
+    	 
+    	$where['is_del'] = 0;
+    	if ($this->input->get('order_id')) $where['order_id'] = $data['order_id'] =  $this->input->get('order_id');
+    	 
+    	if(IS_POST){
+    		$order_id = $this->input->post('order_id');
+    		$houses_ids = $this->input->post('houses_id');
+    		$points_counts = $this->input->post('points_count');
+    		$charge_users = $this->input->post('charge_user');
+    
+    		$add_data = [];
+    		$i = 0;
+    		foreach ($houses_ids as $k => $v) {
+    			$add_data[$i]['order_id'] = $order_id;
+    			$add_data[$i]['houses_id'] = $v;
+    			$add_data[$i]['points_count'] = $points_counts[$k];
+    			$add_data[$i]['charge_user'] = $charge_users[$k];
+    			$add_data[$i]['assign_user'] = $data['userInfo']['id'];
+    			$add_data[$i]['assign_time'] = date("Y-m-d H:i:s");
+    			$i++;
+    		}
+    
+    		$res = $this->Mhouses_assign->create_batch($add_data);
+    
+    		if($res) {
+    			$update_data['assign_status'] = 2;
+    			$res1 = $this->Mhouses_orders->update_info($update_data,array("id" => $order_id));
+    			 
+    			if($res1) {
+    				$this->success("保存并通知成功","/housesassign");
+    			}
+    		}
+    
+    		$this->error("保存失败");
+    
+    	}
+    	 
+    	$group_by = ['houses_id'];
+    	$list = $this->Mhouses_points->get_lists('houses_id,count(0) as count', $where, [],  0,0,  $group_by);  //点位分组
+    	 
+    	if($list) {
+    		$houses_ids = array_column($list, 'houses_id');
+    		$where = [];
+    		$where['is_del'] = 0;
+    		$where['in']['id'] = $houses_ids;
+    		$hlist = $this->Mhouses->get_lists('id,name,province,city,area', $where);  //楼盘信息
+    
+    		if($hlist) {
+    			foreach ($list as $k => &$v) {
+    				foreach ($hlist as $k1 => $v1) {
+    					if($v['houses_id'] == $v1['id']) {
+    						$v['ad_area'] = $v1['province']."-".$v1['city']."-".$v1['area'];
+    						$v['houses_name'] = $v1['name'];
+    					}
+    				}
+    			}
+    		}
+    
+    	}
+    	 
+    	$data['list'] = $list;
+    	 
+    	$where = [];
+    	$where['group_id'] = 4;	//工程人员角色
+    	$data['user_list'] = $this->Madmins->get_lists('id,name,fullname', $where);  //工程人员信息
+    	 
+    	$this->load->view('housesassign/edit', $data);
     }
 
 }
