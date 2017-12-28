@@ -158,7 +158,8 @@
                                             <?php foreach ($list as $key => $value) : ?>
                                             <tr>
                                                 <td>
-                                                    <a href="/housesorders/detail/<?php echo $value['id'];?>"><?php echo $value['order_code'];?></a>
+                                                    <!-- <a href="/housesorders/detail/<?php echo $value['id'];?>"><?php echo $value['order_code'];?></a> -->
+                                                	<?php echo $value['order_code'];?>
                                                 </td>
                                                 <td><?php echo $order_type_text[$value['order_type']];?></td>
                                                 <td><?php echo $value['point_ids'] ? count(explode(',', $value['point_ids'])) : 0;?>个点位</td>
@@ -219,7 +220,7 @@
 	                                                            <i class="icon-hand-right bigger-130"></i>
 	                                                        </a> 
                                                         <?php }else if($value['assign_status'] == 2) {?>
-                                                        	<a class="green tooltip-info" href="/housesassign/edit/<?php echo $value['id'];?>"  data-rel="tooltip" data-placement="top" title="" data-original-title="改派">
+                                                        	<a class="green tooltip-info m-edit" data-id="<?php echo $value['id'];?>"  data-rel="tooltip" data-placement="top" title="" data-original-title="改派">
                                                                 <i class="icon-pencil bigger-130"></i>
                                                             </a>
                                                         <?php }?>
@@ -307,6 +308,18 @@
 				  shade: 0.6,
 				  area: ['70%', '70%'],
 				  content: 'housesassign/assign?order_id='+order_id //iframe的url
+				}); 
+		});
+
+		$('.m-edit').click(function(){
+			var order_id = $(this).attr('data-id');
+			layer.open({
+				  type: 2,
+				  title: '改派',
+				  shadeClose: true,
+				  shade: 0.6,
+				  area: ['70%', '70%'],
+				  content: 'housesassign/edit?order_id='+order_id //iframe的url
 				}); 
 		});
 	});
