@@ -17,22 +17,10 @@ class Housesassign extends MY_Controller{
         parent::__construct();
         $this->load->model([
             'Model_houses_orders' => 'Mhouses_orders',
-        	'Model_houses_points_format' => 'Mhouses_points_format',
             'Model_houses_customers' => 'Mhouses_customers',
         	'Model_houses' => 'Mhouses',
         	'Model_houses_area' => 'Mhouses_area',
         	'Model_houses_points' => 'Mhouses_points',
-        	'Model_salesman' => 'Msalesman',
-        	'Model_make_company' => 'Mmake_company',
-        	'Model_admins' => 'Madmins',
-        	'Model_houses_order_inspect_images' => 'Mhouses_order_inspect_images',
-        	'Model_status_operate_time' => 'Mstatus_operate_time',
-        	'Model_houses_change_points_record' => 'Mhouses_change_points_record',
-        	'Model_houses_orders_log' => 'Mhouses_orders_log',
-        	'Model_houses_order_inspect_images_log' => 'Mhouses_order_inspect_images_log',
-        	'Model_houses_change_pic_orders' => 'Mhouses_change_pic_orders',
-        	'Model_houses_scheduled_orders' => 'Mhouses_scheduled_orders',
-        	'Model_admins' => 'Madmins',
         	'Model_houses_assign' => 'Mhouses_assign'
         		
         ]);
@@ -40,15 +28,14 @@ class Housesassign extends MY_Controller{
         $this->data['active'] = 'houses_assign_list';
 
         $this->data['customers'] = $this->Mhouses_customers->get_lists("id, name", array('is_del' => 0));  //客户
-        $this->data['make_company'] = $this->Mmake_company->get_lists('id, company_name, business_scope', array('is_del' => 0));  //制作公司
         $this->data['order_type_text'] = C('order.houses_order_type'); //订单类型
+        $this->data['point_addr'] = C('housespoint.point_addr'); //订单类型
         $this->data['houses_assign_status'] = C('order.houses_assign_status'); //派单状态
-        $this->data['salesman'] = $this->Msalesman->get_lists('id, name, sex, phone_number', array('is_del' => 0));  //业务员
     }
     
 
     /**
-     * 订单列表
+     * 制作完成至上画完成的订单列表
      */
     public function index() {
         $data = $this->data;
@@ -59,25 +46,28 @@ class Housesassign extends MY_Controller{
         $where =  array();
         
         //$where['A.is_del'] = 0;
+        
+        $where['A.order_status>='] = 4;
+        
         if ($this->input->get('order_code')) $where['A.order_code'] = $this->input->get('order_code');
         if ($this->input->get('order_type')) $where['A.order_type'] = $this->input->get('order_type');
         if ($this->input->get('customer_id')) $where['A.customer_id'] = $this->input->get('customer_id');
         if ($this->input->get('assign_status')) $where['A.assign_status'] = $this->input->get('assign_status');
 
-        //即将到期
-        $data['expire_time'] = $this->input->get("expire_time");
-        if($this->input->get("expire_time")) {
-            $where['A.release_end_time>='] = date("Y-m-d");
-            $where['A.release_end_time<='] =  date("Y-m-d",strtotime("+7 day"));
-            $where['A.order_status'] =  C('order.order_status.code.in_put');
-        }
+//         //即将到期
+//         $data['expire_time'] = $this->input->get("expire_time");
+//         if($this->input->get("expire_time")) {
+//             $where['A.release_end_time>='] = date("Y-m-d");
+//             $where['A.release_end_time<='] =  date("Y-m-d",strtotime("+7 day"));
+//             $where['A.order_status'] =  C('order.order_status.code.in_put');
+//         }
 
-        //已到期未下画
-        $data['overdue'] = $this->input->get('overdue');
-        if($this->input->get("overdue")) {
-            $where['A.release_end_time<'] =  date("Y-m-d");
-            $where['A.order_status'] =  C('order.order_status.code.in_put');
-        }
+//         //已到期未下画
+//         $data['overdue'] = $this->input->get('overdue');
+//         if($this->input->get("overdue")) {
+//             $where['A.release_end_time<'] =  date("Y-m-d");
+//             $where['A.order_status'] =  C('order.order_status.code.in_put');
+//         }
 
         $data['order_code'] = $this->input->get('order_code');
         $data['order_type'] = $this->input->get('order_type');
@@ -86,7 +76,7 @@ class Housesassign extends MY_Controller{
 
         //$data['project'] = array_column($this->Mcustomer_project->get_lists('id, project_name', array('is_del' => 0)), 'project_name', 'id');
 
-        $data['list'] = $this->Mhouses_orders->get_order_lists($where, ($page-1)*$pageconfig['per_page'], $pageconfig['per_page']);
+        $data['list'] = $this->Mhouses_orders->get_order_lists($where, [], $pageconfig['per_page'], ($page-1)*$pageconfig['per_page']);
         $data_count = $this->Mhouses_orders->get_order_count($where);
         $data['data_count'] = $data_count;
         $data['page'] = $page;
@@ -118,6 +108,7 @@ class Housesassign extends MY_Controller{
     		$houses_ids = $this->input->post('houses_id');
     		$points_counts = $this->input->post('points_count');
     		$charge_users = $this->input->post('charge_user');
+    		$remark = $this->input->post('remark');
     		
     		$add_data = [];
     		$i = 0;
@@ -128,6 +119,7 @@ class Housesassign extends MY_Controller{
     			$add_data[$i]['charge_user'] = $charge_users[$k];
     			$add_data[$i]['assign_user'] = $data['userInfo']['id'];
     			$add_data[$i]['assign_time'] = date("Y-m-d H:i:s");
+    			$add_data[$i]['remark'] = $remark[$k];
     			$i++;
     		}
     		
@@ -138,6 +130,9 @@ class Housesassign extends MY_Controller{
     			$res1 = $this->Mhouses_orders->update_info($update_data,array("id" => $order_id));
     			
     			if($res1) {
+    				
+    				
+    				
     				$this->success("保存并通知成功","/housesassign/detail?order_id=".$order_id);
     			}
     		}
@@ -216,7 +211,7 @@ class Housesassign extends MY_Controller{
     	$tmp_arr = $this->Madmins->get_lists('id,name,fullname', $where);  //工程人员信息
     	$data['user_list'] = array_column($tmp_arr, 'fullname', 'id');
     	
-    	$data['assign_list'] = $this->Mhouses_assign->get_lists('id,houses_id,charge_user,assign_user,assign_time,status', ['order_id' => $data['order_id'], 'is_del' => 0]);  //点位分组
+    	$data['assign_list'] = $this->Mhouses_assign->get_lists('id,houses_id,charge_user,assign_user,assign_time,status,remark', ['order_id' => $data['order_id'], 'is_del' => 0]);  //点位分组
     	
     	$this->load->view('housesassign/detail', $data);
     }
@@ -241,7 +236,8 @@ class Housesassign extends MY_Controller{
     		$houses_ids = $this->input->post('houses_id');
     		$points_counts = $this->input->post('points_count');
     		$charge_users = $this->input->post('charge_user');
-    
+    		$remark = $this->input->post('remark');
+    		
     		$up_data = [];
     		$i = 0;
     		foreach ($charge_users as $k => $v) {
@@ -252,6 +248,7 @@ class Housesassign extends MY_Controller{
     					$up_data['charge_user'] = $v;
     					$up_data['assign_user'] = $data['userInfo']['id'];
     					$up_data['assign_time'] = date("Y-m-d H:i:s");
+    					$up_data['remark'] = $remark[$k];
     					$result = $this->Mhouses_assign->update_info($up_data,array("order_id"=>$order_id, 'houses_id'=>$houses_ids[$k]));
     					
     					if($result) {
@@ -308,18 +305,59 @@ class Housesassign extends MY_Controller{
     }
     
     /**
+     * 显示点位列表详情
+     */
+    public function show_points() {
+    	$data = $this->data;
+    	
+    	$pageconfig = C('page.page_lists');
+    	$this->load->library('pagination');
+    	
+    	$page =  intval($this->input->get("per_page",true)) ?  : 1;
+    	$size = $pageconfig['per_page'];
+    	$where['is_del'] = 0;
+    	if ($this->input->get('order_id')) $where['order_id'] = $data['order_id'] =  $this->input->get('order_id');
+    	if ($this->input->get('houses_id')) $where['houses_id'] = $data['houses_id'] =  $this->input->get('houses_id');
+    	
+    	$data['list'] = $this->Mhouses_points->get_lists('id,code,houses_id,area_id,ban,unit,floor,addr,type_id', $where,[],$size,($page-1)*$size);  //工程人员信息
+    	$data_count = $this->Mhouses_points->count($where);
+    	$data['page'] = $page;
+    	$data['data_count'] = $data_count;
+    	
+    	if(count($data['list']) > 0) {
+    		$houses_ids = array_column($data['list'], 'houses_id');
+    		$area_ids = array_column($data['list'], 'area_id');
+    		
+    		$whereh['in']['id'] = $houses_ids;
+    		$data['houses_list'] = $this->Mhouses->get_lists("id, name", $whereh);
+    		
+    		$wherea['in']['id'] = $area_ids;
+    		$data['area_list'] = $this->Mhouses_area->get_lists("id, name", $wherea);
+    	}
+    	
+    	//获取分页
+    	$pageconfig['base_url'] = "/houses";
+    	$pageconfig['total_rows'] = $data_count;
+    	$this->pagination->initialize($pageconfig);
+    	$data['pagestr'] = $this->pagination->create_links(); // 分页信息
+    	
+    	$this->load->view('housesassign/show_points', $data);
+    }
+    
+    
+    /**
      * 短信通知
      */
     public function sendMsg($uid) {
     	//根据预定订单获取客户电话
     	$info = $this->Madmins->get_one('tel', ['id' => $uid]);
     	
-    	if(!$info) $this->return_json(['code' => 0, 'msg' => '客户不存在']);
+    	if(!$info) return ['code' => 0, 'msg' => '客户不存在'];
     	if(empty($info['tel'])){
-    		$this->return_json(['code' => 0, 'msg' => '电话不能为空！']);
+    		return ['code' => 0, 'msg' => '电话不能为空！'];
     	}
     	if(!preg_match('/^1[3|4|5|8|7][0-9]\d{8}$/', $info['tel'])){
-    		$this->return_json(['code' => 0, 'msg' => '客户手机号格式不正确！']);
+    		return ['code' => 0, 'msg' => '客户手机号格式不正确！'];
     	}
     	//系统网址
     	$url = 'https://api.wesogou.com';
@@ -338,10 +376,10 @@ class Housesassign extends MY_Controller{
     	if(isset($sendRes['result'])) {
     		$res = (array) $sendRes['result'];
     		if(isset($res['success']) && $res['success'] == 1){
-    			$this->return_json(['code' => 1, 'msg' => '发送成功']);
+    			return ['code' => 1, 'msg' => '发送成功'];
     		}
     	}
-    	$this->return_json(['code' => 0, 'msg' => '短信error：'.$sendRes['sub_msg']]);
+    	return ['code' => 0, 'msg' => '短信error：'.$sendRes['sub_msg']];
     }
 
 }

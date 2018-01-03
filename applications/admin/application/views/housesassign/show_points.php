@@ -23,50 +23,48 @@
 
 <div class="main-container" id="main-container">
 <form class="form-horizontal" role="form" method="post">
-	<input type="hidden" name="order_id" value="<?php echo $order_id;?>">
 	<div id="table-panel">
 	    <table id="sample-table-1" class="table table-striped table-bordered table-hover" >
 			<thead>
 				<tr>
-					<th>序号</th>
-					<th>行政区域</th>
+					<th>点位编号</th>
 					<th>楼盘</th>
-					<th>点位数量（个）</th>
-					<th width="15%">负责人</th>
-					<th>说明</th>
-					<th>操作</th>
+					<th>组团</th>
+					<th>楼栋</th>
+					<th>楼层</th>
+					<th>单元</th>
+					<th>位置</th>
+					<th>点位类型</th>
 				</tr>
 			</thead>
 			<tbody>
 				<?php foreach($list as $k => $v) {?>
 				<tr>
-					<td><?php echo $k+1;?></td>
-					<td><?php echo $v['ad_area'];?></td>
-					<td><?php echo $v['houses_name'];?><input type="hidden" name="houses_id[]" value="<?php echo $v['houses_id'];?>"></td>
-					<td><?php echo $v['count'];?><input type="hidden" name="points_count[]" value="<?php echo $v['count'];?>"></td>
+					<td><?php echo $v['code'];?></td>
 					<td>
-						<select class="select2 charge-sel" name="charge_user[]">
-							<option value=""></option>
-							<?php foreach($user_list as $k1 => $v1) {?>
-								<option value="<?php echo $v1['id'];?>"><?php echo $v1['fullname'];?></option>
-							<?php }?>
-						</select>
+						<?php foreach ($houses_list as $k1 => $v1) {?>
+							<?php if($v1['id'] == $v['houses_id']) {echo $v1['name'];}?>
+						<?php }?>
 					</td>
-					<td><textarea name="remark" rows="1"></textarea></td>
 					<td>
-						<a class="green tooltip-info m-detail" data-id="<?php echo $v['houses_id'];?>"  data-rel="tooltip" data-placement="top" title="" data-original-title="详情">
-                        	<i class="icon-eye-open bigger-130"></i>
-                       	</a>
+						<?php foreach ($area_list as $k1 => $v1) {?>
+							<?php if($v1['id'] == $v['area_id']) {echo $v1['name'];}?>
+						<?php }?>
 					</td>
+					<td><?php echo $v['ban'];?></td>
+					<td><?php echo $v['floor'];?></td>
+					<td><?php echo $v['unit'];?></td>
+					<td><?php if(isset($point_addr[$v['addr']])) echo $point_addr[$v['addr']];?></td>
+					<td><?php if(isset($order_type_text[$v['type_id']])) echo $order_type_text[$v['type_id']];?></td>
 				</tr>
 				<?php }?>
 			</tbody>
 		</table>
+		
+		<!--分页start-->
+        <?php $this->load->view('common/page');?>
 	</div>
 	
-	<center>
-		<button class="btn btn-sm btn-info sub-button" type="button">保存并通知</button>
-	</center>
 </form>
 </div>
 
@@ -80,24 +78,18 @@ $(".select2").css('width','150px').select2({allowClear:true});
 $(function(){
 	$('#table-panel').height($(window).height()-50);
 
-	$('.sub-button').click(function(){
-		var mark = false;
-		$('.charge-sel').each(function(){
-			if($(this).val() == '') {
-				mark = true;
-				return false;
-			}
-		})
-		if(mark == true) {
-			layer.alert("负责人不能为空！");
-			return;
-		}
+	$('.m-detail').click(function(){
+		var order_id = '<?php echo $order_id;?>';
+		var houses_id = $(this).attr('data-id');
 		
-		layer.confirm('您确定保存并给负责人发送短信通知吗？', {
-			  	btn: ['确定','取消'] //按钮
-			}, function(){
-			 	$('form').submit();
-			});
+		layer.open({
+			  type: 2,
+			  title: '显示点位',
+			  shadeClose: true,
+			  shade: 0.6,
+			  area: ['90%', '90%'],
+			  content: 'housesassign/show_points?order_id='+order_id+'houses_id='+houses_id //iframe的url
+			}); 
 	});
 });
 

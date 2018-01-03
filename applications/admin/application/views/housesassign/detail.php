@@ -31,10 +31,11 @@
 					<th>行政区域</th>
 					<th>楼盘</th>
 					<th>点位数量（个）</th>
-					<th width="15%">负责人</th>
-					<th width="15%">派单人</th>
-					<th width="15%">派单时间</th>
-					<th width="15%">状态</th>
+					<th>负责人</th>
+					<th>派单人</th>
+					<th>派单时间</th>
+					<th width="20%">说明</th>
+					<th >状态</th>
 					<th>操作</th>
 				</tr>
 			</thead>
@@ -49,7 +50,7 @@
 						<?php if(isset($assign_list)) {?>
 							<?php foreach ($assign_list as $k1 => $v1) {?>
 								<?php if($v['houses_id'] == $v1['houses_id']) {?>
-									<?php echo $user_list[$v1['charge_user']];?>
+									<?php echo $user_list[$v1['charge_user']];break;?>
 								<?php }?>
 							<?php }?>
 						<?php }?>
@@ -58,7 +59,7 @@
 						<?php if(isset($assign_list)) {?>
 							<?php foreach ($assign_list as $k1 => $v1) {?>
 								<?php if($v['houses_id'] == $v1['houses_id']) {?>
-									<?php echo $user_list[$v1['assign_user']];?>
+									<?php echo $user_list[$v1['assign_user']];break;?>
 								<?php }?>
 							<?php }?>
 						<?php }?>
@@ -67,7 +68,16 @@
 						<?php if(isset($assign_list)) {?>
 							<?php foreach ($assign_list as $k1 => $v1) {?>
 								<?php if($v['houses_id'] == $v1['houses_id']) {?>
-									<?php echo $v1['assign_time'];?>
+									<?php echo $v1['assign_time'];break;?>
+								<?php }?>
+							<?php }?>
+						<?php }?>
+					</td>
+					<td>
+						<?php if(isset($assign_list)) {?>
+							<?php foreach ($assign_list as $k1 => $v1) {?>
+								<?php if($v['houses_id'] == $v1['houses_id']) {?>
+									<?php echo $v1['remark'];break;?>
 								<?php }?>
 							<?php }?>
 						<?php }?>
@@ -81,7 +91,11 @@
 							<?php }?>
 						<?php }?>
 					</td>
-					<td><button class="btn btn-xs btn-info" type="button">详情</button></td>
+					<td>
+						<a class="green tooltip-info m-detail" data-id="<?php echo $v['houses_id'];?>"  data-rel="tooltip" data-placement="top" title="" data-original-title="详情">
+                        	<i class="icon-eye-open bigger-130"></i>
+                        </a>
+					</td>
 				</tr>
 				<?php }?>
 			</tbody>
@@ -100,6 +114,20 @@ $('[data-rel=popover]').popover({html:true});
 $(".select2").css('width','150px').select2({allowClear:true});
 $(function(){
 	$('#table-panel').height($(window).height()-50);
+
+	$('.m-detail').click(function(){
+		var order_id = '<?php echo $order_id;?>';
+		var houses_id = $(this).attr('data-id');
+		
+		layer.open({
+			  type: 2,
+			  title: '包含点位',
+			  shadeClose: true,
+			  shade: 0.6,
+			  area: ['90%', '90%'],
+			  content: '/housesassign/show_points?order_id='+order_id+'&houses_id='+houses_id //iframe的url
+			}); 
+	});
 });
 
 </script>

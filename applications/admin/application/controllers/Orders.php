@@ -557,7 +557,7 @@ class Orders extends MY_Controller{
     public function confirmation($id) {
         $data = $this->data;
         $data['info'] = $this->Morders->get_one("*", array('id' => $id));
-
+        
         $images = $this->Morder_inspect_images->get_lists("*", array('order_id' => $id, 'type' => 1));
         if (!$images) {
             $this->success("请先上传验收图片！","/changepicorders");

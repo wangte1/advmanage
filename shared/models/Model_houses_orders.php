@@ -11,24 +11,65 @@ class Model_houses_orders extends MY_Model {
     /**
      * 获取订单列表
      */
-    public function get_order_lists($where = array(), $offset = 0, $pagesize = 0) {
+    public function get_order_lists($where = array(), $order_by = array(), $pagesize = 0,$offset = 0,  $group_by = array()) {
     	$this->db->select('A.*, B.name, C.name AS sales_name, C.sex AS sales_sex, C.phone_number AS sales_mobile');
 		$this->db->from('t_houses_orders A');
         $this->db->join('t_houses_customers B', 'A.customer_id = B.id');
 		$this->db->join('t_salesman C', 'A.sales_id = C.id');
 		$this->db->where(array('A.is_del' => 0));
-        if ($where) {
+		
+        if(isset($where['like'])) {
+            foreach($where['like'] as $k => $v) {
+                $this->db->like($k, $v);
+            }
+            unset($where['like']);
+        }
+        
+        if(isset($where['or_like'])) {
+            foreach($where['or_like'] as $k => $v) {
+                $this->db->or_like($k, $v);
+            }
+            unset($where['or_like']);
+        }
+        
+        if(isset($where['in'])) {
+            foreach($where['in'] as $k => $v) {
+                $this->db->where_in($k, $v);
+            }
+            unset($where['in']);
+        }
+        if(isset($where['not_in'])) {
+            foreach($where['not_in'] as $k => $v) {
+                $this->db->where_not_in($k, $v);
+            }
+            unset($where['not_in']);
+        }
+      
+        if(isset($where['or'])) {
+            $this->db->group_start();
+            foreach($where['or'] as $k => $v) {
+                $this->db->or_where($k, $v);
+            }
+            unset($where['or']);
+            $this->db->group_end();
+        }
+        
+        if($where){
             $this->db->where($where);
         }
-        //分页
-        if($pagesize){
+        
+        if($order_by) {
+            foreach($order_by as $k => $v) {
+                $this->db->order_by($k, $v);
+            }
+        }
+        if($group_by) {
+            $this->db->group_by($group_by);
+        }
+        if($pagesize > 0) {
             $this->db->limit($pagesize, $offset);
         }
-
-		$this->db->order_by('A.create_time', 'desc');
-
-    	$result = $this->db->get();
-
+        $result = $this->db->get();
         return $result->result_array();
     }
 
@@ -41,9 +82,46 @@ class Model_houses_orders extends MY_Model {
 		$this->db->join('t_houses_customers B', 'A.customer_id = B.id');
         $this->db->join('t_salesman C', 'A.sales_id = C.id');
         
+    	if(isset($where['like'])) {
+            foreach($where['like'] as $k => $v) {
+                $this->db->like($k, $v);
+            }
+            unset($where['like']);
+        }
+        
+        if(isset($where['or_like'])) {
+            foreach($where['or_like'] as $k => $v) {
+                $this->db->or_like($k, $v);
+            }
+            unset($where['or_like']);
+        }
+        
+        if(isset($where['in'])) {
+            foreach($where['in'] as $k => $v) {
+                $this->db->where_in($k, $v);
+            }
+            unset($where['in']);
+        }
+        if(isset($where['not_in'])) {
+            foreach($where['not_in'] as $k => $v) {
+                $this->db->where_not_in($k, $v);
+            }
+            unset($where['not_in']);
+        }
+      
+        if(isset($where['or'])) {
+            $this->db->group_start();
+            foreach($where['or'] as $k => $v) {
+                $this->db->or_where($k, $v);
+            }
+            unset($where['or']);
+            $this->db->group_end();
+        }
+        
         if($where){
             $this->db->where($where);
         }
+        
         return $this->db->count_all_results();
     }
 
