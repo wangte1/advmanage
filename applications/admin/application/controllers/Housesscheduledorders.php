@@ -95,6 +95,7 @@ class Housesscheduledorders extends MY_Controller{
             $post_data = $this->input->post();
             unset($post_data['ban'], $post_data['unit'], $post_data['floor']);
             if (isset($post_data['area_id'])) unset($post_data['area_id']);
+            if (isset($post_data['addr'])) unset($post_data['addr']);
             //判断这个客户是否已锁定点位
             $order_type = (int) $post_data['order_type'];
             $where['is_del'] = 0;
@@ -159,6 +160,7 @@ class Housesscheduledorders extends MY_Controller{
             $post_data['update_user'] = $data['userInfo']['id'];
             $post_data['update_time'] = date('Y-m-d H:i:s');
             $id = $post_data['id'];
+            if (isset($post_data['addr'])) unset($post_data['addr']);
             unset($post_data['id'], $post_data['ban'], $post_data['unit'], $post_data['floor']);
             //先把之前所有已选择的点位的状态置为未锁定，再把重新选择的点位状态置为锁定
             //此处要求最好锁表，以免刚释放的点位被他人占用
