@@ -26,6 +26,7 @@ $config = array(
     'customer_status' => array(
         '0' => '未确认',
         '1' => '已确认'
-    )
+    ),
+    'confirm_url' => 'https://h5.wesogou.com/housesscheduledorders/index?token='
 )
 ;

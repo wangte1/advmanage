@@ -480,7 +480,7 @@ class Housesscheduledorders extends MY_Controller{
         }
         //生成短网址
         $token = encrypt(['id' => $orderid]);
-        $url = 'https://api.wesogou.com/housesscheduledorders/index?token='.$token;
+        $url = C('housesscheduledorder.confirm_url').$token;
         try {
             $urlInfo = $this->getShortUrl($url);
             if($urlInfo['code'] == 0){
