@@ -1,6 +1,13 @@
 <?php 
+
+//阿里大鱼短信
+use Flc\Alidayu\Client;
+use Flc\Alidayu\App;
+use Flc\Alidayu\Requests\AlibabaAliqinFcSmsNumSend;
+use YYHhelper\Http;
+
 /**
-* 订单管理控制器
+* 派单管理控制器
 * @author 867332352@qq.com
 */
 defined('BASEPATH') or exit('No direct script access allowed');
@@ -131,7 +138,7 @@ class Housesassign extends MY_Controller{
     			$res1 = $this->Mhouses_orders->update_info($update_data,array("id" => $order_id));
     			
     			if($res1) {
-    				$this->success("保存并通知成功","/housesassign");
+    				$this->success("保存并通知成功","/housesassign/detail?order_id=".$order_id);
     			}
     		}
     		
@@ -209,7 +216,7 @@ class Housesassign extends MY_Controller{
     	$tmp_arr = $this->Madmins->get_lists('id,name,fullname', $where);  //工程人员信息
     	$data['user_list'] = array_column($tmp_arr, 'fullname', 'id');
     	
-    	$data['assign_list'] = $this->Mhouses_assign->get_lists('id,houses_id,charge_user,assign_user,assign_time,status', ['order_id' => $data['order_id']]);  //点位分组
+    	$data['assign_list'] = $this->Mhouses_assign->get_lists('id,houses_id,charge_user,assign_user,assign_time,status', ['order_id' => $data['order_id'], 'is_del' => 0]);  //点位分组
     	
     	$this->load->view('housesassign/detail', $data);
     }
@@ -220,36 +227,48 @@ class Housesassign extends MY_Controller{
      */
     public function edit() {
     	$data = $this->data;
-    	 
+    	
     	$where['is_del'] = 0;
     	if ($this->input->get('order_id')) $where['order_id'] = $data['order_id'] =  $this->input->get('order_id');
     	 
+    	$where = [];
+    	$where['group_id'] = 4;	//工程人员角色
+    	$data['user_list'] = $this->Madmins->get_lists('id,name,fullname', $where);  //工程人员信息
+    	$data['user_list1'] = array_column($data['user_list'], 'fullname', 'id');
+    	
     	if(IS_POST){
     		$order_id = $this->input->post('order_id');
     		$houses_ids = $this->input->post('houses_id');
     		$points_counts = $this->input->post('points_count');
     		$charge_users = $this->input->post('charge_user');
     
-    		$add_data = [];
+    		$up_data = [];
     		$i = 0;
-    		foreach ($houses_ids as $k => $v) {
-    			$add_data[$i]['order_id'] = $order_id;
-    			$add_data[$i]['houses_id'] = $v;
-    			$add_data[$i]['points_count'] = $points_counts[$k];
-    			$add_data[$i]['charge_user'] = $charge_users[$k];
-    			$add_data[$i]['assign_user'] = $data['userInfo']['id'];
-    			$add_data[$i]['assign_time'] = date("Y-m-d H:i:s");
+    		foreach ($charge_users as $k => $v) {
+    			if($v) {
+    				$tmp_charge = $this->Mhouses_assign->get_one('charge_user', ['order_id' => $order_id, 'houses_id'=>$houses_ids[$k], 'is_del' => 0]);  //点位分组
+    				
+    				if($tmp_charge != $v) {
+    					$up_data['charge_user'] = $v;
+    					$up_data['assign_user'] = $data['userInfo']['id'];
+    					$up_data['assign_time'] = date("Y-m-d H:i:s");
+    					$result = $this->Mhouses_assign->update_info($up_data,array("order_id"=>$order_id, 'houses_id'=>$houses_ids[$k]));
+    					
+    					if($result) {
+    						$this->write_log($data['userInfo']['id'],2,"派单更改负责人".$data['user_list1'][$tmp_charge['charge_user']]."为：".$data['user_list1'][$v].",order_id-".$order_id.",houses_id-".$houses_ids[$k]);	//后期空闲时加上记录表
+    					}
+    				}
+    			}
+    			
     			$i++;
     		}
     
-    		$res = $this->Mhouses_assign->create_batch($add_data);
-    
-    		if($res) {
+    		if($result) {
     			$update_data['assign_status'] = 2;
     			$res1 = $this->Mhouses_orders->update_info($update_data,array("id" => $order_id));
     			 
     			if($res1) {
-    				$this->success("保存并通知成功","/housesassign");
+    				$this->success("保存并通知成功","/housesassign/detail?order_id=".$order_id);
     			}
     		}
     
@@ -257,6 +276,8 @@ class Housesassign extends MY_Controller{
     
     	}
     	 
+    	$where = [];
+    	$where['is_del'] = 0;
     	$group_by = ['houses_id'];
     	$list = $this->Mhouses_points->get_lists('houses_id,count(0) as count', $where, [],  0,0,  $group_by);  //点位分组
     	 
@@ -281,12 +302,46 @@ class Housesassign extends MY_Controller{
     	}
     	 
     	$data['list'] = $list;
-    	 
-    	$where = [];
-    	$where['group_id'] = 4;	//工程人员角色
-    	$data['user_list'] = $this->Madmins->get_lists('id,name,fullname', $where);  //工程人员信息
-    	 
+    	
+    	$data['assign_list'] = $this->Mhouses_assign->get_lists('id,houses_id,charge_user,assign_user,assign_time,status', ['order_id' => $data['order_id'], 'is_del' => 0]);  //点位分组
     	$this->load->view('housesassign/edit', $data);
+    }
+    
+    /**
+     * 短信通知
+     */
+    public function sendMsg($uid) {
+    	//根据预定订单获取客户电话
+    	$info = $this->Madmins->get_one('tel', ['id' => $uid]);
+    	
+    	if(!$info) $this->return_json(['code' => 0, 'msg' => '客户不存在']);
+    	if(empty($info['tel'])){
+    		$this->return_json(['code' => 0, 'msg' => '电话不能为空！']);
+    	}
+    	if(!preg_match('/^1[3|4|5|8|7][0-9]\d{8}$/', $info['tel'])){
+    		$this->return_json(['code' => 0, 'msg' => '客户手机号格式不正确！']);
+    	}
+    	//系统网址
+    	$url = 'https://api.wesogou.com';
+    	// 配置信息
+    	$sms = C('sms.config');
+    	$client = new Client(new App(['app_key' => $sms['app_key'], 'app_secret' => $sms['app_secret']]));
+    	$req    = new AlibabaAliqinFcSmsNumSend();
+    	$req->setRecNum($info['tel'])
+    	->setSmsParam([
+    			'url' => $url
+    	])
+    	->setSmsFreeSignName($sms['FreeSignName'])
+    	->setSmsTemplateCode($sms['TemplateCode']);
+    	
+    	$sendRes = (array) $client->execute($req);
+    	if(isset($sendRes['result'])) {
+    		$res = (array) $sendRes['result'];
+    		if(isset($res['success']) && $res['success'] == 1){
+    			$this->return_json(['code' => 1, 'msg' => '发送成功']);
+    		}
+    	}
+    	$this->return_json(['code' => 0, 'msg' => '短信error：'.$sendRes['sub_msg']]);
     }
 
 }

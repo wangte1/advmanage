@@ -44,7 +44,7 @@
 					<td><?php echo $v['houses_name'];?><input type="hidden" name="houses_id[]" value="<?php echo $v['houses_id'];?>"></td>
 					<td><?php echo $v['count'];?><input type="hidden" name="points_count[]" value="<?php echo $v['count'];?>"></td>
 					<td>
-						<select class="select2" name="charge_user[]">
+						<select class="select2 charge-sel" name="charge_user[]">
 							<option value=""></option>
 							<?php foreach($user_list as $k1 => $v1) {?>
 								<option value="<?php echo $v1['id'];?>"><?php echo $v1['fullname'];?></option>
@@ -59,7 +59,7 @@
 	</div>
 	
 	<center>
-		<button class="btn btn-sm btn-info" type="submit">保存并通知</button>
+		<button class="btn btn-sm btn-info sub-button" type="button">保存并通知</button>
 	</center>
 </form>
 </div>
@@ -73,6 +73,26 @@ $('[data-rel=popover]').popover({html:true});
 $(".select2").css('width','150px').select2({allowClear:true});
 $(function(){
 	$('#table-panel').height($(window).height()-50);
+
+	$('.sub-button').click(function(){
+		var mark = false;
+		$('.charge-sel').each(function(){
+			if($(this).val() == '') {
+				mark = true;
+				return false;
+			}
+		})
+		if(mark == true) {
+			layer.alert("负责人不能为空！");
+			return;
+		}
+		
+		layer.confirm('您确定保存并给负责人发送短信通知吗？', {
+			  	btn: ['确定','取消'] //按钮
+			}, function(){
+			 	$('form').submit();
+			});
+	});
 });
 
 </script>
