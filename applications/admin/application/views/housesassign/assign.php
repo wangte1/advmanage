@@ -81,18 +81,6 @@ $(function(){
 	$('#table-panel').height($(window).height()-50);
 
 	$('.sub-button').click(function(){
-		var mark = false;
-		$('.charge-sel').each(function(){
-			if($(this).val() == '') {
-				mark = true;
-				return false;
-			}
-		})
-		if(mark == true) {
-			layer.alert("负责人不能为空！");
-			return;
-		}
-		
 		layer.confirm('您确定保存并给负责人发送短信通知吗？', {
 			  	btn: ['确定','取消'] //按钮
 			}, function(){

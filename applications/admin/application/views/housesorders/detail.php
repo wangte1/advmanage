@@ -294,10 +294,10 @@
                                         <div id="inspect_img" class="tab-pane">
                                             <?php if(count($info['inspect_img']) > 0):?>
                                                 <?php if($info['order_status'] != 8):?>
-                                                <a class="btn btn-xs btn-info" href="/housesorders/check_upload_img/<?php echo $info['id'];?>" style="margin-bottom:10px">
+                                                <!-- <a class="btn btn-xs btn-info" href="/housesorders/check_upload_img/<?php echo $info['id'];?>" style="margin-bottom:10px">
                                                     修改验收图片
                                                     <i class="icon-arrow-right icon-on-right"></i>
-                                                </a>
+                                                </a> -->
                                                 <?php endif;?>
                                                 <table class="table table-striped table-bordered table-hover">
                                                     <thead>
@@ -514,6 +514,15 @@
 																<a class="green tooltip-info m-detail" data-id="<?php echo $v['houses_id'];?>"  data-rel="tooltip" data-placement="top" title="" data-original-title="点位详情">
 										                        	<i class="icon-eye-open bigger-130"></i>
 										                        </a>
+										                        <a class="green tooltip-info m-upload" data-id="<?php echo $v['id'];?>" order-id = "<?php echo $v['order_id'];?>"  data-rel="tooltip" data-placement="top" title="" data-original-title="查看验收图片">
+										                        	<i class="fa fa-picture-o bigger-130"></i>
+										                        </a>
+										                        
+										                       	<?php if($v['status'] == 4) {?>
+										                       		<a class="green tooltip-info m-confirm" data-id="<?php echo $v['id'];?>"  data-rel="tooltip" data-placement="top" title="" data-original-title="确认上画">
+											                        	<i class="icon-check bigger-130"></i>
+											                        </a>
+										                       	<?php }?>
 															</td>
                                             			</tr>
                                             		<?php }?>
@@ -629,7 +638,28 @@
 			  content: '/housesassign/show_points?order_id='+order_id+'&houses_id='+houses_id //iframe的url
 			}); 
 	});
-    
+
+	$('.m-confirm').click(function(){
+		layer.confirm('确定要通过该派单的上画吗？', {
+				btn: ['确定','取消'] //按钮
+			}, function(){
+				
+			});
+	});
+
+    $('.m-upload').click(function(){
+		var id = $(this).attr('data-id');
+		var order_id = $(this).attr('order-id');
+	
+		layer.open({
+			  type: 2,
+			  title: '上传验收图片',
+			  shadeClose: true,
+			  shade: 0.6,
+			  area: ['80%', '80%'],
+			  content: '/housesorders/check_upload_img?order_id='+order_id+'&assign_id='+id //iframe的url
+			}); 
+	});
 
     //更新订单状态
     $(".status-step").click(function(){
@@ -739,6 +769,9 @@
                 }
             });
         });
+
+
+        
     });
 
 </script>

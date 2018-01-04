@@ -14,13 +14,16 @@ class Housesconfirm extends MY_Controller{
         	'Model_houses_orders' => 'Mhouses_orders',
         	'Model_admins' => 'Madmins',
         	'Model_houses_customers' => 'Mhouses_customers',
+        	'Model_houses_points' => 'Mhouses_points',
+        	'Model_houses_order_inspect_images' => 'Mhouses_order_inspect_images'
         		
         ]);
         $this->data['code'] = 'horders_manage';
         $this->data['active'] = 'houses_confirm_list';
 
-        $this->data['order_type_text'] = C('order.houses_order_type'); //订单类型
-        $this->data['houses_assign_status'] = C('order.houses_assign_status'); //派单状态
+        $this->data['order_type_text'] = C('housesorder.houses_order_type'); //订单类型
+        $this->data['houses_assign_status'] = C('housesorder.houses_assign_status'); //派单状态
+        $this->data['point_addr'] = C('housespoint.point_addr');	//点位位置
     }
     
 
@@ -105,6 +108,122 @@ class Housesconfirm extends MY_Controller{
     		
     		$this->return_json(['code' => 0, 'msg' => "确认派单失败，请重试或联系管理员！"]);
     		
+    	}
+    	
+    }
+    
+    
+    /*
+     * 验收图片
+     * 1034487709@qq.com
+     */
+    public function check_upload_img(){
+    	$data = $this->data;
+    	$pageconfig = C('page.page_lists');
+    	$this->load->library('pagination');
+    	$page =  intval($this->input->get("per_page",true)) ?  : 1;
+    	$size = $pageconfig['per_page'];
+    	
+    	$order_id = $this->input->get('order_id');
+    	$assign_id = $this->input->get('assign_id');
+    	
+    	$order = $this->Mhouses_orders->get_one("*",array("id" => $order_id));
+    	if(IS_POST){
+    		$post_data = $this->input->post();
+    		foreach ($post_data as $key => $value) {
+    			$where = array('order_id' => $order_id, 'assign_id' => $assign_id, 'point_id' => $key, 'type' => 1);
+    			$img = $this->Mhouses_order_inspect_images->get_one('*', $where);
+    
+    			//如果是修改验收图片，则先删除该订单下所有验收图片，再重新添加
+    			if ($img) {
+    				$this->Mhouses_order_inspect_images->delete($where);
+    			}
+    
+    			if (isset($value['front_img']) && count($value['front_img']) > 0) {
+    				foreach ($value['front_img'] as $k => $v) {
+    					$insert_data['order_id'] = $order_id;
+    					$insert_data['assign_id'] = $assign_id;
+    					$insert_data['point_id'] = $key;
+    					$insert_data['front_img'] = $v;
+    					$insert_data['back_img'] = isset($value['back_img'][$k]) ? $value['back_img'][$k] : '';
+    					$insert_data['type'] = 1;
+    					$insert_data['create_user'] = $insert_data['update_user'] = $data['userInfo']['id'];
+    					$insert_data['create_time'] = $insert_data['update_time'] = date('Y-m-d H:i:s');
+    					$this->Mhouses_order_inspect_images->create($insert_data);
+    				}
+    			}
+    		}
+    
+    		
+    
+    		$this->write_log($data['userInfo']['id'], 2, "社区上传订单验收图片，订单id【".$order_id."】");
+    		
+    		$this->success("保存验收图片成功！");
+    		exit;
+    	}
+    
+    	//获取该订单下面的所有楼盘
+    	$points = $this->Mhouses_points->get_points_lists(array('in' => array("A.id" => explode(",",$order['point_ids']))), [],$size,($page-1)*$size);
+    	$data_count = $this->Mhouses_points->count(array('in' => array("id" => explode(",",$order['point_ids']))));
+    	$data['page'] = $page;
+    	$data['data_count'] = $data_count;
+    	
+    	//根据点位id获取对应的图片
+    	$data['images'] = "";
+    	if(count($points) > 0) {
+    		$where['in'] = array("point_id"=>array_column($points,"id"));
+    		$where['order_id'] = $order_id;
+    		$where['assign_id'] = $assign_id;
+    		$where['type'] = 1;
+    		$data['images'] = $this->Mhouses_order_inspect_images->get_lists("*",$where);
+    	}
+    
+    	$list = array();
+    	foreach ($points as $key => $val) {
+    		$val['image'] = array();
+    		if($data['images']){
+    			foreach($data['images'] as $k=>$v){
+    				if($val['id'] == $v['point_id']){
+    					$val['image'][] = $v;
+    				}
+    			}
+    		}
+    		$list[] = $val;
+    	}
+    
+    	$data['list'] = $list;
+    
+    	$data['order_type'] = $order['order_type'];
+    	$data['order_info'] = $order;
+    	
+    	//获取分页
+    	$pageconfig['base_url'] = "/houses";
+    	$pageconfig['total_rows'] = $data_count;
+    	$this->pagination->initialize($pageconfig);
+    	$data['pagestr'] = $this->pagination->create_links(); // 分页信息
+    
+    	$this->load->view('housesconfirm/check_adv_img', $data);
+    }
+    
+    /**
+     * 提交上画
+     */
+    public function submit_upload() {
+    	$assign_id = $this->input->post('assign_id');
+    	//如果全部上传完，则将派单表的状态改成已上画
+    	$where_count['assign_id'] = $assign_id;
+    	$where_count['front_img<>'] = '';
+    	$upload_count = $this->Mhouses_order_inspect_images->count($where_count);
+    	$assign_count = $this->Mhouses_assign->get_one('points_count', ['id' => $assign_id, 'is_del' => 0]);
+    	
+    	if(isset($upload_count) && isset($assign_count['points_count']) && $upload_count != $assign_count['points_count']) {
+    		$this->return_json(['code' => 0, 'msg' => "请确认你已经上传了所有点位的上画图片！"]);
+    	}
+    	
+    	$update_data['status'] = 4;
+    	$res = $this->Mhouses_assign->update_info($update_data, ['id' => $assign_id]);
+    	if($res) {
+    		$this->return_json(['code' => 1, 'msg' => "已经提交上画至媒介管理人员处审核！"]);
     	}
     	
     }

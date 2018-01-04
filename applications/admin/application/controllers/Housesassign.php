@@ -113,13 +113,21 @@ class Housesassign extends MY_Controller{
     		$add_data = [];
     		$i = 0;
     		foreach ($houses_ids as $k => $v) {
+    			$res_send = $this->sendMsg($charge_users[$k]);
+    			
+    			if($res_send['code'] == 0) {
+    				$this->write_log($charge_users[$k],2,"发送短信失败".date("Y-m-d H:i:s"));	//发送短信失败记录
+    			}
+    			
     			$add_data[$i]['order_id'] = $order_id;
     			$add_data[$i]['houses_id'] = $v;
     			$add_data[$i]['points_count'] = $points_counts[$k];
     			$add_data[$i]['charge_user'] = $charge_users[$k];
     			$add_data[$i]['assign_user'] = $data['userInfo']['id'];
     			$add_data[$i]['assign_time'] = date("Y-m-d H:i:s");
-    			$add_data[$i]['remark'] = $remark[$k];
+    			if(isset($remark[$k])) {
+    				$add_data[$i]['remark'] = $remark[$k];
+    			}
     			$i++;
     		}
     		
@@ -130,8 +138,6 @@ class Housesassign extends MY_Controller{
     			$res1 = $this->Mhouses_orders->update_info($update_data,array("id" => $order_id));
     			
     			if($res1) {
-    				
-    				
     				
     				$this->success("保存并通知成功","/housesassign/detail?order_id=".$order_id);
     			}
@@ -276,6 +282,7 @@ class Housesassign extends MY_Controller{
     	$where = [];
     	$where['is_del'] = 0;
     	$group_by = ['houses_id'];
+    	$where['order_id'] = $this->input->get('order_id');
     	$list = $this->Mhouses_points->get_lists('houses_id,count(0) as count', $where, [],  0,0,  $group_by);  //点位分组
     	 
     	if($list) {
@@ -357,17 +364,18 @@ class Housesassign extends MY_Controller{
     		return ['code' => 0, 'msg' => '电话不能为空！'];
     	}
     	if(!preg_match('/^1[3|4|5|8|7][0-9]\d{8}$/', $info['tel'])){
-    		return ['code' => 0, 'msg' => '客户手机号格式不正确！'];
+    		return ['code' => 0, 'msg' => '手机号格式不正确！'];
     	}
     	//系统网址
-    	$url = 'https://api.wesogou.com';
+    	$url = 'https://adv.wesogou.com';
     	// 配置信息
-    	$sms = C('sms.config');
+    	$sms = C('sms.config1');
     	$client = new Client(new App(['app_key' => $sms['app_key'], 'app_secret' => $sms['app_secret']]));
     	$req    = new AlibabaAliqinFcSmsNumSend();
     	$req->setRecNum($info['tel'])
     	->setSmsParam([
     			'url' => $url
+    			//'code' => mt_rand(1000,9999)
     	])
     	->setSmsFreeSignName($sms['FreeSignName'])
     	->setSmsTemplateCode($sms['TemplateCode']);
