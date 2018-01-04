@@ -183,7 +183,7 @@
                                             <!--分页start-->
                                     		<?php $this->load->view('common/page');?>
                                             <div>
-                                            	<br/><span> 客户确认点位地址： <?php echo 'https://api.wesogou.com/housesscheduledorders/index?token='.encrypt(['id' => $info['id']]);?></span>
+                                            	<br/><span> 客户确认点位地址： <?php echo C('housesscheduledorder.confirm_url').encrypt(['id' => $info['id']]);?></span>
                                             </div>
                                         </div>
                                     </div>
