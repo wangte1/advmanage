@@ -19,20 +19,22 @@ class Housesorders extends MY_Controller{
         	'Model_make_company' => 'Mmake_company',
         	'Model_admins' => 'Madmins',
         	'Model_houses_order_inspect_images' => 'Mhouses_order_inspect_images',
-        	'Model_status_operate_time' => 'Mstatus_operate_time',
+        	'Model_houses_status_operate_time' => 'Mhouses_status_operate_time',
         	'Model_houses_change_points_record' => 'Mhouses_change_points_record',
         	'Model_houses_orders_log' => 'Mhouses_orders_log',
         	'Model_houses_order_inspect_images_log' => 'Mhouses_order_inspect_images_log',
         	'Model_houses_change_pic_orders' => 'Mhouses_change_pic_orders',
-        	'Model_houses_scheduled_orders' => 'Mhouses_scheduled_orders'
+        	'Model_houses_scheduled_orders' => 'Mhouses_scheduled_orders',
+        	'Model_houses_assign' => 'Mhouses_assign'
         ]);
         $this->data['code'] = 'horders_manage';
         $this->data['active'] = 'houses_orders_list';
 
         $this->data['customers'] = $this->Mhouses_customers->get_lists("id, name", array('is_del' => 0));  //客户
         $this->data['make_company'] = $this->Mmake_company->get_lists('id, company_name, business_scope', array('is_del' => 0));  //制作公司
-        $this->data['order_type_text'] = C('order.houses_order_type'); //订单类型
+        $this->data['order_type_text'] = C('housesorder.houses_order_type'); //订单类型
         $this->data['salesman'] = $this->Msalesman->get_lists('id, name, sex, phone_number', array('is_del' => 0));  //业务员
+        $this->data['houses_assign_status'] = C('order.houses_assign_status'); //派单状态
     }
     
 
@@ -58,14 +60,14 @@ class Housesorders extends MY_Controller{
         if($this->input->get("expire_time")) {
             $where['A.release_end_time>='] = date("Y-m-d");
             $where['A.release_end_time<='] =  date("Y-m-d",strtotime("+7 day"));
-            $where['A.order_status'] =  C('order.order_status.code.in_put');
+            $where['A.order_status'] =  C('housesorder.houses_order_status.code.in_put');
         }
 
         //已到期未下画
         $data['overdue'] = $this->input->get('overdue');
         if($this->input->get("overdue")) {
             $where['A.release_end_time<'] =  date("Y-m-d");
-            $where['A.order_status'] =  C('order.order_status.code.in_put');
+            $where['A.order_status'] =  C('housesorder.houses_order_status.code.in_put');
         }
 
         $data['order_code'] = $this->input->get('order_code');
@@ -88,7 +90,7 @@ class Housesorders extends MY_Controller{
 
         $admins = $this->Madmins->get_lists("id,name");
         $data['admins'] = array_column($admins,"name","id");
-        $data['status_text'] = C('order.order_status.text');
+        $data['status_text'] = C('housesorder.houses_order_status.text');
         
         $this->load->view("housesorders/index", $data);
     }
@@ -101,7 +103,7 @@ class Housesorders extends MY_Controller{
         $id = $this->input->post('id');
         $total_price = $this->input->post('total_price');
         $order = $this->Morders->get_one('*', array('id' => $id));
-        if ($order['order_status'] < C('order.order_status.code.uninstall')) {
+        if ($order['order_status'] < C('housesorder.houses_order_status.code.uninstall')) {
             $result = $this->Morders->update_info(array('total_price' => $total_price), array('id' => $id));
             if ($result || $result === 0) {
                 $this->return_json(array('flag' => true, 'total_price' => sprintf("%.2f", $total_price), 'msg' => '修改价格成功！'));
@@ -211,7 +213,7 @@ class Housesorders extends MY_Controller{
          	}
          	//获取楼栋单元楼层列表
          	$data['BUFL'] = $this->get_ban_unit_floor_list();
-         	$data['status_text'] = C('order.order_status.text');
+         	$data['status_text'] = C('housesorder.houses_order_status.text');
             $this->load->view("housesorders/add", $data);
         }
     }
@@ -665,11 +667,6 @@ class Housesorders extends MY_Controller{
         //验收图片
         $data['info']['inspect_img'] = $this->Mhouses_order_inspect_images->get_inspect_img(array('A.order_id' => $id, 'A.type' => 1));
 		
-        //每个媒体对应套数
-//         $where_point['in'] = array('B.id' => explode(',', $data['info']['point_ids']));
-//         $points = $this->Mhouses_points->get_confirm_points($where_point, array('A.sort' => 'asc', 'B.id' => 'asc'), array('media_code', 'C.size'));
-//         $data['number'] = array_column($points, 'counts', 'media_id');
-
         //换画记录
         $data['info']['change_pic_record'] = $this->Mhouses_change_pic_orders->get_order_lists(array('A.order_code' => $data['info']['order_code']));
 
@@ -682,21 +679,28 @@ class Housesorders extends MY_Controller{
             $add_points= $this->Mhouses_points->get_lists('code', array('in' => array('id' => explode(',', $value['add_points']))));
             $data['info']['change_points_record'][$key]['add_points'] = implode(',', array_column($add_points, 'code'));
         }
+        
+        //派单列表
+        $data['info']['assign_list'] = $this->Mhouses_assign->get_join_lists(['A.order_id' => $id, 'A.is_del' => 0]);
+        if(count($data['info']['assign_list']) > 0) {
+        	$houses_ids = array_column($data['info']['assign_list'], 'houses_id');
+        	$where = [];
+        	$where['order_id'] = $id;
+        	$where['in']['houses_id'] = $houses_ids;
+        	$group_by = ['houses_id'];
+        	$data['houses_count'] = $this->Mhouses_points->get_lists('houses_id,count(0) as count', $where, [],  0,0,  $group_by);  //点位分组
+        }
+        
+        //制作公司
+        $data['info']['make_company'] = $this->Mmake_company->get_one('company_name', array('id' => $data['info']['make_company_id']))['company_name'];
+        $data['status_text'] = C('housesorder.houses_order_status.text');
 
-//         if($data['info']['order_type'] == 3 || $data['info']['order_type'] == 4){
-//             $data['status_text'] = C('order.order_status.led_text');
-//         }else{
-            //制作公司
-            $data['info']['make_company'] = $this->Mmake_company->get_one('company_name', array('id' => $data['info']['make_company_id']))['company_name'];
-            $data['status_text'] = C('order.order_status.text');
-//         }
-
-//         //获取对应订单状态的操作信息
-//         $operate_time = $this->Mstatus_operate_time->get_lists("value,operate_remark,operate_time",array("order_id" => $id , 'type' => 1));
-//         if($operate_time){
-//             $data['time'] = array_column($operate_time, "operate_time", "value");
-//             $data['operate_remark'] = array_column($operate_time, "operate_remark", "value");
-//         }
+        //获取对应订单状态的操作信息
+        $operate_time = $this->Mhouses_status_operate_time->get_lists("value,operate_remark,operate_time",array("order_id" => $id , 'type' => 1));
+        if($operate_time){
+            $data['time'] = array_column($operate_time, "operate_time", "value");
+            $data['operate_remark'] = array_column($operate_time, "operate_remark", "value");
+        }
 
         $data['id'] = $id;
 
@@ -744,9 +748,9 @@ class Housesorders extends MY_Controller{
             $operate_remark = $this->input->post("remark");
             $order_code = $this->input->post("order_code");
             
-            $count = $this->Mstatus_operate_time->count(array("order_id" => $id, "value" => $status, "type" => 1));
+            $count = $this->Mhouses_status_operate_time->count(array("order_id" => $id, "value" => $status, "type" => 1));
             if($count){
-                $res = $this->Mstatus_operate_time->update_info(
+                $res = $this->Mhouses_status_operate_time->update_info(
                     array('operate_remark' => $operate_remark,"operate_time"=> date("Y-m-d H:i:s")),
                     array('order_id' => $id, "value" => $status, "type" => 1)
                 );
@@ -754,18 +758,18 @@ class Housesorders extends MY_Controller{
                 $where['order_id'] = $id;
                 $where['value>'] = $status;
                 $where['type'] = 1;
-                $res = $this->Mstatus_operate_time->delete($where);
+                $res = $this->Mhouses_status_operate_time->delete($where);
             }else{
                 $post_data['order_id'] = $id;
                 $post_data['value'] = $status;
                 $post_data['operate_time'] = date("Y-m-d H:i:s");
                 $post_data['operate_remark'] = $operate_remark;
                 $post_data['type'] = 1;
-                $this->Mstatus_operate_time->create($post_data);
+                $this->Mhouses_status_operate_time->create($post_data);
             }
             
             $data = $this->data;
-            $status_text = C('order.order_status.text');
+            $status_text = C('housesorder.houses_order_status.text');
 
             $this->write_log($data['userInfo']['id'],2,"  更新订单:".$order_code."状态：".$status_text[$status]);
             //同时更新对应的订单

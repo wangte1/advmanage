@@ -34,6 +34,7 @@
 					<th>点位数量（个）</th>
 					<th>现负责人</th>
 					<th width="15%">更换负责人</th>
+					<th>说明</th>
 					<th>操作</th>
 				</tr>
 			</thead>
@@ -62,6 +63,7 @@
 							<?php }?>
 						</select>
 					</td>
+					<td><textarea name="remark[]" rows="1"></textarea></td>
 					<td><button class="btn btn-xs btn-info" type="button">详情</button></td>
 				</tr>
 				<?php }?>

@@ -47,14 +47,9 @@
                             <div class="widget-body">
                                 <div class="widget-main">
                                     <form class="form-horizontal" role="form">
-                                        <!-- <div class="form-group">
-                                            <div class="col-sm-4">
-                                                <label class="col-sm-3 control-label no-padding-right" for="form-field-1"> 楼盘名称</label>
-                                                <div class="col-sm-9">
-                                                    <input type="text" name="name" value="<?php echo $name;?>"  class="col-xs-10 col-sm-12" />
-                                                </div>
-                                            </div>
-                                            <div class="col-sm-8">
+                                       <div class="form-group">
+                                           
+                                            <div class="col-sm-6">
                                                 <label class="col-sm-3 control-label no-padding-right" for="form-field-1"> 所属地区</label>
                                                 <div class="col-sm-9">
 				                                    <div id="distpicker1">
@@ -64,22 +59,49 @@
 													</div>
 				                                </div>
                                             </div>
+                                            
+                                             <div class="col-sm-6">
+                                                <label class="col-sm-3 control-label no-padding-right" for="form-field-1"> 楼盘名称</label>
+                                                <div class="col-sm-8">
+                                                    <input type="text" name="houses_name" value="<?php echo $houses_name;?>"  class="col-xs-10 col-sm-12" />
+                                                </div>
+                                            </div>
                                         </div>
                                         
                                         <div class="form-group">
-                                            <div class="col-sm-4">
-                                                <label class="col-sm-3 control-label no-padding-right" for="form-field-1"> 类型</label>
+                                            <div class="col-sm-6">
+                                                <label class="col-sm-3 control-label no-padding-right" for="form-field-1"> 客户名称</label>
+                                                <div class="col-sm-8">
+                                                    <input type="text" name="customer_name" value="<?php echo $customer_name;?>"  class="col-xs-10 col-sm-12" />
+                                                </div>
+                                            </div>
+                                            
+                                            <div class="col-sm-6">
+                                                <label class="col-sm-3 control-label no-padding-right" for="form-field-1"> 负责人</label>
+                                                <div class="col-sm-8">
+                                                    <input type="text" name="charge_name" value="<?php echo $charge_name;?>"  class="col-xs-10 col-sm-12" />
+                                                </div>
+                                            </div>
+                                            
+                                        </div>
+                                        
+                                        <div class="form-group">
+                                            <div class="col-sm-6">
+                                                <label class="col-sm-3 control-label no-padding-right" for="form-field-1"> 状态</label>
                                                 <div class="col-sm-9">
-                                                    <select id="state" name="type"  class="select2" data-placeholder="Click to Choose...">
-                                                        <option value="all" <?php if($type == 'all' || empty($type)){ echo 'selected'; }?>>全部</option>
-                                                        <?php foreach(C('public.houses_type') as $key=>$val){ ?>
-                                                            <option value="<?php echo $key;?>" <?php if($type != 'all' && ($key == $type)) { echo "selected"; }?>><?php echo $val;?></option>
-                                                        <?php } ?>
+                                                    <select name="status">
+                                                    	<option value=""></option>
+                                                    	<?php foreach ($houses_assign_status as $k => $v) {?>
+                                                    		<?php if($k != 1) {?>
+                                                    		<option value="<?php echo $k;?>" <?php if($k == $status) {?>selected="selected"<?php }?>><?php echo $v?></option>
+                                                    		<?php }?>
+                                                    	<?php }?>
                                                     </select>
                                                 </div>
                                             </div>
                                             
-                                        </div> -->
+                                            
+                                        </div>
                                         <div class="clearfix form-actions">
                                             <div class="col-md-offset-3 col-md-9">
                                                 <button class="btn btn-info" type="submit">
@@ -107,8 +129,15 @@
                                                 <th>序号</th>
                                                 <th>行政区域</th>
                                                 <th>楼盘名称</th>
-                                                <th>点位数量</th>
+                                                <th>点位类型</th>
+                                                <th>客户名称</th>
+                                                <th>点位数量（个）</th>
                                                 <th>投放时间</th>
+                                                <th>派单人</th>
+                                                <th>说明</th>
+                                                <th>派单时间</th>
+                                                <th>负责人</th>
+                                                <th>状态</th>
                                                 <th>操作</th>
                                             </tr>
                                         </thead>
@@ -119,20 +148,87 @@
                                                 ?>
                                                 <tr>
                                                     <td><a href=""><?php echo $key+1;?></a></td>
-                                                    <td><a href=""><?php echo $val['name'];?></a></td>
-                                                    <td><?php echo $val['province'];?>-<?php echo $val['city'];?>-<?php echo $val['area'];?></td>
-													<td><?php echo $houses_type[$val['type']];?></td>
-													<td class="hidden-480">
-                                                        <?php echo $val['remarks'];?>
+                                                    <td>
+                                                    	<?php echo $val['province']."-".$val['city']."-".$val['area'];?>
                                                     </td>
                                                     <td>
+                                                    	<?php echo $val['houses_name'];?>
+                                                    </td>
+                                                   
+                                                    <td>
+                                                    	<?php echo $order_type_text[$val['order_type']];?>
+                                                    </td>
+                                                     <td>
+                                                    	<?php echo $val['customer_name'];?>
+                                                    </td>
+													<td>
+														<?php echo $val['points_count'];?>
+													</td>
+													<td>
+                                                    	<?php echo $val['release_start_time']."至".$val['release_end_time'];?>
+                                                    </td>
+                                                    <td>
+                                                    	<?php if(isset($user_list[$val['assign_user']])) echo $user_list[$val['assign_user']];?>
+                                                    </td>
+                                                    <td><?php echo $val['remark'];?></td>
+                                                    <td><?php echo $val['assign_time'];?></td>
+                                                    
+                                                   	<td>
+                                                   		<?php echo $val['charge_name'];?>
+                                                   	</td>
+                                                   	
+                                                   	<td>
+                                                   	<?php 
+                                                        switch ($val['status']) {
+                                                            case '1':
+                                                                $class = 'badge-yellow';
+                                                                break;
+                                                            case '2':
+                                                                $class = 'badge-pink';
+                                                                break;
+                                                            case '3':
+                                                                $class = 'badge-success';
+                                                                break;
+                                                            case '4':
+                                                                $class = 'badge-warning';
+                                                                break;
+                                                            case '5':
+                                                                $class = 'badge-danger';
+                                                                break;
+                                                            case '6':
+                                                                $class = 'badge-info';
+                                                                break;
+                                                            case '7':
+                                                                $class = 'badge-purple';
+                                                                break;
+                                                            case '8':
+                                                                $class = 'badge-grey';
+                                                                break;
+                                                        }
+                                                    ?>
+                                                    <span class="badge <?php echo $class; ?>">
+                                                        <?php echo $houses_assign_status[$val['status']];?>
+                                                    </span>
+                                                   	
+                                                   	</td>
+                                                   	
+                                                    <td>
                                                         <div class="visible-md visible-lg hidden-sm hidden-xs action-buttons">
-                                                            <a class="green tooltip-info" href="/houses/edit/<?php echo $val['id'];?>" data-rel="tooltip" data-placement="top" data-original-title="点位详情">
-                                                                <i class="icon-pencil bigger-130"></i>
-                                                            </a>
-                                                           	<a class="red tooltip-info del" href="javascript:;" data-url="/houses/del/<?php echo $val['id']?>" data-id="<?php echo $val['id'];?>" data-rel="tooltip" data-placement="top" data-original-title="确认">
-                                                                <i class="icon-trash bigger-130"></i>
-                                                            </a>
+                                                            <a class="green tooltip-info m-detail" houses-id="<?php echo $val['houses_id'];?>" order-id="<?php echo $val['order_id'];?>"  data-rel="tooltip" data-placement="top" title="" data-original-title="详情">
+	                                                            <i class="icon-eye-open bigger-130"></i>
+	                                                        </a> 
+	                                                        
+	                                                        <?php if($val['status'] == 2) {?>
+		                                                        <a class="green tooltip-info m-confirm" data-id="<?php echo $val['id'];?>" order-id="<?php echo $val['order_id'];?>"  data-rel="tooltip" data-placement="top" title="" data-original-title="确认">
+		                                                            <i class="icon-check bigger-130"></i>
+		                                                        </a> 
+	                                                        <?php }?>
+	                                                        
+	                                                        <?php if($val['status'] == 3) {?>
+	                                                        	<a class="green tooltip-info m-upload" data-id="<?php echo $val['id'];?>" order-id="<?php echo $val['order_id'];?>"  data-rel="tooltip" data-placement="top" title="" data-original-title="上传验收图片">
+		                                                            <i class="fa fa-picture-o bigger-130"></i>
+		                                                        </a> 
+	                                                        <?php }?>
                                                         </div>
                                                     </td>
                                                 </tr>
@@ -163,6 +259,41 @@
 		province: "<?php if(isset($province)) { echo $province;}else{?>贵州省<?php }?>",
 		city: "<?php if(isset($city)) { echo $city;}else{?>贵阳市<?php }?>",
 		district : "<?php if(isset($area)) { echo $area;}?>",
+	});
+
+	$(function(){
+		$('.m-detail').click(function(){
+			var order_id = $(this).attr('order-id');
+			var houses_id = $(this).attr('houses-id');
+			
+			layer.open({
+				  type: 2,
+				  title: '包含点位',
+				  shadeClose: true,
+				  shade: 0.6,
+				  area: ['60%', '60%'],
+				  content: '/housesassign/show_points?order_id='+order_id+'&houses_id='+houses_id //iframe的url
+				}); 
+		});
+
+		$('.m-confirm').click(function(){
+			var id = $(this).attr('data-id');
+			var order_id = $(this).attr('order-id');
+			
+			layer.confirm('确认该派单？', {
+				  btn: ['确定','取消'] //按钮
+				}, function(){
+				 	$.post('/housesconfirm/do_confirm', {id:id, order_id:order_id}, function(data){
+						if(data.code == 1) {
+							layer.alert(data.msg,function(){
+								location.reload();
+							});
+						}else {
+							layer.alert(data.msg);
+						}
+					});
+				});
+		});
 	});
 </script>
 

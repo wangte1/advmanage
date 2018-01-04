@@ -81,7 +81,7 @@
                 }
                 $str = rtrim($str, "，");
             ?>
-            <p class="page-p" style="line-height: 40px">备注：本次甲方共选<?php echo $total_num;?>套公交站台灯箱广告，其中<?php echo $str;?>。我司按照双方签订的户外广告发布合同要求于<?php echo date('Y年m月d日', strtotime($info['make_complete_time']));?>开始制作、安装广告画面，于<?php echo $complete_date;?>按时按量完成<?php echo $total_num;?>套公交站台灯箱广告的发布，投放时间为<?php echo date('Y.m.d', strtotime($info['release_start_time']));?>-<?php echo date('Y.m.d', strtotime($info['release_end_time']));?>，现将验收照片发给甲方确认。</p>
+            <p class="page-p" style="line-height: 40px">备注：本次甲方共选<?php echo $total_num;?>套公交站台灯箱广告，其中<?php echo $str;?>。我司按照双方签订的户外广告发布合同要求于<?php echo date('Y年m月d日', strtotime($info['create_time']));?>开始制作、安装广告画面，于<?php echo $complete_date;?>按时按量完成<?php echo $total_num;?>套公交站台灯箱广告的发布，投放时间为<?php echo date('Y.m.d', strtotime($info['release_start_time']));?>-<?php echo date('Y.m.d', strtotime($info['release_end_time']));?>，现将验收照片发给甲方确认。</p>
             <p class="mid-p"></p>
             <p class="page-p"><span style="font-weight:bolder">甲方（盖章）：</span><span style="font-weight:bolder;margin-left:400px">乙方（盖章）：</span></p>
             <p class="page-p"><span style="font-weight:bolder">确认人（签字）：</span><span style="font-weight:bolder;margin-left:376px">确认人（签字）：</span></p>
@@ -100,7 +100,7 @@
                     }
                     $str = rtrim($str, "，");
                 ?>
-                <p class="page-p" style="line-height: 40px">备注：本次甲方共选<?php echo $total_num;?>套公交站台灯箱广告，其中<?php echo $str;?>。我司按照双方签订的户外广告发布合同要求于<?php echo date('Y年m月d日', strtotime($info['make_complete_time']));?>开始制作、安装广告画面，于<?php echo $complete_date;?>按时按量完成<?php echo $total_num;?>套公交站台灯箱广告的发布，投放时间为<?php echo date('Y.m.d', strtotime($info['release_start_time']));?>-<?php echo date('Y.m.d', strtotime($info['release_end_time']));?>，现将验收照片发给甲方确认。</p>
+                <p class="page-p" style="line-height: 40px">备注：本次甲方共选<?php echo $total_num;?>套公交站台灯箱广告，其中<?php echo $str;?>。我司按照双方签订的户外广告发布合同要求于<?php echo date('Y年m月d日', strtotime($info['create_time']));?>开始制作、安装广告画面，于<?php echo $complete_date;?>按时按量完成<?php echo $total_num;?>套公交站台灯箱广告的发布，投放时间为<?php echo date('Y.m.d', strtotime($info['release_start_time']));?>-<?php echo date('Y.m.d', strtotime($info['release_end_time']));?>，现将验收照片发给甲方确认。</p>
                 <p class="mid-p sign-h"></p>
                 <p class="page-p"><span style="font-weight:bolder">甲方（盖章）：</span><span style="font-weight:bolder;margin-left:400px">乙方（盖章）：</span></p>
                 <p class="page-p"><span style="font-weight:bolder">确认人（签字）：</span><span style="font-weight:bolder;margin-left:376px">确认人（签字）：</span></p>
@@ -146,7 +146,7 @@
                     }
                     $str = rtrim($str, "，");
                 ?>
-                <p class="page-p" style="line-height: 40px">备注：本次甲方共选<?php echo $total_num;?>套公交站台灯箱广告，其中<?php echo $str;?>。我司按照双方签订的户外广告发布合同要求于<?php echo date('Y年m月d日', strtotime($info['make_complete_time']));?>开始制作、安装广告画面，于<?php echo $complete_date;?>按时按量完成<?php echo $total_num;?>套公交站台灯箱广告的发布，投放时间为<?php echo date('Y.m.d', strtotime($info['release_start_time']));?>-<?php echo date('Y.m.d', strtotime($info['release_end_time']));?>，现将验收照片发给甲方确认。</p>
+                <p class="page-p" style="line-height: 40px">备注：本次甲方共选<?php echo $total_num;?>套公交站台灯箱广告，其中<?php echo $str;?>。我司按照双方签订的户外广告发布合同要求于<?php echo date('Y年m月d日', strtotime($info['create_time']));?>开始制作、安装广告画面，于<?php echo $complete_date;?>按时按量完成<?php echo $total_num;?>套公交站台灯箱广告的发布，投放时间为<?php echo date('Y.m.d', strtotime($info['release_start_time']));?>-<?php echo date('Y.m.d', strtotime($info['release_end_time']));?>，现将验收照片发给甲方确认。</p>
                 <p class="mid-p"></p>
                 <p class="page-p"><span style="font-weight:bolder">甲方（盖章）：</span><span style="font-weight:bolder;margin-left:400px">乙方（盖章）：</span></p>
                 <p class="page-p"><span style="font-weight:bolder">确认人（签字）：</span><span style="font-weight:bolder;margin-left:376px">确认人（签字）：</span></p>

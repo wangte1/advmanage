@@ -53,7 +53,7 @@
                                             <div class="col-sm-4">
                                                 <label class="col-sm-3 control-label no-padding-right" for="form-field-1"> 订单编号 </label>
                                                 <div class="col-sm-9">
-                                                    <input type="text" name="order_code" class="form-control" value="<?php echo $order_code;?>">
+                                                    <input type="text" name="order_code" class="form-control input-sm" value="<?php echo $order_code;?>">
                                                 </div>
                                             </div>
 
@@ -232,11 +232,6 @@
                                     </table>
                                     <!-- 分页 -->
                                     <?php $this->load->view('common/page');?>
-                                    <div class="row">
-                                        <div class="col-md-12" style="color: #A0A0A0; padding: 10px; margin-top: 50px; background: #F5F5F5">
-                                            注:即将到期表示订单7天内即将到期的订单！
-                                        </div>
-                                    </div>
                                 </div>
                             </div>
                         </div>

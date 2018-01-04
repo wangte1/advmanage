@@ -66,6 +66,9 @@
                                             <a data-toggle="tab" href="#change_points_record">换点记录</a>
                                         </li>
                                         <?php endif;?>
+                                        <li>
+                                        	<a data-toggle="tab" href="#assign_list">派单列表</a>
+                                        </li>
                                     </ul>
 
                                     <div class="tab-content">
@@ -446,6 +449,86 @@
                                             <?php endif;?>
                                         </div>
                                         <?php endif;?>
+                                        
+                                        <div id="assign_list" class="tab-pane">
+                                        	<?php if($info['assign_list']) {?>
+                                        	<table class="table table-striped table-bordered">
+                                                <thead>
+                                                    <tr>
+                                                        <th class="center">行政区域</th>
+                                                        <th class="center">楼盘名称</th>
+                                                        <th class="center">点位数量（个）</th>
+                                                        <th class="center">负责人</th>
+                                                        <th class="center">状态</th>
+                                                        <th class="center">操作</th>
+                                                    </tr>
+                                                </thead>
+                                                <tbody>
+                                                	<?php foreach($info['assign_list'] as $k => $v) {?>
+                                            			<tr>
+                                            				<td class="center"><?php echo $v['province']."-".$v['city']."-".$v['area'];?></td>
+                                            				<td class="center"><?php echo $v['houses_name'];?></td>
+                                            				<td class="center">
+                                            					<?php if(isset($houses_count)) {foreach ($houses_count as $k1 => $v1) {?>
+                                            						<?php if($v['houses_id'] == $v1['houses_id']) {?>
+                                            							<?php echo $v1['count'];?>
+                                            						<?php }?>
+                                            					<?php }}?>
+                                            				</td>
+                                            				<td class="center"><?php echo $v['charge_name'];?></td>
+                                            				<td class="center">
+                                            					<?php 
+		                                                        switch ($v['status']) {
+		                                                            case '1':
+		                                                                $class = 'badge-yellow';
+		                                                                break;
+		                                                            case '2':
+		                                                                $class = 'badge-pink';
+		                                                                break;
+		                                                            case '3':
+		                                                                $class = 'badge-success';
+		                                                                break;
+		                                                            case '4':
+		                                                                $class = 'badge-warning';
+		                                                                break;
+		                                                            case '5':
+		                                                                $class = 'badge-danger';
+		                                                                break;
+		                                                            case '6':
+		                                                                $class = 'badge-info';
+		                                                                break;
+		                                                            case '7':
+		                                                                $class = 'badge-purple';
+		                                                                break;
+		                                                            case '8':
+		                                                                $class = 'badge-grey';
+		                                                                break;
+			                                                        }
+			                                                    ?>
+			                                                    <span class="badge <?php echo $class; ?>">
+			                                                        <?php echo $houses_assign_status[$v['status']];?>
+			                                                    </span>
+                                            				</td>
+                                            				
+                                            				<td class="center">
+																<a class="green tooltip-info m-detail" data-id="<?php echo $v['houses_id'];?>"  data-rel="tooltip" data-placement="top" title="" data-original-title="点位详情">
+										                        	<i class="icon-eye-open bigger-130"></i>
+										                        </a>
+															</td>
+                                            			</tr>
+                                            		<?php }?>
+                                        		</tbody>
+                                        	</table>
+                                            <?php }else {?>
+                                            	<div class="alert alert-warning center" style="width:400px">
+	                                                <strong>
+	                                                    <i class="icon-warning-sign bigger-120"></i> 工程主管还在派单中
+	                                                </strong>
+	                                            </div>
+                                            <?php }?>
+                                            	
+                                            
+                                        </div>
                                     </div>
                                 </div>
 
@@ -467,16 +550,9 @@
                                                 <?php
                                                     $order_status = $info['order_status'];
 
-                                                    if( $info['order_type'] == 3 || $info['order_type'] == 4){
-                                                       if($key == 4){
-                                                           $order_status = 4;
-                                                        }
 
                                                     ?>
-                                                   <span data-status="<?php echo $key;?>" class="step <?php if($key <= $order_status+1){ echo "status-step";}?>" style="cursor: pointer"><?php echo $n;;?></span>
-                                                <?php }else{?>
                                                    <span data-status="<?php echo $key;?>" class="step <?php if($key <= $info['order_status']+1){ echo "status-step";}?>" style="cursor: pointer"><?php echo $n;;?></span>
-                                                <?php }?>
 
                                                 <span class="title"><?php echo $val;?></span>
                                                 <?php
@@ -539,10 +615,43 @@
         window.location.href = '/housesorders/export/' + id + '/' + type;
     });
 
+
+    $('.m-detail').click(function(){
+        var order_id = '<?php echo $id;?>';
+		var houses_id = $(this).attr('data-id');
+		
+		layer.open({
+			  type: 2,
+			  title: '包含点位',
+			  shadeClose: true,
+			  shade: 0.6,
+			  area: ['60%', '60%'],
+			  content: '/housesassign/show_points?order_id='+order_id+'&houses_id='+houses_id //iframe的url
+			}); 
+	});
+    
+
     //更新订单状态
     $(".status-step").click(function(){
+        
         var order_id = $("#order_id").val();
-        var status =$(this).attr("data-status");
+        var status = $(this).attr("data-status");
+
+		var now_status = "<?php echo $info['order_status']?>";
+
+		if(now_status >= 4 && status <= 4) {
+			var d = dialog({
+                title: '提示信息',
+                content: '该订单已经进入派单，不能更新状态！',
+                okValue: '确定',
+                ok: function () {
+                },
+            });
+            d.width(320);
+            d.showModal();
+            return false;
+		}
+        
         if (adv_img_count == 0) {
             var d = dialog({
                 title: '提示信息',
@@ -556,6 +665,40 @@
             d.showModal();
             return false;
         }
+
+
+		if(status == 5) {
+			if(now_status == status) {
+				return false;
+			}
+			
+			var d = dialog({
+                title: '提示信息',
+                content: '工程主管正在派单中，当工程人员确认了派单此状态自动更新',
+                okValue: '查看派单情况',
+                ok: function () {
+                    
+                },
+            });
+            d.width(320);
+            d.showModal();
+            return false;
+        }
+
+		if(status == 6) {
+			 var d = dialog({
+               title: '提示信息',
+               content: '工程人员上传验收图片中，当工程人员完成验收图片上传此状态自动更新',
+               okValue: '查看上传情况',
+               ok: function () {
+                   
+               },
+           });
+           d.width(320);
+           d.showModal();
+           return false;
+       }
+        
 
         if (status == 7 && inspect_img_count == 0) {
             var d = dialog({
