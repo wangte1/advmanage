@@ -28,9 +28,9 @@ class Housesassign extends MY_Controller{
         $this->data['active'] = 'houses_assign_list';
 
         $this->data['customers'] = $this->Mhouses_customers->get_lists("id, name", array('is_del' => 0));  //客户
-        $this->data['order_type_text'] = C('order.houses_order_type'); //订单类型
+        $this->data['order_type_text'] = C('housesorder.houses_order_type'); //订单类型
         $this->data['point_addr'] = C('housespoint.point_addr'); //订单类型
-        $this->data['houses_assign_status'] = C('order.houses_assign_status'); //派单状态
+        $this->data['houses_assign_status'] = C('housesorder.houses_assign_status'); //派单状态
     }
     
 

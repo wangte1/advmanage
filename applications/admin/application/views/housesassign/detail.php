@@ -86,7 +86,7 @@
 						<?php if(isset($assign_list)) {?>
 							<?php foreach ($assign_list as $k1 => $v1) {?>
 								<?php if($v['houses_id'] == $v1['houses_id']) {?>
-									<?php echo $houses_assign_status[$v1['status']];?>
+									<?php if(isset($houses_assign_status[$v1['status']])) echo $houses_assign_status[$v1['status']];?>
 								<?php }?>
 							<?php }?>
 						<?php }?>
