@@ -3,11 +3,7 @@
 * 预定订单管理控制器
 * @author yonghua 254274509@qq.com
 */
-//阿里大鱼短信
-use Flc\Alidayu\Client;
-use Flc\Alidayu\App;
-use Flc\Alidayu\Requests\AlibabaAliqinFcSmsNumSend;
-use YYHhelper\Http;
+use YYHSms\SendSms;
 
 defined('BASEPATH') or exit('No direct script access allowed');
 class Housesscheduledorders extends MY_Controller{
@@ -478,37 +474,34 @@ class Housesscheduledorders extends MY_Controller{
         if(!preg_match('/^1[3|4|5|8|7][0-9]\d{8}$/', $info['contact_tel'])){
             $this->return_json(['code' => 0, 'msg' => '客户手机号格式不正确！']);
         }
-        //生成短网址
+        //生成token
         $token = encrypt(['id' => $orderid]);
-        $url = C('housesscheduledorder.confirm_url').$token;
+        // 配置短信信息
+        $app = C('sms.app');
+        $parems = [
+            'PhoneNumbers' => $info['contact_tel'],
+            'SignName' => C('sms.sign.lkcb'),
+            'TemplateCode' => C('sms.template.keihu'),
+            'TemplateParam' => array(
+                'token' => $token
+            )
+        ];
+        //发送短信
+        $sms = new SendSms($app, $parems);
         try {
-            $urlInfo = $this->getShortUrl($url);
-            if($urlInfo['code'] == 0){
-                $this->return_json(['code' => 0, 'msg' => $urlInfo['msg']]);
+            $info = (array) $sms->send();
+            if(isset($info['Code'])) {
+                if(strtolower($info['Code']) == 'ok'){
+                    $this->return_json(['code' => 1, 'msg' => '发送成功']);
+                }else{
+                    $this->return_json(['code' => 0, 'msg' => '错误码：'.$info['Code']]);
+                }
             }
-            $url = $urlInfo['url'];
+            $this->return_json(['code' => 0, 'msg' => '请稍后重试']);
         } catch (Exception $e) {
             $this->return_json(['code' => 0, 'msg' => $e->getMessage()]);
         }
-        // 配置信息
-        $sms = C('sms.config');
-        $client = new Client(new App(['app_key' => $sms['app_key'], 'app_secret' => $sms['app_secret']]));
-        $req    = new AlibabaAliqinFcSmsNumSend();
-        $req->setRecNum($info['contact_tel'])
-        ->setSmsParam([
-            'url' => $url
-        ])
-        ->setSmsFreeSignName($sms['FreeSignName'])
-        ->setSmsTemplateCode($sms['TemplateCode']);
         
-        $sendRes = (array) $client->execute($req);
-        if(isset($sendRes['result'])) {
-            $res = (array) $sendRes['result'];
-            if(isset($res['success']) && $res['success'] == 1){
-                $this->return_json(['code' => 1, 'msg' => '发送成功']);
-            }
-        }
-        $this->return_json(['code' => 0, 'msg' => '短信error：'.$sendRes['sub_msg']]);
     }
     
     /**
