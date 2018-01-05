@@ -357,7 +357,7 @@ class Housesassign extends MY_Controller{
      */
     public function sendMsg($uid) {
     	//根据预定订单获取客户电话
-    	$info = $this->Madmins->get_one('tel', ['id' => $uid]);
+    	$info = $this->Madmins->get_one('tel, fullname', ['id' => $uid]);
     	
     	if(!$info) return ['code' => 0, 'msg' => '客户不存在'];
     	if(empty($info['tel'])){
@@ -366,28 +366,34 @@ class Housesassign extends MY_Controller{
     	if(!preg_match('/^1[3|4|5|8|7][0-9]\d{8}$/', $info['tel'])){
     		return ['code' => 0, 'msg' => '手机号格式不正确！'];
     	}
-    	//系统网址
-    	$url = 'https://adv.wesogou.com';
-    	// 配置信息
-    	$sms = C('sms.config1');
-    	$client = new Client(new App(['app_key' => $sms['app_key'], 'app_secret' => $sms['app_secret']]));
-    	$req    = new AlibabaAliqinFcSmsNumSend();
-    	$req->setRecNum($info['tel'])
-    	->setSmsParam([
-    			'url' => $url
-    			//'code' => mt_rand(1000,9999)
-    	])
-    	->setSmsFreeSignName($sms['FreeSignName'])
-    	->setSmsTemplateCode($sms['TemplateCode']);
-    	
-    	$sendRes = (array) $client->execute($req);
-    	if(isset($sendRes['result'])) {
-    		$res = (array) $sendRes['result'];
-    		if(isset($res['success']) && $res['success'] == 1){
-    			return ['code' => 1, 'msg' => '发送成功'];
-    		}
-    	}
-    	return ['code' => 0, 'msg' => '短信error：'.$sendRes['sub_msg']];
+    	//用户姓名
+        $name = $info['fullname'];
+        // 配置短信信息
+        $app = C('sms.app');
+        $parems = [
+            'PhoneNumbers' => $info['contact_tel'],
+            'SignName' => C('sms.sign.tgkj'),
+            'TemplateCode' => C('sms.template.yewu'),
+            'TemplateParam' => array(
+                'name' => $name
+            )
+        ];
+        //发送短信
+        $sms = new SendSms($app, $parems);
+        try {
+            $info = (array) $sms->send();
+            if(isset($info['Code'])) {
+                if(strtolower($info['Code']) == 'ok'){
+                    return ['code' => 1, 'msg' => '发送成功'];
+                }else{
+                    return ['code' => 0, 'msg' => '错误码：'.$info['Code']];
+                }
+            }
+            return ['code' => 0, 'msg' => '请稍后重试'];
+        } catch (Exception $e) {
+            return ['code' => 0, 'msg' => $e->getMessage()];
+        }
+        
     }
 
 }

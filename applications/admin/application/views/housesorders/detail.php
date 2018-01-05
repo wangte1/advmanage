@@ -237,7 +237,7 @@
                                                         <a href="/housesorders/contact_list/<?php echo $info['id'];?>" target="_blank">查看联系单</a>
 
                                                         <?php if($info['order_status'] > 6):?>
-                                                        <a href="/orders/confirmation/<?php echo $info['id'];?>" target="_blank">查看确认函</a>
+                                                        <a href="/housesorders/confirmation/<?php echo $info['id'];?>" target="_blank">查看确认函</a>
                                                         <?php endif;?>
                                                     </div>
                                                 </div>

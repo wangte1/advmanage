@@ -26,7 +26,7 @@
         .footer p{height: 10px;}
 
         .btn-print {width: 100%;margin-top: 50px; text-align: right; position: fixed; bottom: 0;left: 0;}
-        .btn-print button {border-radius: 3px; width: 90px; height: 30px;}
+        .btn-print button {border-radius: 3px; width: 100px; height: 30px;}
 
         .hide{display:none}
         @media print { 
@@ -46,7 +46,7 @@
     <div class="content">
         <!-- 第一页 -->
         <div class="page">
-            <center class="title">灯箱广告验收报告</center>
+            <center class="title"><?php echo $order_type_text[$info['order_type']];?>广告验收报告</center>
             <p class="page-p"><span style="font-weight: bolder;">甲方（委托方）：<?php echo $info['customer_name'];?></span></p>
             <p class="page-p"><span style="font-weight: bolder">乙方（承办方）：</span><span style="border-bottom: 1px solid black;"><?php echo $info['sponsor'];?></span></p>
             <p class="page-p">广告牌上画发布地点、数量及规格：</p>
@@ -74,14 +74,7 @@
 
             <!-- 第一页的点位条数不足17条时，备注和签名放在本页打印 -->
             <?php if(count($points) > 0 && count($points) <= 17):?>
-            <?php 
-//                 $str = '';
-//                 foreach ($number as $key => $value) {
-//                     $str .= $key.$value.'套，';
-//                 }
-//                 $str = rtrim($str, "，");
-            ?>
-            <p class="page-p" style="line-height: 40px">备注：本次甲方共选<?php echo count($points);?>套冷光灯箱广告，其中<?php //echo $str;?>。我司按照双方签订的户外广告发布合同要求于<?php echo date('Y年m月d日', strtotime($info['make_complete_time']));?>开始制作、安装广告画面，于<?php echo $complete_date;?>按时按量完成<?php echo count($points);?>套冷光灯箱广告的发布，投放时间为<?php echo date('Y.m.d', strtotime($info['release_start_time']));?>-<?php echo date('Y.m.d', strtotime($info['release_end_time']));?>，现将验收照片发给甲方确认。</p>
+            <p class="page-p" style="line-height: 40px">备注：本次甲方共选<?php echo count($points);?>套<?php echo $order_type_text[$info['order_type']];?>广告，其中<?php //echo $str;?>。我司按照双方签订的户外广告发布合同要求于<?php echo date('Y年m月d日', strtotime($info['make_complete_time']));?>开始制作、安装广告画面，于<?php echo $complete_date;?>按时按量完成<?php echo count($points);?>套<?php echo $order_type_text[$info['order_type']];?>广告的发布，投放时间为<?php echo date('Y.m.d', strtotime($info['release_start_time']));?>-<?php echo date('Y.m.d', strtotime($info['release_end_time']));?>，现将验收照片发给甲方确认。</p>
             <p class="mid-p"></p>
             <p class="page-p"><span style="font-weight:bolder">甲方（盖章）：</span><span style="font-weight:bolder;margin-left:400px">乙方（盖章）：</span></p>
             <p class="page-p"><span style="font-weight:bolder">确认人（签字）：</span><span style="font-weight:bolder;margin-left:376px">确认人（签字）：</span></p>
@@ -89,142 +82,32 @@
             <?php endif;?>
         </div>
 
-        <!-- 当第一页的点位条数大于17条小于等于25条时，备注和签名另起一页打印 -->
-        <?php if(count($points) > 17 && count($points) <= 25):?>
-        <div class="page">
-            <div class="first-h">
-                <?php 
-                    $str = '';
-                    foreach ($number as $key => $value) {
-                        $str .= $key.$value.'套，';
-                    }
-                    $str = rtrim($str, "，");
-                ?>
-                <p class="page-p" style="line-height: 40px">备注：本次甲方共选<?php echo $total_num;?>套公交站台灯箱广告，其中<?php echo $str;?>。我司按照双方签订的户外广告发布合同要求于<?php echo date('Y年m月d日', strtotime($info['make_complete_time']));?>开始制作、安装广告画面，于<?php echo $complete_date;?>按时按量完成<?php echo $total_num;?>套公交站台灯箱广告的发布，投放时间为<?php echo date('Y.m.d', strtotime($info['release_start_time']));?>-<?php echo date('Y.m.d', strtotime($info['release_end_time']));?>，现将验收照片发给甲方确认。</p>
-                <p class="mid-p sign-h"></p>
-                <p class="page-p"><span style="font-weight:bolder">甲方（盖章）：</span><span style="font-weight:bolder;margin-left:400px">乙方（盖章）：</span></p>
-                <p class="page-p"><span style="font-weight:bolder">确认人（签字）：</span><span style="font-weight:bolder;margin-left:376px">确认人（签字）：</span></p>
-                <p class="page-p"><span style="font-weight:bolder">日期：</span><span style="font-weight:bolder;margin-left:496px">日期：</span></p>
-            </div>
-        </div>
-        <?php endif;?>
-
-        <!-- 点位列表大于25条时，减去第一页的25条，每30条为一页 -->
-        <?php if(count($points) > 25):?>
-        <?php for ($i = 0; $i < ceil((count($points) - 25)/30); $i++) { ?> 
-        <div class="page">
-            <div class="page-h">
-                <?php 
-                    $num1 = $num - 1;
-                    for ($j = $num1; $j < count($points); $j++) { 
-                        $class = "";
-                        if ($j == $num1) {
-                            $class = "set-top";
-                        }
-
-                        if ($j > $num1 && (($j - 25) % 30) == 0) {
-                            break;
-                        }
-                ?>
-                <table class="detail-info-print <?php echo $class;?>">
-                    <tbody>
-                        <tr>
-                            <td width="20%"><?php echo $num ++;?></td>
-                            <td width="40%"><?php echo $points[$j]['media_name'].$points[$j]['media_code'].'('.$points[$j]['counts'].'套)';?></td>
-                            <td width="40%"><?php echo $points[$j]['size'].'('.$points[$j]['specification_name'].')';?></td>
-                        </tr>
-                    </tbody>
-                </table>
-                <?php }?>
-
-                <!-- 当最后一页的点位条数小于23条时备注和签名同时放在这一页打印 -->
-                <?php if(($i == ceil((count($points) - 25)/30) - 1) && (count($points) - $num1) <= 23 && (count($points) - $num1) >= 0):?>
-                <?php 
-                    $str = '';
-                    foreach ($number as $key => $value) {
-                        $str .= $key.$value.'套，';
-                    }
-                    $str = rtrim($str, "，");
-                ?>
-                <p class="page-p" style="line-height: 40px">备注：本次甲方共选<?php echo $total_num;?>套公交站台灯箱广告，其中<?php echo $str;?>。我司按照双方签订的户外广告发布合同要求于<?php echo date('Y年m月d日', strtotime($info['make_complete_time']));?>开始制作、安装广告画面，于<?php echo $complete_date;?>按时按量完成<?php echo $total_num;?>套公交站台灯箱广告的发布，投放时间为<?php echo date('Y.m.d', strtotime($info['release_start_time']));?>-<?php echo date('Y.m.d', strtotime($info['release_end_time']));?>，现将验收照片发给甲方确认。</p>
-                <p class="mid-p"></p>
-                <p class="page-p"><span style="font-weight:bolder">甲方（盖章）：</span><span style="font-weight:bolder;margin-left:400px">乙方（盖章）：</span></p>
-                <p class="page-p"><span style="font-weight:bolder">确认人（签字）：</span><span style="font-weight:bolder;margin-left:376px">确认人（签字）：</span></p>
-                <p class="page-p"><span style="font-weight:bolder">日期：</span><span style="font-weight:bolder;margin-left:496px">日期：</span></p>
-                <?php endif;?>
-            </div>
-        </div>
-        <?php }?>
-        <?php endif;?>
-
-        <!-- 最后一页如果大于23条但不足30条时备注和签名另起一页打印 -->
-        <?php if(isset($num1) && (count($points) - $num1) < 30 && (count($points) - $num1) > 23):?>
-        <div class="page">
-            <div class="last-h">
-                <?php 
-                    $str = '';
-                    foreach ($number as $key => $value) {
-                        $str .= $key.$value.'套，';
-                    }
-                    $str = rtrim($str, "，");
-                ?>
-                <p class="page-p" style="line-height: 40px">备注：本次甲方共选<?php echo $total_num;?>套公交站台灯箱广告，其中<?php echo $str;?>。我司按照双方签订的户外广告发布合同要求于<?php echo date('Y年m月d日', strtotime($info['create_time']));?>开始制作、安装广告画面，于<?php echo $complete_date;?>按时按量完成<?php echo $total_num;?>套公交站台灯箱广告的发布，投放时间为<?php echo date('Y.m.d', strtotime($info['release_start_time']));?>-<?php echo date('Y.m.d', strtotime($info['release_end_time']));?>，现将验收照片发给甲方确认。</p>
-                <p class="mid-p sign-h"></p>
-                <p class="page-p"><span style="font-weight:bolder">甲方（盖章）：</span><span style="font-weight:bolder;margin-left:400px">乙方（盖章）：</span></p>
-                <p class="page-p"><span style="font-weight:bolder">确认人（签字）：</span><span style="font-weight:bolder;margin-left:376px">确认人（签字）：</span></p>
-                <p class="page-p"><span style="font-weight:bolder">日期：</span><span style="font-weight:bolder;margin-left:496px">日期：</span></p>
-            </div>
-        </div>
-        <?php endif;?>
-
         <!-- 验收图片 -->
-        
-        <?php foreach($points as $key => $value) {?>
-        	
-        
-        <?php }?>
-        
-        
-        
-        
-        <!--<?php 
-        $img_num = 1;
-        for ($i = 0; $i < ceil(count($inspect_images)/4); $i++) { 
-        ?> 
-        <div class="page">
-            <div class="page-h">
-                <?php 
-                    $img_num1 = $img_num - 1;
-                    for ($j = $img_num1; $j < count($inspect_images); $j++) { 
-                        $class = "";
-                        if ($j == $img_num1) {
-                            $class = "set-top";
-                        }
-
-                        if ($j > $img_num1 && ($j % 4) == 0) {
-                            break;
-                        }
-                ?>
-                <table class="detail-info-print <?php echo $class;?>" <?php if($j == 0) { echo 'style="border-top: 1px solid black;"'; }?>>
-                    <tbody>
-                        <tr>
-                            <td><?php echo $inspect_images[$j]['media_name'].$inspect_images[$j]['media_code'].'（'.$volume[$inspect_images[$j]['media_id']].'套）';?> 正面</td>
-                            <td><?php echo $inspect_images[$j]['media_name'].$inspect_images[$j]['media_code'].'（'.$volume[$inspect_images[$j]['media_id']].'套）';?> 背面</td>
-                        </tr>
-                        <tr>
-                            <td style="padding:0"><img src="<?php echo $inspect_images[$j]['front_img'];?>" style="width: 427px;height:260px;" /></td>
-                            <td style="padding:0"><img src="<?php echo $inspect_images[$j]['back_img'];?>" style="width: 427px;height:260px;" /></td>
-                        </tr>
-                    </tbody>
-                </table>
-                <?php 
-                        $img_num++;
-                    }
-                ?>
-            </div>
+        <div id="pic-panel">
+		<table class="detail-info">
+			<thead>
+             	<th width="20%">编号</th>
+               	<th width="40%">点位地址</th>
+               	<th width="40%">广告图</th>
+			</thead>
+		</table>
+ 		<?php $num = 1;?>
+     	<?php foreach($points as $key => $value):?>
+   		<?php  if($key < 25): ?>
+       	<table class="detail-info-print">
+           	<tbody>
+               	<tr>
+            		<td width="20%"><?php echo $num ++;?></td>
+           			<td width="40%"><?php echo $value['houses_name'].$value['houses_area_name'].$value['ban'].$value['unit'].$value['floor']?></td>
+         			<td width="40%"><img style="width:250px;height:180px;" src="<?php echo $done_inspect_images[$value['id']];?>"></td>
+           		</tr>
+        	</tbody>
+        </table>
+        <?php endif;?>
+        <?php endforeach;?>
         </div>
-        <?php }?>-->
-        <div class="noprint btn-print"><button type="button" onclick="javascript: window.print();">打 印</button></div>
+        
+        <div class="noprint btn-print"><button type="button" onclick="document.getElementById('pic-panel').style.display='none';javascript: window.print();document.getElementById('pic-panel').style.display='block';">打印文字报告</button></div>
     </div>
 </body>
 </html>

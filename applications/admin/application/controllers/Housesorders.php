@@ -554,30 +554,12 @@ class Housesorders extends MY_Controller{
 
         /********验收图片**********/
         $data['inspect_images'] = $this->Mhouses_order_inspect_images->get_inspect_img(array('A.order_id' => $id, 'A.type' => 1));
-		
-        var_dump($data['inspect_images']);
         
         //获取点位列表
         $where['in'] = array('A.id' => explode(',', $data['info']['point_ids']));
         $data['points'] = $this->Mhouses_points->get_points_lists($where);
-		
+		$data['done_inspect_images'] = array_column($data['inspect_images'], 'front_img', 'point_id');
         
-        
-        //统计大灯箱、中灯箱、小灯箱套数
-        //$make = $this->get_make_info($data['info']);
-//         $make_info = multi_arr_sort($make['make_num'], 'spec_id');
-//         $data['number'] = array();
-//         foreach($make_info as $k=>$v){
-//         	if(!isset($data['number'][$v['spec_name']])){
-//                 $data['number'][$v['spec_name']] = $v['counts'];
-//             }else{
-//                 $data['number'][$v['spec_name']] += $v['counts'];
-//             }
-//        	}
-
-       	//广告总套数
-        //$data['total_num'] = $make['total_counts'];
-        //$data['volume'] = array_column($data['points'], 'counts' ,'media_id');
 
         $this->load->view('housesorders/confirmation/light', $data);
     }
