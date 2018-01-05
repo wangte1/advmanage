@@ -480,7 +480,7 @@ class Housesscheduledorders extends MY_Controller{
         $app = C('sms.app');
         $parems = [
             'PhoneNumbers' => $info['contact_tel'],
-            'SignName' => C('sms.sign.lkcb'),
+            'SignName' => C('sms.sign.tgkj'),
             'TemplateCode' => C('sms.template.keihu'),
             'TemplateParam' => array(
                 'token' => $token
