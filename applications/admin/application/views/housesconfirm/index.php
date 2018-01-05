@@ -209,7 +209,10 @@
                                                     <span class="badge <?php echo $class; ?>">
                                                         <?php echo $houses_assign_status[$val['status']];?>
                                                     </span>
-                                                   	
+                                                   	<?php if($val['confirm_remark']) {?>
+                                                   		<br>
+                                                   		说明:<?php echo $val['confirm_remark'];?>
+                                                   	<?php }?>
                                                    	</td>
                                                    	
                                                     <td>
@@ -224,13 +227,13 @@
 		                                                        </a> 
 	                                                        <?php }?>
 	                                                        
-	                                                        <?php if($val['status'] > 3) {?>
-	                                                        	<a class="green tooltip-info m-detail2" data-id="<?php echo $val['id'];?>" order-id="<?php echo $val['order_id'];?>"  data-rel="tooltip" data-placement="top" title="" data-original-title="验收图片">
+	                                                        <?php if($val['status'] == 4 || $val['status'] == 5) {?>
+	                                                        	<a class="green tooltip-info m-detail2" data-id="<?php echo $val['id'];?>" order-id="<?php echo $val['order_id'];?>" houses-id="<?php echo $val['houses_id'];?>" data-rel="tooltip" data-placement="top" title="" data-original-title="验收图片">
 		                                                            <i class="fa fa-picture-o bigger-130"></i>
 		                                                        </a>
 	                                                        <?php }?>
-	                                                        <?php if($val['status'] == 3) {?>
-	                                                        	<a class="green tooltip-info m-upload" data-id="<?php echo $val['id'];?>" order-id="<?php echo $val['order_id'];?>"  data-rel="tooltip" data-placement="top" title="" data-original-title="验收图片">
+	                                                        <?php if($val['status'] == 3 || $val['status'] == 6) {?>
+	                                                        	<a class="green tooltip-info m-upload" data-id="<?php echo $val['id'];?>" order-id="<?php echo $val['order_id'];?>" houses-id="<?php echo $val['houses_id'];?>"  data-rel="tooltip" data-placement="top" title="" data-original-title="验收图片">
 		                                                            <i class="fa fa-picture-o bigger-130"></i>
 		                                                        </a>
 		                                                        <a class="green tooltip-info m-submit" data-id="<?php echo $val['id'];?>" order-id="<?php echo $val['order_id'];?>"  data-rel="tooltip" data-placement="top" title="" data-original-title="提交上画">
@@ -286,16 +289,17 @@
 		});
 
 		$('.m-detail2').click(function(){
+			var id = $(this).attr('data-id');
 			var order_id = $(this).attr('order-id');
-			var assign_id = $(this).attr('data-id');
+			var houses_id = $(this).attr('houses-id');
 			
 			layer.open({
 				  type: 2,
-				  title: '包含点位',
+				  title: '上传验收图片',
 				  shadeClose: true,
 				  shade: 0.6,
-				  area: ['60%', '60%'],
-				  content: '/housesorders/check_upload_img?order_id='+order_id+'&assign_id='+assign_id //iframe的url
+				  area: ['80%', '80%'],
+				  content: '/housesorders/check_upload_img?order_id='+order_id+'&assign_id='+id+'&houses_id='+houses_id //iframe的url
 				}); 
 		});
 
@@ -321,6 +325,7 @@
 		$('.m-upload').click(function(){
 			var id = $(this).attr('data-id');
 			var order_id = $(this).attr('order-id');
+			var houses_id = $(this).attr('houses-id');
 			
 			layer.open({
 				  type: 2,
@@ -328,19 +333,26 @@
 				  shadeClose: true,
 				  shade: 0.6,
 				  area: ['80%', '80%'],
-				  content: '/housesconfirm/check_upload_img?order_id='+order_id+'&assign_id='+id //iframe的url
+				  content: '/housesconfirm/check_upload_img?order_id='+order_id+'&assign_id='+id+'&houses_id='+houses_id //iframe的url
 				}); 
 		});
 
 		$('.m-submit').click(function(){
 			var assign_id = $(this).attr('data-id');
-			$.post('/housesconfirm/submit_upload', {assign_id : assign_id}, function(data){
-				if(data) {
-					layer.alert(data.msg, function(){
-						location.reload();
+			layer.confirm('您确认提交上画至媒介管理员审核吗？', {
+					btn: ['确认','取消'] //按钮
+				}, function(){
+					$.post('/housesconfirm/submit_upload', {assign_id : assign_id}, function(data){
+						if(data) {
+							layer.alert(data.msg, function(){
+								location.reload();
+							});
+						}
 					});
-				}
-			});
+				});
+			
+			
+			
 		});
 
 

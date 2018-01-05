@@ -508,18 +508,22 @@
 			                                                    <span class="badge <?php echo $class; ?>">
 			                                                        <?php echo $houses_assign_status[$v['status']];?>
 			                                                    </span>
+			                                                    <?php if($v['confirm_remark']) {?>
+			                                                   		<br>
+			                                                   		说明:<?php echo $v['confirm_remark'];?>
+			                                                   	<?php }?>
                                             				</td>
                                             				
                                             				<td class="center">
 																<a class="green tooltip-info m-detail" data-id="<?php echo $v['houses_id'];?>"  data-rel="tooltip" data-placement="top" title="" data-original-title="点位详情">
 										                        	<i class="icon-eye-open bigger-130"></i>
 										                        </a>
-										                        <a class="green tooltip-info m-upload" data-id="<?php echo $v['id'];?>" order-id = "<?php echo $v['order_id'];?>"  data-rel="tooltip" data-placement="top" title="" data-original-title="查看验收图片">
+										                        <a class="green tooltip-info m-upload" data-id="<?php echo $v['id'];?>" order-id = "<?php echo $v['order_id'];?>" houses-id = "<?php echo $v['houses_id'];?>"  data-rel="tooltip" data-placement="top" title="" data-original-title="查看验收图片">
 										                        	<i class="fa fa-picture-o bigger-130"></i>
 										                        </a>
 										                        
 										                       	<?php if($v['status'] == 4) {?>
-										                       		<a class="green tooltip-info m-confirm" data-id="<?php echo $v['id'];?>"  data-rel="tooltip" data-placement="top" title="" data-original-title="确认上画">
+										                       		<a class="green tooltip-info m-confirm" data-id="<?php echo $v['id'];?>" order-id = "<?php echo $v['order_id'];?>"  data-rel="tooltip" data-placement="top" title="" data-original-title="上画审核">
 											                        	<i class="icon-check bigger-130"></i>
 											                        </a>
 										                       	<?php }?>
@@ -586,6 +590,28 @@
     </div>
 </div>
 
+<div class="modal fade" id="confirmModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel">
+    <div class="modal-dialog" role="document" style="margin-top: 220px;">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                <h4 class="modal-title" id="exampleModalLabel">上画审核</h4>
+            </div>
+            <div class="modal-body">
+               <div class="form-group">
+                    <label for="message-text" class="control-label">说明:</label>
+                    <textarea style="width: 90%; height: 80px" id="confirm-remark"></textarea>
+               </div>
+            </div>
+            <div class="modal-footer">
+                <span class="error_msg" style="color: red"></span>
+                <button type="button" class="btn btn-default"  id="sub-not-confirm">不通过</button>
+                <button type="button" class="btn btn-primary" id="sub-confirm">通过</button>
+            </div>
+        </div>
+    </div>
+</div>
+
 
 <div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel">
     <div class="modal-dialog" role="document" style="margin-top: 220px;">
@@ -640,24 +666,51 @@
 	});
 
 	$('.m-confirm').click(function(){
-		layer.confirm('确定要通过该派单的上画吗？', {
-				btn: ['确定','取消'] //按钮
-			}, function(){
-				
+		var assign_id = $(this).attr('data-id');
+		var order_id = $(this).attr('order-id');
+
+		$("#confirmModal").modal('show');
+
+		//通过
+		$('#sub-confirm').click(function(){
+			var confirm_remark  = $('#confirm-remark').val();
+			
+			$.post('/housesorders/confirm_upload', {assign_id:assign_id, order_id:order_id, confirm_remark:confirm_remark, mark:1}, function(data){
+				if(data) {
+					layer.alert(data.msg, function(){
+						location.reload();
+					});
+				}
 			});
+		});
+
+		//不通过
+		$('#sub-not-confirm').click(function(){
+			var confirm_remark  = $('#confirm-remark').val();
+			
+			$.post('/housesorders/confirm_upload', {assign_id:assign_id, order_id:order_id, confirm_remark:confirm_remark, mark:2}, function(data){
+				if(data) {
+					layer.alert(data.msg, function(){
+						location.reload();
+					});
+				}
+			});
+		});
+		
 	});
 
     $('.m-upload').click(function(){
 		var id = $(this).attr('data-id');
 		var order_id = $(this).attr('order-id');
-	
+		var houses_id = $(this).attr('houses-id');
+
 		layer.open({
 			  type: 2,
-			  title: '上传验收图片',
+			  title: '查看验收图片',
 			  shadeClose: true,
 			  shade: 0.6,
 			  area: ['80%', '80%'],
-			  content: '/housesorders/check_upload_img?order_id='+order_id+'&assign_id='+id //iframe的url
+			  content: '/housesorders/check_upload_img?order_id='+order_id+'&assign_id='+id+'&houses_id='+houses_id //iframe的url
 			}); 
 	});
 

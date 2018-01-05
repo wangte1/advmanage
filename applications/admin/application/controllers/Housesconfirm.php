@@ -124,10 +124,10 @@ class Housesconfirm extends MY_Controller{
     	$page =  intval($this->input->get("per_page",true)) ?  : 1;
     	$size = $pageconfig['per_page'];
     	
-    	$order_id = $this->input->get('order_id');
     	$assign_id = $this->input->get('assign_id');
+    	$order_id = $this->input->get('order_id');
+    	$houses_id = $this->input->get('houses_id');
     	
-    	$order = $this->Mhouses_orders->get_one("*",array("id" => $order_id));
     	if(IS_POST){
     		$post_data = $this->input->post();
     		foreach ($post_data as $key => $value) {
@@ -161,10 +161,11 @@ class Housesconfirm extends MY_Controller{
     		$this->success("保存验收图片成功！");
     		exit;
     	}
-    
+    	
+    	$order = $this->Mhouses_orders->get_one("*",array("id" => $order_id));
     	//获取该订单下面的所有楼盘
-    	$points = $this->Mhouses_points->get_points_lists(array('in' => array("A.id" => explode(",",$order['point_ids']))), [],$size,($page-1)*$size);
-    	$data_count = $this->Mhouses_points->count(array('in' => array("id" => explode(",",$order['point_ids']))));
+    	$points = $this->Mhouses_points->get_points_lists(['A.order_id' => $order_id, 'A.houses_id' => $houses_id],[],$size,($page-1)*$size);
+    	$data_count = $this->Mhouses_points->count(['order_id' => $order_id, 'houses_id' => $houses_id]);
     	$data['page'] = $page;
     	$data['data_count'] = $data_count;
     	
@@ -192,9 +193,6 @@ class Housesconfirm extends MY_Controller{
     	}
     
     	$data['list'] = $list;
-    
-    	$data['order_type'] = $order['order_type'];
-    	$data['order_info'] = $order;
     	
     	//获取分页
     	$pageconfig['base_url'] = "/houses";
@@ -213,7 +211,11 @@ class Housesconfirm extends MY_Controller{
     	//如果全部上传完，则将派单表的状态改成已上画
     	$where_count['assign_id'] = $assign_id;
     	$where_count['front_img<>'] = '';
-    	$upload_count = $this->Mhouses_order_inspect_images->count($where_count);
+    	$tmp_count = $this->Mhouses_order_inspect_images->get_one('count(DISTINCT assign_id) as count', $where_count);
+    	if(isset($tmp_count['count'])) {
+    		$upload_count = $tmp_count['count'];
+    	}
+    	
     	$assign_count = $this->Mhouses_assign->get_one('points_count', ['id' => $assign_id, 'is_del' => 0]);
     	
     	if(isset($upload_count) && isset($assign_count['points_count']) && $upload_count != $assign_count['points_count']) {
@@ -221,6 +223,7 @@ class Housesconfirm extends MY_Controller{
     	}
     	
     	$update_data['status'] = 4;
+    	$update_data['confirm_remark'] = '';
     	$res = $this->Mhouses_assign->update_info($update_data, ['id' => $assign_id]);
     	if($res) {
     		$this->return_json(['code' => 1, 'msg' => "已经提交上画至媒介管理人员处审核！"]);

@@ -31,7 +31,7 @@
                                             <td style="text-align: center;vertical-align: middle;"><?php echo $value['ban'];?></td>
                                             <td style="text-align: center;vertical-align: middle;"><?php echo $value['unit'];?></td>
                                             <td style="text-align: center;vertical-align: middle;"><?php echo $value['floor'];?></td>
-                                            <td style="text-align: center;vertical-align: middle;"><?php echo $point_addr[$value['addr']];?></td>
+                                            <td style="text-align: center;vertical-align: middle;"><?php if(isset($point_addr[$value['addr']])) echo $point_addr[$value['addr']];?></td>
                                             <td class="center">
                                                 <ul class="ace-thumbnails" media-id="<?php echo $value['id'];?>" id="uploader_front_img<?php echo $key;?>">
                                                     <?php if(isset($value['image']) && count($value['image']) > 0): ?>

@@ -539,52 +539,47 @@ class Housesorders extends MY_Controller{
      */
     public function confirmation($id) {
         $data = $this->data;
-        $data['info'] = $this->Morders->get_one("*", array('id' => $id));
+        $data['info'] = $this->Mhouses_orders->get_one("*", array('id' => $id));
 
-        $images = $this->Morder_inspect_images->get_lists("*", array('order_id' => $id, 'type' => 1));
+        $images = $this->Mhouses_order_inspect_images->get_lists("*", array('order_id' => $id, 'type' => 1));
         if (!$images) {
-            $this->success("请先上传验收图片！","/changepicorders");
+            $this->success("请先上传验收图片！");
         }
 
         //甲方-委托方（客户名称）
-        $data['info']['customer_name'] = $this->Mcustomers->get_one('customer_name', array('id' => $data['info']['customer_id']))['customer_name'];
+        $data['info']['customer_name'] = $this->Mhouses_customers->get_one('name', array('id' => $data['info']['customer_id']))['name'];
             
         //上画完成时间
         $data['complete_date'] = date('Y年m月d日', strtotime($data['info']['draw_finish_time']));
 
         /********验收图片**********/
-        $data['inspect_images'] = $this->Morder_inspect_images->get_inspect_img(array('A.order_id' => $id, 'A.type' => 1));
-
+        $data['inspect_images'] = $this->Mhouses_order_inspect_images->get_inspect_img(array('A.order_id' => $id, 'A.type' => 1));
+		
+        var_dump($data['inspect_images']);
+        
         //获取点位列表
-        $where['in'] = array('B.id' => explode(',', $data['info']['point_ids']));
-        $data['points'] = $this->Mpoints->get_confirm_points($where, array('A.sort' => 'asc', 'B.id' => 'asc'), array('media_code', 'C.size'));
+        $where['in'] = array('A.id' => explode(',', $data['info']['point_ids']));
+        $data['points'] = $this->Mhouses_points->get_points_lists($where);
+		
+        
+        
+        //统计大灯箱、中灯箱、小灯箱套数
+        //$make = $this->get_make_info($data['info']);
+//         $make_info = multi_arr_sort($make['make_num'], 'spec_id');
+//         $data['number'] = array();
+//         foreach($make_info as $k=>$v){
+//         	if(!isset($data['number'][$v['spec_name']])){
+//                 $data['number'][$v['spec_name']] = $v['counts'];
+//             }else{
+//                 $data['number'][$v['spec_name']] += $v['counts'];
+//             }
+//        	}
 
-        if ($data['info']['order_type'] == '1') {    //灯箱
-            //统计大灯箱、中灯箱、小灯箱套数
-            $make = $this->get_make_info($data['info']);
-            $make_info = multi_arr_sort($make['make_num'], 'spec_id');
-            $data['number'] = array();
-            foreach($make_info as $k=>$v){
-                if(!isset($data['number'][$v['spec_name']])){
-                    $data['number'][$v['spec_name']] = $v['counts'];
-                }else{
-                    $data['number'][$v['spec_name']] += $v['counts'];
-                }
-            }
+       	//广告总套数
+        //$data['total_num'] = $make['total_counts'];
+        //$data['volume'] = array_column($data['points'], 'counts' ,'media_id');
 
-            //广告总套数
-            $data['total_num'] = $make['total_counts'];
-            $data['volume'] = array_column($data['points'], 'counts' ,'media_id');
-
-            $this->load->view('orders/confirmation/light', $data);
-        } elseif ($data['info']['order_type'] == '2') {  //户外高杆
-            //高杆数
-            $data['total_num'] = $this->get_make_info($data['info'])['high_count'];
-
-            $this->load->view('orders/confirmation/high', $data);
-        } elseif ($data['info']['order_type'] == '3' || $data['info']['order_type'] == '4') {   //led
-            $this->load->view('orders/confirmation/led', $data);
-        }
+        $this->load->view('housesorders/confirmation/light', $data);
     }
 
 
@@ -862,12 +857,15 @@ class Housesorders extends MY_Controller{
     	$page =  intval($this->input->get("per_page",true)) ?  : 1;
     	$size = $pageconfig['per_page'];
     	
-    	$order_id = $this->input->get('order_id');
+    	
     	$assign_id = $this->input->get('assign_id');
+    	$order_id = $this->input->get('order_id');
+    	$houses_id = $this->input->get('houses_id');
+    	
     	$order = $this->Mhouses_orders->get_one("*",array("id" => $order_id));
     	//获取该订单下面的所有楼盘
-    	$points = $this->Mhouses_points->get_points_lists(array('in' => array("A.id" => explode(",",$order['point_ids']))),[],$size,($page-1)*$size);
-    	$data_count = $this->Mhouses_points->count(array('in' => array("id" => explode(",",$order['point_ids']))));
+    	$points = $this->Mhouses_points->get_points_lists(['A.order_id' => $order_id, 'A.houses_id' => $houses_id],[],$size,($page-1)*$size);
+    	$data_count = $this->Mhouses_points->count(['order_id' => $order_id, 'houses_id' => $houses_id]);
     	$data['page'] = $page;
     	$data['data_count'] = $data_count;
     	
@@ -875,7 +873,6 @@ class Housesorders extends MY_Controller{
     	$data['images'] = "";
     	if(count($points) > 0) {
     		$where['in'] = array("point_id"=>array_column($points,"id"));
-    		$where['order_id'] = $order_id;
     		$where['assign_id'] = $assign_id;
     		$where['type'] = 1;
     		$data['images'] = $this->Mhouses_order_inspect_images->get_lists("*",$where);
@@ -895,9 +892,6 @@ class Housesorders extends MY_Controller{
     	}
     
     	$data['list'] = $list;
-    
-    	$data['order_type'] = $order['order_type'];
-    	$data['order_info'] = $order;
     	
     	//获取分页
     	$pageconfig['base_url'] = "/houses";
@@ -906,6 +900,45 @@ class Housesorders extends MY_Controller{
     	$data['pagestr'] = $this->pagination->create_links(); // 分页信息
     
     	$this->load->view('housesorders/check_adv_img', $data);
+    }
+    
+    /*
+     * 确认上画
+     */
+    public function confirm_upload() {
+    	$assign_id = $this->input->post("assign_id");
+    	$order_id = $this->input->post("order_id");
+    	$confirm_remark = $this->input->post("confirm_remark");
+    	$mark = $this->input->post("mark");	//mark=1通过，mark=2不通过
+    	
+    	if($mark == 1) {
+    		$update_data['status'] = 5;
+    	}else {
+    		$update_data['status'] = 6;
+    	}
+    	$update_data['confirm_remark'] = $confirm_remark;
+    	
+    	$res = $this->Mhouses_assign->update_info($update_data, ['id' => $assign_id]);
+    	if($res) {
+    		
+    		$where['order_id'] = $order_id;
+    		$where['status<>'] = 5;
+    		$count = $this->Mhouses_assign->count($where);
+    		 
+    		if($count == 0) {
+    			$update_data = [];
+    			$update_data['order_status'] = 6;
+    			$res1 = $this->Mhouses_orders->update_info($update_data, ['id' => $order_id]);
+    			if($res1) {
+    				$this->return_json(['code' => 1, 'msg' => "该订单的所有派单审核通过,订单状态更新为上画完成！"]);
+    			}
+    		}
+    		
+    		$this->return_json(['code' => 1, 'msg' => "操作成功！"]);
+    	}
+    	
+    	$this->return_json(['code' => 0, 'msg' => "操作失败，请联系管理员！"]);
+    	
     }
 
 
