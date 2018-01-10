@@ -21,7 +21,8 @@ class Housesassign extends MY_Controller{
         	'Model_houses' => 'Mhouses',
         	'Model_houses_area' => 'Mhouses_area',
         	'Model_houses_points' => 'Mhouses_points',
-        	'Model_houses_assign' => 'Mhouses_assign'
+        	'Model_houses_assign' => 'Mhouses_assign',
+        	'Model_houses_assign_down' => 'Mhouses_assign_down'
         		
         ]);
         $this->data['code'] = 'horders_manage';
@@ -30,6 +31,7 @@ class Housesassign extends MY_Controller{
         $this->data['customers'] = $this->Mhouses_customers->get_lists("id, name", array('is_del' => 0));  //客户
         $this->data['order_type_text'] = C('housesorder.houses_order_type'); //订单类型
         $this->data['point_addr'] = C('housespoint.point_addr'); //订单类型
+        $this->data['houses_assign_type'] = C('housesorder.houses_assign_type'); //派单类型
         $this->data['houses_assign_status'] = C('housesorder.houses_assign_status'); //派单状态
     }
     
@@ -52,6 +54,7 @@ class Housesassign extends MY_Controller{
         if ($this->input->get('order_code')) $where['A.order_code'] = $this->input->get('order_code');
         if ($this->input->get('order_type')) $where['A.order_type'] = $this->input->get('order_type');
         if ($this->input->get('customer_id')) $where['A.customer_id'] = $this->input->get('customer_id');
+        if ($this->input->get('assign_type')) $where['A.assign_type'] = $this->input->get('assign_type');
         if ($this->input->get('assign_status')) $where['A.assign_status'] = $this->input->get('assign_status');
 
 //         //即将到期
@@ -72,6 +75,7 @@ class Housesassign extends MY_Controller{
         $data['order_code'] = $this->input->get('order_code');
         $data['order_type'] = $this->input->get('order_type');
         $data['customer_id'] = $this->input->get('customer_id');
+        $data['assign_type'] = $this->input->get('assign_type');
         $data['assign_status'] = $this->input->get('assign_status');
 
         //$data['project'] = array_column($this->Mcustomer_project->get_lists('id, project_name', array('is_del' => 0)), 'project_name', 'id');
@@ -113,12 +117,11 @@ class Housesassign extends MY_Controller{
     		$add_data = [];
     		$i = 0;
     		foreach ($houses_ids as $k => $v) {
-    			$res_send = $this->sendMsg($charge_users[$k]);
+//     			$res_send = $this->sendMsg($charge_users[$k]);
     			
-    			if($res_send['code'] == 0) {
-    				$this->write_log($charge_users[$k],2,"发送短信失败".date("Y-m-d H:i:s"));	//发送短信失败记录
-    			}
-    			
+//     			if($res_send['code'] == 0) {
+//     				$this->write_log($charge_users[$k],2,"发送短信失败".date("Y-m-d H:i:s"));	//发送短信失败记录
+//     			}
     			$add_data[$i]['order_id'] = $order_id;
     			$add_data[$i]['houses_id'] = $v;
     			$add_data[$i]['points_count'] = $points_counts[$k];
@@ -131,17 +134,21 @@ class Housesassign extends MY_Controller{
     			$i++;
     		}
     		
-    		$res = $this->Mhouses_assign->create_batch($add_data);
+    		if($this->input->get('assign_type') == 2) {
+    			$res = $this->Mhouses_assign_down->create_batch($add_data);
+    		}else {
+    			$res = $this->Mhouses_assign->create_batch($add_data);
+    		}
     		
     		if($res) {
     			$update_data['assign_status'] = 2;
     			$res1 = $this->Mhouses_orders->update_info($update_data,array("id" => $order_id));
-    			
-    			if($res1) {
     				
-    				$this->success("保存并通知成功","/housesassign/detail?order_id=".$order_id);
+    			if($res1) {
+    				$this->success("保存并通知成功","/housesassign/detail?order_id=".$order_id."&assign_type=".$this->input->get('assign_type'));
     			}
     		}
+    		
     		
     		$this->error("保存失败");
     		
@@ -175,6 +182,14 @@ class Housesassign extends MY_Controller{
     	$where = [];
     	$where['group_id'] = 4;	//工程人员角色
     	$data['user_list'] = $this->Madmins->get_lists('id,name,fullname', $where);  //工程人员信息
+    	
+    	
+    	if($this->input->get('assign_type') == 2) {
+    		$assign_list = $this->Mhouses_assign->get_lists('*', ['order_id' => $data['order_id'], 'is_del' => 0]);
+    	}
+    	
+    	$data['assign_list'] = array_column($assign_list, 'charge_user', 'houses_id');
+    	$data['assign_type'] = $this->input->get('assign_type');
     	
     	$this->load->view('housesassign/assign', $data);
     }
@@ -218,6 +233,7 @@ class Housesassign extends MY_Controller{
     	$data['user_list'] = array_column($tmp_arr, 'fullname', 'id');
     	
     	$data['assign_list'] = $this->Mhouses_assign->get_lists('id,houses_id,charge_user,assign_user,assign_time,status,remark', ['order_id' => $data['order_id'], 'is_del' => 0]);  //点位分组
+    	$data['assign_down_list'] = $this->Mhouses_assign_down->get_lists('id,houses_id,charge_user,assign_user,assign_time,status,remark', ['order_id' => $data['order_id'], 'is_del' => 0]);  //点位分组
     	
     	$this->load->view('housesassign/detail', $data);
     }
@@ -237,6 +253,13 @@ class Housesassign extends MY_Controller{
     	$data['user_list'] = $this->Madmins->get_lists('id,name,fullname', $where);  //工程人员信息
     	$data['user_list1'] = array_column($data['user_list'], 'fullname', 'id');
     	
+    	if($this->input->get('assign_type') == 2 || $this->input->post('assign_type') == 2) {
+    		$tmp_moudle = $this->Mhouses_assign_down;
+    	}else {
+    		$tmp_moudle = $this->Mhouses_assign;
+    	}
+    	$data['assign_type'] = $this->input->get('assign_type');
+    	
     	if(IS_POST){
     		$order_id = $this->input->post('order_id');
     		$houses_ids = $this->input->post('houses_id');
@@ -248,14 +271,14 @@ class Housesassign extends MY_Controller{
     		$i = 0;
     		foreach ($charge_users as $k => $v) {
     			if($v) {
-    				$tmp_charge = $this->Mhouses_assign->get_one('charge_user', ['order_id' => $order_id, 'houses_id'=>$houses_ids[$k], 'is_del' => 0]);  //点位分组
+    				$tmp_charge = $tmp_moudle->get_one('charge_user', ['order_id' => $order_id, 'houses_id'=>$houses_ids[$k], 'is_del' => 0]);  //点位分组
     				
     				if($tmp_charge != $v) {
     					$up_data['charge_user'] = $v;
     					$up_data['assign_user'] = $data['userInfo']['id'];
     					$up_data['assign_time'] = date("Y-m-d H:i:s");
     					$up_data['remark'] = $remark[$k];
-    					$result = $this->Mhouses_assign->update_info($up_data,array("order_id"=>$order_id, 'houses_id'=>$houses_ids[$k]));
+    					$result = $tmp_moudle->update_info($up_data,array("order_id"=>$order_id, 'houses_id'=>$houses_ids[$k]));
     					
     					if($result) {
     						$this->write_log($data['userInfo']['id'],2,"派单更改负责人".$data['user_list1'][$tmp_charge['charge_user']]."为：".$data['user_list1'][$v].",order_id-".$order_id.",houses_id-".$houses_ids[$k]);	//后期空闲时加上记录表
@@ -306,8 +329,8 @@ class Housesassign extends MY_Controller{
     	}
     	 
     	$data['list'] = $list;
+    	$data['assign_list'] = $tmp_moudle->get_lists('id,houses_id,charge_user,assign_user,assign_time,status', ['order_id' => $data['order_id'], 'is_del' => 0]);  //点位分组
     	
-    	$data['assign_list'] = $this->Mhouses_assign->get_lists('id,houses_id,charge_user,assign_user,assign_time,status', ['order_id' => $data['order_id'], 'is_del' => 0]);  //点位分组
     	$this->load->view('housesassign/edit', $data);
     }
     

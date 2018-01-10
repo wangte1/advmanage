@@ -67,7 +67,10 @@
                                         </li>
                                         <?php endif;?>
                                         <li>
-                                        	<a data-toggle="tab" href="#assign_list">派单列表</a>
+                                        	<a data-toggle="tab" href="#assign_list">上画派单列表</a>
+                                        </li>
+                                        <li>
+                                        	<a data-toggle="tab" href="#assign_down_list">下画派单列表</a>
                                         </li>
                                     </ul>
 
@@ -545,7 +548,7 @@
                                     </div>
                                 </div>
 
-                                <?php if($info['order_status'] < 8):?>
+                                <?php if($info['order_status'] < 9):?>
                                 <div class="table-responsive">
                                     <div class="page-header" style="margin-top: 50px">
                                         <h1>订单状态跟踪</h1>

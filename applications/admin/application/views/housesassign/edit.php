@@ -24,6 +24,7 @@
 <div class="main-container" id="main-container">
 <form class="form-horizontal" role="form" method="post">
 	<input type="hidden" name="order_id" value="<?php echo $order_id;?>">
+	<input type="hidden" name="assign_type" value="<?php echo $assign_type;?>">
 	<div id="table-panel">
 	    <table id="sample-table-1" class="table table-striped table-bordered table-hover" >
 			<thead>
@@ -64,7 +65,11 @@
 						</select>
 					</td>
 					<td><textarea name="remark[]" rows="1"></textarea></td>
-					<td><button class="btn btn-xs btn-info" type="button">详情</button></td>
+					<td>
+						<a class="green tooltip-info m-detail" data-id="<?php echo $v['houses_id'];?>"  data-rel="tooltip" data-placement="top" title="" data-original-title="详情">
+                        	<i class="icon-eye-open bigger-130"></i>
+                        </a>
+					</td>
 				</tr>
 				<?php }?>
 			</tbody>
@@ -105,6 +110,20 @@ $(function(){
 		}, function(){
 		 	$('form').submit();
 		});
+	});
+
+	$('.m-detail').click(function(){
+		var order_id = '<?php echo $order_id;?>';
+		var houses_id = $(this).attr('data-id');
+		
+		layer.open({
+			  type: 2,
+			  title: '包含点位',
+			  shadeClose: true,
+			  shade: 0.6,
+			  area: ['90%', '90%'],
+			  content: '/housesassign/show_points?order_id='+order_id+'&houses_id='+houses_id //iframe的url
+			}); 
 	});
 });
 

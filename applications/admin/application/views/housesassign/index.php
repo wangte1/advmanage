@@ -82,10 +82,22 @@
                                             </div>
                                         </div>
                                         <div class="form-group">
+                                        	<div class="col-sm-4">
+                                                <label class="col-sm-3 control-label no-padding-right" for="form-field-1"> 派单类型 </label>
+                                                <div class="col-sm-9">
+                                                    <select name="assign_type" class="select2">
+                                                        <option value="">全部</option>
+                                                        <?php foreach($houses_assign_type as $key => $value):?>
+                                                        <option value="<?php echo $key;?>" <?php if($key == $assign_type){ echo "selected"; }?>><?php echo $value;?></option>
+                                                        <?php endforeach;?>
+                                                    </select>
+                                                </div>
+                                            </div>
+                                        
                                             <div class="col-sm-4">
                                                 <label class="col-sm-3 control-label no-padding-right" for="form-field-1"> 派单状态 </label>
                                                 <div class="col-sm-9">
-                                                    <select name="assign_status">
+                                                    <select name="assign_status" class="select2">
                                                         <option value="">全部</option>
                                                         <?php foreach($houses_assign_status as $key => $val):?>
                                                         <option value="<?php echo $key;?>" <?php if($key == $assign_status){ echo "selected"; }?>><?php echo $val;?></option>
@@ -148,6 +160,7 @@
                                                 <!-- <th>手机号</th> -->
                                                 <th>投放时间</th>
                                                 <th width="7%">下单日期</th>
+                                                <th>派单类型</th>
                                                 <th>派单状态</th>
                                                 <th>负责人员</th>
                                                 <th>创建人</th>
@@ -174,6 +187,7 @@
                                                     ?>
                                                 </td>
                                                 <td><?php echo $value['create_time'];?></td>
+                                                <td><?php echo $houses_assign_type[$value['assign_type']];?></td>
                                                 <td>
                                                     <?php 
                                                         switch ($value['assign_status']) {
@@ -216,11 +230,11 @@
                                                             <i class="icon-eye-open bigger-130"></i>
                                                         </a>
                                                     	<?php if($value['assign_status'] == 1) {?>
-	                                                        <a class="green tooltip-info m-assign" data-id="<?php echo $value['id'];?>" data-rel="tooltip" data-placement="top" title="" data-original-title="派单">
+	                                                        <a class="green tooltip-info m-assign" data-id="<?php echo $value['id'];?>" assign_type="<?php echo $value['assign_type'];?>" data-rel="tooltip" data-placement="top" title="" data-original-title="派单">
 	                                                            <i class="icon-hand-right bigger-130"></i>
 	                                                        </a> 
                                                         <?php }else if($value['assign_status'] == 2) {?>
-                                                        	<a class="green tooltip-info m-edit" data-id="<?php echo $value['id'];?>"  data-rel="tooltip" data-placement="top" title="" data-original-title="改派">
+                                                        	<a class="green tooltip-info m-edit" data-id="<?php echo $value['id'];?>" assign_type="<?php echo $value['assign_type'];?>"  data-rel="tooltip" data-placement="top" title="" data-original-title="改派">
                                                                 <i class="icon-pencil bigger-130"></i>
                                                             </a>
                                                         <?php }?>
@@ -296,25 +310,27 @@
 	
 		$('.m-assign').click(function(){
 			var order_id = $(this).attr('data-id');
+			var assign_type = $(this).attr('assign_type');
 			layer.open({
 				  type: 2,
 				  title: '派单',
 				  shadeClose: true,
 				  shade: 0.6,
 				  area: ['70%', '70%'],
-				  content: 'housesassign/assign?order_id='+order_id //iframe的url
+				  content: 'housesassign/assign?order_id='+order_id+'&assign_type='+assign_type //iframe的url
 				}); 
 		});
 
 		$('.m-edit').click(function(){
 			var order_id = $(this).attr('data-id');
+			var assign_type = $(this).attr('assign_type');
 			layer.open({
 				  type: 2,
 				  title: '改派',
 				  shadeClose: true,
 				  shade: 0.6,
 				  area: ['70%', '70%'],
-				  content: 'housesassign/edit?order_id='+order_id //iframe的url
+				  content: 'housesassign/edit?order_id='+order_id+'&assign_type='+assign_type //iframe的url
 				}); 
 		});
 	});

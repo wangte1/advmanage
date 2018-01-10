@@ -47,6 +47,7 @@
                             <div class="widget-body">
                                 <div class="widget-main">
                                     <form class="form-horizontal" role="form">
+                                    	<input type="hidden" name="assign_type" id="assign_type" value="<?php echo $assign_type;?>">
                                        <div class="form-group">
                                            
                                             <div class="col-sm-6">
@@ -86,6 +87,7 @@
                                         </div>
                                         
                                         <div class="form-group">
+                                        
                                             <div class="col-sm-6">
                                                 <label class="col-sm-3 control-label no-padding-right" for="form-field-1"> 状态</label>
                                                 <div class="col-sm-9">
@@ -123,132 +125,151 @@
                         <div class="row">
                             <div class="col-xs-12">
                                  <div class="table-responsive">
-                                    <table id="sample-table-2" class="table table-striped table-bordered table-hover">
-                                        <thead>
-                                            <tr>
-                                                <th>序号</th>
-                                                <th>行政区域</th>
-                                                <th>楼盘名称</th>
-                                                <th>点位类型</th>
-                                                <th>客户名称</th>
-                                                <th>点位数量（个）</th>
-                                                <th>投放时间</th>
-                                                <th>派单人</th>
-                                                <th>说明</th>
-                                                <th>派单时间</th>
-                                                <th>负责人</th>
-                                                <th>状态</th>
-                                                <th>操作</th>
-                                            </tr>
-                                        </thead>
-                                        <tbody>
-                                        <?php
-                                        if($list){
-                                            foreach($list as $key=>$val){
-                                                ?>
-                                                <tr>
-                                                    <td><a href=""><?php echo $key+1;?></a></td>
-                                                    <td>
-                                                    	<?php echo $val['province']."-".$val['city']."-".$val['area'];?>
-                                                    </td>
-                                                    <td>
-                                                    	<?php echo $val['houses_name'];?>
-                                                    </td>
-                                                   
-                                                    <td>
-                                                    	<?php echo $order_type_text[$val['order_type']];?>
-                                                    </td>
-                                                     <td>
-                                                    	<?php echo $val['customer_name'];?>
-                                                    </td>
-													<td>
-														<?php echo $val['points_count'];?>
-													</td>
-													<td>
-                                                    	<?php echo $val['release_start_time']."至".$val['release_end_time'];?>
-                                                    </td>
-                                                    <td>
-                                                    	<?php if(isset($user_list[$val['assign_user']])) echo $user_list[$val['assign_user']];?>
-                                                    </td>
-                                                    <td><?php echo $val['remark'];?></td>
-                                                    <td><?php echo $val['assign_time'];?></td>
-                                                    
-                                                   	<td>
-                                                   		<?php echo $val['charge_name'];?>
-                                                   	</td>
-                                                   	
-                                                   	<td>
-                                                   	<?php 
-                                                        switch ($val['status']) {
-                                                            case '1':
-                                                                $class = 'badge-yellow';
-                                                                break;
-                                                            case '2':
-                                                                $class = 'badge-pink';
-                                                                break;
-                                                            case '3':
-                                                                $class = 'badge-success';
-                                                                break;
-                                                            case '4':
-                                                                $class = 'badge-warning';
-                                                                break;
-                                                            case '5':
-                                                                $class = 'badge-danger';
-                                                                break;
-                                                            case '6':
-                                                                $class = 'badge-info';
-                                                                break;
-                                                            case '7':
-                                                                $class = 'badge-purple';
-                                                                break;
-                                                            case '8':
-                                                                $class = 'badge-grey';
-                                                                break;
-                                                        }
-                                                    ?>
-                                                    <span class="badge <?php echo $class; ?>">
-                                                        <?php echo $houses_assign_status[$val['status']];?>
-                                                    </span>
-                                                   	<?php if($val['confirm_remark']) {?>
-                                                   		<br>
-                                                   		说明:<?php echo $val['confirm_remark'];?>
-                                                   	<?php }?>
-                                                   	</td>
-                                                   	
-                                                    <td>
-                                                        <div class="visible-md visible-lg hidden-sm hidden-xs action-buttons">
-                                                            <a class="green tooltip-info m-detail" houses-id="<?php echo $val['houses_id'];?>" order-id="<?php echo $val['order_id'];?>"  data-rel="tooltip" data-placement="top" title="" data-original-title="详情">
-	                                                            <i class="icon-eye-open bigger-130"></i>
-	                                                        </a> 
-	                                                        
-	                                                        <?php if($val['status'] == 2) {?>
-		                                                        <a class="green tooltip-info m-confirm" data-id="<?php echo $val['id'];?>" order-id="<?php echo $val['order_id'];?>"  data-rel="tooltip" data-placement="top" title="" data-original-title="确认">
-		                                                            <i class="icon-check bigger-130"></i>
-		                                                        </a> 
-	                                                        <?php }?>
-	                                                        
-	                                                        <?php if($val['status'] == 4 || $val['status'] == 5) {?>
-	                                                        	<a class="green tooltip-info m-detail2" data-id="<?php echo $val['id'];?>" order-id="<?php echo $val['order_id'];?>" houses-id="<?php echo $val['houses_id'];?>" data-rel="tooltip" data-placement="top" title="" data-original-title="验收图片">
-		                                                            <i class="fa fa-picture-o bigger-130"></i>
-		                                                        </a>
-	                                                        <?php }?>
-	                                                        <?php if($val['status'] == 3 || $val['status'] == 6) {?>
-	                                                        	<a class="green tooltip-info m-upload" data-id="<?php echo $val['id'];?>" order-id="<?php echo $val['order_id'];?>" houses-id="<?php echo $val['houses_id'];?>"  data-rel="tooltip" data-placement="top" title="" data-original-title="验收图片">
-		                                                            <i class="fa fa-picture-o bigger-130"></i>
-		                                                        </a>
-		                                                        <a class="green tooltip-info m-submit" data-id="<?php echo $val['id'];?>" order-id="<?php echo $val['order_id'];?>"  data-rel="tooltip" data-placement="top" title="" data-original-title="提交上画">
-		                                                            <i class="fa fa-send-o bigger-130"></i>
-		                                                        </a>  
-	                                                        <?php }?>
-	                                                        
-                                                        </div>
-                                                    </td>
-                                                </tr>
-                                            <?php } }?>
-										</tbody>
-                                    </table>
-									<!--分页start-->
-                                    <?php $this->load->view('common/page');?>
+                                 	<div class="tabbable" id="tabs-260319">
+										<ul class="nav nav-tabs">
+											<li <?php if($assign_type == 1){?>class="active"<?php }?>>
+												<a href="#panel-1" data-toggle="tab">上画派单&nbsp;<span class="badge badge-important"><?php echo $no_confirm_count1[0]['count'];?></span></a>
+											</li>
+											<li <?php if($assign_type == 2){?>class="active"<?php }?>>
+												<a href="#panel-2" data-toggle="tab">下画派单&nbsp;<span class="badge badge-important"><?php echo $no_confirm_count2[0]['count'];?></span></a>
+											</li>
+										</ul>
+										<div class="tab-content">
+											<div class="tab-pane active" id="panel-1">
+												<table id="sample-table-2" class="table table-striped table-bordered table-hover">
+			                                        <thead>
+			                                            <tr>
+			                                                <th>序号</th>
+			                                                <th>行政区域</th>
+			                                                <th>楼盘名称</th>
+			                                                <th>点位类型</th>
+			                                                <th>客户名称</th>
+			                                                <th>点位数量（个）</th>
+			                                                <th>投放时间</th>
+			                                                <th>派单人</th>
+			                                                <th>说明</th>
+			                                                <th>派单时间</th>
+			                                                <th>负责人</th>
+			                                                <th>状态</th>
+			                                                <th>操作</th>
+			                                            </tr>
+			                                        </thead>
+			                                        <tbody>
+			                                        <?php
+			                                        if($list){
+			                                            foreach($list as $key=>$val){
+			                                                ?>
+			                                                <tr>
+			                                                    <td><a href=""><?php echo $key+1;?></a></td>
+			                                                    <td>
+			                                                    	<?php echo $val['province']."-".$val['city']."-".$val['area'];?>
+			                                                    </td>
+			                                                    <td>
+			                                                    	<?php echo $val['houses_name'];?>
+			                                                    </td>
+			                                                   
+			                                                    <td>
+			                                                    	<?php echo $order_type_text[$val['order_type']];?>
+			                                                    </td>
+			                                                     <td>
+			                                                    	<?php echo $val['customer_name'];?>
+			                                                    </td>
+																<td>
+																	<?php echo $val['points_count'];?>
+																</td>
+																<td>
+			                                                    	<?php echo $val['release_start_time']."至".$val['release_end_time'];?>
+			                                                    </td>
+			                                                    <td>
+			                                                    	<?php if(isset($user_list[$val['assign_user']])) echo $user_list[$val['assign_user']];?>
+			                                                    </td>
+			                                                    <td><?php echo $val['remark'];?></td>
+			                                                    <td><?php echo $val['assign_time'];?></td>
+			                                                    
+			                                                   	<td>
+			                                                   		<?php echo $val['charge_name'];?>
+			                                                   	</td>
+			                                                   	<td>
+			                                                   	<?php 
+			                                                        switch ($val['status']) {
+			                                                            case '1':
+			                                                                $class = 'badge-yellow';
+			                                                                break;
+			                                                            case '2':
+			                                                                $class = 'badge-pink';
+			                                                                break;
+			                                                            case '3':
+			                                                                $class = 'badge-success';
+			                                                                break;
+			                                                            case '4':
+			                                                                $class = 'badge-warning';
+			                                                                break;
+			                                                            case '5':
+			                                                                $class = 'badge-danger';
+			                                                                break;
+			                                                            case '6':
+			                                                                $class = 'badge-info';
+			                                                                break;
+			                                                            case '7':
+			                                                                $class = 'badge-purple';
+			                                                                break;
+			                                                            case '8':
+			                                                                $class = 'badge-grey';
+			                                                                break;
+			                                                        }
+			                                                    ?>
+			                                                    <span class="badge <?php echo $class; ?>">
+			                                                        <?php echo $houses_assign_status[$val['status']];?>
+			                                                    </span>
+			                                                   	<?php if($val['confirm_remark']) {?>
+			                                                   		<br>
+			                                                   		说明:<?php echo $val['confirm_remark'];?>
+			                                                   	<?php }?>
+			                                                   	</td>
+			                                                   	
+			                                                    <td>
+			                                                        <div class="visible-md visible-lg hidden-sm hidden-xs action-buttons">
+			                                                            <a class="green tooltip-info m-detail" houses-id="<?php echo $val['houses_id'];?>" order-id="<?php echo $val['order_id'];?>"  data-rel="tooltip" data-placement="top" title="" data-original-title="详情">
+				                                                            <i class="icon-eye-open bigger-130"></i>
+				                                                        </a> 
+				                                                        
+				                                                        <?php if($val['status'] == 2) {?>
+					                                                        <a class="green tooltip-info m-confirm" data-id="<?php echo $val['id'];?>" order-id="<?php echo $val['order_id'];?>"  data-rel="tooltip" data-placement="top" title="" data-original-title="确认">
+					                                                            <i class="icon-check bigger-130"></i>
+					                                                        </a> 
+				                                                        <?php }?>
+				                                                        
+				                                                        <?php if($val['status'] == 4 || $val['status'] == 5) {?>
+				                                                        	<a class="green tooltip-info m-detail2" data-id="<?php echo $val['id'];?>" order-id="<?php echo $val['order_id'];?>" houses-id="<?php echo $val['houses_id'];?>" data-rel="tooltip" data-placement="top" title="" data-original-title="验收图片">
+					                                                            <i class="fa fa-picture-o bigger-130"></i>
+					                                                        </a>
+				                                                        <?php }?>
+				                                                        <?php if($val['status'] == 3 || $val['status'] == 6) {?>
+				                                                        	<a class="green tooltip-info m-upload" data-id="<?php echo $val['id'];?>" order-id="<?php echo $val['order_id'];?>" houses-id="<?php echo $val['houses_id'];?>"  data-rel="tooltip" data-placement="top" title="" data-original-title="验收图片">
+					                                                            <i class="fa fa-picture-o bigger-130"></i>
+					                                                        </a>
+					                                                        <a class="green tooltip-info m-submit" data-id="<?php echo $val['id'];?>" order-id="<?php echo $val['order_id'];?>"  data-rel="tooltip" data-placement="top" title="" data-original-title="提交上画">
+					                                                            <i class="fa fa-send-o bigger-130"></i>
+					                                                        </a>  
+				                                                        <?php }?>
+			                                                        </div>
+			                                                    </td>
+			                                                </tr>
+			                                            <?php } }?>
+													</tbody>
+			                                    </table>
+												
+												
+												
+											</div>
+											
+											<!--分页start-->
+			                                <?php $this->load->view('common/page');?>
+										</div>
+									</div>
+                                 
+                                 
+                                    
                                 </div>
                             </div>
                         </div>
@@ -274,6 +295,18 @@
 	});
 
 	$(function(){
+		$('.nav-tabs').find('a').click(function(){
+			if($(this).attr('href') == '#panel-1') {
+				$('#assign_type').val('1');
+			}
+
+			if($(this).attr('href') == '#panel-2') {
+				$('#assign_type').val('2');
+			}
+
+			$('form').submit();
+		});
+		
 		$('.m-detail').click(function(){
 			var order_id = $(this).attr('order-id');
 			var houses_id = $(this).attr('houses-id');
@@ -306,11 +339,12 @@
 		$('.m-confirm').click(function(){
 			var id = $(this).attr('data-id');
 			var order_id = $(this).attr('order-id');
+			var assign_type = '<?php echo $assign_type;?>';
 			
 			layer.confirm('确认该派单？', {
 				  btn: ['确定','取消'] //按钮
 				}, function(){
-				 	$.post('/housesconfirm/do_confirm', {id:id, order_id:order_id}, function(data){
+				 	$.post('/housesconfirm/do_confirm', {id:id, order_id:order_id, assign_type:assign_type}, function(data){
 						if(data.code == 1) {
 							layer.alert(data.msg,function(){
 								location.reload();
@@ -354,7 +388,6 @@
 			
 			
 		});
-
 
 		
 	});
