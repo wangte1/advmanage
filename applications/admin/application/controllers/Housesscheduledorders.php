@@ -84,8 +84,7 @@ class Housesscheduledorders extends MY_Controller{
      * 添加预定订单
      * @param number $order_type
      */
-    public function addpreorder($order_type=1){
-        
+    public function addpreorder($order_type=1, $put_trade=0){
         $data = $this->data;
         if(IS_POST){
             $post_data = $this->input->post();
@@ -134,8 +133,15 @@ class Housesscheduledorders extends MY_Controller{
         $data['BUFL'] = $this->get_ban_unit_floor_list();
         $data['order_type'] = $order_type;
         $data['status_text'] = C('order.order_status.text');
-       
-        $data['housesList'] = $this->Mhouses->get_lists("id, name", ['is_del' => 0]);
+       	
+        //禁投放行业 begin
+        if($put_trade != 0) {
+        	$data['housesList'] = $this->Mhouses->get_lists("id, name", ['put_trade<>' => $put_trade,'is_del' => 0]);
+        }else {
+        	$data['housesList'] = $this->Mhouses->get_lists("id, name", ['is_del' => 0]);
+        }
+        $data['put_trade'] = $put_trade;
+        //end
 
         $this->load->view('housesscheduledorders/add', $data);
     }
@@ -197,10 +203,16 @@ class Housesscheduledorders extends MY_Controller{
             $data['customer'] = $this->Mhouses_customers->get_one('id, name', array('id' => $data['info']['lock_customer_id']));
             
             $data['order_type'] = $data['info']['order_type'];
+            $data['put_trade'] = $data['info']['put_trade'];
             
-            //组团列表
-            $data['houses_list'] = $this->Mhouses->get_lists("id, name", array('is_del' => 0));
-            
+            //禁投放行业 begin
+            if($data['put_trade'] != 0) {
+            	$data['housesList'] = $this->Mhouses->get_lists("id, name", ['put_trade<>' => $data['put_trade'],'is_del' => 0]);
+            }else {
+            	$data['housesList'] = $this->Mhouses->get_lists("id, name", ['is_del' => 0]);
+            }
+            //end
+           
             //已选择点位列表
             $where['in']['A.id'] = explode(',', $data['info']['point_ids']);
             $data['selected_points'] = $this->Mhouses_points->get_points_lists($where);
@@ -338,7 +350,13 @@ class Housesscheduledorders extends MY_Controller{
         if(count($points_lists) > 0) {
             $housesid = array_unique(array_column($points_lists, 'houses_id'));
             $area_id = array_unique(array_column($points_lists, 'area_id'));
-            $housesList = $this->Mhouses->get_lists("id, name,", ['in' => ['id' => $housesid]]);            
+            
+            if(!empty($this->input->post('put_trade'))) {
+            	$housesList = $this->Mhouses->get_lists("id, name,", ['in' => ['id' => $housesid], 'put_trade<>' => $this->input->post('put_trade')]);
+            }else {
+            	$housesList = $this->Mhouses->get_lists("id, name,", ['in' => ['id' => $housesid]]);
+            }
+            
             $wherea['in']['id'] = $area_id;
             $areaList = $this->Mhouses_area->get_lists("id, name", $wherea);
             //获取规格列表
@@ -346,11 +364,19 @@ class Housesscheduledorders extends MY_Controller{
             foreach ($points_lists as $k => &$v) {
                 //设置状态
                 $v['point_status_txt'] = C('public.points_status')[$v['point_status']];
+                
+                $mark = false;
                 foreach($housesList as $k1 => $v1) {
                     if($v['houses_id'] == $v1['id']) {
                         $v['houses_name'] = $v1['name'];
+                        $mark = true;
                         break;
                     }
+                }
+                
+                if($mark == false) {
+                	unset($points_lists[$k]);
+                	continue;
                 }
                 
                 foreach($areaList as $k2 => $v2) {
@@ -369,6 +395,7 @@ class Housesscheduledorders extends MY_Controller{
                     }
                 }
             }
+            
         }
         $areaList = array_unique(array_column($points_lists, 'area_name'));
         //获取去重的组团区域

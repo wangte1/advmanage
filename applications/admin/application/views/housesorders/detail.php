@@ -453,6 +453,7 @@
                                         </div>
                                         <?php endif;?>
                                         
+                                        <!-- 上画派单 begin -->
                                         <div id="assign_list" class="tab-pane">
                                         	<?php if($info['assign_list']) {?>
                                         	<table class="table table-striped table-bordered">
@@ -461,7 +462,7 @@
                                                         <th class="center">行政区域</th>
                                                         <th class="center">楼盘名称</th>
                                                         <th class="center">点位数量（个）</th>
-                                                        <th class="center">负责人</th>
+                                                        <th class="center">上画负责人</th>
                                                         <th class="center">状态</th>
                                                         <th class="center">操作</th>
                                                     </tr>
@@ -526,7 +527,7 @@
 										                        </a>
 										                        
 										                       	<?php if($v['status'] == 4) {?>
-										                       		<a class="green tooltip-info m-confirm" data-id="<?php echo $v['id'];?>" order-id = "<?php echo $v['order_id'];?>"  data-rel="tooltip" data-placement="top" title="" data-original-title="上画审核">
+										                       		<a class="green tooltip-info m-confirm" data-id="<?php echo $v['id'];?>" order-id = "<?php echo $v['order_id'];?>" assign_type="1"  data-rel="tooltip" data-placement="top" title="" data-original-title="上画审核">
 											                        	<i class="icon-check bigger-130"></i>
 											                        </a>
 										                       	<?php }?>
@@ -545,6 +546,104 @@
                                             	
                                             
                                         </div>
+                                        
+                                        <!-- 上画派单 end-->
+                                        
+                                        <!-- 下画派单 begin-->
+                                        <div id="assign_down_list" class="tab-pane">
+                                        	<?php if($info['assign_down_list']) {?>
+                                        	<table class="table table-striped table-bordered">
+                                                <thead>
+                                                    <tr>
+                                                        <th class="center">行政区域</th>
+                                                        <th class="center">楼盘名称</th>
+                                                        <th class="center">点位数量（个）</th>
+                                                        <th class="center">下画负责人</th>
+                                                        <th class="center">状态</th>
+                                                        <th class="center">操作</th>
+                                                    </tr>
+                                                </thead>
+                                                <tbody>
+                                                	<?php foreach($info['assign_down_list'] as $k => $v) {?>
+                                            			<tr>
+                                            				<td class="center"><?php echo $v['province']."-".$v['city']."-".$v['area'];?></td>
+                                            				<td class="center"><?php echo $v['houses_name'];?></td>
+                                            				<td class="center">
+                                            					<?php if(isset($houses_count)) {foreach ($houses_count as $k1 => $v1) {?>
+                                            						<?php if($v['houses_id'] == $v1['houses_id']) {?>
+                                            							<?php echo $v1['count'];?>
+                                            						<?php }?>
+                                            					<?php }}?>
+                                            				</td>
+                                            				<td class="center"><?php echo $v['charge_name'];?></td>
+                                            				<td class="center">
+                                            					<?php 
+		                                                        switch ($v['status']) {
+		                                                            case '1':
+		                                                                $class = 'badge-yellow';
+		                                                                break;
+		                                                            case '2':
+		                                                                $class = 'badge-pink';
+		                                                                break;
+		                                                            case '3':
+		                                                                $class = 'badge-success';
+		                                                                break;
+		                                                            case '4':
+		                                                                $class = 'badge-warning';
+		                                                                break;
+		                                                            case '5':
+		                                                                $class = 'badge-danger';
+		                                                                break;
+		                                                            case '6':
+		                                                                $class = 'badge-info';
+		                                                                break;
+		                                                            case '7':
+		                                                                $class = 'badge-purple';
+		                                                                break;
+		                                                            case '8':
+		                                                                $class = 'badge-grey';
+		                                                                break;
+			                                                        }
+			                                                    ?>
+			                                                    <span class="badge <?php echo $class; ?>">
+			                                                        <?php echo $houses_assign_status[$v['status']];?>
+			                                                    </span>
+			                                                    <?php if($v['confirm_remark']) {?>
+			                                                   		<br>
+			                                                   		说明:<?php echo $v['confirm_remark'];?>
+			                                                   	<?php }?>
+                                            				</td>
+                                            				
+                                            				<td class="center">
+																<a class="green tooltip-info m-detail" data-id="<?php echo $v['houses_id'];?>"  data-rel="tooltip" data-placement="top" title="" data-original-title="点位详情">
+										                        	<i class="icon-eye-open bigger-130"></i>
+										                        </a>
+										                        <a class="green tooltip-info m-upload" data-id="<?php echo $v['id'];?>" order-id = "<?php echo $v['order_id'];?>" houses-id = "<?php echo $v['houses_id'];?>"  data-rel="tooltip" data-placement="top" title="" data-original-title="查看验收图片">
+										                        	<i class="fa fa-picture-o bigger-130"></i>
+										                        </a>
+										                        
+										                       	<?php if($v['status'] == 7) {?>
+										                       		<a class="green tooltip-info m-confirm" data-id="<?php echo $v['id'];?>" order-id = "<?php echo $v['order_id'];?>" houses-id = "<?php echo $v['houses_id'];?>" assign_type="2"  data-rel="tooltip" data-placement="top" title="" data-original-title="下画审核">
+											                        	<i class="icon-check bigger-130"></i>
+											                        </a>
+										                       	<?php }?>
+															</td>
+                                            			</tr>
+                                            		<?php }?>
+                                        		</tbody>
+                                        	</table>
+                                            <?php }else {?>
+                                            	<div class="alert alert-warning center" style="width:400px">
+	                                                <strong>
+	                                                    <i class="icon-warning-sign bigger-120"></i> 工程主管还在派单中
+	                                                </strong>
+	                                            </div>
+                                            <?php }?>
+                                            	
+                                            
+                                        </div>
+                                    	<!-- 下画派单 end-->
+                                    
                                     </div>
                                 </div>
 
@@ -671,14 +770,15 @@
 	$('.m-confirm').click(function(){
 		var assign_id = $(this).attr('data-id');
 		var order_id = $(this).attr('order-id');
+		var houses_id = $(this).attr('houses-id');
+		var assign_type = $(this).attr('assign_type');
 
 		$("#confirmModal").modal('show');
 
 		//通过
 		$('#sub-confirm').click(function(){
 			var confirm_remark  = $('#confirm-remark').val();
-			
-			$.post('/housesorders/confirm_upload', {assign_id:assign_id, order_id:order_id, confirm_remark:confirm_remark, mark:1}, function(data){
+			$.post('/housesorders/confirm_upload', {assign_id:assign_id, order_id:order_id, confirm_remark:confirm_remark, mark:1, assign_type:assign_type, houses_id:houses_id}, function(data){
 				if(data) {
 					layer.alert(data.msg, function(){
 						location.reload();
@@ -691,7 +791,7 @@
 		$('#sub-not-confirm').click(function(){
 			var confirm_remark  = $('#confirm-remark').val();
 			
-			$.post('/housesorders/confirm_upload', {assign_id:assign_id, order_id:order_id, confirm_remark:confirm_remark, mark:2}, function(data){
+			$.post('/housesorders/confirm_upload', {assign_id:assign_id, order_id:order_id, confirm_remark:confirm_remark, mark:2, assign_type:assign_type}, function(data){
 				if(data) {
 					layer.alert(data.msg, function(){
 						location.reload();

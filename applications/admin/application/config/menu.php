@@ -3,7 +3,7 @@ if(! defined('BASEPATH')) exit('No direct script access allowed');
 $config = array(
     'menu' => array(
 
-        '户外资源管理' => array(
+        /*'户外资源管理' => array(
             'code' => 'resources_manage',
             'icon' => 'icon-asterisk  menu-i',
             'list' => array(
@@ -57,16 +57,6 @@ $config = array(
     		'code' => 'net_manage',
     		'icon' => 'icon-globe  menu-i',
     		'list' => array(
-    			/*array(
-    				'url'=>'/networkmanage?mod=1', //mod=1是腾讯
-    				'name'=> '腾讯网络排班',
-    				'active'=> 'network_manage_list'
-    			),
-    			array(
-    				'url'=>'/networkmanage?mod=2', //mod=2是凤凰
-    				'name'=> '凤凰网络排班',
-    				'active'=> 'network_manage_fh_list'
-    			),*/
     				
     			array(
     				 'url'=>'/networkmanage/goindex1', //mod=1是腾讯
@@ -99,7 +89,7 @@ $config = array(
     				'active'=> 'network_type_list'
     			),
     		)
-    	),
+    	),*/
     	'社区资源管理' => array(
     		'code' => 'community_manage',
     		'icon' => 'icon-globe  menu-i',
@@ -134,7 +124,7 @@ $config = array(
     		)
     	),
     	
-        '户外订单管理' => array(
+        /*'户外订单管理' => array(
             'code' => 'orders_manage',
             'icon' => 'icon-book  menu-i',
             'list' => array(
@@ -154,7 +144,7 @@ $config = array(
                     'active'=> 'change_pic_order_list'
                 ),
             )
-        ),
+        ),*/
     		
     	'社区订单管理' => array(
     		'code' => 'horders_manage',

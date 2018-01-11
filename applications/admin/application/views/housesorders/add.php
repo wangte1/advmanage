@@ -440,6 +440,7 @@
                                                 <?php endif;?>
 
                                                 <input type="hidden" name="order_type" value="<?php echo $order_type;?>" />
+                                                <input type="hidden" name="put_trade" value="<?php echo $put_trade;?>" />
                                                 <input type="hidden" name="point_ids" value="<?php if(isset($info['point_ids'])) { echo $info['point_ids']; } ?>" />
                                                 
                                                 <!--<?php if(isset($info['id']) && ($order_type == 1 || $order_type == 2)):?>
@@ -530,8 +531,9 @@
 <!-- <script src="<?php echo css_js_url('order.js','admin');?>"></script> -->
 <script type="text/javascript">
 $(function(){
-	
 	var order_type = '<?php echo $order_type;?>';
+	var put_trade = '<?php echo $put_trade;?>';
+	
 	$('.popover-lock').popover({html:true, placement:'bottom'});
     $('[data-rel=popover]').popover({html:true});
 
@@ -567,7 +569,7 @@ $(function(){
 		var addr = $('#addr').val();
 		var is_lock = $('#is_lock').val();
 		var customer_id = $('#customer_id').val();
-		var postData = {order_type:order_type, houses_id:houses_id, is_lock:is_lock, customer_id:customer_id,ban:ban,unit:unit,floor:floor,addr:addr};
+		var postData = {order_type:order_type, put_trade:put_trade, houses_id:houses_id, is_lock:is_lock, customer_id:customer_id,ban:ban,unit:unit,floor:floor,addr:addr};
 		$.post('/housesorders/get_points', postData, function(data){
 			var pointStr =  '';
 			var areaStr = ''; 

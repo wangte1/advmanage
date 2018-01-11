@@ -59,6 +59,18 @@
                                    <?php endforeach;?>
                                 </div>
                             </div>
+                            
+                            <div class="form-group">
+                                <label class="col-sm-4 control-label no-padding-right" for="form-field-2"> 禁投放行业： </label>
+                                <div class="col-sm-8">
+                                	<select name="put_trade">
+                                		<option value="0">无</option>
+                                		<?php foreach (C('housespoint.put_trade') as $k => $v):?>
+                                			<option value="<?php echo $k;?>"><?php echo $v;?></option>
+                                   		<?php endforeach;?>
+                                	</select>
+                                </div>
+                            </div>
 
                             <div class="space-4"></div>
 
@@ -83,7 +95,8 @@
 <script type="text/javascript">
     $(".btn-next").click(function(){
         var order_type = $("input[name='order_type']:checked").val();
-        window.location.href = '/housesscheduledorders/addpreorder/' + order_type;
+        var put_trade = $("select[name='put_trade']").val();
+        window.location.href = '/housesscheduledorders/addpreorder/' + order_type+'/'+put_trade;
     });
 </script>
 

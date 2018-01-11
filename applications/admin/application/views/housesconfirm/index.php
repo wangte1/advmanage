@@ -216,6 +216,9 @@
 			                                                            case '8':
 			                                                                $class = 'badge-grey';
 			                                                                break;
+			                                                            case '9':
+			                                                               	$class = 'badge-grey';
+			                                                                break;
 			                                                        }
 			                                                    ?>
 			                                                    <span class="badge <?php echo $class; ?>">
@@ -244,11 +247,11 @@
 					                                                            <i class="fa fa-picture-o bigger-130"></i>
 					                                                        </a>
 				                                                        <?php }?>
-				                                                        <?php if($val['status'] == 3 || $val['status'] == 6) {?>
+				                                                        <?php if($val['status'] == 3 || $val['status'] == 9) {?>
 				                                                        	<a class="green tooltip-info m-upload" data-id="<?php echo $val['id'];?>" order-id="<?php echo $val['order_id'];?>" houses-id="<?php echo $val['houses_id'];?>"  data-rel="tooltip" data-placement="top" title="" data-original-title="验收图片">
 					                                                            <i class="fa fa-picture-o bigger-130"></i>
 					                                                        </a>
-					                                                        <a class="green tooltip-info m-submit" data-id="<?php echo $val['id'];?>" order-id="<?php echo $val['order_id'];?>"  data-rel="tooltip" data-placement="top" title="" data-original-title="提交上画">
+					                                                        <a class="green tooltip-info m-submit" data-id="<?php echo $val['id'];?>" order-id="<?php echo $val['order_id'];?>"  data-rel="tooltip" data-placement="top" title="" data-original-title="提交<?php if($assign_type == 2) {?>下画<?php }else {?>上画<?php }?>">
 					                                                            <i class="fa fa-send-o bigger-130"></i>
 					                                                        </a>  
 				                                                        <?php }?>
@@ -325,6 +328,7 @@
 			var id = $(this).attr('data-id');
 			var order_id = $(this).attr('order-id');
 			var houses_id = $(this).attr('houses-id');
+			var assign_type = '<?php echo $assign_type;?>';
 			
 			layer.open({
 				  type: 2,
@@ -332,10 +336,11 @@
 				  shadeClose: true,
 				  shade: 0.6,
 				  area: ['80%', '80%'],
-				  content: '/housesorders/check_upload_img?order_id='+order_id+'&assign_id='+id+'&houses_id='+houses_id //iframe的url
+				  content: '/housesorders/check_upload_img?order_id='+order_id+'&assign_id='+id+'&houses_id='+houses_id+'&assign_type='+assign_type //iframe的url
 				}); 
 		});
 
+		//确认派单
 		$('.m-confirm').click(function(){
 			var id = $(this).attr('data-id');
 			var order_id = $(this).attr('order-id');
@@ -356,10 +361,12 @@
 				});
 		});
 
+		//上传验收图片
 		$('.m-upload').click(function(){
 			var id = $(this).attr('data-id');
 			var order_id = $(this).attr('order-id');
 			var houses_id = $(this).attr('houses-id');
+			var assign_type = '<?php echo $assign_type;?>';
 			
 			layer.open({
 				  type: 2,
@@ -367,16 +374,19 @@
 				  shadeClose: true,
 				  shade: 0.6,
 				  area: ['80%', '80%'],
-				  content: '/housesconfirm/check_upload_img?order_id='+order_id+'&assign_id='+id+'&houses_id='+houses_id //iframe的url
+				  content: '/housesconfirm/check_upload_img?order_id='+order_id+'&assign_id='+id+'&houses_id='+houses_id+'&assign_type='+assign_type //iframe的url
 				}); 
 		});
 
+		//提交上画
 		$('.m-submit').click(function(){
 			var assign_id = $(this).attr('data-id');
+			var assign_type = '<?php echo $assign_type;?>';
+			
 			layer.confirm('您确认提交上画至媒介管理员审核吗？', {
 					btn: ['确认','取消'] //按钮
 				}, function(){
-					$.post('/housesconfirm/submit_upload', {assign_id : assign_id}, function(data){
+					$.post('/housesconfirm/submit_upload', {assign_id : assign_id, assign_type : assign_type}, function(data){
 						if(data) {
 							layer.alert(data.msg, function(){
 								location.reload();

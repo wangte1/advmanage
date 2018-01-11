@@ -127,4 +127,6 @@ class Model_houses_assign extends MY_Model {
         $result = $this->db->get();
         return $result->result_array();
     }
+    
+    
 }

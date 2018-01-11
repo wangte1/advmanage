@@ -249,6 +249,7 @@
                                                 <input type="hidden" name="point_ids_old" value="<?php echo $info['point_ids'];?>" />
                                                 <?php endif;?>
                                                 <input type="hidden" name="order_type" value="<?php echo $order_type;?>" />
+                                                <input type="hidden" name="put_trade" value="<?php echo $put_trade;?>" />
                                                 <input type="hidden" name="point_ids" value="<?php if(isset($info['point_ids'])) { echo $info['point_ids']; } ?>" />
                                                 <button class="btn btn-info btn-save" type="submit">
                                                     <i class="icon-ok bigger-110"></i>
@@ -358,6 +359,8 @@
 $(function(){
 	
 	var order_type = '<?php echo $order_type;?>';
+	var put_trade = '<?php echo $put_trade;?>';
+	
 	$('.popover-lock').popover({html:true, placement:'bottom'});
     $('[data-rel=popover]').popover({html:true});
 
@@ -378,7 +381,7 @@ $(function(){
 		var floor = $('#floor').val();
 		var addr = $('#addr').val();
 		var lock_start_time = $('#lock_start_time').val();
-		var postData = {order_type:order_type, houses_id:houses_id, ban:ban, unit:unit, floor:floor, lock_start_time:lock_start_time,addr:addr};
+		var postData = {order_type:order_type, put_trade:put_trade, houses_id:houses_id, ban:ban, unit:unit, floor:floor, lock_start_time:lock_start_time,addr:addr};
 		$.post('/housesscheduledorders/get_points', postData, function(data){
 			var pointStr =  '';
 			var areaStr = '<option value="">请选择组团</option>'; 

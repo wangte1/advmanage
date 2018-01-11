@@ -149,6 +149,7 @@ class Housesconfirm extends MY_Controller{
     	$assign_id = $this->input->get('assign_id');
     	$order_id = $this->input->get('order_id');
     	$houses_id = $this->input->get('houses_id');
+    	$assign_type = $this->input->get('assign_type');
     	
     	if(IS_POST){
     		$post_data = $this->input->post();
@@ -165,6 +166,7 @@ class Housesconfirm extends MY_Controller{
     				foreach ($value['front_img'] as $k => $v) {
     					$insert_data['order_id'] = $order_id;
     					$insert_data['assign_id'] = $assign_id;
+    					$insert_data['assign_type'] = $assign_type;
     					$insert_data['point_id'] = $key;
     					$insert_data['front_img'] = $v;
     					$insert_data['back_img'] = isset($value['back_img'][$k]) ? $value['back_img'][$k] : '';
@@ -197,6 +199,7 @@ class Housesconfirm extends MY_Controller{
     		$where['in'] = array("point_id"=>array_column($points,"id"));
     		$where['order_id'] = $order_id;
     		$where['assign_id'] = $assign_id;
+    		$where['assign_type'] = $assign_type;
     		$where['type'] = 1;
     		$data['images'] = $this->Mhouses_order_inspect_images->get_lists("*",$where);
     	}
@@ -217,7 +220,7 @@ class Housesconfirm extends MY_Controller{
     	$data['list'] = $list;
     	
     	//获取分页
-    	$pageconfig['base_url'] = "/houses";
+    	$pageconfig['base_url'] = "/housesconfirm/check_upload_img";
     	$pageconfig['total_rows'] = $data_count;
     	$this->pagination->initialize($pageconfig);
     	$data['pagestr'] = $this->pagination->create_links(); // 分页信息
@@ -230,25 +233,37 @@ class Housesconfirm extends MY_Controller{
      */
     public function submit_upload() {
     	$assign_id = $this->input->post('assign_id');
+    	$assign_type = $this->input->post('assign_type');
     	//如果全部上传完，则将派单表的状态改成已上画
     	$where_count['assign_id'] = $assign_id;
+    	$where_count['assign_type'] = $assign_type;
     	$where_count['front_img<>'] = '';
-    	$tmp_count = $this->Mhouses_order_inspect_images->get_one('count(DISTINCT assign_id) as count', $where_count);
+    	$tmp_count = $this->Mhouses_order_inspect_images->get_one('count(DISTINCT assign_id, point_id) as count', $where_count);
     	if(isset($tmp_count['count'])) {
     		$upload_count = $tmp_count['count'];
     	}
     	
-    	$assign_count = $this->Mhouses_assign->get_one('points_count', ['id' => $assign_id, 'is_del' => 0]);
-    	
-    	if(isset($upload_count) && isset($assign_count['points_count']) && $upload_count != $assign_count['points_count']) {
-    		$this->return_json(['code' => 0, 'msg' => "请确认你已经上传了所有点位的上画图片！"]);
+    	if($assign_type == 2) {
+    		$mark_str = "下画";
+    		$tmp_status = 7;
+    		$tmp_moudle  = $this->Mhouses_assign_down;
+    	}else {
+    		$mark_str = "上画";
+    		$tmp_status = 4;
+    		$tmp_moudle  = $this->Mhouses_assign;
     	}
     	
-    	$update_data['status'] = 4;
+    	$assign_count = $tmp_moudle->get_one('points_count', ['id' => $assign_id, 'is_del' => 0]);
+    	
+    	if(isset($upload_count) && isset($assign_count['points_count']) && $upload_count != $assign_count['points_count']) {
+    		$this->return_json(['code' => 0, 'msg' => "请确认你已经上传了所有点位的".$mark_str."图片！"]);
+    	}
+    	
+    	$update_data['status'] = $tmp_status;
     	$update_data['confirm_remark'] = '';
-    	$res = $this->Mhouses_assign->update_info($update_data, ['id' => $assign_id]);
+    	$res = $tmp_moudle->update_info($update_data, ['id' => $assign_id]);
     	if($res) {
-    		$this->return_json(['code' => 1, 'msg' => "已经提交上画至媒介管理人员处审核！"]);
+    		$this->return_json(['code' => 1, 'msg' => "已经提交".$mark_str."至媒介管理人员处审核！"]);
     	}
     	
     }

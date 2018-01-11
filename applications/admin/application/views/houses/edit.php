@@ -61,7 +61,19 @@
 								</div>
                             </div>
                         </div>
-
+						
+						<div class="form-group">
+                            <label class="col-sm-3 control-label no-padding-right" for="form-field-1"> 禁投放行业： </label>
+                            <div class="col-sm-9">
+                                <select class="col-xs-2 " name="put_trade" id="select-font-size " >
+                                	<option value=0>无</option>
+	                               	<?php foreach($put_trade as $key=>$val){ ?>
+	                                	<option value="<?php echo $key;?>" <?php if($key == $info['put_trade']) {?>selected=selected<?php }?>><?php echo $val;?></option>
+	                                <?php } ?>
+                                </select>
+                            </div>
+                       </div>
+						
                             
                         <div class="form-group">
                             <label class="col-sm-3 control-label no-padding-right" for="form-field-1"> 楼盘类型： </label>

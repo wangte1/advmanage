@@ -110,6 +110,7 @@
                                                 <th>序号</th>
                                                 <th>楼盘名称</th>
                                                 <th>地区</th>
+                                                <th>禁投放行业</th>
                                                 <th>类型</th>
                                                 <th>备注</th>
                                                 <th>操作</th>
@@ -124,6 +125,7 @@
                                                     <td><a href=""><?php echo $key+1;?></a></td>
                                                     <td><a href=""><?php echo $val['name'];?></a></td>
                                                     <td><?php echo $val['province'];?>-<?php echo $val['city'];?>-<?php echo $val['area'];?></td>
+													<td><?php if(isset($put_trade[$val['put_trade']])) echo $put_trade[$val['put_trade']];?></td>
 													<td><?php echo $houses_type[$val['type']];?></td>
 													<td class="hidden-480">
                                                         <?php echo $val['remarks'];?>

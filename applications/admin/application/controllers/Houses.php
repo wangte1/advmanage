@@ -14,6 +14,8 @@ class Houses extends MY_Controller{
          ]);
         $this->data['code'] = 'community_manage';
         $this->data['active'] = 'houses_list';
+        
+        $this->data['put_trade'] = C('housespoint.put_trade'); //禁投放行业
     }
 
     /*

@@ -186,9 +186,12 @@ class Housesassign extends MY_Controller{
     	
     	if($this->input->get('assign_type') == 2) {
     		$assign_list = $this->Mhouses_assign->get_lists('*', ['order_id' => $data['order_id'], 'is_del' => 0]);
+    		
+    		if(isset($assign_list)) {
+    			$data['assign_list'] = array_column($assign_list, 'charge_user', 'houses_id');
+    		}
     	}
     	
-    	$data['assign_list'] = array_column($assign_list, 'charge_user', 'houses_id');
     	$data['assign_type'] = $this->input->get('assign_type');
     	
     	$this->load->view('housesassign/assign', $data);
