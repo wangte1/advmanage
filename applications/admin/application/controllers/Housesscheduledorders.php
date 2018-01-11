@@ -480,13 +480,14 @@ class Housesscheduledorders extends MY_Controller{
         $app = C('sms.app');
         $parems = [
             'PhoneNumbers' => $info['contact_tel'],
-            'SignName' => C('sms.sign.tgkj'),
+            'SignName' => C('sms.sign.lkcb'),
             'TemplateCode' => C('sms.template.keihu'),
             'TemplateParam' => array(
                 'token' => $token
             )
         ];
         //发送短信
+        set_time_limit(0);
         $sms = new SendSms($app, $parems);
         try {
             $info = (array) $sms->send();
