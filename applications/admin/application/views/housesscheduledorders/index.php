@@ -218,6 +218,12 @@
                                                             <i class="ace-icon fa fa-envelope-o bigger-130" aria-hidden="true"></i>
                                                         </a>
                                                         <?php endif;?>
+                                                        
+                                                        <?php if($value['is_confirm'] == 1 && $value['order_status'] != 5) {?>
+                                                        	 <a class="grey tooltip-info checkout" href="javascript:;" data-id="<?php echo $value['id'];?>" data-customer="<?php echo $value['lock_customer_id']?>"  data-rel="tooltip" data-placement="top" data-original-title="转订单">
+	                                                            <i class="ace-icon fa fa-random bigger-130" aria-hidden="true"></i>
+	                                                        </a>
+                                                        <?php }?>
                                                     </div>
                                                 </td>
                                             </tr>
@@ -299,6 +305,13 @@
         });
         d.width(420);
         d.showModal();
+    });
+
+
+    //预定订单转订单
+    $('.checkout').click(function(){
+        var id = $(this).attr('data-id');
+		location.href = "/housesscheduledorders/checkout/"+id;
     });
 </script>
 
