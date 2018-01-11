@@ -502,11 +502,22 @@
                                                     <?php if(isset($selected_points)):?>
                                                         <?php foreach($selected_points as $value):?>
                                                         <tr point-id="<?php echo $value['id'];?>">
-                                                            <td class="col-sm-2"><?php echo $value['code'];?></td>
-                                                            <td class="col-sm-3"><?php echo $value['houses_name'];?></td>
-                                                            <td class="col-sm-3"><?php echo $value['houses_area_name'];?></td>
-                                                            <td class="col-sm-2"><?php echo $value['size'];?></td>
-                                                            <td class="col-sm-2"><button class="btn btn-xs btn-info do-sel" type="button" data-id="<?php echo $value['id'];?>">移除<i class="fa fa-remove" aria-hidden="true"></i></button></td>
+                                                            <td width="10%"><?php echo $value['code'];?></td>
+                                                            <td width="10%"><?php echo $value['houses_name'];?></td>
+                                                            <td width="10%"><?php echo $value['houses_area_name'];?></td>
+                                                            <td width="10%"><?php echo $value['ban'];?></td>
+                                                            <td width="10%"><?php echo $value['unit'];?></td>
+                                                            <td width="10%"><?php echo $value['floor'];?></td>
+                                                            <td width="10%"><?php if(isset($point_addr[$value['addr']])) echo $point_addr[$value['addr']];?></td>
+                                                            <td width="10%"><?php echo $value['size'];?></td>
+                                                            <td width="10%">
+                                                            	<?php if($value['point_status'] == 1) {?>
+                                                            	<span class="badge badge-success">空闲</span>
+                                                            	<?php }else if($value['point_status'] == 3) {?>
+                                                            	<span class="badge badge-danger">占用</span>
+                                                            	<?php }?>
+                                                            </td>
+                                                            <td width="10%"><button class="btn btn-xs btn-info do-sel" type="button" data-id="<?php echo $value['id'];?>">移除点位<i class="fa fa-remove" aria-hidden="true"></i></button></td>
                                                         </tr>
                                                         <?php endforeach;?>
                                                     <?php endif;?>

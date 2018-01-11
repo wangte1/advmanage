@@ -341,7 +341,8 @@ class Housesorders extends MY_Controller{
 
             }
 
-            unset($post_data['media_id'], $post_data['point_status'], $post_data['point_ids_old'], $post_data['make_num'], $post_data['hour'], $post_data['minute'], $post_data['second']);
+            unset($post_data['houses_id'], $post_data['area_id'],$post_data['ban'],$post_data['unit'],$post_data['floor'],$post_data['addr'], $post_data['hour'], $post_data['minute'], $post_data['second']);
+            unset($post_data['point_ids_old']);
             $result = $this->Mhouses_orders->update_info($post_data, array('id' => $id));
             if ($result) {
                 $this->write_log($data['userInfo']['id'], 2, "社区编辑".$data['order_type_text'][$post_data['order_type']]."订单,订单id【".$id."】");
@@ -352,8 +353,8 @@ class Housesorders extends MY_Controller{
         } else {
             $data['info'] = $this->Mhouses_orders->get_one("*", array('id' => $id));
             
-            
             $data['order_type'] = $data['info']['order_type'];
+            $data['put_trade'] = $data['info']['put_trade'];
             
             $tmpPoints = $this->Mhouses_points->get_lists("id, houses_id, area_id", ['type_id' => $data['order_type'], 'is_del' => 0]);
             
