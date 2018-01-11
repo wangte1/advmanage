@@ -1,10 +1,6 @@
 <?php 
 
-//阿里大鱼短信
-use Flc\Alidayu\Client;
-use Flc\Alidayu\App;
-use Flc\Alidayu\Requests\AlibabaAliqinFcSmsNumSend;
-use YYHhelper\Http;
+use YYHSms\SendSms;
 
 /**
 * 派单管理控制器
@@ -117,11 +113,11 @@ class Housesassign extends MY_Controller{
     		$add_data = [];
     		$i = 0;
     		foreach ($houses_ids as $k => $v) {
-//     			$res_send = $this->sendMsg($charge_users[$k]);
+    			$res_send = $this->sendMsg($charge_users[$k]);
     			
-//     			if($res_send['code'] == 0) {
-//     				$this->write_log($charge_users[$k],2,"发送短信失败".date("Y-m-d H:i:s"));	//发送短信失败记录
-//     			}
+    			if($res_send['code'] == 0) {
+    				$this->write_log($charge_users[$k],2,"发送短信失败".date("Y-m-d H:i:s"));	//发送短信失败记录
+    			}
     			$add_data[$i]['order_id'] = $order_id;
     			$add_data[$i]['houses_id'] = $v;
     			$add_data[$i]['points_count'] = $points_counts[$k];
@@ -405,6 +401,7 @@ class Housesassign extends MY_Controller{
             )
         ];
         //发送短信
+        set_time_limit(0);
         $sms = new SendSms($app, $parems);
         try {
             $info = (array) $sms->send();

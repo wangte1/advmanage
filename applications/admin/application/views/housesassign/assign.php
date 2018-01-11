@@ -61,7 +61,7 @@
 						<select class="select2 charge-sel" name="charge_user[]">
 							<option value=""></option>
 							<?php foreach($user_list as $k1 => $v1) {?>
-								<option value="<?php echo $v1['id'];?>" <?php if($v1['id'] == $assign_list[$v['houses_id']]) {?> selected="selected"<?php }?>><?php echo $v1['fullname'];?></option>
+								<option value="<?php echo $v1['id'];?>" <?php if($assign_type == 2 && $v1['id'] == $assign_list[$v['houses_id']]) {?> selected="selected"<?php }?>><?php echo $v1['fullname'];?></option>
 							<?php }?>
 						</select>
 					</td>
