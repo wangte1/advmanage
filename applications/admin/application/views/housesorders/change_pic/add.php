@@ -60,6 +60,7 @@
                             <div class="widget-body">
                                 <div class="widget-main">
                                     <form class="form-horizontal" role="form" method="post" action="">
+                                    	<input type="hidden" name="customer_id" id="customer_id" value="<?php if(isset($info['customer_id']))echo $info['customer_id']; ?>">
                                         <div class="form-group">
                                             <label class="col-sm-2 control-label no-padding-right" for="form-field-2"> 订单编号： </label>
                                             <div class="col-sm-6">
@@ -479,7 +480,6 @@
         $('.search-point').click(function(){
             if ($("input[name='order_code']").val()) {
                 $.post('/houseschangepicorders/get_points', {order_code: $("input[name='order_code']").val(), order_type: $("input[name='order_type']").val()}, function(data){
-					console.log(data);
 
                     if (data.flag && data.points_lists.length > 0) {
                         //订单信息显示
@@ -492,6 +492,7 @@
                         $("#sales_mobile").html(data.order_info['sales_mobile']);
                         $("#release_time").html(data.order_info['release_start_time']+'至'+data.order_info['release_end_time']);
                         $("#order_time").html(data.order_info['create_time']);
+                        $("#customer_id").val(data.order_info['customer_id']);
 
                         //点位列表显示
                         $("#points_lists").empty();

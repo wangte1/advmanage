@@ -83,7 +83,7 @@ class Houseschangepicorders extends MY_Controller{
                 $post_data['make_complete_time'] = $post_data['make_complete_time'].' '.$post_data['hour'].':'.$post_data['minute'].':'.$post_data['second'];
             }
 
-            $post_data['create_user'] = $post_data['update_user'] = $data['userInfo']['id'];
+            $post_data['creator'] = $post_data['update_user'] = $data['userInfo']['id'];
             $post_data['create_time'] = $post_data['update_time'] = date('Y-m-d H:i:s');
             unset($post_data['order_type'], $post_data['media_id'], $post_data['make_num'], $post_data['hour'], $post_data['minute'], $post_data['second']);
             $id = $this->Mhouses_changepicorders->create($post_data);

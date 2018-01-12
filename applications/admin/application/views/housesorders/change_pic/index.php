@@ -198,7 +198,7 @@
                                                         <?php endif;?>
                                                     <?php endif;?>
                                                 </td>
-                                                <td><?php echo $admins[$value['create_user']];?></td>
+                                                <td><?php echo $admins[$value['creator']];?></td>
                                                 <td>
                                                     <div class="visible-md visible-lg hidden-sm hidden-xs action-buttons">
                                                         <a class="green tooltip-info" href="/houseschangepicorders/detail/<?php echo $value['id'];?>"  data-rel="tooltip" data-placement="top" title="" data-original-title="详情">

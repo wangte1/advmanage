@@ -48,7 +48,8 @@
 
                             <div class="widget-body">
                                 <div class="widget-main">
-                                    <form class="form-horizontal" role="form">
+                                    <form id="form1" class="form-horizontal" role="form">
+                                    	<input type="hidden" name="assign_type" id="assign_type" value="<?php echo $assign_type;?>">
                                         <div class="form-group">
                                             <div class="col-sm-4">
                                                 <label class="col-sm-3 control-label no-padding-right" for="form-field-1"> 订单编号 </label>
@@ -82,17 +83,6 @@
                                             </div>
                                         </div>
                                         <div class="form-group">
-                                        	<div class="col-sm-4">
-                                                <label class="col-sm-3 control-label no-padding-right" for="form-field-1"> 派单类型 </label>
-                                                <div class="col-sm-9">
-                                                    <select name="assign_type" class="select2">
-                                                        <option value="">全部</option>
-                                                        <?php foreach($houses_assign_type as $key => $value):?>
-                                                        <option value="<?php echo $key;?>" <?php if($key == $assign_type){ echo "selected"; }?>><?php echo $value;?></option>
-                                                        <?php endforeach;?>
-                                                    </select>
-                                                </div>
-                                            </div>
                                         
                                             <div class="col-sm-4">
                                                 <label class="col-sm-3 control-label no-padding-right" for="form-field-1"> 派单状态 </label>
@@ -106,25 +96,6 @@
                                                 </div>
                                             </div>
 
-                                            <!-- <div class="col-sm-4">
-                                                <label class="col-sm-3 control-label no-padding-right" for="form-field-1"> 即将到期 </label>
-                                                <div class="col-sm-9">
-                                                    <label>
-                                                        <input type="checkbox"  name="expire_time" class="ace" value="1" <?php if($expire_time == 1){ echo "checked";}?> />
-                                                        <span class="lbl"></span>
-                                                    </label>
-                                                </div>
-                                            </div>
-
-                                            <div class="col-sm-4">
-                                                <label class="col-sm-3 control-label no-padding-right" for="form-field-1"> 已到期未下画 </label>
-                                                <div class="col-sm-9">
-                                                    <label>
-                                                        <input type="checkbox"  name="overdue" class="ace" value="1" <?php if($overdue == 1){ echo "checked";}?> />
-                                                        <span class="lbl"></span>
-                                                    </label>
-                                                </div>
-                                            </div> -->
                                         </div>
                                         <div class="clearfix form-actions">
                                             <div class="col-md-offset-3 col-md-9">
@@ -148,109 +119,126 @@
                         <div class="row">
                             <div class="col-xs-12">
                                 <div class="table-responsive">
-                                    <table id="sample-table-1" class="table table-striped table-bordered table-hover">
-                                        <thead>
-                                            <tr>
-                                                <th>订单编号</th>
-                                                <th width="7%">订单类型</th>
-                                                <th width="7%">投放点位</th>
-                                                <!-- <th>总价（元）</th> -->
-                                                <th>客户</th>
-                                                <!-- <th width="6%">业务员</th> -->
-                                                <!-- <th>手机号</th> -->
-                                                <th>投放时间</th>
-                                                <th width="7%">下单日期</th>
-                                                <th>派单类型</th>
-                                                <th>派单状态</th>
-                                                <th>创建人</th>
-                                                <th width="10%">操作</th>
-                                            </tr>
-                                        </thead>
-                                        <tbody>
-                                            <?php foreach ($list as $key => $value) : ?>
-                                            <tr>
-                                                <td>
-                                                    <!-- <a href="/housesorders/detail/<?php echo $value['id'];?>"><?php echo $value['order_code'];?></a> -->
-                                                	<?php echo $value['order_code'];?>
-                                                </td>
-                                                <td><?php echo $order_type_text[$value['order_type']];?></td>
-                                                <td><?php echo $value['point_ids'] ? count(explode(',', $value['point_ids'])) : 0;?>个点位</td>
-                                                <td>
-                                                	<?php foreach ($customers as $k => $v) {?>
-                                                		<?php if($v['id'] == $value['customer_id']) {?>
-                                                			<?php echo $v['name'];?>
-                                                		<?php }?>
-                                                	<?php }?>
-                                                	
-                                                </td>
-                                                
-                                                <td>
-                                                    <?php echo $value['release_start_time'].'至'.$value['release_end_time'];?>
-                                                    <?php
-                                                            $release_end_time =  strtotime($value['release_end_time']);
-                                                            $today_time = strtotime(date("Y-m-d"));
-                                                            $between_time =  60*60*24*7;
-                                                    ?>
-                                                </td>
-                                                <td><?php echo $value['create_time'];?></td>
-                                                <td><?php echo $houses_assign_type[$value['assign_type']];?></td>
-                                                <td>
-                                                    <?php 
-                                                        switch ($value['assign_status']) {
-                                                            case '1':
-                                                                $class = 'badge-yellow';
-                                                                break;
-                                                            case '2':
-                                                                $class = 'badge-pink';
-                                                                break;
-                                                            case '3':
-                                                                $class = 'badge-success';
-                                                                break;
-                                                            case '4':
-                                                                $class = 'badge-warning';
-                                                                break;
-                                                            case '5':
-                                                                $class = 'badge-danger';
-                                                                break;
-                                                            case '6':
-                                                                $class = 'badge-info';
-                                                                break;
-                                                            case '7':
-                                                                $class = 'badge-purple';
-                                                                break;
-                                                            case '8':
-                                                                $class = 'badge-grey';
-                                                                break;
-                                                        }
-                                                    ?>
-                                                    <span class="badge <?php echo $class; ?>">
-                                                        <?php echo $houses_assign_status[$value['assign_status']];?>
-                                                    </span>
-
-                                                </td>
-                                                <td><?php echo $admins[$value['creator']];?></td>
-                                                <td>
-                                                    <div class="visible-md visible-lg hidden-sm hidden-xs action-buttons">
-                                                    	<a class="green tooltip-info m-detail" data-id="<?php echo $value['id'];?>"  data-rel="tooltip" data-placement="top" title="" data-original-title="详情">
-                                                            <i class="icon-eye-open bigger-130"></i>
-                                                        </a>
-                                                    	<?php if($value['assign_status'] == 1) {?>
-	                                                        <a class="green tooltip-info m-assign" data-id="<?php echo $value['id'];?>" assign_type="<?php echo $value['assign_type'];?>" data-rel="tooltip" data-placement="top" title="" data-original-title="派单">
-	                                                            <i class="icon-hand-right bigger-130"></i>
-	                                                        </a> 
-                                                        <?php }else if($value['assign_status'] == 2) {?>
-                                                        	<a class="green tooltip-info m-edit" data-id="<?php echo $value['id'];?>" assign_type="<?php echo $value['assign_type'];?>"  data-rel="tooltip" data-placement="top" title="" data-original-title="改派">
-                                                                <i class="icon-pencil bigger-130"></i>
-                                                            </a>
-                                                        <?php }?>
-                                                    </div>
-                                                </td>
-                                            </tr>
-                                            <?php endforeach; ?>
-                                        </tbody>
-                                    </table>
-                                    <!-- 分页 -->
-                                    <?php $this->load->view('common/page');?>
+                                
+                                <div class="tabbable" id="tabs-260319">
+										<ul class="nav nav-tabs">
+											<li <?php if($assign_type == 1){?>class="active"<?php }?>>
+												<a href="#panel-1" data-toggle="tab">上画派单&nbsp;<span class="badge badge-important">0</span></a>
+											</li>
+											<li <?php if($assign_type == 3){?>class="active"<?php }?>>
+												<a href="#panel-3" data-toggle="tab">换画派单&nbsp;<span class="badge badge-important">0</span></a>
+											</li>
+											<li <?php if($assign_type == 2){?>class="active"<?php }?>>
+												<a href="#panel-2" data-toggle="tab">下画派单&nbsp;<span class="badge badge-important">0</span></a>
+											</li>
+										</ul>
+										<div class="tab-content">
+											<div class="tab-pane active" id="panel-1">
+			                                    <table id="sample-table-1" class="table table-striped table-bordered table-hover">
+			                                        <thead>
+			                                            <tr>
+			                                                <th>订单编号</th>
+			                                                <th width="7%">订单类型</th>
+			                                                <th width="7%">投放点位</th>
+			                                                <!-- <th>总价（元）</th> -->
+			                                                <th>客户</th>
+			                                                <!-- <th width="6%">业务员</th> -->
+			                                                <!-- <th>手机号</th> -->
+			                                                <th>投放时间</th>
+			                                                <th width="7%">下单日期</th>
+			                                                <th>派单状态</th>
+			                                                <th>创建人</th>
+			                                                <th width="10%">操作</th>
+			                                            </tr>
+			                                        </thead>
+			                                        <tbody>
+			                                            <?php foreach ($list as $key => $value) : ?>
+			                                            <tr>
+			                                                <td>
+			                                                    <!-- <a href="/housesorders/detail/<?php echo $value['id'];?>"><?php echo $value['order_code'];?></a> -->
+			                                                	<?php echo $value['order_code'];?>
+			                                                </td>
+			                                                <td><?php echo $order_type_text[$value['order_type']];?></td>
+			                                                <td><?php echo $value['point_ids'] ? count(array_unique(explode(',', $value['point_ids']))) : 0;?>个点位</td>
+			                                                <td>
+			                                                	<?php foreach ($customers as $k => $v) {?>
+			                                                		<?php if($v['id'] == $value['customer_id']) {?>
+			                                                			<?php echo $v['name'];?>
+			                                                		<?php }?>
+			                                                	<?php }?>
+			                                                	
+			                                                </td>
+			                                                
+			                                                <td>
+			                                                    <?php echo $value['release_start_time'].'至'.$value['release_end_time'];?>
+			                                                    <?php
+			                                                            $release_end_time =  strtotime($value['release_end_time']);
+			                                                            $today_time = strtotime(date("Y-m-d"));
+			                                                            $between_time =  60*60*24*7;
+			                                                    ?>
+			                                                </td>
+			                                                <td><?php echo $value['create_time'];?></td>
+			                                                <td>
+			                                                    <?php 
+			                                                        switch ($value['assign_status']) {
+			                                                            case '1':
+			                                                                $class = 'badge-yellow';
+			                                                                break;
+			                                                            case '2':
+			                                                                $class = 'badge-pink';
+			                                                                break;
+			                                                            case '3':
+			                                                                $class = 'badge-success';
+			                                                                break;
+			                                                            case '4':
+			                                                                $class = 'badge-warning';
+			                                                                break;
+			                                                            case '5':
+			                                                                $class = 'badge-danger';
+			                                                                break;
+			                                                            case '6':
+			                                                                $class = 'badge-info';
+			                                                                break;
+			                                                            case '7':
+			                                                                $class = 'badge-purple';
+			                                                                break;
+			                                                            case '8':
+			                                                                $class = 'badge-grey';
+			                                                                break;
+			                                                        }
+			                                                    ?>
+			                                                    <span class="badge <?php echo $class; ?>">
+			                                                        <?php echo $houses_assign_status[$value['assign_status']];?>
+			                                                    </span>
+			
+			                                                </td>
+			                                                <td><?php echo $admins[$value['creator']];?></td>
+			                                                <td>
+			                                                    <div class="visible-md visible-lg hidden-sm hidden-xs action-buttons">
+			                                                    	<a class="green tooltip-info m-detail" data-id="<?php echo $value['id'];?>" assign_type="<?php echo $value['assign_type'];?>"  data-rel="tooltip" data-placement="top" title="" data-original-title="详情">
+			                                                            <i class="icon-eye-open bigger-130"></i>
+			                                                        </a>
+			                                                    	<?php if($value['assign_status'] == 1) {?>
+				                                                        <a class="green tooltip-info m-assign" data-id="<?php echo $value['id'];?>" assign_type="<?php echo $value['assign_type'];?>" data-rel="tooltip" data-placement="top" title="" data-original-title="派单">
+				                                                            <i class="icon-hand-right bigger-130"></i>
+				                                                        </a> 
+			                                                        <?php }else if($value['assign_status'] == 2) {?>
+			                                                        	<a class="green tooltip-info m-edit" data-id="<?php echo $value['id'];?>" assign_type="<?php echo $value['assign_type'];?>"  data-rel="tooltip" data-placement="top" title="" data-original-title="改派">
+			                                                                <i class="icon-pencil bigger-130"></i>
+			                                                            </a>
+			                                                        <?php }?>
+			                                                    </div>
+			                                                </td>
+			                                            </tr>
+			                                            <?php endforeach; ?>
+			                                        </tbody>
+			                                    </table>
+			                           		</div>
+			                           		
+		                                    <!-- 分页 -->
+		                                    <?php $this->load->view('common/page');?>
+                                    	</div>
+                                    </div>
                                 </div>
                             </div>
                         </div>
@@ -301,15 +289,32 @@
     $(".select2").css('width','240px').select2({allowClear:true});
 
 	$(function(){
+		$('.nav-tabs').find('a').click(function(){
+			if($(this).attr('href') == '#panel-1') {
+				$('#assign_type').val('1');
+			}
+
+			if($(this).attr('href') == '#panel-2') {
+				$('#assign_type').val('2');
+			}
+
+			if($(this).attr('href') == '#panel-3') {
+				$('#assign_type').val('3');
+			}
+
+			$('#form1').submit();
+		});
+		
 		$('.m-detail').click(function(){
 			var order_id = $(this).attr('data-id');
+			var assign_type = $(this).attr('assign_type');
 			layer.open({
 				  type: 2,
 				  title: '详情',
 				  shadeClose: true,
 				  shade: 0.6,
 				  area: ['70%', '70%'],
-				  content: 'housesassign/detail?order_id='+order_id //iframe的url
+				  content: 'housesassign/detail?order_id='+order_id+'&assign_type='+assign_type //iframe的url
 				}); 
 		});
 	

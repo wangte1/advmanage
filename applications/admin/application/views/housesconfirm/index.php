@@ -48,7 +48,7 @@
                                 <div class="widget-main">
                                     <form class="form-horizontal" role="form">
                                     	<input type="hidden" name="assign_type" id="assign_type" value="<?php echo $assign_type;?>">
-                                       <div class="form-group">
+                                       	<div class="form-group">
                                            
                                             <div class="col-sm-6">
                                                 <label class="col-sm-3 control-label no-padding-right" for="form-field-1"> 所属地区</label>
