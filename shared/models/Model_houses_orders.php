@@ -12,7 +12,7 @@ class Model_houses_orders extends MY_Model {
      * 获取订单列表
      */
     public function get_order_lists($where = array(), $order_by = array(), $pagesize = 0,$offset = 0,  $group_by = array()) {
-    	$this->db->select('A.*, B.name, C.name AS sales_name, C.sex AS sales_sex, C.phone_number AS sales_mobile');
+    	$this->db->select('A.*, B.name AS customer_name, C.name AS sales_name, C.sex AS sales_sex, C.phone_number AS sales_mobile');
 		$this->db->from('t_houses_orders A');
         $this->db->join('t_houses_customers B', 'A.customer_id = B.id');
 		$this->db->join('t_salesman C', 'A.sales_id = C.id');

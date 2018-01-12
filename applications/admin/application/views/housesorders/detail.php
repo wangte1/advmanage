@@ -226,6 +226,9 @@
                                                                 case '8':
                                                                     $class = 'badge-grey';
                                                                     break;
+                                                                case '9':
+                                                                    $class = 'badge-grey';
+                                                                    break;
                                                             }
                                                         ?>
                                                         <span class="badge <?php echo $class; ?>">
@@ -256,9 +259,12 @@
                                                 <thead>
                                                     <tr>
                                                         <th class="center">点位编号</th>
-                                                        <th>楼盘名称</th>
-                                                        <th>楼盘区域</th>
-                                                        <th>地址</th>
+                                                        <th>楼盘</th>
+                                                        <th>组团</th>
+                                                        <th>楼栋</th>
+                                                        <th>单元</th>
+                                                        <th>楼层</th>
+                                                        <th>点位位置</th>
                                                         <th class="hidden-xs">规格</th>
                                                     </tr>
                                                 </thead>
@@ -268,7 +274,10 @@
                                                         <td class="center"><?php echo $value['code'];?></td>
                                                         <td><?php echo $value['houses_name'];?></td>
                                                         <td><?php echo $value['houses_area_name'];?></td>
-                                                        <td><?php echo $value['addr'];?></td>
+                                                        <td><?php echo $value['ban'];?></td>
+                                                        <td><?php echo $value['unit'];?></td>
+                                                        <td><?php echo $value['floor'];?></td>
+                                                        <td><?php if(isset($point_addr[$value['addr']])) echo $point_addr[$value['addr']];?></td>
                                                         <td><?php echo $value['size'];?></td>
                                                     </tr>
                                                     <?php endforeach;?>
@@ -305,11 +314,14 @@
                                                 <table class="table table-striped table-bordered table-hover">
                                                     <thead>
                                                         <tr>
-                                                            <th class="col-xs-2 center">点位编号</th>
-                                                            <th class="col-xs-2 center">楼盘名称</th>
-                                                            <th class="col-xs-2 center">楼盘区域</th>
-                                                            <th class="col-xs-2 center">详细地址</th>
-                                                            <th class="col-xs-5 center">图片</th>
+                                                            <th class=" center">点位编号</th>
+                                                            <th class=" center">楼盘</th>
+                                                            <th class=" center">组团</th>
+                                                            <th class=" center">楼栋</th>
+                                                            <th class=" center">单元</th>
+                                                            <th class=" center">楼层</th>
+                                                            <th class=" center">点位位置</th>
+                                                            <th class=" center">图片</th>
                                                             
                                                         </tr>
                                                     </thead>
@@ -319,7 +331,10 @@
                                                             <td style="text-align: center;vertical-align: middle;"><?php echo $value['point_code'];?></td>
                                                             <td style="text-align: center;vertical-align: middle;"><?php echo $value['houses_name'];?></td>
                                                             <td style="text-align: center;vertical-align: middle;"><?php echo $value['houses_area_name'];?></td>
-                                                            <td style="text-align: center;vertical-align: middle;"><?php echo $value['addr'];?></td>
+                                                            <td style="text-align: center;vertical-align: middle;"><?php echo $value['ban'];?></td>
+                                                            <td style="text-align: center;vertical-align: middle;"><?php echo $value['unit'];?></td>
+                                                            <td style="text-align: center;vertical-align: middle;"><?php echo $value['floor'];?></td>
+                                                            <td style="text-align: center;vertical-align: middle;"><?php if(isset($point_addr[$value['addr']])) echo $point_addr[$value['addr']];?></td>
                                                             <td class="center">
                                                                 <a href="<?php echo $value['front_img'];?>" target="_blank" title="点击查看原图">
                                                                     <img style="width: 215px; height: 150px" src="<?php echo $value['front_img'];?>">
@@ -473,11 +488,7 @@
                                             				<td class="center"><?php echo $v['province']."-".$v['city']."-".$v['area'];?></td>
                                             				<td class="center"><?php echo $v['houses_name'];?></td>
                                             				<td class="center">
-                                            					<?php if(isset($houses_count)) {foreach ($houses_count as $k1 => $v1) {?>
-                                            						<?php if($v['houses_id'] == $v1['houses_id']) {?>
-                                            							<?php echo $v1['count'];?>
-                                            						<?php }?>
-                                            					<?php }}?>
+                                            					<?php echo $v['points_count'];?>
                                             				</td>
                                             				<td class="center"><?php echo $v['charge_name'];?></td>
                                             				<td class="center">
@@ -569,11 +580,7 @@
                                             				<td class="center"><?php echo $v['province']."-".$v['city']."-".$v['area'];?></td>
                                             				<td class="center"><?php echo $v['houses_name'];?></td>
                                             				<td class="center">
-                                            					<?php if(isset($houses_count)) {foreach ($houses_count as $k1 => $v1) {?>
-                                            						<?php if($v['houses_id'] == $v1['houses_id']) {?>
-                                            							<?php echo $v1['count'];?>
-                                            						<?php }?>
-                                            					<?php }}?>
+                                            					<?php echo $v['points_count'];?>
                                             				</td>
                                             				<td class="center"><?php echo $v['charge_name'];?></td>
                                             				<td class="center">
@@ -899,6 +906,49 @@
             d.showModal();
             return false;
         }
+
+		//提前主动变为下画派单
+		if(status == 8 && !($(this).parent().hasClass('active'))) {
+			var d = dialog({
+                title: '提示信息',
+                content: '该订单还没有到投放结束时间，您确认要提前进行下画派单吗？',
+                okValue: '确认',
+                ok: function () {
+                	$("#exampleModal").modal('show');
+                	$("#lock-add").click(function(){
+                        var remark = $("#remark").val();
+                        $.ajax( {
+                            url:'/housesorders/ajax_update_status',
+                            data: {
+                                'id':order_id,
+                                'status':status,
+                                'remark':remark,
+                                'order_code':$("#order_code").html()
+                            },
+                            type:'POST',
+                            dataType:'json',
+                            beforeSend:function(){},
+                            success:function(data) {
+                                if(data.status == 0){
+                                   window.location.reload();
+                                } else {
+                                    $(".error_msg").html(data.msg);
+                                    return false;
+                                }
+                                $("#exampleModal").modal('hide');
+                            }
+                        });
+                    });
+                },
+            });
+			d.width(320);
+            d.showModal();
+            return false;
+		}else if(status == 8 && $(this).parent().hasClass('active')) {
+			return false;
+		}
+
+        
 
         $("#exampleModal").modal('show');
         $("#lock-add").click(function(){

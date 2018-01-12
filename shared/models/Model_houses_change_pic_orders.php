@@ -38,7 +38,7 @@ class Model_houses_change_pic_orders extends MY_Model {
      * 获取订单数量
      */
     public function get_order_count($where = array()) {
-        $this->db->from('t_change_pic_orders A');
+        $this->db->from('t_houses_change_pic_orders A');
         $this->db->join('t_orders B', 'A.order_code = B.order_code');
         $this->db->join('t_customers C', 'B.customer_id = C.id');
         

@@ -143,7 +143,7 @@
                                             <tr>
                                                 <td><a href="/houseschangepicorders/detail/<?php echo $value['id'];?>"><?php echo $value['order_code'];?></a></td>
                                                 <td><?php echo $order_type_text[$value['order_type']];?></td>
-                                                <td><?php echo $value['point_ids'] ? count(explode(',', $value['point_ids'])) : 0;?>个点位</td>
+                                                <td><?php echo $value['point_ids'] ? count(array_unique(explode(',', $value['point_ids']))) : 0;?>个点位</td>
                                                 <td><?php echo $value['total_price'];?></td>
                                                 <td><?php echo $value['customer_name'];?></td>
                                                 <td><?php echo $value['sales_name'];?></td>
@@ -176,6 +176,9 @@
                                                                 break;
                                                             case '8':
                                                                 $class = 'badge-grey';
+                                                                break;
+                                                            case '9':
+                                                               	$class = 'badge-grey';
                                                                 break;
                                                         }
                                                     ?>

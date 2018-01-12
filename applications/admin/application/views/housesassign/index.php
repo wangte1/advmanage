@@ -162,7 +162,6 @@
                                                 <th width="7%">下单日期</th>
                                                 <th>派单类型</th>
                                                 <th>派单状态</th>
-                                                <th>负责人员</th>
                                                 <th>创建人</th>
                                                 <th width="10%">操作</th>
                                             </tr>
@@ -176,7 +175,14 @@
                                                 </td>
                                                 <td><?php echo $order_type_text[$value['order_type']];?></td>
                                                 <td><?php echo $value['point_ids'] ? count(explode(',', $value['point_ids'])) : 0;?>个点位</td>
-                                                <td><?php echo $value['customer_id'];?></td>
+                                                <td>
+                                                	<?php foreach ($customers as $k => $v) {?>
+                                                		<?php if($v['id'] == $value['customer_id']) {?>
+                                                			<?php echo $v['name'];?>
+                                                		<?php }?>
+                                                	<?php }?>
+                                                	
+                                                </td>
                                                 
                                                 <td>
                                                     <?php echo $value['release_start_time'].'至'.$value['release_end_time'];?>
@@ -222,7 +228,6 @@
                                                     </span>
 
                                                 </td>
-                                                <td></td>
                                                 <td><?php echo $admins[$value['creator']];?></td>
                                                 <td>
                                                     <div class="visible-md visible-lg hidden-sm hidden-xs action-buttons">

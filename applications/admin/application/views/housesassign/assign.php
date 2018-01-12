@@ -65,7 +65,7 @@
 							<?php }?>
 						</select>
 					</td>
-					<td><textarea name="remark" rows="1"></textarea></td>
+					<td><textarea name="remark[]" rows="1"></textarea></td>
 					<td>
 						<a class="green tooltip-info m-detail" data-id="<?php echo $v['houses_id'];?>"  data-rel="tooltip" data-placement="top" title="" data-original-title="详情">
                         	<i class="icon-eye-open bigger-130"></i>

@@ -247,7 +247,7 @@
 					                                                            <i class="fa fa-picture-o bigger-130"></i>
 					                                                        </a>
 				                                                        <?php }?>
-				                                                        <?php if($val['status'] == 3 || $val['status'] == 9) {?>
+				                                                        <?php if($val['status'] == 3 ||  $val['status'] == 6 || $val['status'] == 9) {?>
 				                                                        	<a class="green tooltip-info m-upload" data-id="<?php echo $val['id'];?>" order-id="<?php echo $val['order_id'];?>" houses-id="<?php echo $val['houses_id'];?>"  data-rel="tooltip" data-placement="top" title="" data-original-title="验收图片">
 					                                                            <i class="fa fa-picture-o bigger-130"></i>
 					                                                        </a>

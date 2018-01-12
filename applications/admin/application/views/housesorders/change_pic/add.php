@@ -153,11 +153,15 @@
                                                                     <table id="sample-table-1" class="table table-striped table-bordered table-hover">
                                                                         <thead>
                                                                             <tr>
-                                                                                <th class="col-sm-2">点位编号</th>
-                                                                                <th class="col-sm-3">楼盘名称</th>
-                                                                                <th class="col-sm-3">楼盘区域</th>
-                                                                                <th class="col-sm-2">规格</th>
-                                                                                <th class="col-sm-2"><button class="btn btn-xs btn-info select-all" type="button" data-id="3">选择全部<i class="icon-arrow-right icon-on-right"></i></button></th>
+                                                                                <th width="10%">点位编号</th>
+                                                                                <th width="10%">楼盘</th>
+                                                                                <th width="10%">组团</th>
+                                                                                <th width="10%">楼栋</th>
+                                                                                <th width="10%">单元</th>
+                                                                                <th width="10%">楼层</th>
+                                                                                <th width="10%">位置</th>
+                                                                                <th width="10%">规格</th>
+                                                                                <th width="10%"><button class="btn btn-xs btn-info select-all" type="button" data-id="3">选择全部<i class="icon-arrow-right icon-on-right"></i></button></th>
                                                                             </tr>
                                                                         </thead>
                                                                     </table>
@@ -406,11 +410,15 @@
                                             <table id="sample-table-1" class="table table-striped table-bordered table-hover">
                                                 <thead>
                                                     <tr>
-                                                        <th class="col-sm-2">点位编号</th>
-                                                        <th class="col-sm-3">楼盘名称</th>
-                                                        <th class="col-sm-3">楼盘区域</th>
-                                                        <th class="col-sm-2">规格</th>
-                                                        <th class="col-sm-2"><button class="btn btn-xs btn-info remove-all" type="button" data-id="3">移除全部<i class="fa fa-remove" aria-hidden="true"></i></button></th>
+                                                        <th width="10%">点位编号</th>
+                                                        <th width="10%">楼盘</th>
+                                                        <th width="10%">组团</th>
+                                                        <th width="10%">楼栋</th>
+                                                        <th width="10%">单元</th>
+                                                        <th width="10%">楼层</th>
+                                                        <th width="10%">位置</th>
+                                                        <th width="10%">规格</th>
+                                                        <th width="10%"><button class="btn btn-xs btn-info remove-all" type="button" data-id="3">移除全部<i class="fa fa-remove" aria-hidden="true"></i></button></th>
                                                     </tr>
                                                 </thead>
                                             </table>
@@ -479,7 +487,7 @@
                         $("#order_type").html(data.order_info['order_type']);
                         $("#points").html(data.count+"个点位");
                         $("#price").html(data.order_info['total_price']+'元');
-                        $("#customer_name").html(data.order_info['name']);
+                        $("#customer_name").html(data.order_info['customer_name']);
                         $("#sales_name").html(data.order_info['sales_name']);
                         $("#sales_mobile").html(data.order_info['sales_mobile']);
                         $("#release_time").html(data.order_info['release_start_time']+'至'+data.order_info['release_end_time']);
@@ -491,17 +499,21 @@
                         var html = '';
                         for (var i = 0; i < lists.length; i++) {
                             html += '<tr point-id="'+lists[i]['id']+'">';
-                            html += '<td class="col-sm-2" class="col-sm-2">' + lists[i]['code'] + '</td>';
-                            html += '<td class="col-sm-3">' + lists[i]['houses_name'] + '</td>';
-                            html += '<td class="col-sm-3">' + lists[i]['houses_area_name'] + '</td>';
-                            html += '<td class="col-sm-2">' + lists[i]['size'] + '</td>';
+                            html += '<td width="10%">' + lists[i]['code'] + '</td>';
+                            html += '<td width="10%">' + lists[i]['houses_name'] + '</td>';
+                            html += '<td width="10%">' + lists[i]['houses_area_name'] + '</td>';
+                            html += '<td width="10%">' + lists[i]['ban'] + '</td>';
+                            html += '<td width="10%">' + lists[i]['unit'] + '</td>';
+                            html += '<td width="10%">' + lists[i]['floor'] + '</td>';
+                            html += '<td width="10%">' + lists[i]['addr'] + '</td>';
+                            html += '<td width="10%">' + lists[i]['size'] + '</td>';
                             
                             var point_id = lists[i]['id'];
                             var point_ids_arr = $('input[name="point_ids"]').val().split(',');
                             if ($.inArray(point_id, point_ids_arr) != -1) {
-                                html += '<td class="col-sm-2"><button class="btn btn-xs btn-default do-sel" type="button" data-id="'+lists[i]['id']+'" disabled>已选择</button></td>';
+                                html += '<td width="10%"><button class="btn btn-xs btn-default do-sel" type="button" data-id="'+lists[i]['id']+'" disabled>已选择</button></td>';
                             } else {
-                                html += '<td class="col-sm-2"><button class="btn btn-xs btn-info do-sel" type="button" data-id="'+lists[i]['id']+'">选择<i class="icon-arrow-right icon-on-right"></i></button></td>';
+                                html += '<td width="10%"><button class="btn btn-xs btn-info do-sel" type="button" data-id="'+lists[i]['id']+'">选择点位<i class="icon-arrow-right icon-on-right"></i></button></td>';
                             }
                             
                         }
@@ -542,7 +554,7 @@
             numObj.text(inputVal);
             //$("input[name='point_ids']").after('<input type="hidden" name="make_num['+$(this).parent().parent().attr('point-id')+']" value="'+inputVal+'">');
             
-            $("#selected_points button").html('移除<i class="fa fa-remove" aria-hidden="true"></i>');
+            $("#selected_points button").html('移除点位<i class="fa fa-remove" aria-hidden="true"></i>');
             var point_ids = $("input[name='point_ids']").val() ? $("input[name='point_ids']").val() + ',' + $(this).parent().parent().attr('point-id') :  $(this).parent().parent().attr('point-id');
 
 
@@ -559,7 +571,7 @@
             //$('input[name="make_num['+$(this).parent().parent().attr('point-id')+']"]').remove();
            
 
-            $("#points_lists button").html('选择<i class="icon-arrow-right icon-on-right"></i>');
+            $("#points_lists button").html('选择点位<i class="icon-arrow-right icon-on-right"></i>');
 
             var point_ids = [];
             var _self = $(this);

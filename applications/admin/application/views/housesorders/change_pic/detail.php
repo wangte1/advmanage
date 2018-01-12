@@ -242,9 +242,12 @@
                                                 <thead>
                                                     <tr>
                                                         <th class="center">点位编号</th>
-                                                        <th>楼盘名称</th>
-                                                        <th>楼盘区域</th>
-                                                        <th>地址</th>
+                                                        <th>楼盘</th>
+                                                        <th>组团</th>
+                                                        <th>楼栋</th>
+                                                        <th>单元</th>
+                                                        <th>楼层</th>
+                                                        <th>点位位置</th>
                                                         <th class="hidden-xs">规格</th>
                                                     </tr>
                                                 </thead>
@@ -254,7 +257,10 @@
                                                         <td class="center"><?php echo $value['code'];?></td>
                                                         <td><?php echo $value['houses_name'];?></td>
                                                         <td><?php echo $value['houses_area_name'];?></td>
-                                                        <td><?php echo $value['addr'];?></td>
+                                                        <td><?php echo $value['ban'];?></td>
+                                                        <td><?php echo $value['unit'];?></td>
+                                                        <td><?php echo $value['floor'];?></td>
+                                                        <td><?php if(isset($point_addr[$value['addr']])) echo $point_addr[$value['addr']];?></td>
                                                         <td><?php echo $value['size'];?></td>
                                                     </tr>
                                                     <?php endforeach;?>
@@ -343,7 +349,7 @@
                                             <?php
                                             $n = 1;
                                             foreach($status_text as $key=>$val){
-                                                if($key != 8){
+                                                if($key != 9 && $key != 8){
 
                                             ?>
                                             <li data-target="#step1" class="<?php if($key <= $info['order_status']){ echo "active";}?>">
@@ -421,6 +427,7 @@
 <script>
     var adv_img_count = "<?php echo count($info['adv_img']); ?>";
     var inspect_img_count = "<?php echo count($info['inspect_img']); ?>";
+    $('[data-rel=tooltip]').tooltip();
 
     //导出投放点位
     $(".btn-export").click(function(){
@@ -429,11 +436,92 @@
         window.location.href = '/houseschangepicorders/export/' + id + '/' + type;
     });
 
+
+    $('.m-detail').click(function(){
+        var order_id = '<?php echo $id;?>';
+		var houses_id = $(this).attr('data-id');
+		
+		layer.open({
+			  type: 2,
+			  title: '包含点位',
+			  shadeClose: true,
+			  shade: 0.6,
+			  area: ['60%', '60%'],
+			  content: '/houseschangepicorders/show_points?order_id='+order_id+'&houses_id='+houses_id //iframe的url
+			}); 
+	});
+
+	$('.m-confirm').click(function(){
+		var assign_id = $(this).attr('data-id');
+		var order_id = $(this).attr('order-id');
+		var houses_id = $(this).attr('houses-id');
+		var assign_type = $(this).attr('assign_type');
+
+		$("#confirmModal").modal('show');
+
+		//通过
+		$('#sub-confirm').click(function(){
+			var confirm_remark  = $('#confirm-remark').val();
+			$.post('/houseschangepicorders/confirm_upload', {assign_id:assign_id, order_id:order_id, confirm_remark:confirm_remark, mark:1, assign_type:assign_type, houses_id:houses_id}, function(data){
+				if(data) {
+					layer.alert(data.msg, function(){
+						location.reload();
+					});
+				}
+			});
+		});
+
+		//不通过
+		$('#sub-not-confirm').click(function(){
+			var confirm_remark  = $('#confirm-remark').val();
+			
+			$.post('/houseschangepicorders/confirm_upload', {assign_id:assign_id, order_id:order_id, confirm_remark:confirm_remark, mark:2, assign_type:assign_type}, function(data){
+				if(data) {
+					layer.alert(data.msg, function(){
+						location.reload();
+					});
+				}
+			});
+		});
+		
+	});
+
+    $('.m-upload').click(function(){
+		var id = $(this).attr('data-id');
+		var order_id = $(this).attr('order-id');
+		var houses_id = $(this).attr('houses-id');
+
+		layer.open({
+			  type: 2,
+			  title: '查看验收图片',
+			  shadeClose: true,
+			  shade: 0.6,
+			  area: ['80%', '80%'],
+			  content: '/houseschangepicorders/check_upload_img?order_id='+order_id+'&assign_id='+id+'&houses_id='+houses_id //iframe的url
+			}); 
+	});
+
     //更新订单状态
     $(".status-step").click(function(){
+        
         var order_id = $("#order_id").val();
-        var status =$(this).attr("data-status");
+        var status = $(this).attr("data-status");
 
+		var now_status = "<?php echo $info['order_status']?>";
+
+		if(now_status >= 4 && status <= 4) {
+			var d = dialog({
+                title: '提示信息',
+                content: '该订单已经进入派单，不能更新状态！',
+                okValue: '确定',
+                ok: function () {
+                },
+            });
+            d.width(320);
+            d.showModal();
+            return false;
+		}
+        
         if (adv_img_count == 0) {
             var d = dialog({
                 title: '提示信息',
@@ -447,6 +535,40 @@
             d.showModal();
             return false;
         }
+
+
+		if(status == 5) {
+			if(now_status == status) {
+				return false;
+			}
+			
+			var d = dialog({
+                title: '提示信息',
+                content: '工程主管正在派单中，当工程人员确认了派单此状态自动更新',
+                okValue: '查看派单情况',
+                ok: function () {
+                    
+                },
+            });
+            d.width(320);
+            d.showModal();
+            return false;
+        }
+
+		if(status == 6) {
+			 var d = dialog({
+               title: '提示信息',
+               content: '工程人员上传验收图片中，当工程人员完成验收图片上传此状态自动更新',
+               okValue: '查看上传情况',
+               ok: function () {
+                   
+               },
+           });
+           d.width(320);
+           d.showModal();
+           return false;
+       }
+        
 
         if (status == 7 && inspect_img_count == 0) {
             var d = dialog({
@@ -465,7 +587,7 @@
         $("#exampleModal").modal('show');
         $("#lock-add").click(function(){
             var remark = $("#remark").val();
-             $.ajax( {
+            $.ajax( {
                 url:'/houseschangepicorders/ajax_update_status',
                 data: {
                     'id':order_id,
@@ -487,7 +609,11 @@
                 }
             });
         });
+
+
+        
     });
+
 </script>
 
 <!-- 底部 -->

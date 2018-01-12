@@ -685,14 +685,14 @@ class Housesorders extends MY_Controller{
         //下画派单列表
         $data['info']['assign_down_list'] = $this->Mhouses_assign_down->get_join_lists(['A.order_id' => $id, 'A.is_del' => 0]);
         
-        if(count($data['info']['assign_list']) > 0) {
-        	$houses_ids = array_column($data['info']['assign_list'], 'houses_id');
-        	$where = [];
-        	$where['order_id'] = $id;
-        	$where['in']['houses_id'] = $houses_ids;
-        	$group_by = ['houses_id'];
-        	$data['houses_count'] = $this->Mhouses_points->get_lists('houses_id,count(0) as count', $where, [],  0,0,  $group_by);  //点位分组
-        }
+//         if(count($data['info']['assign_list']) > 0) {
+//         	$houses_ids = array_column($data['info']['assign_list'], 'houses_id');
+//         	$where = [];
+//         	$where['order_id'] = $id;
+//         	$where['in']['houses_id'] = $houses_ids;
+//         	$group_by = ['houses_id'];
+//         	$data['houses_count'] = $this->Mhouses_points->get_lists('houses_id,count(0) as count', $where, [],  0,0,  $group_by);  //点位分组
+//         }
         
         //制作公司
         $data['info']['make_company'] = $this->Mmake_company->get_one('company_name', array('id' => $data['info']['make_company_id']))['company_name'];
@@ -775,9 +775,16 @@ class Housesorders extends MY_Controller{
             $status_text = C('housesorder.houses_order_status.text');
 
             $this->write_log($data['userInfo']['id'],2,"  更新订单:".$order_code."状态：".$status_text[$status]);
+            
+            $update_order['order_status'] = $status;
+            if($status == 8) {
+            	 $update_order['assign_type'] = 2;
+            	 $update_order['assign_status'] = 1;
+            }
             //同时更新对应的订单
-            $result = $this->Mhouses_orders->update_info(array("order_status"=>$status),array("id"=>$id));
-            if($status == 8){
+            $result = $this->Mhouses_orders->update_info($update_order,array("id"=>$id));
+            
+            if($status == 9){
                 if($result){
                     //如果订单已经下画则释放所有点位
                     $update_data['order_id'] = 0;
@@ -793,7 +800,7 @@ class Housesorders extends MY_Controller{
                     $order_code = $this->Mhouses_orders->get_one('order_code', array('id' => $id))['order_code'];
                     $change_count = $this->Mhouses_change_pic_orders->count(array('order_code' => $order_code));
                     if ($change_count) {
-                        $this->Mhouses_change_pic_orders->update_info(array('order_status' => 8), array('order_code' => $order_code));
+                        $this->Mhouses_change_pic_orders->update_info(array('order_status' => 9), array('order_code' => $order_code));
                     }
                 }
             }
@@ -851,7 +858,7 @@ class Housesorders extends MY_Controller{
     }
 
 
-/*
+	/*
      * 验收图片
      * 1034487709@qq.com
      */
@@ -870,8 +877,16 @@ class Housesorders extends MY_Controller{
     	$assign_type = $this->input->get('assign_type');
     	
     	$order = $this->Mhouses_orders->get_one("*",array("id" => $order_id));
+    	
+    	if(isset($order['point_ids'])) {
+    		$point_ids_arr = explode(',', $order['point_ids']);
+    		$where_point['in']['A.id'] = $point_ids_arr;
+    	}
+    	$where_point['A.houses_id'] = $houses_id;
+    	$where_point['A.is_del'] = 0;
+    	
     	//获取该订单下面的所有楼盘
-    	$points = $this->Mhouses_points->get_points_lists(['A.order_id' => $order_id, 'A.houses_id' => $houses_id],[],$size,($page-1)*$size);
+    	$points = $this->Mhouses_points->get_points_lists($where_point,[],$size,($page-1)*$size);
     	$data_count = $this->Mhouses_points->count(['order_id' => $order_id, 'houses_id' => $houses_id]);
     	$data['page'] = $page;
     	$data['data_count'] = $data_count;
@@ -933,7 +948,7 @@ class Housesorders extends MY_Controller{
     		}
     	}else {
     		if($assign_type == 1) {
-    			$update_data['status'] = 5;
+    			$update_data['status'] = 6;
     		}else {
     			$update_data['status'] = 9;
     		}
@@ -1032,9 +1047,12 @@ class Housesorders extends MY_Controller{
         //设置表头
         $table_header =  array(
 	        '点位编号'=>"code",
-	       	'楼盘名称'=>"houses_name",
-	        '楼盘区域'=>"houses_area_name",
-	        '地址'=>"addr",
+	       	'楼盘'=>"houses_name",
+	        '组团'=>"houses_area_name",
+        	'楼栋'=>"ban",
+        	'单元'=>"unit",
+        	'楼层'=>"floor",
+	        '点位位置'=>"addr",
 	        '规格'=>"size",
        	);
 
@@ -1059,7 +1077,14 @@ class Housesorders extends MY_Controller{
             foreach($table_header as $k => $v){
                 $cell = PHPExcel_Cell::stringFromColumnIndex($j++).$h;
 				
-                $value = $val[$v];
+                $value = '';
+                if($v == 'addr') {
+                	if(isset($data['point_addr'][$val[$v]]))
+                		$value = $data['point_addr'][$val[$v]];
+                }else {
+                	$value = $val[$v];
+                }
+                
                 $this->phpexcel->getActiveSheet(0)->setCellValue($cell, $value);
             }
             $h++;
