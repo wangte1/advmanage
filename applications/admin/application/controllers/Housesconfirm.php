@@ -13,6 +13,7 @@ class Housesconfirm extends MY_Controller{
         	'Model_houses_assign_down' => 'Mhouses_assign_down',
         	'Model_houses' => 'Mhouses',
         	'Model_houses_orders' => 'Mhouses_orders',
+        	'Model_houses_change_pic_orders' => 'Mhouses_changepicorders',
         	'Model_admins' => 'Madmins',
         	'Model_houses_customers' => 'Mhouses_customers',
         	'Model_houses_points' => 'Mhouses_points',
@@ -43,6 +44,7 @@ class Housesconfirm extends MY_Controller{
         if($data['userInfo']['group_id'] != 1 && $data['userInfo']['group_id'] != 5) {
         	$where['A.charge_user'] = $data['userInfo']['id'];
         }
+        
         if ($this->input->get('province')) $where['like']['B.province'] = $this->input->get('province');
         if ($this->input->get('city')) $where['like']['B.city'] = $this->input->get('city');
         if ($this->input->get('area')) $where['like']['B.area'] = $this->input->get('area');
@@ -50,10 +52,13 @@ class Housesconfirm extends MY_Controller{
         if ($this->input->get('customer_name')) $where['like']['D.name'] = $this->input->get('customer_name');
         if ($this->input->get('charge_name')) $where['like']['E.fullname'] = $this->input->get('charge_name');
         if ($this->input->get('status')) $where['A.status'] = $this->input->get('status');
-        if ($this->input->get('assign_type') == 2) {
-        	$tmp_moudle = $this->Mhouses_assign_down;
-        }else {
+        
+        $assign_type = $this->input->get('assign_type') ? : 1;
+        
+        if ($assign_type == 1) {
         	$tmp_moudle = $this->Mhouses_assign;
+        }else {
+        	$tmp_moudle = $this->Mhouses_assign_down;
         }
         
         //未确认派单的数量
@@ -69,7 +74,14 @@ class Housesconfirm extends MY_Controller{
         $data['status'] = $this->input->get('status');
         $data['assign_type'] = $this->input->get('assign_type') ? : 1;
         
+        if($assign_type == 2) {
+           	$where['A.type'] = 1;
+        }else if($assign_type == 3){
+            $where['A.type'] = 2;
+        }
+        
         $data['list'] = $tmp_moudle->get_join_lists($where,[],$size,($page-1)*$size);
+        
         $data_count = $tmp_moudle->join_count($where);
         $data_count = $data_count[0]['count'];
         $data['data_count'] = $data_count;
@@ -98,7 +110,7 @@ class Housesconfirm extends MY_Controller{
     	if ($this->input->post('id')) {
     		$where['id'] = $this->input->post('id');
     		
-    		if ($this->input->post('assign_type') == 2) {
+    		if ($this->input->post('assign_type') == 2 || $this->input->post('assign_type') == 3) {
     			$tmp_moudle = $this->Mhouses_assign_down;
     		}else {
     			$tmp_moudle = $this->Mhouses_assign;
@@ -111,15 +123,25 @@ class Housesconfirm extends MY_Controller{
     			if($this->input->post('order_id')) {
     				$where['status'] = 2;
     				$data_count = $tmp_moudle->count($where);
-    				if($data_count == 0 && $this->input->post('assign_type') == 1) {
-    					$where  = $update_data = [];
-    					$where['id'] = $this->input->post('order_id');
-    					$update_data['assign_status'] = 3;	//订单中的派单状态更新为已派单（已确认）
+    				if($data_count == 0 && ($this->input->post('assign_type') == 1 || $this->input->post('assign_type') == 3)) {
     					
-    					if($this->input->post('assign_type') == 1) {
+    					if($this->input->post('assign_type') == 3) {	//换画派单
+    						$where  = $update_data = [];
+    						$where['id'] = $this->input->post('order_id');
+    						$update_data['assign_status'] = 3;	//订单中的派单状态更新为已派单（已确认）
     						$update_data['order_status'] = 5;	//订单状态更新为派单完成
+    						$res2 = $this->Mhouses_changepicorders->update_info($update_data, $where);
+    						
+    					}else {
+    						$where  = $update_data = [];
+    						$where['id'] = $this->input->post('order_id');
+    						$update_data['assign_status'] = 3;	//订单中的派单状态更新为已派单（已确认）
+    						
+    						if($this->input->post('assign_type') == 1) {
+    							$update_data['order_status'] = 5;	//订单状态更新为派单完成
+    						}
+    						$res2 = $this->Mhouses_orders->update_info($update_data, $where);
     					}
-    					$res2 = $this->Mhouses_orders->update_info($update_data, $where);
     					
     				}
     			}
@@ -186,10 +208,17 @@ class Housesconfirm extends MY_Controller{
     		exit;
     	}
     	
-    	$order = $this->Mhouses_orders->get_one("*",array("id" => $order_id));
+    	if($assign_type == 3) {
+    		$tmp_moudle = $this->Mhouses_changepicorders;
+    	}else {
+    		$tmp_moudle = $this->Mhouses_orders;
+    	}
+    	$order = $tmp_moudle->get_one("*",array("id" => $order_id));
+    	$where_point['in']['A.id'] = explode(',', $order['point_ids']);
+    	
     	//获取该订单下面的所有楼盘
-    	$points = $this->Mhouses_points->get_points_lists(['A.order_id' => $order_id, 'A.houses_id' => $houses_id],[],$size,($page-1)*$size);
-    	$data_count = $this->Mhouses_points->count(['order_id' => $order_id, 'houses_id' => $houses_id]);
+    	$points = $this->Mhouses_points->get_points_lists($where_point,[],$size,($page-1)*$size);
+    	$data_count = $this->Mhouses_points->count(['in' => ['id' => explode(',', $order['point_ids'])]]);
     	$data['page'] = $page;
     	$data['data_count'] = $data_count;
     	

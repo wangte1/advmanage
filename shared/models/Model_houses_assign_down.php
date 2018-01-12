@@ -12,10 +12,10 @@ class Model_houses_assign_down extends MY_Model {
     public function get_join_lists($where = array(), $order_by = array(), $pagesize = 0,$offset = 0,  $group_by = array()) {
         $this->db->select('A.*, B.province, B.city, B.area, B.name as houses_name, C.order_type,C.release_start_time,C.release_end_time,C.customer_id, D.name as customer_name,E.fullname as charge_name');
         $this->db->from('t_houses_assign_down A');
-        $this->db->join('t_houses B', 'A.houses_id = B.id');
-        $this->db->join('t_houses_orders C', 'A.order_id = C.id');
-        $this->db->join('t_houses_customers D', 'C.customer_id = D.id');
-        $this->db->join('t_admins E', 'A.charge_user = E.id');
+        $this->db->join('t_houses B', 'A.houses_id = B.id', 'left');
+        $this->db->join('t_houses_orders C', 'A.order_id = C.id', 'left');
+        $this->db->join('t_houses_customers D', 'C.customer_id = D.id', 'left');
+        $this->db->join('t_admins E', 'A.charge_user = E.id', 'left');
         $this->db->where(array('A.is_del' => 0));
         
         if(isset($where['like'])) {

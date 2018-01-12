@@ -130,6 +130,9 @@
 											<li <?php if($assign_type == 1){?>class="active"<?php }?>>
 												<a href="#panel-1" data-toggle="tab">上画派单&nbsp;<span class="badge badge-important"><?php echo $no_confirm_count1[0]['count'];?></span></a>
 											</li>
+											<li <?php if($assign_type == 3){?>class="active"<?php }?>>
+												<a href="#panel-3" data-toggle="tab">换画派单&nbsp;<span class="badge badge-important"><?php echo $no_confirm_count2[0]['count'];?></span></a>
+											</li>
 											<li <?php if($assign_type == 2){?>class="active"<?php }?>>
 												<a href="#panel-2" data-toggle="tab">下画派单&nbsp;<span class="badge badge-important"><?php echo $no_confirm_count2[0]['count'];?></span></a>
 											</li>
@@ -169,7 +172,7 @@
 			                                                    </td>
 			                                                   
 			                                                    <td>
-			                                                    	<?php echo $order_type_text[$val['order_type']];?>
+			                                                    	<?php if(isset($order_type_text[$val['order_type']])) echo $order_type_text[$val['order_type']];?>
 			                                                    </td>
 			                                                     <td>
 			                                                    	<?php echo $val['customer_name'];?>
@@ -307,12 +310,17 @@
 				$('#assign_type').val('2');
 			}
 
+			if($(this).attr('href') == '#panel-3') {
+				$('#assign_type').val('3');
+			}
+
 			$('form').submit();
 		});
 		
 		$('.m-detail').click(function(){
 			var order_id = $(this).attr('order-id');
 			var houses_id = $(this).attr('houses-id');
+			var assign_type = '<?php echo $assign_type;?>';
 			
 			layer.open({
 				  type: 2,
@@ -320,7 +328,7 @@
 				  shadeClose: true,
 				  shade: 0.6,
 				  area: ['60%', '60%'],
-				  content: '/housesassign/show_points?order_id='+order_id+'&houses_id='+houses_id //iframe的url
+				  content: '/housesassign/show_points?order_id='+order_id+'&houses_id='+houses_id+"&assign_type="+assign_type //iframe的url
 				}); 
 		});
 
