@@ -2,10 +2,12 @@
     <script type="text/javascript">
         try{ace.settings.check('navbar' , 'fixed')}catch(e){}
     </script>
+    
+   
 
     <div class="navbar-container" id="navbar-container">
         <div class="navbar-header pull-left">
-            <a href="#" class="navbar-brand">
+            <a href="/home" class="navbar-brand">
                 <small>
                     <i class="icon-leaf"></i>
                     媒介管理系统
@@ -14,7 +16,13 @@
         </div>
 
         <div class="navbar-header pull-right" role="navigation">
-            <ul class="nav ace-nav">
+            <ul class="nav ace-nav" style="text-align: right;">
+            	<li  id="m-menu-button" class="green" style="position:absolute;left:0;display:none;">
+                    <a style="padding:0;" onclick="change_menu();" href="javascript:void(0);"  >
+                        <i class="fa fa-list-ul"></i>
+                    </a>
+                </li>
+            
                 <li class="green">
                     <a data-toggle="dropdown" class="dropdown-toggle" href="#">
                         <i class="icon-bell-alt icon-animated-bell"></i>

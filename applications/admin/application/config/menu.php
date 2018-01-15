@@ -3,7 +3,7 @@ if(! defined('BASEPATH')) exit('No direct script access allowed');
 $config = array(
     'menu' => array(
 
-        /*'户外资源管理' => array(
+        '户外资源管理' => array(
             'code' => 'resources_manage',
             'icon' => 'icon-asterisk  menu-i',
             'list' => array(
@@ -89,7 +89,7 @@ $config = array(
     				'active'=> 'network_type_list'
     			),
     		)
-    	),*/
+    	),
     	'社区资源管理' => array(
     		'code' => 'community_manage',
     		'icon' => 'icon-globe  menu-i',
@@ -124,7 +124,7 @@ $config = array(
     		)
     	),
     	
-        /*'户外订单管理' => array(
+        '户外订单管理' => array(
             'code' => 'orders_manage',
             'icon' => 'icon-book  menu-i',
             'list' => array(
@@ -144,7 +144,7 @@ $config = array(
                     'active'=> 'change_pic_order_list'
                 ),
             )
-        ),*/
+        ),
     		
     	'社区订单管理' => array(
     		'code' => 'horders_manage',

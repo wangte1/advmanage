@@ -169,6 +169,9 @@ class Housesassign extends MY_Controller{
     	if($this->input->get('assign_type') == 3) {
     		$tmp_order = $this->Mhouses_changepicorders->get_one('id,point_ids', ['id'=>$data['order_id']]);
     		$where['in']['id'] = explode(',', $tmp_order['point_ids']);
+    	}else {
+    		$tmp_order = $this->Mhouses_orders->get_one('id,point_ids', ['id'=>$data['order_id']]);
+    		$where['in']['id'] = explode(',', $tmp_order['point_ids']);
     	}
     	
     	$group_by = ['houses_id'];

@@ -12,6 +12,39 @@
 </script>
 <![endif]-->
 
+ <script>
+		$(function(){
+			if(!IsPC()) {	//移动端
+				$('#m-menu-button').show();
+				$('#sidebar-collapse').hide();
+			}
+			
+		})
+		
+		function change_menu() {
+			if($('#sidebar').css('display') == 'none') {
+				$('#sidebar').show();
+			}else {
+				$('#sidebar').hide();
+			}
+		}
+    
+    	function IsPC() {
+    	  var userAgentInfo = navigator.userAgent;
+    	  var Agents = ["Android", "iPhone",
+    	        "SymbianOS", "Windows Phone",
+    	        "iPad", "iPod"];
+    	  var flag = true;
+    	  for (var v = 0; v < Agents.length; v++) {
+    	    if (userAgentInfo.indexOf(Agents[v]) > 0) {
+    	      flag = false;
+    	      break;
+    	    }
+    	  }
+    	  return flag;
+    	}
+</script>
+
 <script type="text/javascript">
     if("ontouchend" in document) document.write("<script src='<?php echo css_js_url("jquery.mobile.custom.min.js","admin");?>'>"+"<"+"/script>");
 </script>
