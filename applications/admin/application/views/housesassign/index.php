@@ -123,13 +123,13 @@
                                 <div class="tabbable" id="tabs-260319">
 										<ul class="nav nav-tabs">
 											<li <?php if($assign_type == 1){?>class="active"<?php }?>>
-												<a href="#panel-1" data-toggle="tab">上画派单&nbsp;<span class="badge badge-important">0</span></a>
+												<a href="#panel-1" data-toggle="tab">上画派单&nbsp;<span class="badge badge-important"><?php echo $no_confirm_count1;?></span></a>
 											</li>
 											<li <?php if($assign_type == 3){?>class="active"<?php }?>>
-												<a href="#panel-3" data-toggle="tab">换画派单&nbsp;<span class="badge badge-important">0</span></a>
+												<a href="#panel-3" data-toggle="tab">换画派单&nbsp;<span class="badge badge-important"><?php echo $no_confirm_count3;?></span></a>
 											</li>
 											<li <?php if($assign_type == 2){?>class="active"<?php }?>>
-												<a href="#panel-2" data-toggle="tab">下画派单&nbsp;<span class="badge badge-important">0</span></a>
+												<a href="#panel-2" data-toggle="tab">下画派单&nbsp;<span class="badge badge-important"><?php echo $no_confirm_count2;?></span></a>
 											</li>
 										</ul>
 										<div class="tab-content">
@@ -155,8 +155,8 @@
 			                                            <?php foreach ($list as $key => $value) : ?>
 			                                            <tr>
 			                                                <td>
-			                                                    <!-- <a href="/housesorders/detail/<?php echo $value['id'];?>"><?php echo $value['order_code'];?></a> -->
-			                                                	<?php echo $value['order_code'];?>
+			                                                    <a href="/housesassign/order_detail/<?php echo $value['id'];?>/<?php echo $assign_type;?>"><?php echo $value['order_code'];?></a>
+			                                                	<!--<?php echo $value['order_code'];?>-->
 			                                                </td>
 			                                                <td><?php echo $order_type_text[$value['order_type']];?></td>
 			                                                <td><?php echo $value['point_ids'] ? count(array_unique(explode(',', $value['point_ids']))) : 0;?>个点位</td>
@@ -215,7 +215,11 @@
 			                                                <td><?php echo $admins[$value['creator']];?></td>
 			                                                <td>
 			                                                    <div class="visible-md visible-lg hidden-sm hidden-xs action-buttons">
-			                                                    	<a class="green tooltip-info m-detail" data-id="<?php echo $value['id'];?>" assign_type="<?php echo $value['assign_type'];?>"  data-rel="tooltip" data-placement="top" title="" data-original-title="详情">
+			                                                    	<!-- <a class="green tooltip-info m-detail" data-id="<?php echo $value['id'];?>" assign_type="<?php echo $value['assign_type'];?>"  data-rel="tooltip" data-placement="top" title="" data-original-title="详情">
+			                                                            <i class="icon-eye-open bigger-130"></i>
+			                                                        </a>-->
+			                                                        
+			                                                        <a class="green tooltip-info" href="/housesassign/order_detail/<?php echo $value['id'];?>/<?php echo $assign_type;?>"   data-rel="tooltip" data-placement="top" title="" data-original-title="详情">
 			                                                            <i class="icon-eye-open bigger-130"></i>
 			                                                        </a>
 			                                                    	<?php if($value['assign_status'] == 1) {?>

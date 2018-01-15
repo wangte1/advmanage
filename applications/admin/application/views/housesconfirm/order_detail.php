@@ -20,9 +20,9 @@
                         <a href="#">订单管理</a>
                     </li>
                     <li>
-                        <a href="/changepicorders">换画订单列表</a>
+                        <a href="/housesassign">派单列表</a>
                     </li>
-                    <li class="active">换画订单详情</li>
+                    <li class="active">订单详情</li>
                 </ul>
 
                 <div class="nav-search" id="nav-search">
@@ -37,7 +37,7 @@
 
             <div class="page-content">
                 <div class="page-header">
-                    <h1>换画订单详情</h1>
+                    <h1>订单详情</h1>
                 </div>
 
                 <div class="row">
@@ -49,18 +49,31 @@
                                         <li class="active">
                                             <a data-toggle="tab" href="#basic">基本信息</a>
                                         </li>
-                                        <li>
-                                            <a data-toggle="tab" href="#points">换画点位</a>
-                                        </li>
+                                        <!-- <li>
+                                            <a data-toggle="tab" href="#points">投放点位</a>
+                                        </li> -->
                                         <li>
                                             <a data-toggle="tab" href="#adv_img">广告画面</a>
                                         </li>
-                                        
                                         <li>
-                                            <a data-toggle="tab" href="#assign_down_list">换画派单</a>
+                                            <a data-toggle="tab" href="#point_info">点位信息</a>
                                         </li>
                                         <!-- <li>
                                             <a data-toggle="tab" href="#inspect_img">验收图片</a>
+                                        </li>
+                                        <li>
+                                            <a data-toggle="tab" href="#change_pic_record">换画记录</a>
+                                        </li>
+                                        <?php if($info['order_type'] == 1):?>
+                                        <li>
+                                            <a data-toggle="tab" href="#change_points_record">换点记录</a>
+                                        </li>
+                                        <?php endif;?>
+                                        <li>
+                                        	<a data-toggle="tab" href="#assign_list">上画派单列表</a>
+                                        </li>
+                                        <li>
+                                        	<a data-toggle="tab" href="#assign_down_list">下画派单列表</a>
                                         </li> -->
                                     </ul>
 
@@ -216,6 +229,9 @@
                                                                 case '8':
                                                                     $class = 'badge-grey';
                                                                     break;
+                                                                case '9':
+                                                                    $class = 'badge-grey';
+                                                                    break;
                                                             }
                                                         ?>
                                                         <span class="badge <?php echo $class; ?>">
@@ -227,10 +243,10 @@
                                                     <div class="profile-info-name"> 联系单与确认函</div>
 
                                                     <div class="profile-info-value">
-                                                        <a href="/houseschangepicorders/contact_list/<?php echo $info['id'];?>" target="_blank">查看联系单</a>
+                                                        <a href="/housesorders/contact_list/<?php echo $info['id'];?>" target="_blank">查看联系单</a>
 
                                                         <?php if($info['order_status'] > 6):?>
-                                                        <a href="/houseschangepicorders/confirmation/<?php echo $info['id'];?>" target="_blank">查看确认函</a>
+                                                        <a href="/housesorders/confirmation/<?php echo $info['id'];?>" target="_blank">查看确认函</a>
                                                         <?php endif;?>
                                                     </div>
                                                 </div>
@@ -239,7 +255,7 @@
                                         <div id="points" class="tab-pane">
                                             <?php if($info['order_status'] != 8 && ($info['order_type'] == '1' || $info['order_type'] == '2')):?>
                                             <a href="javascript:;" class="btn btn-xs btn-info btn-export" data-id="<?php echo $info['id'];?>" data-type="<?php echo $info['order_type'];?>" style="margin-bottom:10px">
-                                                <i class="fa fa-download out_excel" aria-hidden="true"></i> 导出换画点位
+                                                <i class="fa fa-download out_excel" aria-hidden="true"></i> 导出投放点位
                                             </a>
                                             <?php endif;?>
                                             <table class="table table-striped table-bordered">
@@ -283,15 +299,271 @@
                                                     <strong>
                                                         <i class="icon-warning-sign bigger-120"></i> 您还未上传广告画面！
                                                     </strong>
-                                                    <a class="btn btn-xs btn-info" href="/houseschangepicorders/upload_adv_img/<?php echo $info['id'];?>">
+                                                    <a class="btn btn-xs btn-info" href="/housesorders/upload_adv_img/<?php echo $info['id'];?>">
                                                         立即上传
                                                         <i class="icon-arrow-right icon-on-right"></i>
                                                     </a>
                                                 </div>
                                             <?php endif;?>
                                         </div>
+                                        <div id="inspect_img" class="tab-pane">
+                                            <?php if(count($info['inspect_img']) > 0):?>
+                                                <?php if($info['order_status'] != 8):?>
+                                                <!-- <a class="btn btn-xs btn-info" href="/housesorders/check_upload_img/<?php echo $info['id'];?>" style="margin-bottom:10px">
+                                                    修改验收图片
+                                                    <i class="icon-arrow-right icon-on-right"></i>
+                                                </a> -->
+                                                <?php endif;?>
+                                                <table class="table table-striped table-bordered table-hover">
+                                                    <thead>
+                                                        <tr>
+                                                            <th class=" center">点位编号</th>
+                                                            <th class=" center">楼盘</th>
+                                                            <th class=" center">组团</th>
+                                                            <th class=" center">楼栋</th>
+                                                            <th class=" center">单元</th>
+                                                            <th class=" center">楼层</th>
+                                                            <th class=" center">点位位置</th>
+                                                            <th class=" center">图片</th>
+                                                            
+                                                        </tr>
+                                                    </thead>
+                                                    <tbody>
+                                                        <?php foreach ($info['inspect_img'] as $key => $value) :?>
+                                                        <tr>
+                                                            <td style="text-align: center;vertical-align: middle;"><?php echo $value['point_code'];?></td>
+                                                            <td style="text-align: center;vertical-align: middle;"><?php echo $value['houses_name'];?></td>
+                                                            <td style="text-align: center;vertical-align: middle;"><?php echo $value['houses_area_name'];?></td>
+                                                            <td style="text-align: center;vertical-align: middle;"><?php echo $value['ban'];?></td>
+                                                            <td style="text-align: center;vertical-align: middle;"><?php echo $value['unit'];?></td>
+                                                            <td style="text-align: center;vertical-align: middle;"><?php echo $value['floor'];?></td>
+                                                            <td style="text-align: center;vertical-align: middle;"><?php if(isset($point_addr[$value['addr']])) echo $point_addr[$value['addr']];?></td>
+                                                            <td class="center">
+                                                                <a href="<?php echo $value['front_img'];?>" target="_blank" title="点击查看原图">
+                                                                    <img style="width: 215px; height: 150px" src="<?php echo $value['front_img'];?>">
+                                                                </a>
+                                                            </td>
+                                                        </tr>
+                                                        <?php endforeach;?>
+                                                    </tbody>
+                                                </table>
+                                            <?php else:?>
+                                                <div class="alert alert-warning center" style="width:400px">
+                                                    <strong>
+                                                        <i class="icon-warning-sign bigger-120"></i> 您还未上传验收图片！
+                                                    </strong>
+                                                    <?php if($info['order_status'] == 6):?>
+                                                    <a class="btn btn-xs btn-info" href="/housesorders/check_upload_img/<?php echo $info['id'];?>">
+                                                        立即上传
+                                                        <i class="icon-arrow-right icon-on-right"></i>
+                                                    </a>
+                                                    <?php endif;?>
+                                                </div>
+                                            <?php endif;?>
+                                        </div>
+                                        <div id="change_pic_record" class="tab-pane">
+                                            <?php if($info['change_pic_record']):?>
+                                            <table class="table table-striped table-bordered">
+                                                <thead>
+                                                    <tr>
+                                                        <th class="center">换画日期</th>
+                                                        <th class="center">换画点位</th>
+                                                        <th class="center">订单状态</th>
+                                                        <th class="center">操作</th>
+                                                    </tr>
+                                                </thead>
+                                                <tbody>
+                                                    <?php foreach($info['change_pic_record'] as $value):?>
+                                                    <tr>
+                                                        <td class="center"><?php echo date('Y-m-d', strtotime($value['create_time']));?></td>
+                                                        <td class="center"><?php echo count(array_unique(explode(',', $value['point_ids'])));?>个点位</td>
+                                                        <td class="center">
+                                                            <?php 
+                                                                switch ($value['order_status']) {
+                                                                    case '1':
+                                                                        $class = 'badge-yellow';
+                                                                        break;
+                                                                    case '2':
+                                                                        $class = 'badge-pink';
+                                                                        break;
+                                                                    case '3':
+                                                                        $class = 'badge-success';
+                                                                        break;
+                                                                    case '4':
+                                                                        $class = 'badge-warning';
+                                                                        break;
+                                                                    case '5':
+                                                                        $class = 'badge-danger';
+                                                                        break;
+                                                                    case '6':
+                                                                        $class = 'badge-info';
+                                                                        break;
+                                                                    case '7':
+                                                                        $class = 'badge-purple';
+                                                                        break;
+                                                                    case '8':
+                                                                        $class = 'badge-grey';
+                                                                        break;
+                                                                }
+                                                            ?>
+                                                            <span class="badge <?php echo $class; ?>">
+                                                                <?php echo $status_text[$value['order_status']];?>
+                                                            </span>
+                                                        </td>
+                                                        <td class="center">
+                                                            <div class="visible-md visible-lg hidden-sm hidden-xs action-buttons">
+                                                                <a class="green tooltip-info" href="/houseschangepicorders/detail/<?php echo $value['id'];?>"  data-rel="tooltip" data-placement="top" title="" data-original-title="详情">
+                                                                    <i class="icon-eye-open bigger-130"></i>
+                                                                </a> 
+                                                            </div>
+                                                        </td>
+                                                    </tr>
+                                                    <?php endforeach;?>
+                                                </tbody>
+                                            </table>
+                                            <?php else:?>
+                                            <div class="alert alert-warning center" style="width:400px">
+                                                <strong>
+                                                    <i class="icon-warning-sign bigger-120"></i> 该订单没有换画记录！
+                                                </strong>
+                                                <?php if($info['order_status'] == 7):?>
+                                                <a class="btn btn-xs btn-info" href="/changepicorders/add/<?php echo $info['order_type'];?>/<?php echo $info['order_code'];?>">
+                                                    立即添加
+                                                    <i class="icon-arrow-right icon-on-right"></i>
+                                                </a>
+                                                <?php endif;?>
+                                            </div>
+                                            <?php endif;?>
+                                        </div>
+
+                                        <?php if($info['order_type'] == 1):?>
+                                        <div id="change_points_record" class="tab-pane">
+                                            <?php if($info['change_points_record']):?>
+                                            <table class="table table-striped table-bordered">
+                                                <thead>
+                                                    <tr>
+                                                        <th class="center">换点日期</th>
+                                                        <th class="center">换下点位</th>
+                                                        <th class="center">换上点位</th>
+                                                        <th class="center">换点之前验收函</th>
+                                                    </tr>
+                                                </thead>
+                                                <tbody>
+                                                    <?php foreach($info['change_points_record'] as $key => $value):?>
+                                                    <tr>
+                                                        <td class="center"><?php echo $value['operate_time'];?></td>
+                                                        <td class="center"><?php echo $value['remove_points'];?></td>
+                                                        <td class="center"><?php echo $value['add_points'];?></td>
+                                                        <td class="center">
+                                                            <a href="/orders/last_confirmation/<?php echo $value['id'];?>" target="_blank">查看</a>
+                                                        </td>
+                                                    </tr>
+                                                    <?php endforeach;?>
+                                                </tbody>
+                                            </table>
+                                            <?php else:?>
+                                            <div class="alert alert-warning center" style="width:400px">
+                                                <strong>
+                                                    <i class="icon-warning-sign bigger-120"></i> 该订单没有换点记录！
+                                                </strong>
+                                            </div>
+                                            <?php endif;?>
+                                        </div>
+                                        <?php endif;?>
                                         
-                                        <!-- 换画派单 begin-->
+                                        <!-- 上画派单 begin -->
+                                        <div id="assign_list" class="tab-pane">
+                                        	<?php if($info['assign_list']) {?>
+                                        	<table class="table table-striped table-bordered">
+                                                <thead>
+                                                    <tr>
+                                                        <th class="center">行政区域</th>
+                                                        <th class="center">楼盘名称</th>
+                                                        <th class="center">点位数量（个）</th>
+                                                        <th class="center">上画负责人</th>
+                                                        <th class="center">状态</th>
+                                                        <th class="center">操作</th>
+                                                    </tr>
+                                                </thead>
+                                                <tbody>
+                                                	<?php foreach($info['assign_list'] as $k => $v) {?>
+                                            			<tr>
+                                            				<td class="center"><?php echo $v['province']."-".$v['city']."-".$v['area'];?></td>
+                                            				<td class="center"><?php echo $v['houses_name'];?></td>
+                                            				<td class="center">
+                                            					<?php echo $v['points_count'];?>
+                                            				</td>
+                                            				<td class="center"><?php echo $v['charge_name'];?></td>
+                                            				<td class="center">
+                                            					<?php 
+		                                                        switch ($v['status']) {
+		                                                            case '1':
+		                                                                $class = 'badge-yellow';
+		                                                                break;
+		                                                            case '2':
+		                                                                $class = 'badge-pink';
+		                                                                break;
+		                                                            case '3':
+		                                                                $class = 'badge-success';
+		                                                                break;
+		                                                            case '4':
+		                                                                $class = 'badge-warning';
+		                                                                break;
+		                                                            case '5':
+		                                                                $class = 'badge-danger';
+		                                                                break;
+		                                                            case '6':
+		                                                                $class = 'badge-info';
+		                                                                break;
+		                                                            case '7':
+		                                                                $class = 'badge-purple';
+		                                                                break;
+		                                                            case '8':
+		                                                                $class = 'badge-grey';
+		                                                                break;
+			                                                        }
+			                                                    ?>
+			                                                    <span class="badge <?php echo $class; ?>">
+			                                                        <?php echo $houses_assign_status[$v['status']];?>
+			                                                    </span>
+			                                                    <?php if($v['confirm_remark']) {?>
+			                                                   		<br>
+			                                                   		说明:<?php echo $v['confirm_remark'];?>
+			                                                   	<?php }?>
+                                            				</td>
+                                            				
+                                            				<td class="center">
+																<a class="green tooltip-info m-detail" data-id="<?php echo $v['houses_id'];?>"  data-rel="tooltip" data-placement="top" title="" data-original-title="点位详情">
+										                        	<i class="icon-eye-open bigger-130"></i>
+										                        </a>
+										                        <a class="green tooltip-info m-upload" data-id="<?php echo $v['id'];?>" order-id = "<?php echo $v['order_id'];?>" houses-id = "<?php echo $v['houses_id'];?>"  data-rel="tooltip" data-placement="top" title="" data-original-title="查看验收图片">
+										                        	<i class="fa fa-picture-o bigger-130"></i>
+										                        </a>
+										                        
+										                       	<?php if($v['status'] == 4) {?>
+										                       		<a class="green tooltip-info m-confirm" data-id="<?php echo $v['id'];?>" order-id = "<?php echo $v['order_id'];?>" assign_type="1"  data-rel="tooltip" data-placement="top" title="" data-original-title="上画审核">
+											                        	<i class="icon-check bigger-130"></i>
+											                        </a>
+										                       	<?php }?>
+															</td>
+                                            			</tr>
+                                            		<?php }?>
+                                        		</tbody>
+                                        	</table>
+                                            <?php }else {?>
+                                            	<div class="alert alert-warning center" style="width:400px">
+	                                                <strong>
+	                                                    <i class="icon-warning-sign bigger-120"></i> 工程主管还在派单中
+	                                                </strong>
+	                                            </div>
+                                            <?php }?>
+                                            	
+                                            
+                                        </div>
+                                        
+                                        <!-- 上画派单 end-->
+                                        
+                                        <!-- 下画派单 begin-->
                                         <div id="assign_down_list" class="tab-pane">
                                         	<?php if($info['assign_down_list']) {?>
                                         	<table class="table table-striped table-bordered">
@@ -360,8 +632,8 @@
 										                        	<i class="fa fa-picture-o bigger-130"></i>
 										                        </a>
 										                        
-										                       	<?php if($v['status'] == 4) {?>
-										                       		<a class="green tooltip-info m-confirm" data-id="<?php echo $v['id'];?>" order-id = "<?php echo $v['order_id'];?>" houses-id = "<?php echo $v['houses_id'];?>" assign_type="3"  data-rel="tooltip" data-placement="top" title="" data-original-title="换画审核">
+										                       	<?php if($v['status'] == 7) {?>
+										                       		<a class="green tooltip-info m-confirm" data-id="<?php echo $v['id'];?>" order-id = "<?php echo $v['order_id'];?>" houses-id = "<?php echo $v['houses_id'];?>" assign_type="2"  data-rel="tooltip" data-placement="top" title="" data-original-title="下画审核">
 											                        	<i class="icon-check bigger-130"></i>
 											                        </a>
 										                       	<?php }?>
@@ -380,63 +652,22 @@
                                             	
                                             
                                         </div>
-                                    	<!-- 换画派单 end-->
-                                        
-                                        
-                                        <!-- <div id="inspect_img" class="tab-pane">
-                                            <?php if(count($info['inspect_img']) > 0):?>
-                                                <?php if($info['order_status'] != 8):?>
-                                                <a class="btn btn-xs btn-info" href="/houseschangepicorders/check_upload_img/<?php echo $info['id'];?>" style="margin-bottom:10px">
-                                                    修改验收图片
-                                                    <i class="icon-arrow-right icon-on-right"></i>
-                                                </a>
-                                                <?php endif;?>
-                                                <table class="table table-striped table-bordered table-hover">
-                                                    <thead>
-                                                        <tr>
-                                                            <th class="col-xs-2 center">点位编号</th>
-                                                            <th class="col-xs-2 center">楼盘名称</th>
-                                                            <th class="col-xs-2 center">楼盘区域</th>
-                                                            <th class="col-xs-2 center">详细地址</th>
-                                                            <th class="col-xs-5 center">图片</th>
-                                                            
-                                                        </tr>
-                                                    </thead>
-                                                    <tbody>
-                                                        <?php foreach ($info['inspect_img'] as $key => $value) :?>
-                                                        <tr>
-                                                            <td style="text-align: center;vertical-align: middle;"><?php echo $value['point_code'];?></td>
-                                                            <td style="text-align: center;vertical-align: middle;"><?php echo $value['houses_name'];?></td>
-                                                            <td style="text-align: center;vertical-align: middle;"><?php echo $value['houses_area_name'];?></td>
-                                                            <td style="text-align: center;vertical-align: middle;"><?php echo $value['addr'];?></td>
-                                                            <td class="center">
-                                                                <a href="<?php echo $value['front_img'];?>" target="_blank" title="点击查看原图">
-                                                                    <img style="width: 215px; height: 150px" src="<?php echo $value['front_img'];?>">
-                                                                </a>
-                                                            </td>
-                                                        </tr>
-                                                        <?php endforeach;?>
-                                                    </tbody>
-                                                </table>
-                                            <?php else:?>
-                                                <div class="alert alert-warning center" style="width:400px">
-                                                    <strong>
-                                                        <i class="icon-warning-sign bigger-120"></i> 您还未上传验收图片！
-                                                    </strong>
-                                                    <?php if($info['order_status'] == 6):?>
-                                                    <a class="btn btn-xs btn-info" href="/houseschangepicorders/check_upload_img/<?php echo $info['id'];?>">
-                                                        立即上传
-                                                        <i class="icon-arrow-right icon-on-right"></i>
-                                                    </a>
-                                                    <?php endif;?>
-                                                </div>
-                                            <?php endif;?>
-                                        </div>-->
-                                        
+                                    	<!-- 下画派单 end-->
+                                    	
+                                    	<!-- 点位信息 begin -->
+                                    	<div id="point_info" class="tab-pane">
+                                    		<?php if(isset($houses_id)) {?>
+                                    			<iframe frameborder="no" border="0" src="/housesassign/show_points?order_id=<?php echo $id;?>&houses_id=<?php echo $houses_id;?>&assign_type=<?php echo $assign_type?>" width="100%" height="650px;"></iframe>
+                                    		<?php }else {?>
+                                    			<iframe frameborder="no" border="0" src="/housesassign/detail?order_id=<?php echo $id;?>&assign_type=<?php echo $assign_type?>" width="100%" height="650px;"></iframe>
+                                    		<?php }?>
+                                    	</div>
+                                    	<!-- end -->
+                                    
                                     </div>
                                 </div>
 
-                                <?php if($info['order_status'] < 8):?>
+                                <!--<?php if($info['order_status'] < 9):?>
                                 <div class="table-responsive">
                                     <div class="page-header" style="margin-top: 50px">
                                         <h1>订单状态跟踪</h1>
@@ -447,7 +678,6 @@
                                             <?php
                                             $n = 1;
                                             foreach($status_text as $key=>$val){
-                                                if($key != 9 && $key != 8){
 
                                             ?>
                                             <li data-target="#step1" class="<?php if($key <= $info['order_status']){ echo "active";}?>">
@@ -455,16 +685,9 @@
                                                 <?php
                                                     $order_status = $info['order_status'];
 
-                                                    if( $info['order_type'] == 3 || $info['order_type'] == 4){
-                                                       if($key == 4){
-                                                           $order_status = 4;
-                                                        }
 
                                                     ?>
-                                                   <span  data-status="<?php echo $key;?>" class="step <?php if($key <= $order_status+1){ echo "status-step";}?>" style="cursor: pointer"><?php echo $n;;?></span>
-                                                <?php }else{?>
                                                    <span data-status="<?php echo $key;?>" class="step <?php if($key <= $info['order_status']+1){ echo "status-step";}?>" style="cursor: pointer"><?php echo $n;;?></span>
-                                                <?php }?>
 
                                                 <span class="title"><?php echo $val;?></span>
                                                 <?php
@@ -474,18 +697,12 @@
                                                 <span class="title" style="color:#CACACA; font-size: 12px ">操作备注:<?php echo @$operate_remark[$key];?></span>
                                                 <?php }?>
                                             </li>
-                                            <?php 
-                                                $n++; 
-                                                }
-                                            } 
-                                            ?>
-
-
+                                            <?php $n++; } ?>
                                         </ul>
                                     </div>
                                     <input type="hidden" value="<?php echo $id;?>" id="order_id">
                                 </div>
-                                <?php endif;?>
+                                <?php endif;?>-->
                             </div>
                         </div>
                     </div>
@@ -517,8 +734,9 @@
     </div>
 </div>
 
+
 <div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel">
-    <div class="modal-dialog" role="document" style="margin-top: 150px;">
+    <div class="modal-dialog" role="document" style="margin-top: 220px;">
         <div class="modal-content">
             <div class="modal-header">
                 <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
@@ -528,7 +746,6 @@
                <div class="form-group">
                     <label for="message-text" class="control-label">备注:</label>
                     <textarea style="width: 90%; height: 80px" id="remark"></textarea>
-                    <input type="hidden" value="">
                </div>
             </div>
             <div class="modal-footer">
@@ -552,14 +769,13 @@
     $(".btn-export").click(function(){
         var id = $(this).attr('data-id');
         var type = $(this).attr('data-type');
-        window.location.href = '/houseschangepicorders/export/' + id + '/' + type;
+        window.location.href = '/housesorders/export/' + id + '/' + type;
     });
 
 
     $('.m-detail').click(function(){
         var order_id = '<?php echo $id;?>';
 		var houses_id = $(this).attr('data-id');
-		var assign_type = 3;
 		
 		layer.open({
 			  type: 2,
@@ -567,7 +783,7 @@
 			  shadeClose: true,
 			  shade: 0.6,
 			  area: ['60%', '60%'],
-			  content: '/housesassign/show_points?order_id='+order_id+'&houses_id='+houses_id+'&assign_type='+3 //iframe的url
+			  content: '/housesassign/show_points?order_id='+order_id+'&houses_id='+houses_id //iframe的url
 			}); 
 	});
 
@@ -575,7 +791,7 @@
 		var assign_id = $(this).attr('data-id');
 		var order_id = $(this).attr('order-id');
 		var houses_id = $(this).attr('houses-id');
-		var assign_type = 3;
+		var assign_type = $(this).attr('assign_type');
 
 		$("#confirmModal").modal('show');
 
@@ -610,7 +826,6 @@
 		var id = $(this).attr('data-id');
 		var order_id = $(this).attr('order-id');
 		var houses_id = $(this).attr('houses-id');
-		var assign_type = 3;
 
 		layer.open({
 			  type: 2,
@@ -618,119 +833,12 @@
 			  shadeClose: true,
 			  shade: 0.6,
 			  area: ['80%', '80%'],
-			  content: '/housesorders/check_upload_img?order_id='+order_id+'&assign_id='+id+'&houses_id='+houses_id+'&assign_type='+assign_type //iframe的url
+			  content: '/housesorders/check_upload_img?order_id='+order_id+'&assign_id='+id+'&houses_id='+houses_id //iframe的url
 			}); 
 	});
 
     //更新订单状态
     $(".status-step").click(function(){
-        
-        var order_id = $("#order_id").val();
-        var status = $(this).attr("data-status");
-
-		var now_status = "<?php echo $info['order_status']?>";
-
-		if(now_status >= 4 && status <= 4) {
-			var d = dialog({
-                title: '提示信息',
-                content: '该订单已经进入派单，不能更新状态！',
-                okValue: '确定',
-                ok: function () {
-                },
-            });
-            d.width(320);
-            d.showModal();
-            return false;
-		}
-        
-        if (adv_img_count == 0) {
-            var d = dialog({
-                title: '提示信息',
-                content: '请先上传广告画面！',
-                okValue: '立即上传',
-                ok: function () {
-                    window.location.href = '/houseschangepicorders/upload_adv_img/<?php echo $info["id"];?>';
-                },
-            });
-            d.width(320);
-            d.showModal();
-            return false;
-        }
-
-
-		if(status == 5) {
-			if(now_status == status) {
-				return false;
-			}
-			
-			var d = dialog({
-                title: '提示信息',
-                content: '工程主管正在派单中，当工程人员确认了派单此状态自动更新',
-                okValue: '查看派单情况',
-                ok: function () {
-                    
-                },
-            });
-            d.width(320);
-            d.showModal();
-            return false;
-        }
-
-		if(status == 6) {
-			 var d = dialog({
-               title: '提示信息',
-               content: '工程人员上传验收图片中，当工程人员完成验收图片上传此状态自动更新',
-               okValue: '查看上传情况',
-               ok: function () {
-                   
-               },
-           });
-           d.width(320);
-           d.showModal();
-           return false;
-       }
-        
-
-        if (status == 7 && inspect_img_count == 0) {
-            var d = dialog({
-                title: '提示信息',
-                content: '您还没有上传验收图片进行验收！',
-                okValue: '立即上传',
-                ok: function () {
-                    window.location.href = '/houseschangepicorders/check_upload_img/<?php echo $info["id"];?>';
-                },
-            });
-            d.width(320);
-            d.showModal();
-            return false;
-        }
-
-        $("#exampleModal").modal('show');
-        $("#lock-add").click(function(){
-            var remark = $("#remark").val();
-            $.ajax( {
-                url:'/houseschangepicorders/ajax_update_status',
-                data: {
-                    'id':order_id,
-                    'status':status,
-                    'remark':remark,
-                    'order_code':$("#order_code").html()
-                },
-                type:'POST',
-                dataType:'json',
-                beforeSend:function(){},
-                success:function(data) {
-                    if(data.status == 0){
-                       window.location.reload();
-                    } else {
-                        $(".error_msg").html(data.msg);
-                        return false;
-                    }
-                    $("#exampleModal").modal('hide');
-                }
-            });
-        });
-
 
         
     });

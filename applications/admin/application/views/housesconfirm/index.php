@@ -131,7 +131,7 @@
 												<a href="#panel-1" data-toggle="tab">上画派单&nbsp;<span class="badge badge-important"><?php echo $no_confirm_count1[0]['count'];?></span></a>
 											</li>
 											<li <?php if($assign_type == 3){?>class="active"<?php }?>>
-												<a href="#panel-3" data-toggle="tab">换画派单&nbsp;<span class="badge badge-important"><?php echo $no_confirm_count2[0]['count'];?></span></a>
+												<a href="#panel-3" data-toggle="tab">换画派单&nbsp;<span class="badge badge-important"><?php echo $no_confirm_count3[0]['count'];?></span></a>
 											</li>
 											<li <?php if($assign_type == 2){?>class="active"<?php }?>>
 												<a href="#panel-2" data-toggle="tab">下画派单&nbsp;<span class="badge badge-important"><?php echo $no_confirm_count2[0]['count'];?></span></a>
@@ -235,9 +235,13 @@
 			                                                   	
 			                                                    <td>
 			                                                        <div class="visible-md visible-lg hidden-sm hidden-xs action-buttons">
-			                                                            <a class="green tooltip-info m-detail" houses-id="<?php echo $val['houses_id'];?>" order-id="<?php echo $val['order_id'];?>"  data-rel="tooltip" data-placement="top" title="" data-original-title="详情">
+			                                                            <a class="green tooltip-info" href="/housesconfirm/order_detail/<?php echo $val['order_id'];?>/<?php echo $assign_type;?>?houses_id=<?php echo $val['houses_id'];?>"  data-rel="tooltip" data-placement="top" title="" data-original-title="详情">
 				                                                            <i class="icon-eye-open bigger-130"></i>
 				                                                        </a> 
+			                                                            
+			                                                            <!-- <a class="green tooltip-info m-detail" houses-id="<?php echo $val['houses_id'];?>" order-id="<?php echo $val['order_id'];?>"  data-rel="tooltip" data-placement="top" title="" data-original-title="详情">
+				                                                            <i class="icon-eye-open bigger-130"></i>
+				                                                        </a>  -->
 				                                                        
 				                                                        <?php if($val['status'] == 2) {?>
 					                                                        <a class="green tooltip-info m-confirm" data-id="<?php echo $val['id'];?>" order-id="<?php echo $val['order_id'];?>"  data-rel="tooltip" data-placement="top" title="" data-original-title="确认">

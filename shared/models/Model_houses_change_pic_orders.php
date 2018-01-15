@@ -39,8 +39,8 @@ class Model_houses_change_pic_orders extends MY_Model {
      */
     public function get_order_count($where = array()) {
         $this->db->from('t_houses_change_pic_orders A');
-        $this->db->join('t_orders B', 'A.order_code = B.order_code');
-        $this->db->join('t_customers C', 'B.customer_id = C.id');
+        $this->db->join('t_orders B', 'A.order_code = B.order_code', 'left');
+        $this->db->join('t_customers C', 'B.customer_id = C.id', 'left');
         
         if($where){
             $this->db->where($where);

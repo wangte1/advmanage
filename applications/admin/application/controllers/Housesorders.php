@@ -27,6 +27,7 @@ class Housesorders extends MY_Controller{
         	'Model_houses_scheduled_orders' => 'Mhouses_scheduled_orders',
         	'Model_houses_assign' => 'Mhouses_assign',
         	'Model_houses_assign_down' => 'Mhouses_assign_down',
+        	'Model_houses_change_pic_orders' => 'Mhouses_changepicorders',
         ]);
         $this->data['code'] = 'horders_manage';
         $this->data['active'] = 'houses_orders_list';
@@ -667,7 +668,7 @@ class Housesorders extends MY_Controller{
         $data['info']['inspect_img'] = $this->Mhouses_order_inspect_images->get_inspect_img(array('A.order_id' => $id, 'A.type' => 1));
 		
         //换画记录
-        $data['info']['change_pic_record'] = $this->Mhouses_change_pic_orders->get_order_lists(array('A.order_code' => $data['info']['order_code']));
+        $data['info']['change_pic_record'] = $this->Mhouses_changepicorders->get_order_lists(array('A.order_code' => $data['info']['order_code']));
 
         //换点记录
         $data['info']['change_points_record'] = $this->Mhouses_change_points_record->get_lists('*', array('order_id' => $id), array('operate_time' => 'desc'));
@@ -709,6 +710,7 @@ class Housesorders extends MY_Controller{
 
         $this->load->view('housesorders/detail', $data);
     }
+    
     
     /*
      * 
@@ -876,7 +878,12 @@ class Housesorders extends MY_Controller{
     	$houses_id = $this->input->get('houses_id');
     	$assign_type = $this->input->get('assign_type');
     	
-    	$order = $this->Mhouses_orders->get_one("*",array("id" => $order_id));
+    	if($assign_type == 3) {
+    		$tmp_moudle = $this->Mhouses_changepicorders;
+    	}else {
+    		$tmp_moudle = $this->Mhouses_orders;
+    	}
+    	$order = $tmp_moudle->get_one("*",array("id" => $order_id));
     	
     	if(isset($order['point_ids'])) {
     		$point_ids_arr = explode(',', $order['point_ids']);
@@ -932,7 +939,7 @@ class Housesorders extends MY_Controller{
     	$order_id = $this->input->post("order_id");
     	$confirm_remark = $this->input->post("confirm_remark");
     	$mark = $this->input->post("mark");	//mark=1通过，mark=2不通过
-    	$assign_type = $this->input->post("assign_type");	//assign_type=1上画派单，assign_type=2下画派单
+    	$assign_type = $this->input->post("assign_type");	//assign_type=1上画派单，assign_type=2下画派单，assign_type=3换画派单
     	
     	if($assign_type == 1) {
     		$tmp_moudle = $this->Mhouses_assign;
@@ -941,16 +948,16 @@ class Housesorders extends MY_Controller{
     	}
     	
     	if($mark == 1) {
-    		if($assign_type == 1) {
-    			$update_data['status'] = 5;
-    		}else {
+    		if($assign_type == 2) {
     			$update_data['status'] = 8;
+    		}else {
+    			$update_data['status'] = 5;
     		}
     	}else {
-    		if($assign_type == 1) {
-    			$update_data['status'] = 6;
-    		}else {
+    		if($assign_type == 2) {
     			$update_data['status'] = 9;
+    		}else {
+    			$update_data['status'] = 6;
     		}
     	}
     	$update_data['confirm_remark'] = $confirm_remark;
@@ -986,8 +993,6 @@ class Housesorders extends MY_Controller{
     			$update_point['order_id'] = 0;
     			$update_point['point_status'] = 1;
     			$res_points = $this->Mhouses_points->update_info($update_point, ['order_id' => $order_id, 'houses_id' => $houses_id]);
-    			
-    			$this->return_json(['code' => 1, 'msg' => $this->db->last_query()]);
     		}
     		
     		$where['order_id'] = $order_id;
@@ -1003,6 +1008,24 @@ class Housesorders extends MY_Controller{
     			}
     		}
     	
+    		$this->return_json(['code' => 1, 'msg' => "操作成功！"]);
+    	}
+    	
+    	//换画派单
+    	if($res && $assign_type == 3) {
+    		$where['order_id'] = $order_id;
+    		$where['status<>'] = 5;
+    		$count = $this->Mhouses_assign_down->count($where);
+    		 
+    		if($count == 0) {
+    			$update_data = [];
+    			$update_data['order_status'] = 6;
+    			$res1 = $this->Mhouses_changepicorders->update_info($update_data, ['id' => $order_id]);
+    			if($res1) {
+    				$this->return_json(['code' => 1, 'msg' => "该订单的所有换画派单审核通过,订单状态更新为已下画！"]);
+    			}
+    		}
+    		 
     		$this->return_json(['code' => 1, 'msg' => "操作成功！"]);
     	}
     	

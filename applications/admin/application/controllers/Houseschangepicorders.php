@@ -20,6 +20,7 @@ class Houseschangepicorders extends MY_Controller{
              'Model_inspect_images' => 'Minspect_images',
              'Model_houses_order_inspect_images' => 'Mhouses_order_inspect_images',
              'Model_salesman' => 'Msalesman',
+        	 'Model_houses_assign_down' => 'Mhouses_assign_down',
              //'Model_points_make_num' => 'Mpoints_make_num',
         ]);
         $this->data['code'] = 'horders_manage';
@@ -29,6 +30,7 @@ class Houseschangepicorders extends MY_Controller{
         $this->data['customers'] = $this->Mhouses_customers->get_lists("id, name", array('is_del' => 0));  //客户
         $this->data['make_company'] = $this->Mmake_company->get_lists('id, company_name, business_scope', array('is_del' => 0));  //制作公司
         $this->data['order_type_text'] = C('housesorder.houses_order_type'); //订单类型
+        $this->data['houses_assign_status'] = C('housesorder.houses_assign_status'); //派单状态
     }
     
 
@@ -369,8 +371,11 @@ class Houseschangepicorders extends MY_Controller{
         $data['info']['adv_img'] = $data['info']['adv_img'] ? explode(',', $data['info']['adv_img']) : array();
 
         //验收图片
-        $data['info']['inspect_img'] = $this->Mhouses_order_inspect_images->get_inspect_img(array('A.order_id' => $id, 'A.type' => 2));
-
+        $data['info']['inspect_img'] = $this->Mhouses_order_inspect_images->get_inspect_img(array('A.order_id' => $id, 'A.assign_type' => 3));
+        
+        //换画派单列表
+        $data['info']['assign_down_list'] = $this->Mhouses_assign_down->get_join_lists(['A.order_id' => $id, 'A.is_del' => 0]);
+        
         //每个媒体对应套数
 //         $where_point['in'] = array('B.id' => explode(',', $data['info']['point_ids']));
 //         $points = $this->Mhouses_points->get_confirm_points($where_point, array('A.id' => 'asc', 'B.id' => 'asc'), array('media_code', 'C.size'));
@@ -483,87 +488,6 @@ class Houseschangepicorders extends MY_Controller{
             $this->load->view('housesorders/upload_adv_img', $data);
         }
 
-    }
-
-
-    /*
-     * 验收图片
-     */
-    public function check_upload_img($order_id){
-        $data = $this->data;
-        $changeorder = $this->Mhouses_changepicorders->get_one("*",array("id"=>$order_id));
-        if(IS_POST){
-            $post_data = $this->input->post();
-
-            foreach ($post_data as $key => $value) {
-                $where = array('order_id' => $order_id, 'point_id' => $key, 'type' => 2);
-                $img = $this->Mhouses_order_inspect_images->get_one('*', $where);
-
-                //如果是修改验收图片，则先删除该订单下所有验收图片，再重新添加
-                if ($img) {
-                    $this->Mhouses_order_inspect_images->delete($where);
-                }
-
-                if (isset($value['front_img']) && count($value['front_img']) > 0) {
-                    foreach ($value['front_img'] as $k => $v) {
-                        $insert_data['order_id'] = $order_id;
-                        $insert_data['point_id'] = $key;
-                        $insert_data['front_img'] = $v;
-                        $insert_data['back_img'] = isset($value['back_img'][$k]) ? $value['back_img'][$k] : '';
-                        $insert_data['type'] = 2;
-                        $insert_data['create_user'] = $insert_data['update_user'] = $data['userInfo']['id'];
-                        $insert_data['create_time'] = $insert_data['update_time'] = date('Y-m-d H:i:s');
-                        $this->Mhouses_order_inspect_images->create($insert_data);
-                    }
-                }
-            }
-
-            //更新订单
-            $this->Mhouses_changepicorders->update_info(array('sponsor' => $post_data['sponsor'], 'draw_finish_time' => $post_data['draw_finish_time']), array('id' => $order_id));
-
-            $this->write_log($data['userInfo']['id'], 2, "社区上传换画订单验收图片，订单id【".$order_id."】");
-
-            $this->success("保存验收图片成功！","/houseschangepicorders/detail/".$order_id);
-            exit;
-        }
-
-        //获取该订单下面的所有站台
-        $points = $this->Mhouses_points->get_points_lists(array('in' => array("A.id"=>explode(",",$changeorder['point_ids']))));
-
-        //根据媒体ID获取对应的图片
-        $data['images'] = "";
-        if($points){
-            $where['in'] = array("point_id"=>array_column($points,"id"));
-            $where['order_id'] = $order_id;
-            $where['type'] = 2;
-            $data['images'] = $this->Mhouses_order_inspect_images->get_lists("*",$where);
-        }
-
-        $list = array();
-        foreach($points as $key=>$val){
-            $val['image'] = array();
-            if($data['images']){
-                foreach($data['images'] as $k=>$v){
-                    if($val['id'] == $v['point_id']){
-                        $val['image'][] = $v;
-                    }
-                }
-            }
-           $list[] = $val;
-        }
-
-        $data['list'] = $list;
-
-
-        $order = $this->Mhouses_orders->get_one('*', array('order_code' => $changeorder['order_code']));
-        $data['order_type'] = $order['order_type'];
-        $data['order_info'] = $order;
-        $data['order_info']['sponsor'] = $changeorder['sponsor'];
-        $data['order_info']['draw_finish_time'] = $changeorder['draw_finish_time'];
-        $data['order_info']['order_status'] = $changeorder['order_status'];
-        $data['is_change_pic'] = 1;
-
-        $this->load->view('housesorders/check_adv_img', $data);
     }
 
 

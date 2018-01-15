@@ -17,7 +17,12 @@ class Housesconfirm extends MY_Controller{
         	'Model_admins' => 'Madmins',
         	'Model_houses_customers' => 'Mhouses_customers',
         	'Model_houses_points' => 'Mhouses_points',
-        	'Model_houses_order_inspect_images' => 'Mhouses_order_inspect_images'
+        	
+        	'Model_salesman' => 'Msalesman',
+        	'Model_make_company' => 'Mmake_company',
+        	'Model_houses_order_inspect_images' => 'Mhouses_order_inspect_images',
+        	'Model_houses_change_points_record' => 'Mhouses_change_points_record',
+        	'Model_houses_status_operate_time' => 'Mhouses_status_operate_time',
         		
         ]);
         $this->data['code'] = 'horders_manage';
@@ -62,8 +67,9 @@ class Housesconfirm extends MY_Controller{
         }
         
         //未确认派单的数量
-        $data['no_confirm_count1'] = $this->Mhouses_assign->join_count(['A.status'=> 2]);
-        $data['no_confirm_count2'] = $this->Mhouses_assign_down->join_count(['A.status'=> 2]);
+        $data['no_confirm_count1'] = $this->Mhouses_assign->join_count(array_merge(['A.status'=> 2], $where));
+        $data['no_confirm_count2'] = $this->Mhouses_assign_down->join_count(array_merge(['A.status'=> 2,'A.type'=> 1],$where));
+        $data['no_confirm_count3'] = $this->Mhouses_assign_down->join_count(array_merge(['A.status'=> 2,'A.type'=> 2],$where));
         
         $data['province'] = $this->input->get('province');
         $data['city'] = $this->input->get('city');
@@ -98,6 +104,87 @@ class Housesconfirm extends MY_Controller{
         //$data['pagestr'] = $this->pagination->create_links(); // 分页信息
         
         $this->load->view("housesconfirm/index", $data);
+    }
+    
+    /*
+     * 详情
+     */
+    public function order_detail($id, $assign_type) {
+    	$data = $this->data;
+    	 
+    	if($assign_type == 3) {
+    		$data['info'] = $this->Mhouses_changepicorders->get_one('*',array('id' => $id));
+    		$tmp_info = $this->Mhouses_orders->get_one('*',array('order_code' => $data['info']['order_code']));
+    		$data['info']['sales_id'] = $tmp_info['sales_id'];
+    		$data['info']['total_price'] = $tmp_info['total_price'];
+    		$data['info']['release_start_time'] = $tmp_info['release_start_time'];
+    		$data['info']['release_end_time'] = $tmp_info['release_end_time'];
+    	}else {
+    		$data['info'] = $this->Mhouses_orders->get_one('*',array('id' => $id));
+    	}
+    	 
+    	if($this->input->get('houses_id')) {
+    		$data['houses_id'] = $this->input->get('houses_id');
+    	}
+    
+    	//客户名称
+    	$data['info']['customer_name'] = $this->Mhouses_customers->get_one('name', array('id' => $data['info']['customer_id']))['name'];
+    
+    	//业务员
+    	$data['info']['salesman'] = $this->Msalesman->get_one('name, phone_number', array('id' => $data['info']['sales_id']));
+    
+    	//投放点位
+    	$data['info']['selected_points'] = $this->Mhouses_points->get_points_lists(array('in' => array('A.id' => explode(',', $data['info']['point_ids']))));
+    
+    	//广告画面
+    	$data['info']['adv_img'] = $data['info']['adv_img'] ? explode(',', $data['info']['adv_img']) : array();
+    
+    	//验收图片
+    	$data['info']['inspect_img'] = $this->Mhouses_order_inspect_images->get_inspect_img(array('A.order_id' => $id, 'A.type' => 1));
+    
+    	//换画记录
+    	$data['info']['change_pic_record'] = $this->Mhouses_changepicorders->get_order_lists(array('A.order_code' => $data['info']['order_code']));
+    
+    	//换点记录
+    	$data['info']['change_points_record'] = $this->Mhouses_change_points_record->get_lists('*', array('order_id' => $id), array('operate_time' => 'desc'));
+    	foreach ($data['info']['change_points_record'] as $key => $value) {
+    		$remove_points = $this->Mhouses_points->get_lists('code', array('in' => array('id' => explode(',', $value['remove_points']))));
+    		$data['info']['change_points_record'][$key]['remove_points'] = implode(',', array_column($remove_points, 'code'));
+    
+    		$add_points= $this->Mhouses_points->get_lists('code', array('in' => array('id' => explode(',', $value['add_points']))));
+    		$data['info']['change_points_record'][$key]['add_points'] = implode(',', array_column($add_points, 'code'));
+    	}
+    
+    	//上画派单列表
+    	$data['info']['assign_list'] = $this->Mhouses_assign->get_join_lists(['A.order_id' => $id, 'A.is_del' => 0]);
+    
+    	//下画派单列表
+    	$data['info']['assign_down_list'] = $this->Mhouses_assign_down->get_join_lists(['A.order_id' => $id, 'A.is_del' => 0]);
+    
+    	//         if(count($data['info']['assign_list']) > 0) {
+    	//         	$houses_ids = array_column($data['info']['assign_list'], 'houses_id');
+    	//         	$where = [];
+    	//         	$where['order_id'] = $id;
+    	//         	$where['in']['houses_id'] = $houses_ids;
+    	//         	$group_by = ['houses_id'];
+    	//         	$data['houses_count'] = $this->Mhouses_points->get_lists('houses_id,count(0) as count', $where, [],  0,0,  $group_by);  //点位分组
+    	//         }
+    
+    	//制作公司
+    	$data['info']['make_company'] = $this->Mmake_company->get_one('company_name', array('id' => $data['info']['make_company_id']))['company_name'];
+    	$data['status_text'] = C('housesorder.houses_order_status.text');
+    
+    	//获取对应订单状态的操作信息
+    	$operate_time = $this->Mhouses_status_operate_time->get_lists("value,operate_remark,operate_time",array("order_id" => $id , 'type' => 1));
+    	if($operate_time){
+    		$data['time'] = array_column($operate_time, "operate_time", "value");
+    		$data['operate_remark'] = array_column($operate_time, "operate_remark", "value");
+    	}
+    
+    	$data['id'] = $id;
+    	$data['assign_type'] = $assign_type;
+    
+    	$this->load->view('housesconfirm/order_detail', $data);
     }
     
     
@@ -276,7 +363,11 @@ class Housesconfirm extends MY_Controller{
     		$mark_str = "下画";
     		$tmp_status = 7;
     		$tmp_moudle  = $this->Mhouses_assign_down;
-    	}else {
+    	}else if($assign_type == 3) {
+    		$mark_str = "换画";
+    		$tmp_status = 4;
+    		$tmp_moudle  = $this->Mhouses_assign_down;
+    	}else{
     		$mark_str = "上画";
     		$tmp_status = 4;
     		$tmp_moudle  = $this->Mhouses_assign;
