@@ -431,11 +431,12 @@ class Housesassign extends MY_Controller{
     	 
     	
     	
-    	if($this->input->get('assign_type') == 1 || $this->input->post('assign_type') == 2) {
+    	if($this->input->get('assign_type') == 1 || $this->input->get('assign_type') == 2) {
     		$point_ids = $this->Mhouses_orders->get_one('id,point_ids', ['id' => $this->input->get('order_id')]);
     	}else {
     		$point_ids = $this->Mhouses_changepicorders->get_one('id, point_ids', ['id' => $this->input->get('order_id')]);
     	}
+    	
     	$where = [];
     	$where['is_del'] = 0;
     	$group_by = ['houses_id'];

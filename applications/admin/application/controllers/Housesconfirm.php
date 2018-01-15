@@ -302,6 +302,7 @@ class Housesconfirm extends MY_Controller{
     	}
     	$order = $tmp_moudle->get_one("*",array("id" => $order_id));
     	$where_point['in']['A.id'] = explode(',', $order['point_ids']);
+    	$where_point['A.houses_id'] = $houses_id;
     	
     	//获取该订单下面的所有楼盘
     	$points = $this->Mhouses_points->get_points_lists($where_point,[],$size,($page-1)*$size);
@@ -374,6 +375,10 @@ class Housesconfirm extends MY_Controller{
     	}
     	
     	$assign_count = $tmp_moudle->get_one('points_count', ['id' => $assign_id, 'is_del' => 0]);
+    	
+    	//$this->return_json(['code' => 0, 'msg' => $assign_count['points_count']]);
+    	//$this->return_json(['code' => 0, 'msg' => $upload_count]);
+    	
     	
     	if(isset($upload_count) && isset($assign_count['points_count']) && $upload_count != $assign_count['points_count']) {
     		$this->return_json(['code' => 0, 'msg' => "请确认你已经上传了所有点位的".$mark_str."图片！"]);
