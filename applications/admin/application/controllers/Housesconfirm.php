@@ -249,6 +249,15 @@ class Housesconfirm extends MY_Controller{
      * 1034487709@qq.com
      */
     public function check_upload_img(){
+    	
+    	//echo $_SERVER['DOCUMENT_ROOT'];
+    	//echo __FILE__ ;
+//     	$filename = $_SERVER['DOCUMENT_ROOT'].'/uploads/image/20180116/b0a0d9f7cb4d1fe325191f9b8aef6d1a.jpg';
+//     	//unlink($filename);
+//     	$file = fopen($filename,"r");
+//     	echo $file;
+//     	exit;
+    	
     	$data = $this->data;
     	$pageconfig = C('page.page_lists');
     	$this->load->library('pagination');

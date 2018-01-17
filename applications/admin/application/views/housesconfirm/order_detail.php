@@ -20,7 +20,7 @@
                         <a href="#">订单管理</a>
                     </li>
                     <li>
-                        <a href="/housesassign">派单列表</a>
+                        <a href="/housesconfirm">确认派单</a>
                     </li>
                     <li class="active">订单详情</li>
                 </ul>

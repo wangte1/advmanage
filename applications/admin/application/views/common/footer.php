@@ -13,10 +13,16 @@
 <![endif]-->
 
  <script>
+ 		var isPc = IsPC();
 		$(function(){
-			if(!IsPC()) {	//移动端
+			if(!isPc) {	//移动端
 				$('#m-menu-button').show();
 				$('#sidebar-collapse').hide();
+
+				$('.phone-hide').hide();
+				$('.phone-show').show();
+			}else {
+				$('.phone-show').hide();
 			}
 			
 		})

@@ -63,23 +63,23 @@
                                             
                                              <div class="col-sm-6">
                                                 <label class="col-sm-3 control-label no-padding-right" for="form-field-1"> 楼盘名称</label>
-                                                <div class="col-sm-8">
+                                                <div class="col-sm-9">
                                                     <input type="text" name="houses_name" value="<?php echo $houses_name;?>"  class="col-xs-10 col-sm-12" />
                                                 </div>
                                             </div>
                                         </div>
                                         
                                         <div class="form-group">
-                                            <div class="col-sm-6">
+                                            <div class="col-sm-6 col-xs-12">
                                                 <label class="col-sm-3 control-label no-padding-right" for="form-field-1"> 客户名称</label>
-                                                <div class="col-sm-8">
+                                                <div class="col-sm-9">
                                                     <input type="text" name="customer_name" value="<?php echo $customer_name;?>"  class="col-xs-10 col-sm-12" />
                                                 </div>
                                             </div>
                                             
-                                            <div class="col-sm-6">
+                                            <div class="col-sm-6 col-xs-12">
                                                 <label class="col-sm-3 control-label no-padding-right" for="form-field-1"> 负责人</label>
-                                                <div class="col-sm-8">
+                                                <div class="col-sm-9">
                                                     <input type="text" name="charge_name" value="<?php echo $charge_name;?>"  class="col-xs-10 col-sm-12" />
                                                 </div>
                                             </div>
@@ -142,19 +142,20 @@
 												<table id="sample-table-2" class="table table-striped table-bordered table-hover">
 			                                        <thead>
 			                                            <tr>
-			                                                <th>序号</th>
-			                                                <th>行政区域</th>
-			                                                <th>楼盘名称</th>
-			                                                <th>点位类型</th>
-			                                                <th>客户名称</th>
-			                                                <th>点位数量（个）</th>
-			                                                <th>投放时间</th>
-			                                                <th>派单人</th>
-			                                                <th>说明</th>
-			                                                <th>派单时间</th>
-			                                                <th>负责人</th>
-			                                                <th>状态</th>
-			                                                <th>操作</th>
+			                                                <th class="phone-hide">序号</th>
+			                                                <th nowrap>行政区域</th>
+			                                                <th nowrap>楼盘名称</th>
+			                                                <th nowrap>点位类型</th>
+			                                                <th class="phone-hide">客户名称</th>
+			                                                <th class="phone-hide">点位数量（个）</th>
+			                                                <th class="phone-hide">投放时间</th>
+			                                                <th class="phone-hide">派单人</th>
+			                                                <th class="phone-hide">说明</th>
+			                                                <th class="phone-hide">派单时间</th>
+			                                                <th class="phone-hide">负责人</th>
+			                                                <th class="phone-hide">状态</th>
+			                                                <th class="phone-show">状态</th>
+			                                                <th nowrap>操作</th>
 			                                            </tr>
 			                                        </thead>
 			                                        <tbody>
@@ -163,7 +164,7 @@
 			                                            foreach($list as $key=>$val){
 			                                                ?>
 			                                                <tr>
-			                                                    <td><a href=""><?php echo $key+1;?></a></td>
+			                                                    <td class="phone-hide"><a href=""><?php echo $key+1;?></a></td>
 			                                                    <td>
 			                                                    	<?php echo $val['province']."-".$val['city']."-".$val['area'];?>
 			                                                    </td>
@@ -174,25 +175,25 @@
 			                                                    <td>
 			                                                    	<?php if(isset($order_type_text[$val['order_type']])) echo $order_type_text[$val['order_type']];?>
 			                                                    </td>
-			                                                     <td>
+			                                                     <td class="phone-hide">
 			                                                    	<?php echo $val['customer_name'];?>
 			                                                    </td>
-																<td>
+																<td class="phone-hide">
 																	<?php echo $val['points_count'];?>
 																</td>
-																<td>
+																<td class="phone-hide">
 			                                                    	<?php echo $val['release_start_time']."至".$val['release_end_time'];?>
 			                                                    </td>
-			                                                    <td>
+			                                                    <td class="phone-hide">
 			                                                    	<?php if(isset($user_list[$val['assign_user']])) echo $user_list[$val['assign_user']];?>
 			                                                    </td>
-			                                                    <td><?php echo $val['remark'];?></td>
-			                                                    <td><?php echo $val['assign_time'];?></td>
+			                                                    <td class="phone-hide"><?php echo $val['remark'];?></td>
+			                                                    <td class="phone-hide"><?php echo $val['assign_time'];?></td>
 			                                                    
-			                                                   	<td>
+			                                                   	<td class="phone-hide">
 			                                                   		<?php echo $val['charge_name'];?>
 			                                                   	</td>
-			                                                   	<td>
+			                                                   	<td class="phone-hide">
 			                                                   	<?php 
 			                                                        switch ($val['status']) {
 			                                                            case '1':
@@ -232,9 +233,16 @@
 			                                                   		说明:<?php echo $val['confirm_remark'];?>
 			                                                   	<?php }?>
 			                                                   	</td>
+			                                                   	<td class="phone-show">
+			                                                   		<?php echo $houses_assign_status[$val['status']];?>
+			                                                   		<?php if($val['confirm_remark']) {?>
+			                                                   		<br>
+			                                                   		说明:<?php echo $val['confirm_remark'];?>
+			                                                   	<?php }?>
+			                                                   	</td>
 			                                                   	
-			                                                    <td>
-			                                                        <div class="visible-md visible-lg hidden-sm hidden-xs action-buttons">
+			                                                    <td nowrap>
+			                                                        <div class="">
 			                                                            <a class="green tooltip-info" href="/housesconfirm/order_detail/<?php echo $val['order_id'];?>/<?php echo $assign_type;?>?houses_id=<?php echo $val['houses_id'];?>"  data-rel="tooltip" data-placement="top" title="" data-original-title="详情">
 				                                                            <i class="icon-eye-open bigger-130"></i>
 				                                                        </a> 

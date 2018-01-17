@@ -70,7 +70,7 @@ $(function(){
                 html += "<img src='"+data.url+"' style='width: 215px; height: 150px' />";
                 html += "</a>";
                 html += ' <div class="tools"> <a href="javascript:;"> <i class="icon-remove red"></i> </a>  </div>';
-                html += "<input type='hidden' name='"+media_id+"["+name+"][]' value='"+data.url+"'/>";
+                html += "<input type='text' name='"+media_id+"["+name+"][]' value='"+data.url+"'/>";
             }else{
                 var html =     "<p>"+file.name+"上传异常</p>"
             }

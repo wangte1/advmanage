@@ -137,24 +137,22 @@
 			                                    <table id="sample-table-1" class="table table-striped table-bordered table-hover">
 			                                        <thead>
 			                                            <tr>
-			                                                <th>订单编号</th>
-			                                                <th width="7%">订单类型</th>
-			                                                <th width="7%">投放点位</th>
-			                                                <!-- <th>总价（元）</th> -->
-			                                                <th>客户</th>
-			                                                <!-- <th width="6%">业务员</th> -->
-			                                                <!-- <th>手机号</th> -->
-			                                                <th>投放时间</th>
-			                                                <th width="7%">下单日期</th>
-			                                                <th>派单状态</th>
-			                                                <th>创建人</th>
-			                                                <th width="10%">操作</th>
+			                                                <th class="phone-hide">订单编号</th>
+			                                                <th nowrap>订单类型</th>
+			                                                <th nowrap>投放点位</th>
+			                                                <th nowrap>客户</th>
+			                                                <th class="phone-hide">投放时间</th>
+			                                                <th class="phone-hide">下单日期</th>
+			                                                <th class="phone-hide">派单状态</th>
+			                                                <th nowrap class="phone-show">派单状态</th>
+			                                                <th class="phone-hide">创建人</th>
+			                                                <th nowrap>操作</th>
 			                                            </tr>
 			                                        </thead>
 			                                        <tbody>
 			                                            <?php foreach ($list as $key => $value) : ?>
 			                                            <tr>
-			                                                <td>
+			                                                <td class="phone-hide">
 			                                                    <a href="/housesassign/order_detail/<?php echo $value['id'];?>/<?php echo $assign_type;?>"><?php echo $value['order_code'];?></a>
 			                                                	<!--<?php echo $value['order_code'];?>-->
 			                                                </td>
@@ -169,7 +167,7 @@
 			                                                	
 			                                                </td>
 			                                                
-			                                                <td>
+			                                                <td class="phone-hide">
 			                                                    <?php echo $value['release_start_time'].'至'.$value['release_end_time'];?>
 			                                                    <?php
 			                                                            $release_end_time =  strtotime($value['release_end_time']);
@@ -177,8 +175,8 @@
 			                                                            $between_time =  60*60*24*7;
 			                                                    ?>
 			                                                </td>
-			                                                <td><?php echo $value['create_time'];?></td>
-			                                                <td>
+			                                                <td class="phone-hide"><?php echo $value['create_time'];?></td>
+			                                                <td class="phone-hide">
 			                                                    <?php 
 			                                                        switch ($value['assign_status']) {
 			                                                            case '1':
@@ -212,9 +210,10 @@
 			                                                    </span>
 			
 			                                                </td>
-			                                                <td><?php echo $admins[$value['creator']];?></td>
-			                                                <td>
-			                                                    <div class="visible-md visible-lg hidden-sm hidden-xs action-buttons">
+			                                                <td class="phone-show"><?php echo $houses_assign_status[$value['assign_status']];?></td>
+			                                                <td class="phone-hide"><?php echo $admins[$value['creator']];?></td>
+			                                                <td nowrap>
+			                                                    <div class="">
 			                                                    	<!-- <a class="green tooltip-info m-detail" data-id="<?php echo $value['id'];?>" assign_type="<?php echo $value['assign_type'];?>"  data-rel="tooltip" data-placement="top" title="" data-original-title="详情">
 			                                                            <i class="icon-eye-open bigger-130"></i>
 			                                                        </a>-->
