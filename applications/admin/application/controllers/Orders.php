@@ -557,7 +557,7 @@ class Orders extends MY_Controller{
     public function confirmation($id) {
         $data = $this->data;
         $data['info'] = $this->Morders->get_one("*", array('id' => $id));
-        
+		
         $images = $this->Morder_inspect_images->get_lists("*", array('order_id' => $id, 'type' => 1));
         if (!$images) {
             $this->success("请先上传验收图片！","/changepicorders");
@@ -726,6 +726,32 @@ class Orders extends MY_Controller{
         $data['id'] = $id;
 
         $this->load->view('orders/detail', $data);
+    }
+    
+    /*
+     * 
+     * 删除订单
+     */
+    function del_order() {
+    	$id = $this->input->post('id');
+    	if(!empty($id)) {
+    		$where['id'] = $id;
+    	}
+    	if($where) {
+    		//$res = $this->Morders->delete($where);
+    		$res = $this->Morders->update_info(array("is_del"=>1), $where);
+    	}
+    	
+    	if(!empty($res)) {
+    		$res1 = $this->Mpoints->update_info(array("customer_id"=>null, "order_id"=>null, "point_status"=>1), array("order_id"=>$id));
+    		if($res1) {
+    			$this->return_json(['code' => 0, 'msg' => '删除成功！']);
+    		}
+    		
+    		$this->return_json(['code' => 0, 'msg' => '删除订单成功，但由于网络中断点位没有释放！']);
+    		
+    	}
+    	$this->return_json(['code' => 0, 'msg' => '删除失败']);
     }
 
     /*
