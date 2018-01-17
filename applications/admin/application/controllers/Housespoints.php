@@ -33,25 +33,31 @@ class Housespoints extends MY_Controller{
 
         $page =  intval($this->input->get("per_page",true)) ?  : 1;
         $size = $pageconfig['per_page'];
-        $where['is_del'] = 0;
+        $where['A.is_del'] = 0;
         
         $is_lock = $this->input->get('is_lock');
         if(strlen($is_lock)){
-            $where['is_lock'] = (int) $this->input->get('is_lock');
-            $data['is_lock'] = $this->input->get('is_lock');
+            $where['A.is_lock'] = (int) $this->input->get('is_lock');
+            $data['A.is_lock'] = $this->input->get('is_lock');
         }
         
-        if ($this->input->get('type_id')) $where['type_id'] = $this->input->get('type_id');
-        if ($this->input->get('houses_id')) $where['houses_id'] = $this->input->get('houses_id');
-        if ($this->input->get('area_id')) $where['area_id'] = $this->input->get('area_id');
-        if ($this->input->get('ban')) $where['ban'] = $this->input->get('ban');
-        if ($this->input->get('unit')) $where['area_id'] = $this->input->get('unit');
-        if ($this->input->get('floor')) $where['area_id'] = $this->input->get('floor');
-        if ($this->input->get('addr')) $where['addr'] = $this->input->get('addr');
-        if ($this->input->get('point_status')) $where['point_status'] = $this->input->get('point_status');
-        if ($this->input->get('customer_id')) $where['customer_id'] = $this->input->get('customer_id');
+        if ($this->input->get('type_id')) $where['A.type_id'] = $this->input->get('type_id');
+        if ($this->input->get('province')) $where['B.province'] = $this->input->get('province');
+        if ($this->input->get('city')) $where['B.city'] = $this->input->get('city');
+        if ($this->input->get('area')) $where['B.area'] = $this->input->get('area');
+        if ($this->input->get('houses_id')) $where['A.houses_id'] = $this->input->get('houses_id');
+        if ($this->input->get('area_id')) $where['A.area_id'] = $this->input->get('area_id');
+        if ($this->input->get('ban')) $where['A.ban'] = $this->input->get('ban');
+        if ($this->input->get('unit')) $where['A.area_id'] = $this->input->get('unit');
+        if ($this->input->get('floor')) $where['A.area_id'] = $this->input->get('floor');
+        if ($this->input->get('addr')) $where['A.addr'] = $this->input->get('addr');
+        if ($this->input->get('point_status')) $where['A.point_status'] = $this->input->get('point_status');
+        if ($this->input->get('customer_id')) $where['A.customer_id'] = $this->input->get('customer_id');
         
         $data['point_status'] = $this->input->get('point_status');
+        $data['province'] = $this->input->get('province');
+        $data['city'] = $this->input->get('city');
+        $data['area'] = $this->input->get('area');
         $data['area_id'] = $this->input->get('area_id');
         $data['ban'] = $this->input->get('ban');
         $data['unit'] = $this->input->get('unit');
@@ -62,8 +68,8 @@ class Housespoints extends MY_Controller{
         $data['houses_id'] = $this->input->get('houses_id');
         if($data['houses_id']) $data['area_list'] = $this->get_area_info($data['houses_id']);
         
-        $data['list'] = $this->Mhouses_points->get_lists('*',$where,[],$size,($page-1)*$size);
-        $data_count = $this->Mhouses_points->count($where);
+        $data['list'] = $this->Mhouses_points->get_points_lists($where,[],$size,($page-1)*$size);
+        $data_count = $this->Mhouses_points->get_count($where);
         $data['page'] = $page;
         $data['data_count'] = $data_count;
         

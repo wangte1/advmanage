@@ -16,7 +16,7 @@ class Model_houses_points extends MY_Model {
      */
     public function get_points_lists($where = array(), $order_by = array(), $pagesize = 0,$offset = 0,  $group_by = array()){
 
-        $this->db->select('A.id, A.code, A.price, A.ban, A.unit, A.floor, A.point_status, C.name as houses_area_name, A.addr, A.point_status, B.name AS houses_name, D.size');
+        $this->db->select('A.*, C.name as houses_area_name, A.addr, A.point_status, B.province, B.city, B.area,B.name AS houses_name, D.size');
     	$this->db->from('t_houses_points A');
     	$this->db->join('t_houses B', 'A.houses_id = B.id');
     	$this->db->join('t_houses_area C', 'A.houses_id = C.id');
@@ -76,6 +76,47 @@ class Model_houses_points extends MY_Model {
         }
         $result = $this->db->get();
         return $result->result_array();
+    }
+    
+    /**
+     * @author: 1034487709@qq.com
+     * @description 获取所有信息
+     * @param: mixed $fields array('uid', '..')
+     * @param: array $where array('name' => 'aaa', 'uid >' => $id);
+     */
+    public function get_count($where = array()){
+    	
+    	$this->db->select('A.id');
+    	$this->db->from('t_houses_points A');
+    	$this->db->join('t_houses B', 'A.houses_id = B.id');
+    	$this->db->join('t_houses_area C', 'A.houses_id = C.id');
+    	$this->db->join('t_houses_points_format D', 'A.type_id = D.type');
+    	$this->db->where(array('A.is_del' => 0, 'B.is_del' => 0));
+    	
+    	if(!empty($where)) {
+    		if(isset($where['like'])) {
+    			foreach($where['like'] as $k => $v) {
+    				$this->db->like($k, $v);
+    			}
+    			unset($where['like']);
+    		}
+    		if(isset($where['in'])) {
+    			foreach($where['in'] as $k => $v) {
+    				$this->db->where_in($k, $v);
+    			}
+    			unset($where['in']);
+    		}
+    		if(isset($where['not_in'])) {
+    			foreach($where['not_in'] as $k => $v) {
+    				$this->db->where_not_in($k, $v);
+    			}
+    			unset($where['not_in']);
+    		}
+    		if($where){
+    			$this->db->where($where);
+    		}
+    	}
+    	return $this->db->count_all_results();
     }
     
     /*

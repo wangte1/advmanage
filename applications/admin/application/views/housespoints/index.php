@@ -51,15 +51,15 @@
                                 <div class="widget-main">
                                     <form class="form-horizontal" role="form">
                                         <div class="form-group">
-                                            <div class="col-sm-3">
-                                                <label class="col-sm-3 control-label no-padding-right" for="form-field-1"> 点位类型 </label>
+                                            
+                                            <div class="col-sm-6">
+                                                <label class="col-sm-2 control-label no-padding-right" for="form-field-1"> 行政区域 </label>
                                                 <div class="col-sm-9">
-                                                	<select class="select2" data-placeholder="Click to Choose..." name="type_id">
-                                                		<option value="">全部</option>
-				                                    	<?php foreach ($tlist as $k => $v) {?>
-				                                    		<option value="<?php echo $v['type'];?>" <?php if($v['type'] == $type_id) {?>selected="selected"<?php }?>><?php echo $order_type_text[$v['type']];?></option>
-				                                    	<?php }?>
-				                                    </select>
+                                              		<div id="distpicker1">
+													  <select name="province" id="province"></select>
+													  <select name="city" id="city"></select>
+													  <select name="area" id="area"></select>
+													</div>
                                                 </div>
                                             </div>
                                             
@@ -68,7 +68,7 @@
                                                 <div class="col-sm-9">
                                                 	<select id="houses" class="select2" data-placeholder="Click to Choose..." name="houses_id">
                                                 		<option value="">全部</option>
-				                                    	<?php foreach ($hlist as $k => $v) {?>
+				                                	<?php foreach ($hlist as $k => $v) {?>
 				                                    		<option value="<?php echo $v['id'];?>" <?php if($v['id'] == $houses_id) {?>selected="selected"<?php }?>><?php echo $v['name'];?></option>
 				                                    	<?php }?>
 				                                    </select>
@@ -88,7 +88,11 @@
 				                                    </select>
                                                 </div>
                                             </div>
-                                		
+                                            
+                                      	</div>
+                                		<div class="form-group">
+                                            
+                                            
                                             <div class="col-sm-3">
                                                 <label class="col-sm-3 control-label no-padding-right" for="form-field-1"> 楼栋 </label>
                                                 <div class="col-sm-9">
@@ -103,8 +107,6 @@
 				                                    </select>
                                                 </div>
                                             </div>
-                                      	</div>
-                                		<div class="form-group">
                                             
                                             <div class="col-sm-3">
                                                 <label class="col-sm-3 control-label no-padding-right" for="form-field-1"> 单元 </label>
@@ -147,7 +149,22 @@
                                                 </div>
                                             </div>
                                             
-                                            <div class="col-sm-3">
+                                     	</div>
+                                    	<div class="form-group">
+                                    			
+                                    		<div class="col-sm-3">
+                                                <label class="col-sm-3 control-label no-padding-right" for="form-field-1"> 点位类型 </label>
+                                                <div class="col-sm-9">
+                                                	<select class="select2" data-placeholder="Click to Choose..." name="type_id">
+                                                		<option value="">全部</option>
+				                                    	<?php foreach ($tlist as $k => $v) {?>
+				                                    		<option value="<?php echo $v['type'];?>" <?php if($v['type'] == $type_id) {?>selected="selected"<?php }?>><?php echo $order_type_text[$v['type']];?></option>
+				                                    	<?php }?>
+				                                    </select>
+                                                </div>
+                                            </div>
+                                    	
+                                    		<div class="col-sm-3">
                                                 <label class="col-sm-3 control-label no-padding-right" for="form-field-1"> 锁定状态 </label>
                                                 <div class="col-sm-9">
                                                 	<select id="is_lock" class="select2" data-placeholder="Click to Choose..." name="is_lock">
@@ -158,9 +175,7 @@
 				                                    </select>
                                                 </div>
                                             </div>
-                                            
-                                     	</div>
-                                    	<div class="form-group">
+                                    	
                                     		<div class="col-sm-3">
                                                 <label class="col-sm-3 control-label no-padding-right" for="form-field-1"> 点位状态 </label>
                                                 <div class="col-sm-9">
@@ -212,6 +227,7 @@
                                         <thead>
                                             <tr>
                                                 <th>点位编号</th>
+                                                <th>行政区域</th>
                                                 <th>所属楼盘</th>
                                                 <th>所属组团</th>
                                                 <th>楼栋</th>
@@ -232,6 +248,9 @@
                                                 ?>
                                                 <tr>
                                                     <td><a href=""><?php echo $val['code'];?></a></td>
+                                                    <td>
+                                                    	<?php echo $val['province'].'-'.$val['city'].'-'.$val['area'];?>
+                                                    </td>
                                                     <td>
                                                     	<?php foreach ($hlist as $k => $v) {?>
                                                     		<?php if($v['id'] == $val['houses_id']) {?>
@@ -323,15 +342,44 @@
 <!-- 加载尾部公用js -->
 <?php $this->load->view("common/footer");?>
 
-
+<script src="<?php echo css_js_url('jqdistpicker/distpicker.data.js','admin');?>"></script>
+<script src="<?php echo css_js_url('jqdistpicker/distpicker.js','admin');?>"></script>
 <script src="<?php echo css_js_url('select2.min.js','admin');?>"></script>
 <script type="text/javascript">
 	var buf_info = '';
 	
+	$("#distpicker1").distpicker({
+		province: '<?php if($province != ''){echo $province;}else { echo '贵州省';}?>',
+		city: '<?php if($city != ''){echo $city;}else{echo '贵阳市';}?>',
+		district: "<?php echo $area;?>"
+	});
+	
     $(function(){
        $(".select2").css('width','230px').select2({allowClear:true});
-    });
+       $("#distpicker1 select").change(function(){
+			var province = $("#province").val();
+			var city = $("#city").val();
+			var area = $("#area").val();
+			
+			$.post('/housespoints/ajax_houses_info',{province:province,city:city,area:area},function(data){
+				if(data) {
+					$('.select2-chosen:eq(2)').text('--请选择组团--');
+					$('.select2-chosen:eq(1)').text('--请选择楼盘--');
+					var housesStr = '<option value="">--请选择楼盘--</option>';
+					for(var i = 0; i < data.length; i++) {
 
+						housesStr += '<option value="' + data[i].id + '">' + data[i].name + '</option>';
+					}
+					
+					$("select[name='houses_id']").html(housesStr);
+
+					//getArea();
+				}
+			});
+			
+       });
+    });
+	
 	$('.m-del').click(function(){
 		var url = $(this).attr('data-url');
 		layer.confirm('确认要删除该点位吗？', {
