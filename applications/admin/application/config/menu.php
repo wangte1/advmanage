@@ -43,7 +43,6 @@ $config = array(
                     'name'=> '业务员管理',
                     'active'=> 'salesman_list'
                 ),
-            	
             	array(
             		'url'=>'/makereport',
             		'name'=> '生成验收报告',
@@ -52,12 +51,10 @@ $config = array(
             		
             )
         ),
-    		
     	'网络资源管理' => array(
     		'code' => 'net_manage',
     		'icon' => 'icon-globe  menu-i',
     		'list' => array(
-    				
     			array(
     				 'url'=>'/networkmanage/goindex1', //mod=1是腾讯
     				 'name'=> '腾讯网络排班',
