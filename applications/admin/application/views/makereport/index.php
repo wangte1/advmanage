@@ -261,8 +261,6 @@ function doSubmit() {
 		alert('请上传正面或背面图片');
 	    return;
 	}
-
-
 	
 	$('form').submit();
 }

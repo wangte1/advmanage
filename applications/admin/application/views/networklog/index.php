@@ -55,7 +55,7 @@
 
                             <div class="widget-body">
                                 <div class="widget-main">
-                                    <form id="search-form" class="form-horizontal" role="form" method="get" action="">
+                                    <!-- <form id="search-form" class="form-horizontal" role="form" method="get" action="">
                                         <div class="form-group" style="padding-bottom: 20px;">
                                         	<div class="col-sm-4">
                                                 <label class="col-sm-3 control-label no-padding-right" for="form-field-1"> 申请人</label>
@@ -71,7 +71,7 @@
                                                 </div>
                                             </div>
                                         
-                                            <!-- <div class="col-sm-4">
+                                            <div class="col-sm-4">
                                                 <label class="col-sm-3 control-label no-padding-right" for="form-field-1"> 状态</label>
                                                 <div class="col-sm-9">
                                                     <select class="form-control"  name="status">
@@ -82,7 +82,7 @@
                                                     	<option value="2" <?php if($status == 2) {?>selected="selected"<?php }?>>未通过</option>
                                                     </select>
                                                 </div>
-                                            </div> -->
+                                            </div>
                                         </div>
                                         <div class="clearfix form-actions">
                                             <div class="col-md-offset-3 col-md-9">
@@ -96,7 +96,7 @@
                                                 </button>
                                             </div>
                                         </div>
-                                    </form>
+                                    </form> -->
                                 </div>
                             </div>
                         </div>

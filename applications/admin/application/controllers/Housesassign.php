@@ -472,48 +472,6 @@ class Housesassign extends MY_Controller{
     /**
      * 显示点位列表详情
      */
-//     public function show_points() {
-//     	$data = $this->data;
-    	
-//     	$pageconfig = C('page.page_lists');
-//     	$this->load->library('pagination');
-    	
-//     	$page =  intval($this->input->get("per_page",true)) ?  : 1;
-//     	$size = $pageconfig['per_page'];
-//     	$where_orders['is_del'] = $where['is_del'] = 0;
-//     	if ($this->input->get('order_id')) $where_orders['id'] = $data['order_id'] =  $this->input->get('order_id');
-    	
-//     	$orders_list = $this->Mhouses_orders->get_one('id,point_ids', $where_orders);
-//     	if(isset($orders_list['point_ids'])) {
-//     		$point_ids_arr = explode(',', $orders_list['point_ids']);
-//     		$where['in']['id'] = $point_ids_arr;
-//     	}
-    	
-//     	if ($this->input->get('houses_id')) $where['houses_id'] = $data['houses_id'] =  $this->input->get('houses_id');
-//     	$data['list'] = $this->Mhouses_points->get_lists('id,code,houses_id,area_id,ban,unit,floor,addr,type_id', $where,[],$size,($page-1)*$size);  //工程人员信息
-//     	$data_count = $this->Mhouses_points->count($where);
-//     	$data['page'] = $page;
-//     	$data['data_count'] = $data_count;
-    	
-//     	if(count($data['list']) > 0) {
-//     		$houses_ids = array_column($data['list'], 'houses_id');
-//     		$area_ids = array_column($data['list'], 'area_id');
-    		
-//     		$whereh['in']['id'] = $houses_ids;
-//     		$data['houses_list'] = $this->Mhouses->get_lists("id, name", $whereh);
-    		
-//     		$wherea['in']['id'] = $area_ids;
-//     		$data['area_list'] = $this->Mhouses_area->get_lists("id, name", $wherea);
-//     	}
-    	
-//     	//获取分页
-//     	$pageconfig['base_url'] = "/houses";
-//     	$pageconfig['total_rows'] = $data_count;
-//     	$this->pagination->initialize($pageconfig);
-//     	$data['pagestr'] = $this->pagination->create_links(); // 分页信息
-    	
-//     	$this->load->view('housesassign/show_points', $data);
-//     }
     public function show_points() {
     	$data = $this->data;
     	 

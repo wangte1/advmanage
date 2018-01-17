@@ -112,8 +112,6 @@ class Networkset extends MY_Controller{
 
         if(IS_POST){
             $post = $this->input->post();
-            //$post['update_user'] = $data['userInfo']['id'];
-            //$post['update_time'] = date("Y-m-d H:i:s");
             $result = $this->Mnetwork_base->update_info($post,array("id"=>$id));
             if($result){
             	$this->cache->file->delete('netbase');

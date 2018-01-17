@@ -259,6 +259,7 @@ class Networkmanage extends MY_Controller{
     								
     							}
     							
+    							//这段代码效率低，后期有空优化代码
     							$this->Mnetwork->create_batch($tmpAdd);
     							
     						}
@@ -303,7 +304,7 @@ class Networkmanage extends MY_Controller{
     }
     
     /*
-     * 检查是否需要插入记录,数据库已经添加了唯一约束
+     * 检查是否需要插入记录
      */
     public function check_insert($baseid, $year, $month) {
     	$where['is_del'] =  null;
@@ -766,35 +767,15 @@ class Networkmanage extends MY_Controller{
      * 通过日期获取星期
      */
     public function get_week($date){
-    	//强制转换日期格式
     	$date_str=date('Y-m-d',strtotime($date));
-    	 
-    	//封装成数组
     	$arr=explode('-', $date_str);
-    
-    	//参数赋值
-    	//年
     	$year=$arr[0];
-    
-    	//月，输出2位整型，不够2位右对齐
     	$month=sprintf('%02d',$arr[1]);
-    
-    	//日，输出2位整型，不够2位右对齐
     	$day=sprintf('%02d',$arr[2]);
-    
-    	//时分秒默认赋值为0；
     	$hour = $minute = $second = 0;
-    
-    	//转换成时间戳
     	$strap = mktime($hour,$minute,$second,$month,$day,$year);
-    
-    	//获取数字型星期几
     	$number_wk=date('w',$strap);
-    
-    	//自定义星期数组
     	$weekArr=array('日','一','二','三','四','五','六');
-    
-    	//获取数字对应的星期
     	return $weekArr[$number_wk];
     }
 
