@@ -1,6 +1,37 @@
 <!-- 加载公用css -->
 <?php $this->load->view('common/header');?>
 
+<!-- 头部 -->
+<?php $this->load->view('common/top');?>
+
+<div class="main-container" id="main-container">
+   <div class="main-container-inner">
+
+     <!-- 左边导航菜单 -->
+        <?php $this->load->view('common/left');?>
+
+        <div class="main-content">
+            <div class="breadcrumbs" id="breadcrumbs">
+                <ul class="breadcrumb">
+                    <li>
+                        <i class="icon-home home-icon"></i>
+                        <a href="#">Home</a>
+                    </li>
+
+                    <li>
+                        <a href="/housesconfirm">派单确认</a>
+                    </li>
+                    
+                    <li>
+                        <span>上传验收图片</span>
+                    </li>
+
+                </ul>
+                <div class="nav-search" id="nav-search">
+                </div>
+            </div>
+
+
             <div class="page-content">
 
                 <div class="row">
@@ -90,6 +121,9 @@
 
                 </div>
             </div>
+		</div>
+	</div>
+</div>
     
 
 <!-- 加载尾部公用js -->
