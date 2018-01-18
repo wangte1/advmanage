@@ -26,7 +26,9 @@
         .footer p{height: 10px;}
 
         .btn-print {width: 100%;margin-top: 50px; text-align: right; position: fixed; bottom: 0;left: 0;}
-        .btn-print button {border-radius: 3px; width: 100px; height: 30px;}
+        .btn-print2 {width: 100%;margin-top: 50px; text-align: right; position: fixed; bottom: 50px;left: 0;}
+        .btn-print button  {border-radius: 3px; width: 100px; height: 30px;}
+        .btn-print2 button  {border-radius: 3px; width: 100px; height: 30px;}
 
         .hide{display:none}
         @media print { 
@@ -41,9 +43,59 @@
             .first-h,.last-h{height: 1200px}
         }
     </style>
+    
+    <script src="<?php echo css_js_url('jquery-2.0.3.min.js','admin');?>"></script> 
+	<script src="<?php echo css_js_url('html2canvas.js','admin');?>"></script>
+	<script src="<?php echo css_js_url('jsPdf.debug.js','admin');?>"></script>
+	<script> 
+	  
+	$(function(){ 
+	  $("#pdf-btn").click(function(){ 
+	    html2canvas($("#container"), { 
+	      onrendered: function(canvas) { 
+	    	  var contentWidth = canvas.width;
+	          var contentHeight = canvas.height;
+
+	          //一页pdf显示html页面生成的canvas高度;
+	          var pageHeight = contentWidth / 592.28 * 841.89;
+	          //未生成pdf的html页面高度
+	          var leftHeight = contentHeight;
+	          //页面偏移
+	          var position = 0;
+	          //a4纸的尺寸[595.28,841.89]，html页面生成的canvas在pdf中图片的宽高
+	          var imgWidth = 595.28;
+	          var imgHeight = 592.28/contentWidth * contentHeight;
+
+	          var pageData = canvas.toDataURL('image/jpeg', 1.0);
+
+	          var pdf = new jsPDF('', 'pt', 'a4');
+
+	          //有两个高度需要区分，一个是html页面的实际高度，和生成pdf的页面高度(841.89)
+	          //当内容未超过pdf一页显示的范围，无需分页
+	          if (leftHeight < pageHeight) {
+	          pdf.addImage(pageData, 'JPEG', 0, 0, imgWidth, imgHeight );
+	          } else {
+	              while(leftHeight > 0) {
+	                  pdf.addImage(pageData, 'JPEG', 0, position, imgWidth, imgHeight)
+	                  leftHeight -= pageHeight;
+	                  position -= 841.89;
+	                  //避免添加空白页
+	                  if(leftHeight > 0) {
+	                    pdf.addPage();
+	                  }
+	              }
+	          }
+
+	          pdf.save('<?php echo $info['customer_name'];?>-<?php echo $order_type_text[$info['order_type']];?>广告验收报告.pdf');
+	      } 
+	    }); 
+	  }); 
+	}); 
+	</script> 
+    
 </head>
 <body>
-    <div class="content">
+    <div class="content" id="container" style="background-color:#fff;">
         <!-- 第一页 -->
         <div class="page">
             <center class="title"><?php echo $order_type_text[$info['order_type']];?>广告验收报告</center>
@@ -107,7 +159,8 @@
         <?php endforeach;?>
         </div>
         
-        <div class="noprint btn-print"><button type="button" onclick="document.getElementById('pic-panel').style.display='none';javascript: window.print();document.getElementById('pic-panel').style.display='block';">打印文字报告</button></div>
+        <div class="noprint btn-print2"><button type="button" onclick="document.getElementById('pic-panel').style.display='none';javascript: window.print();document.getElementById('pic-panel').style.display='block';">打印文字报告</button></div>
+        <div class="noprint btn-print"><button id="pdf-btn" type="button" onclick="">下载图片报告</button></div>
     </div>
 </body>
 </html>
