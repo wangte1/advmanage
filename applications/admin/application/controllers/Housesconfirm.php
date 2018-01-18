@@ -346,6 +346,79 @@ class Housesconfirm extends MY_Controller{
     	$this->load->view('housesconfirm/check_adv_img', $data);
     }
     
+    
+    /*
+     * 查看验收图片详情
+     * 1034487709@qq.com
+     */
+    public function upload_detail(){
+    	$data = $this->data;
+    	 
+    	$pageconfig = C('page.page_lists');
+    	$this->load->library('pagination');
+    	$page =  intval($this->input->get("per_page",true)) ?  : 1;
+    	$size = $pageconfig['per_page'];
+    	 
+    	 
+    	$assign_id = $this->input->get('assign_id');
+    	$order_id = $this->input->get('order_id');
+    	$houses_id = $this->input->get('houses_id');
+    	$assign_type = $this->input->get('assign_type');
+    	 
+    	if($assign_type == 3) {
+    		$tmp_moudle = $this->Mhouses_changepicorders;
+    	}else {
+    		$tmp_moudle = $this->Mhouses_orders;
+    	}
+    	$order = $tmp_moudle->get_one("*",array("id" => $order_id));
+    	 
+    	if(isset($order['point_ids'])) {
+    		$point_ids_arr = explode(',', $order['point_ids']);
+    		$where_point['in']['A.id'] = $point_ids_arr;
+    	}
+    	$where_point['A.houses_id'] = $houses_id;
+    	$where_point['A.is_del'] = 0;
+    	 
+    	//获取该订单下面的所有楼盘
+    	$points = $this->Mhouses_points->get_points_lists($where_point,[],$size,($page-1)*$size);
+    	$data_count = $this->Mhouses_points->count(['order_id' => $order_id, 'houses_id' => $houses_id]);
+    	$data['page'] = $page;
+    	$data['data_count'] = $data_count;
+    	 
+    	//根据点位id获取对应的图片
+    	$data['images'] = "";
+    	if(count($points) > 0) {
+    		$where['in'] = array("point_id"=>array_column($points,"id"));
+    		$where['assign_id'] = $assign_id;
+    		$where['type'] = 1;
+    		$data['images'] = $this->Mhouses_order_inspect_images->get_lists("*",$where);
+    	}
+    
+    	$list = array();
+    	foreach ($points as $key => $val) {
+    		$val['image'] = array();
+    		if($data['images']){
+    			foreach($data['images'] as $k=>$v){
+    				if($val['id'] == $v['point_id']){
+    					$val['image'][] = $v;
+    				}
+    			}
+    		}
+    		$list[] = $val;
+    	}
+    
+    	$data['list'] = $list;
+    	 
+    	//获取分页
+    	$pageconfig['base_url'] = "/housesorders/check_upload_img";
+    	$pageconfig['total_rows'] = $data_count;
+    	$this->pagination->initialize($pageconfig);
+    	$data['pagestr'] = $this->pagination->create_links(); // 分页信息
+    
+    	$this->load->view('housesconfirm/upload_detail', $data);
+    }
+    
+    
     /**
      * 提交上画
      */

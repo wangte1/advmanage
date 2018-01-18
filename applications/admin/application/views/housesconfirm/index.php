@@ -349,15 +349,18 @@
 			var order_id = $(this).attr('order-id');
 			var houses_id = $(this).attr('houses-id');
 			var assign_type = '<?php echo $assign_type;?>';
+
+			location.href='/housesconfirm/upload_detail?order_id='+order_id+'&assign_id='+id+'&houses_id='+houses_id+'&assign_type='+assign_type //iframe的url
+			return;
 			
-			layer.open({
-				  type: 2,
-				  title: '上传验收图片',
-				  shadeClose: true,
-				  shade: 0.6,
-				  area: ['80%', '80%'],
-				  content: '/housesorders/check_upload_img?order_id='+order_id+'&assign_id='+id+'&houses_id='+houses_id+'&assign_type='+assign_type //iframe的url
-				}); 
+// 			layer.open({
+// 				  type: 2,
+// 				  title: '上传验收图片',
+// 				  shadeClose: true,
+// 				  shade: 0.6,
+// 				  area: ['80%', '80%'],
+// 				  content: '/housesconfirm/upload_detail?order_id='+order_id+'&assign_id='+id+'&houses_id='+houses_id+'&assign_type='+assign_type //iframe的url
+// 				}); 
 		});
 
 		//确认派单
