@@ -52,6 +52,9 @@
                                         <li <?php if($tab == 'point'){echo 'class="active"';}?>>
                                             <a data-toggle="tab" href="#points">锁定点位</a>
                                         </li>
+                                        <li <?php if($tab == 'confirm'){echo 'class="active"';}?>>
+                                            <a data-toggle="tab" href="#customer_confrim">客户确认</a>
+                                        </li>
                                     </ul>
 
                                     <div class="tab-content">
@@ -185,9 +188,41 @@
                                             </table>
                                             <!--分页start-->
                                     		<?php $this->load->view('common/page');?>
-                                            <div>
-                                            	<br/><span> 客户确认点位地址： <?php echo C('housesscheduledorder.confirm_url').encrypt(['id' => $info['id']]);?></span>
-                                            </div>
+                                        </div>
+                                        <!-- 客户确认 -->
+                                        <div id="customer_confrim" class="tab-pane <?php if($tab == 'confirm'){echo 'in active';}?>">
+                                        	<table class="table table-striped table-bordered">
+                                                <thead>
+                                                    <tr>
+                                                    	<th width="80px">全选/反选</th>
+                                                        <th class="center">行政区域</th>
+                                                        <th>楼盘名称</th>
+                                                        <th>锁定点位数</th>
+                                                        <th>确认点位数</th>
+                                                        <th class="hidden-xs">操作</th>
+                                                    </tr>
+                                                </thead>
+                                                <tbody>
+                                                    <?php foreach($houses_list as $val):?>
+                                                    <tr id="houses_<?php echo $val['id']?>">
+                                                    	<td id="all" style="text-align: center;">
+                                                    		<input class="all" data-houses_id="<?php echo $val['id']?>" <?php if($val['num'] == $val['confirm_num']){echo 'checked';}?> type="checkbox" />
+                                                    	</td>
+                                                        <td class="center">
+                                                        	<?php echo $val['province'];?>-<?php echo $val['city'];?>-<?php echo $val['area'];?>
+                                                        </td>
+                                                        <td><?php echo $val['name']?></td>
+                                                        <td><?php echo $val['num']?></td>
+                                                        <td><?php echo $val['confirm_num']?></td>
+                                                        <td>
+                                                        	<a class="green tooltip-info" href="/housesscheduledorders/houses_detail?houses_id=<?php echo $val['id']?>"  data-rel="tooltip" data-placement="top" data-original-title="详情">
+                                                                <i class="icon-eye-open bigger-130"></i>
+                                                            </a> 
+                                                        </td>
+                                                    </tr>
+                                                    <?php endforeach;?>
+                                                </tbody>
+                                            </table>
                                         </div>
                                     </div>
                                 </div>
@@ -210,7 +245,18 @@
         var type = $(this).attr('data-type');
         window.location.href = '/housesscheduledorders/export/' + id + '/' + type;
     });
-</script>
 
+    $('.all').on('click', function(e){
+		var order_id = '<?php echo $info["id"];?>';
+		var index = layer.load(1, {
+			  shade: [0.1,'#fff'] //0.1透明度的白色背景
+		});
+		var houses_id = $(this).attr('data-houses_id');
+		var status = $(this).prop('checked');
+		//请求后台
+		
+		layer.close(index);
+    });
+</script>
 <!-- 底部 -->
 <?php $this->load->view("common/bottom");?>

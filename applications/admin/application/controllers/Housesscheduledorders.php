@@ -297,8 +297,8 @@ class Housesscheduledorders extends MY_Controller{
     public function detail($id, $tab="") {
         $data = $this->data;
         $data['tab'] = 'basic';//默认显示基本信息tab
-        if($tab) $data['tab'] = 'point';
-        
+        if($tab && ($tab =='point' || $tab = 'confirm')) $data['tab'] = $tab;
+
         $pageconfig = C('page.page_lists');
         $this->load->library('pagination');
         $page = $this->input->get_post('per_page') ? : '1';
@@ -339,7 +339,47 @@ class Housesscheduledorders extends MY_Controller{
                 $data['pagestr'] = $this->pagination->create_links();// 分页信息
             }
         }
-
+        
+        #客户确认
+        //获取所有预约锁定点位
+        $point_ids = $data['info']['point_ids'];
+        $point_ids = explode(',', $point_ids);
+        
+        $confirm_point_ids = $data['info']['confirm_point_ids'];
+        
+        
+        $point_all = $this->Mhouses_points->get_lists('id, houses_id', ['in' => ['id' => $point_ids]]);
+        if(!empty($confirm_point_ids)){
+            $confirm_point_all = [];
+            $confirm_point_ids = array_unique(explode(',', $confirm_point_ids));
+            foreach ($point_all as $k => $v){
+                if(in_array($v['id'], $confirm_point_ids)){
+                    array_push($confirm_point_all, $v);
+                }
+            }
+        }
+        //获取以上点位包含的楼盘id
+        $houses_ids = array_unique(array_column($point_all, 'houses_id'));
+        //获取这些楼盘信息
+        $houses_list = $this->Mhouses->get_lists('id, name, province, city, area', ['in' => ['id' => $houses_ids]]);
+        foreach ($houses_list as $k => $v){
+            $houses_list[$k]['num'] = 0;
+            $houses_list[$k]['confirm_num'] = 0;
+            foreach ($point_all as $key => $val){
+                if($v['id'] == $val['houses_id']){
+                    $houses_list[$k]['num'] +=1; 
+                }
+            }
+            if(isset($confirm_point_all) && $confirm_point_all){
+                foreach ($confirm_point_all as $key => $val){
+                    if($v['id'] == $val['houses_id']){
+                        $houses_list[$k]['confirm_num'] +=1;
+                    }
+                }
+            }
+        }
+        
+        $data['houses_list'] = $houses_list;
         $this->load->view('housesscheduledorders/detail', $data);
     }
     
