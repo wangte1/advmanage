@@ -88,8 +88,7 @@
                                                     </select>
                                                 </div>
                                             </div>
-                                        </div>
-                                        <div class="form-group">
+                             
                                             <div class="col-sm-4">
                                                 <label class="col-sm-3 control-label no-padding-right" for="form-field-1"> 订单状态 </label>
                                                 <div class="col-sm-9">
@@ -97,6 +96,19 @@
                                                         <option value="">全部</option>
                                                         <?php foreach(C('housesscheduledorder.order_status.text')as $key => $value): ?>
                                                         <option value="<?php echo $key;?>" <?php if($key == $order_status){ echo "selected"; }?>><?php echo $value;?></option>
+                                                        <?php endforeach;?>
+                                                    </select>
+                                                </div>
+                                            </div>
+                                        	
+            
+                                            <div class="col-sm-4">
+                                                <label class="col-sm-3 control-label no-padding-right" for="form-field-1"> 业务员： </label>
+                                                <div class="col-sm-9">
+                                                    <select name="sales_id" class="select2">
+                                                        <option value="">全部</option>
+                                                        <?php foreach($yewu as $key => $value): ?>
+                                                        <option value="<?php echo $value['id'];?>" <?php if(isset($sales_id) && $sales_id == $value['id']){ echo "selected"; }?>><?php echo $value['fullname'];?></option>
                                                         <?php endforeach;?>
                                                     </select>
                                                 </div>
@@ -132,6 +144,7 @@
                                                 <th>锁定点位</th>
                                                 <th>锁定时间</th>
                                                 <th>锁定人</th>
+                                                <th>业务员</th>
                                                 <th>订单创建日期</th>
                                                 <th>状态</th>
                                                 <th>客户确认状态</th>
@@ -157,6 +170,13 @@
                                                     <?php echo $value['lock_start_time'].'至'.$value['lock_end_time'];?>
                                                 </td>
                                                 <td><?php echo $value['admin_name'];?></td>
+                                                <td>
+                                                	<?php foreach ($yewu as $k => $v):?>
+                                                	<?php if($value['sales_id'] == $v['id']):?>
+                                                	<?php echo $v['fullname']; $tmpname=$v['fullname'];break;?>
+                                                	<?php endif;?>
+                                                	<?php endforeach;?>
+                                                </td>
                                                 <td><?php echo $value['create_time'];?></td>
                                                 <td>
                                                     <?php 
@@ -217,7 +237,7 @@
                                                         </a>
                                                         <?php endif;?>
                                                         <?php if(in_array($value['order_status'], [1,2]) && $value['is_confirm'] == 0):?>
-                                                        <a class="grey tooltip-info sendsms" href="javascript:;" data-id="<?php echo $value['id'];?>" data-customer="<?php echo $value['lock_customer_id']?>"  data-rel="tooltip" data-placement="top" data-original-title="发送短信提醒客户确认点位">
+                                                        <a class="grey tooltip-info sendsms" href="javascript:;" data-id="<?php echo $value['sales_id'];?>" data-salesname="<?php echo $tmpname;?>"  data-rel="tooltip" data-placement="top" data-original-title="发送短信提醒业务员">
                                                             <i class="ace-icon fa fa-envelope-o bigger-130" aria-hidden="true"></i>
                                                         </a>
                                                         <?php endif;?>
@@ -289,14 +309,14 @@
     $('.sendsms').on('click', function(){
     	var _obj = $(this);
     	var id = _obj.attr('data-id');
-    	var customer = _obj.attr('data-customer');
-    	var customerName = $('#order_'+id).text();
+    	var salesName = _obj.attr('data-salesname');
+
         var d = dialog({
             title: "提示",
-            content: '请谨慎操作！确定要给 '+ customerName +'客户发送短信通知吗？',
+            content: '请谨慎操作！确定要给 '+ salesName +' 业务员发送短信通知吗？',
             okValue: '确定',
             ok: function () {
-                var postData = {'order_id':id, 'customer_id':customer};
+                var postData = {'sales_id':id};
                 $.post('/housesscheduledorders/sendMsg', postData, function(data){
 					if(data){
 						layer.alert(data.msg);

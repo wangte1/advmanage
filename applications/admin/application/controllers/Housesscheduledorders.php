@@ -44,6 +44,7 @@ class Housesscheduledorders extends MY_Controller{
         if ($this->input->get('order_type')) $where['A.order_type'] = $this->input->get('order_type');
         if ($this->input->get('customer_id')) $where['A.lock_customer_id'] = $this->input->get('customer_id');
         if ($this->input->get('admin_id')) $where['C.id'] = $this->input->get('admin_id');
+        if ($this->input->get('sales_id')) $where['A.sales_id'] = $data['sales_id'] =  $this->input->get('sales_id');
         if ($this->input->get('order_status')) $where['A.order_status'] = $this->input->get('order_status');
         
         $data['order_type'] = $this->input->get('order_type');
@@ -65,11 +66,19 @@ class Housesscheduledorders extends MY_Controller{
         $data['status_text'] = C('housesscheduledorder.order_status.text');
         $data['confirm_text'] = C('housesscheduledorder.customer_status');
         
-        $data['admins'] = $this->Madmins->get_lists('id, fullname', array('is_del' => 1));
+        $data['admins'] = $this->Madmins->get_lists('id, group_id, fullname', array('is_del' => 1));
         
         //获取所有客户
         $data['customer_list'] = $this->Mhouses_customers->get_lists('id, name', ['is_del' => 0]);
-        
+        //获取所有业务员
+        $data['yewu'] = [];
+        if($data['admins']){
+            foreach ($data['admins'] as $k => $v){
+                if($v['group_id'] == 2){
+                    array_push($data['yewu'], $v);
+                }
+            }
+        }
         $this->load->view('housesscheduledorders/index', $data);
     }
     
@@ -143,7 +152,8 @@ class Housesscheduledorders extends MY_Controller{
         }
         $data['put_trade'] = $put_trade;
         //end
-
+        //获取所有业务员
+        $data['yewu'] = $this->Madmins->get_lists('id, fullname', array('group_id' => 2,'is_del' => 1));
         $this->load->view('housesscheduledorders/add', $data);
     }
     
@@ -213,7 +223,8 @@ class Housesscheduledorders extends MY_Controller{
             	$data['housesList'] = $this->Mhouses->get_lists("id, name", ['is_del' => 0]);
             }
             //end
-           
+            //获取所有业务员
+            $data['yewu'] = $this->Madmins->get_lists('id, fullname', array('group_id' => 2,'is_del' => 1));
             //已选择点位列表
             $where['in']['A.id'] = explode(',', $data['info']['point_ids']);
             $data['selected_points'] = $this->Mhouses_points->get_points_lists($where);
@@ -568,15 +579,14 @@ class Housesscheduledorders extends MY_Controller{
      */
     public function sendMsg(){
         //根据预定订单获取客户电话
-        $orderid = intval($this->input->post('order_id'));
-        $customer_id = intval($this->input->post('customer_id'));
-        $info = $this->Mhouses_customers->get_one('contact_tel', ['id' => $customer_id]);
-        if(!$info) $this->return_json(['code' => 0, 'msg' => '客户不存在']);
-        if(empty($info['contact_tel'])){
+        $sales_id = intval($this->input->post('sales_id'));
+        $info = $this->Madmins->get_one('tel', ['id' => $sales_id]);
+        if(!$info) $this->return_json(['code' => 0, 'msg' => '业务员不存在']);
+        if(empty($info['tel'])){
             $this->return_json(['code' => 0, 'msg' => '电话不能为空！']);
         }
         if(!preg_match('/^1[3|4|5|8|7][0-9]\d{8}$/', $info['contact_tel'])){
-            $this->return_json(['code' => 0, 'msg' => '客户手机号格式不正确！']);
+            $this->return_json(['code' => 0, 'msg' => '业务员手机号格式不正确！']);
         }
         //生成token
         $token = encrypt(['id' => $orderid]);

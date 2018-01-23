@@ -84,6 +84,22 @@
                                                 </span>
                                             </div>
                                         </div>
+                                        
+                                        <div class="form-group">
+                                            <label class="col-sm-2 control-label no-padding-right" for="form-field-2"> 广告客户： </label>
+                                            <div class="col-sm-10">
+                                                <select id="sales_id" name="sales_id" class="select2" required>
+                                                    <option value="">请选择业务员</option>
+                                                    <?php foreach($yewu as $val):?>
+                                                    <option value="<?php echo $val['id'];?>" <?php if(isset($info['sales_id']) && $val['id'] == $info['sales_id']){ echo "selected"; }?>><?php echo $val['fullname'];?></option>
+                                                    <?php endforeach;?>
+                                                </select>
+                                                
+                                                <span class="help-inline form-field-description-block">
+                                                   <span class="middle" style="color: red">*</span>
+                                                </span>
+                                            </div>
+                                        </div>
 
                                         <div class="space-4"></div>
 
