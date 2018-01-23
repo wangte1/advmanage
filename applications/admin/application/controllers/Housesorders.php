@@ -213,15 +213,22 @@ class Housesorders extends MY_Controller{
          		$whereh['in']['id'] = $housesid;
          		$whereh['is_del'] = 0;
          		
+         		$houses_list = $this->Mhouses->get_lists("id, name, put_trade", $whereh);
+         		
          		//禁投放行业 begin
-         		if($put_trade != 0) {
-         			$whereh['put_trade<>'] = $put_trade;
+         		if(count($houses_list) > 0) {
+         			foreach ($houses_list as $k => $v) {
+         				if(in_array($put_trade, explode(',', $v['put_trade']))) {
+         					unset($houses_list[$k]);
+         				}
+         			}
          		}
+         		
          		$data['put_trade'] = $put_trade;
-         		
-         		$data['housesList'] = $this->Mhouses->get_lists("id, name", $whereh);
-         		
+         		$data['housesList'] = $houses_list;
+         		//end
          	}
+         	
          	//获取楼栋单元楼层列表
          	$data['BUFL'] = $this->get_ban_unit_floor_list();
          	$data['status_text'] = C('housesorder.houses_order_status.text');

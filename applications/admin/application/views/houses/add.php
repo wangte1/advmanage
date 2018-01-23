@@ -68,7 +68,7 @@
 							<div class="form-group">
 	                            <label class="col-sm-3 control-label no-padding-right" for="form-field-1"> 禁投放行业： </label>
 	                            <div class="col-sm-9">
-	                                <input name="put_trade" type="hidden" value="<?php echo $info['put_trade'];?>" />
+	                                <input name="put_trade" type="hidden" value="" />
 	                                <?php foreach($put_trade as $key=>$val){ ?>
 	                                	<label style="margin-right:10px;"><input name="sub_put_trade" type="checkbox" value="<?php echo $key;?>" /><?php echo $val;?></label>
 									<?php } ?>

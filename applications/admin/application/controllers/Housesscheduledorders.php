@@ -135,13 +135,20 @@ class Housesscheduledorders extends MY_Controller{
         $data['order_type'] = $order_type;
         $data['status_text'] = C('order.order_status.text');
        	
+        
+        $houses_list = $this->Mhouses->get_lists("id, name, put_trade", ['is_del' => 0]);
+         
         //禁投放行业 begin
-        if($put_trade != 0) {
-        	$data['housesList'] = $this->Mhouses->get_lists("id, name", ['put_trade<>' => $put_trade,'is_del' => 0]);
-        }else {
-        	$data['housesList'] = $this->Mhouses->get_lists("id, name", ['is_del' => 0]);
+        if(count($houses_list) > 0) {
+        	foreach ($houses_list as $k => $v) {
+        		if(in_array($put_trade, explode(',', $v['put_trade']))) {
+        			unset($houses_list[$k]);
+        		}
+        	}
         }
+        
         $data['put_trade'] = $put_trade;
+        $data['housesList'] = $houses_list;
         //end
 
         $this->load->view('housesscheduledorders/add', $data);
