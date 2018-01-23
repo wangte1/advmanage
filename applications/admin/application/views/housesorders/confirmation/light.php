@@ -51,7 +51,7 @@
 	  
 	$(function(){ 
 	  $("#pdf-btn").click(function(){ 
-	    html2canvas($("#container"), { 
+	    html2canvas($("#pic-panel"), { 
 	      onrendered: function(canvas) { 
 	    	  var contentWidth = canvas.width;
 	          var contentHeight = canvas.height;
@@ -135,12 +135,13 @@
         </div>
 
         <!-- 验收图片 -->
-        <div id="pic-panel">
+        <div id="pic-panel" style="background-color:#fff;">
 		<table class="detail-info">
 			<thead>
-             	<th width="20%">编号</th>
-               	<th width="40%">点位地址</th>
-               	<th width="40%">广告图</th>
+             	<th width="10%">序号</th>
+             	<th width="10%">点位编号</th>
+               	<th width="30%">点位地址</th>
+               	<th width="50%">广告图</th>
 			</thead>
 		</table>
  		<?php $num = 1;?>
@@ -149,9 +150,10 @@
        	<table class="detail-info-print">
            	<tbody>
                	<tr>
-            		<td width="20%"><?php echo $num ++;?></td>
-           			<td width="40%"><?php echo $value['houses_name'].$value['houses_area_name'].$value['ban'].$value['unit'].$value['floor']?></td>
-         			<td width="40%"><img style="width:250px;height:180px;" src="<?php echo $done_inspect_images[$value['id']];?>"></td>
+            		<td width="10%"><?php echo $num ++;?></td>
+            		<td width="10%"><?php  echo $value['code'];?></td>
+           			<td width="30%"><?php echo $value['houses_name'].$value['houses_area_name'].$value['ban'].$value['unit'].$value['floor']?></td>
+         			<td width="50%"><img style="width:450px;height:300px;" src="<?php echo $done_inspect_images[$value['id']];?>"></td>
            		</tr>
         	</tbody>
         </table>
