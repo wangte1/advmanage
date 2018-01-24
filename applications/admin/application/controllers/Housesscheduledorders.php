@@ -384,6 +384,32 @@ class Housesscheduledorders extends MY_Controller{
     }
     
     /**
+     * 全选
+     */
+    public function select_all(){
+        $order_id = $this->input->post('order_id');
+        $houses_id = $this->input->post('houses_id');
+        //根据订单id获取用户已确认的点位
+        $orderInfo = $this->Mhouses_scheduled_orders->get_one('point_ids,confirm_point_ids', ['id' => $order_id]);
+        $point_ids = $orderInfo['point_ids'];
+        $confirm_point_ids = $orderInfo['confirm_point_ids'];
+        //获取当前订单楼盘锁定点位的列表信息
+        $point_list = $this->Mhouses_points->get_lists('id', ['in' => ['id' => $point_ids]]);
+        //找出该楼盘的点位
+        $houses_ids = [];
+        foreach ($point_list as $k => $v){
+            if($v['houses_id'] == $houses_id){
+                array_push($houses_ids, $v['houses_id']);
+            }
+        }
+        //合并，去重
+        $confirm_point_id = array_unique(array_merge($confirm_point_ids, $houses_ids));
+        
+    }
+    
+    
+    
+    /**
      * 根据条件获取点位的列表和数量
      */
     public function get_points() {

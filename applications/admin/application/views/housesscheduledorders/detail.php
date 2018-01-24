@@ -253,7 +253,10 @@
 		});
 		var houses_id = $(this).attr('data-houses_id');
 		var status = $(this).prop('checked');
-		//请求后台
+		//暂定以下两个方法
+		//请求后台 /housesscheduledorders/select_all
+		//请求后台/housesscheduledorders/select_none
+		
 		
 		layer.close(index);
     });
