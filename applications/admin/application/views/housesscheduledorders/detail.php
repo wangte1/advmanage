@@ -252,10 +252,8 @@
 			  shade: [0.1,'#fff'] //0.1透明度的白色背景
 		});
 		var houses_id = $(this).attr('data-houses_id');
-		var status = $(this).prop('checked');
-		//暂定以下两个方法
+		var status = $(this).prop('checked');//true全选，false反选
 		//请求后台 /housesscheduledorders/select_all
-		//请求后台/housesscheduledorders/select_none
 		
 		
 		layer.close(index);

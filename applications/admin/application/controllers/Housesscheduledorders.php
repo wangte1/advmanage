@@ -402,7 +402,7 @@ class Housesscheduledorders extends MY_Controller{
                 array_push($houses_ids, $v['houses_id']);
             }
         }
-        //合并，去重
+        //如果是全选 合并，去重
         $confirm_point_id = array_unique(array_merge($confirm_point_ids, $houses_ids));
         
     }
