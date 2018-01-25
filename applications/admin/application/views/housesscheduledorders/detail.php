@@ -247,16 +247,32 @@
     });
 
     $('.all').on('click', function(e){
+        
 		var order_id = '<?php echo $info["id"];?>';
-		var index = layer.load(1, {
-			  shade: [0.1,'#fff'] //0.1透明度的白色背景
-		});
 		var houses_id = $(this).attr('data-houses_id');
-		var status = $(this).prop('checked');//true全选，false反选
+		var status = 0;
+		//true全选，false反选
+		if($(this).prop('checked')){
+			status = 1;
+		}
+		var obj = $(this);
+		var tmp;
 		//请求后台 /housesscheduledorders/select_all
+		$.post('/housesscheduledorders/select_all', {'order_id':order_id, 'houses_id':houses_id, 'status':status}, function(data){
+			if(data.code == 1){
+				window.location.href = '/housesscheduledorders/detail/'+order_id+'/confirm'
+			}else{
+				if(status){
+					tmp = false;
+				}else{
+					tmp = true;
+				}
+				obj.prop('checked', tmp);
+				
+			}
+		});
 		
 		
-		layer.close(index);
     });
 </script>
 <!-- 底部 -->
