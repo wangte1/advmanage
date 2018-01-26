@@ -384,6 +384,15 @@ class Housesscheduledorders extends MY_Controller{
         $this->load->view('housesscheduledorders/detail', $data);
     }
     
+    public function sign(){
+        $order_id = $this->input->post('order_id');
+        $res = $this->Mhouses_scheduled_orders->update_info(['is_confirm' => 1], ['id' => $order_id]);
+        if(!$res){
+            $this->return_json(['code' => 0, 'msg' => '操作失败']);
+        }
+        $this->return_json(['code' => 1, 'msg' => '操作成功']);
+    }
+    
     /**
      * 显示订单内指定楼盘的所有点位选择详情
      */
@@ -626,9 +635,9 @@ class Housesscheduledorders extends MY_Controller{
         $table_header =  array(
             '点位id' => 'id',
             '点位编号' => "code",
-            '所属组团' => "houses_name",
-            '所属区域' => "houses_area_name",
-            '详细地址' => "addr",
+            '楼盘名称' => "houses_name",
+            '组团' => 'houses_area_name',
+            '位置' => "addr",
             '价格' => 'price',
             '规格' => "size"
         );
@@ -641,12 +650,18 @@ class Housesscheduledorders extends MY_Controller{
         
         $scheduledorder = $this->Mhouses_scheduled_orders->get_one('*', array('id' => $id));
         
-        $where['in']['A.id'] = explode(',', $scheduledorder['point_ids']);
+        $where['in']['A.id'] = explode(',', $scheduledorder['confirm_point_ids']);
         
         $customers = $this->Mhouses_customers->get_one("name", array('id' => $scheduledorder['lock_customer_id'], 'is_del' => 0)); //客户
         
         $list = $this->Mhouses_points->get_points_lists($where);
-                
+        foreach ($list as $k => $v){
+            if($v['addr'] == 1){
+                $list[$k]['addr'] = '门禁';
+            }else{
+                $list[$k]['addr'] = '电梯前室';
+            }
+        }  
         $h = 2;
         foreach($list as $key=>$val){
             $j = 0;

@@ -50,10 +50,10 @@
                                             <a data-toggle="tab" href="#basic">基本信息</a>
                                         </li>
                                         <li <?php if($tab == 'point'){echo 'class="active"';}?>>
-                                            <a data-toggle="tab" href="#points">锁定点位</a>
+                                            <a data-toggle="tab" href="#points">预选点位</a>
                                         </li>
                                         <li <?php if($tab == 'confirm'){echo 'class="active"';}?>>
-                                            <a data-toggle="tab" href="#customer_confrim">客户确认</a>
+                                            <a data-toggle="tab" href="#customer_confrim">确认点位</a>
                                         </li>
                                     </ul>
 
@@ -138,10 +138,6 @@
                                             </div>
                                         </div>
                                         <div id="points" class="tab-pane <?php if($tab == 'point'){echo 'in active';}?>">
-                                            <a href="javascript:;" class="btn btn-xs btn-info btn-export" data-id="<?php echo $info['id'];?>" data-type="<?php echo $info['order_type'];?>" style="margin-bottom:10px">
-                                                <i class="fa fa-download out_excel" aria-hidden="true"></i> 导出预定点位
-                                            </a>
-                                            
                                             <table class="table table-striped table-bordered">
                                                 <thead>
                                                     <tr>
@@ -191,6 +187,12 @@
                                         </div>
                                         <!-- 客户确认 -->
                                         <div id="customer_confrim" class="tab-pane <?php if($tab == 'confirm'){echo 'in active';}?>">
+                                        	<a href="javascript:;" class="btn btn-xs btn-info btn-export" data-id="<?php echo $info['id'];?>" data-type="<?php echo $info['order_type'];?>" style="margin-bottom:10px">
+                                                <i class="fa fa-download out_excel" aria-hidden="true"></i> 导出确认点位
+                                            </a>
+                                            <a href="javascript:;" class="btn btn-xs btn-info sign" data-id="<?php echo $info['id'];?>" style="margin-bottom:10px">
+                                                <i class="fa fa-check-square-o" aria-hidden="true"></i> 客户签字
+                                            </a>
                                         	<table class="table table-striped table-bordered">
                                                 <thead>
                                                     <tr>
@@ -244,6 +246,24 @@
         var id = $(this).attr('data-id');
         var type = $(this).attr('data-type');
         window.location.href = '/housesscheduledorders/export/' + id + '/' + type;
+    });
+
+    $('.sign').on('click', function(){
+    	var index = layer.confirm('客户是否已经签字确认？', {
+  		  btn: ['确定','取消'] //按钮
+  		}, function(){
+  			var order_id = '<?php echo $info["id"];?>';
+  	    	$.post('/housesscheduledorders/sign', {'order_id':order_id}, function(data){
+  				if(data.code = 1){
+  					layer.msg(data.msg, {icon: 1});
+  	  			}else{
+  	  	  			layer.msg(data.msg, {icon: 2});
+  	  	  		}
+  	        });
+  		}, function(){
+  		  	layer.close(index);
+  		});
+    	
     });
 
     $('.show_detial').on('click', function(){
