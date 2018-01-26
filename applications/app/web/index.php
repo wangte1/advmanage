@@ -40,6 +40,7 @@
   * add composer support 
   * @author yonghua date 2017-12-26
   */
+  header('Access-Control-Allow-Origin:*');
   require_once '../../../vendor/autoload.php';
 
 /*
