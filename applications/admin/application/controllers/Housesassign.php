@@ -122,7 +122,7 @@ class Housesassign extends MY_Controller{
     			//向工程人员广播
     			$msg = "你有新的派单需要确认，请到派单确认界面确认！";
     			$this->send(['uid' => $charge_users[$k], 'message' => $msg]);
-    			
+
 //     			$res_send = $this->sendMsg($charge_users[$k]);
     			
 //     			if($res_send['code'] == 0) {
@@ -161,9 +161,6 @@ class Housesassign extends MY_Controller{
     			}
     				
     			if($res1) {
-    				
-    				
-    				
     				$this->success("保存并通知成功","/housesassign/detail?order_id=".$order_id."&assign_type=".$this->input->get('assign_type'));
     			}
     		}

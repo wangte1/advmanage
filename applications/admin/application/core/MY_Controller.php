@@ -479,6 +479,7 @@ class MY_Controller extends CI_Controller {
              die();
         }
     }
+
     
     /**
      * 发送信息到组
@@ -503,6 +504,7 @@ class MY_Controller extends CI_Controller {
         }
         return 'success';
     }
+
 }
 
 

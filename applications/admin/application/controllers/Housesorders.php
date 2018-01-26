@@ -790,7 +790,7 @@ class Housesorders extends MY_Controller{
             	$msg = "你有新的订单需要派单,请到派单列表页面！";
             	$this->send(['group_id' => 5, 'message' => $msg]);
             }
-            
+
             $update_order['order_status'] = $status;
             if($status == 8) {
             	 $update_order['assign_type'] = 2;

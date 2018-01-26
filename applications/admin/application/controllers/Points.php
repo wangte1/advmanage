@@ -142,6 +142,7 @@ class Points extends MY_Controller{
         $per_page = $_GET['per_page'];
         $data['per_page'] = $per_page;
 
+
         if(IS_POST){
             $post = $this->input->post();
             if(isset($post['cover_img'])){

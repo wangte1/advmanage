@@ -2,7 +2,11 @@
 <html lang="en">
 <head>
     <meta charset="utf-8" />
+<<<<<<< HEAD
     <title>社区媒体|媒介管理系统</title>
+=======
+    <title>腾讯房产贵州站-媒介管理系统</title>
+>>>>>>> 155541c715e7608222ea5e7bbd7d70651f5f4204
 
     <meta name="description" content="User login page" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
@@ -51,7 +55,11 @@
                     <div class="center">
                         <h1>
                             <i class="icon-leaf green"></i>
+<<<<<<< HEAD
                            <span class="white">社区媒体媒介管理系统</span>
+=======
+                           <span class="white">媒介管理系统</span>
+>>>>>>> 155541c715e7608222ea5e7bbd7d70651f5f4204
                         </h1>
                         <h4 class="blue">&copy; 腾讯房产</h4>
                     </div>

@@ -77,16 +77,11 @@ $config = array(
     	'网络资源管理' => array(
     		'code' => 'net_manage',
     		'icon' => 'icon-globe  menu-i',
+
     		'list' => array(
-//     			array(
-//     			array(
-//     				 'url'=>'/networkmanage/goindex1', //mod=1是腾讯
-//     				 'name'=> '腾讯网络排班',
-//     				 'active'=> 'network_manage_list'
-//     			),
+
     			array(
     				'url'=>'/networkmanage/goindex2', //mod=2是凤凰
-
     				'name'=> '凤凰网络排班',
     				'active'=> 'network_manage_fh_list'
     			),
@@ -112,6 +107,7 @@ $config = array(
     			),
     		)
     	),
+
 
     	'社区资源管理' => array(
     		'code' => 'community_manage',

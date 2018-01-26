@@ -229,6 +229,7 @@
                                                 </td>
                                                 <td>
                                                     <div class="visible-md visible-lg hidden-sm hidden-xs action-buttons">
+
                                                         <a class="green tooltip-info" href="/points/edit/<?php echo $val['id'];?>?per_page=<?php echo $page;?>"  data-rel="tooltip" data-placement="top" data-original-title="修改">
                                                             <i class="icon-pencil bigger-130"></i>
                                                         </a>

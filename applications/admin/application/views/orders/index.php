@@ -249,7 +249,7 @@
                                                         <a class="green tooltip-info" onclick="deleteOrder(<?php echo $value['id'];?>);" href="javascript:void(0);"  data-rel="tooltip" data-placement="top" title="" data-original-title="删除">
                                                             <i class="icon-trash bigger-130"></i>
                                                         </a> 
-                                                        
+
                                                         <?php if($value['order_status'] == 1): ?>
                                                             <a class="green tooltip-info" href="/orders/edit/<?php echo $value['id'];?>"  data-rel="tooltip" data-placement="top" title="" data-original-title="修改">
                                                                 <i class="icon-pencil bigger-130"></i>
@@ -271,6 +271,7 @@
                                                             <i class="fa fa-clone bigger-130"></i>
                                                         </a>
                                                         <?php endif;?>
+
                                                         <!-- 1公交，2高杆 -->
                                                         <?php if($value['order_status'] == 7  && ( in_array($value['order_type'], [1,2]) ) ): ?>
                                                             <a class="green tooltip-info" href="/orders/edit_points/<?php echo $value['id'];?>"  data-rel="tooltip" data-placement="top" title="" data-original-title="修改点位">
