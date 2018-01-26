@@ -19,7 +19,7 @@ class Login extends MY_Controller {
      * 登录验证
      * 254274509@qq.com
      */
-    public function login(){
+    public function index(){
         
         if($this->input->is_ajax_request()){
             $name = $this->input->post("name", true);
