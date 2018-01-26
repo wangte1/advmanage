@@ -237,7 +237,7 @@
                                                         </a>
                                                         <?php endif;?>
                                                         <?php if(in_array($value['order_status'], [1,2]) && $value['is_confirm'] == 0):?>
-                                                        <a class="grey tooltip-info sendsms" href="javascript:;" data-id="<?php echo $value['sales_id'];?>" data-salesname="<?php echo $tmpname;?>"  data-rel="tooltip" data-placement="top" data-original-title="发送短信提醒业务员">
+                                                        <a class="grey tooltip-info sendsms" href="javascript:;" data-id="<?php echo $value['sales_id'];?>" data-salesname="<?php echo $tmpname;?>"  data-rel="tooltip" data-placement="top" data-original-title="提醒业务员">
                                                             <i class="ace-icon fa fa-envelope-o bigger-130" aria-hidden="true"></i>
                                                         </a>
                                                         <?php endif;?>

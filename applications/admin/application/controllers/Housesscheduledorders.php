@@ -790,30 +790,28 @@ class Housesscheduledorders extends MY_Controller{
     }
     
     /**
-     * 给客户发送短信确认点位
+     * 给业务员发送短信
      * @author yonghua 254274509@qq.com
      */
     public function sendMsg(){
-        //根据预定订单获取客户电话
+
         $sales_id = intval($this->input->post('sales_id'));
-        $info = $this->Madmins->get_one('tel', ['id' => $sales_id]);
+        $info = $this->Madmins->get_one('tel, fullname', ['id' => $sales_id]);
         if(!$info) $this->return_json(['code' => 0, 'msg' => '业务员不存在']);
         if(empty($info['tel'])){
             $this->return_json(['code' => 0, 'msg' => '电话不能为空！']);
         }
-        if(!preg_match('/^1[3|4|5|8|7][0-9]\d{8}$/', $info['contact_tel'])){
+        if(!preg_match('/^1[3|4|5|8|7][0-9]\d{8}$/', $info['tel'])){
             $this->return_json(['code' => 0, 'msg' => '业务员手机号格式不正确！']);
         }
-        //生成token
-        $token = encrypt(['id' => $orderid]);
         // 配置短信信息
         $app = C('sms.app');
         $parems = [
             'PhoneNumbers' => $info['contact_tel'],
             'SignName' => C('sms.sign.lkcb'),
-            'TemplateCode' => C('sms.template.keihu'),
+            'TemplateCode' => C('sms.template.yewuyuan'),
             'TemplateParam' => array(
-                'token' => $token
+                'name' => $info['fullname']
             )
         ];
         //发送短信

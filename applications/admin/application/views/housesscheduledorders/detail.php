@@ -201,7 +201,7 @@
                                                         <th>楼盘名称</th>
                                                         <th>锁定点位数</th>
                                                         <th>确认点位数</th>
-                                                        <th class="hidden-xs">操作</th>
+                                                        <th>操作</th>
                                                     </tr>
                                                 </thead>
                                                 <tbody>
@@ -274,7 +274,7 @@
             type: 2,
             title: houses_name,
             shade: 0.5,
-            area: ['60%', '80%'],
+            area: ['80%', '80%'],
             content: '/housesscheduledorders/houses_detail?order_id='+order_id+'&houses_id='+houses_id, //iframe的url
             cancel:function(){
             	var index = parent.layer.getFrameIndex(window.name); //先得到当前iframe层的索引
