@@ -50,7 +50,10 @@
                                             <a data-toggle="tab" href="#basic">基本信息</a>
                                         </li>
                                         <li <?php if($tab == 'point'){echo 'class="active"';}?>>
-                                            <a data-toggle="tab" href="#points">锁定点位</a>
+                                            <a data-toggle="tab" href="#points">预选点位</a>
+                                        </li>
+                                        <li <?php if($tab == 'confirm'){echo 'class="active"';}?>>
+                                            <a data-toggle="tab" href="#customer_confrim">确认点位</a>
                                         </li>
                                     </ul>
 
@@ -135,10 +138,6 @@
                                             </div>
                                         </div>
                                         <div id="points" class="tab-pane <?php if($tab == 'point'){echo 'in active';}?>">
-                                            <a href="javascript:;" class="btn btn-xs btn-info btn-export" data-id="<?php echo $info['id'];?>" data-type="<?php echo $info['order_type'];?>" style="margin-bottom:10px">
-                                                <i class="fa fa-download out_excel" aria-hidden="true"></i> 导出预定点位
-                                            </a>
-                                            
                                             <table class="table table-striped table-bordered">
                                                 <thead>
                                                     <tr>
@@ -185,9 +184,47 @@
                                             </table>
                                             <!--分页start-->
                                     		<?php $this->load->view('common/page');?>
-                                            <div>
-                                            	<br/><span> 客户确认点位地址： <?php echo C('housesscheduledorder.confirm_url').encrypt(['id' => $info['id']]);?></span>
-                                            </div>
+                                        </div>
+                                        <!-- 客户确认 -->
+                                        <div id="customer_confrim" class="tab-pane <?php if($tab == 'confirm'){echo 'in active';}?>">
+                                        	<a href="javascript:;" class="btn btn-xs btn-info btn-export" data-id="<?php echo $info['id'];?>" data-type="<?php echo $info['order_type'];?>" style="margin-bottom:10px">
+                                                <i class="fa fa-download out_excel" aria-hidden="true"></i> 导出确认点位
+                                            </a>
+                                            <a href="javascript:;" class="btn btn-xs btn-info sign" data-id="<?php echo $info['id'];?>" style="margin-bottom:10px">
+                                                <i class="fa fa-check-square-o" aria-hidden="true"></i> 客户签字
+                                            </a>
+                                        	<table class="table table-striped table-bordered">
+                                                <thead>
+                                                    <tr>
+                                                    	<th width="80px">全选/反选</th>
+                                                        <th class="center">行政区域</th>
+                                                        <th>楼盘名称</th>
+                                                        <th>锁定点位数</th>
+                                                        <th>确认点位数</th>
+                                                        <th>操作</th>
+                                                    </tr>
+                                                </thead>
+                                                <tbody>
+                                                    <?php foreach($houses_list as $val):?>
+                                                    <tr id="houses_<?php echo $val['id']?>">
+                                                    	<td id="all" style="text-align: center;">
+                                                    		<input class="all" data-houses_id="<?php echo $val['id']?>" <?php if($val['num'] == $val['confirm_num']){echo 'checked';}?> type="checkbox" />
+                                                    	</td>
+                                                        <td class="center">
+                                                        	<?php echo $val['province'];?>-<?php echo $val['city'];?>-<?php echo $val['area'];?>
+                                                        </td>
+                                                        <td><?php echo $val['name']?></td>
+                                                        <td><?php echo $val['num']?></td>
+                                                        <td><?php echo $val['confirm_num']?></td>
+                                                        <td>
+                                                        	<a style="cursor: pointer;" class="green tooltip-info show_detial" data="<?php echo $val['id']?>" data-name="<?php echo $val['name']?>" data-rel="tooltip" data-placement="top" data-original-title="详情">
+                                                                <i class="icon-eye-open bigger-130"></i>
+                                                            </a> 
+                                                        </td>
+                                                    </tr>
+                                                    <?php endforeach;?>
+                                                </tbody>
+                                            </table>
                                         </div>
                                     </div>
                                 </div>
@@ -210,7 +247,67 @@
         var type = $(this).attr('data-type');
         window.location.href = '/housesscheduledorders/export/' + id + '/' + type;
     });
-</script>
 
+    $('.sign').on('click', function(){
+    	var index = layer.confirm('客户是否已经签字确认？', {
+  		  btn: ['确定','取消'] //按钮
+  		}, function(){
+  			var order_id = '<?php echo $info["id"];?>';
+  	    	$.post('/housesscheduledorders/sign', {'order_id':order_id}, function(data){
+  				if(data.code = 1){
+  					layer.msg(data.msg, {icon: 1});
+  	  			}else{
+  	  	  			layer.msg(data.msg, {icon: 2});
+  	  	  		}
+  	        });
+  		}, function(){
+  		  	layer.close(index);
+  		});
+    	
+    });
+
+    $('.show_detial').on('click', function(){
+	    var order_id = '<?php echo $info["id"];?>';
+	    var houses_id = $(this).attr('data');
+	    var houses_name = $(this).attr('data-name');
+ 	    var index = layer.open({
+            type: 2,
+            title: houses_name,
+            shade: 0.5,
+            area: ['80%', '80%'],
+            content: '/housesscheduledorders/houses_detail?order_id='+order_id+'&houses_id='+houses_id, //iframe的url
+            cancel:function(){
+            	var index = parent.layer.getFrameIndex(window.name); //先得到当前iframe层的索引
+            	parent.window.location.href = '/housesscheduledorders/detail/'+order_id+'/confirm' // 父页面刷新
+            	parent.layer.close(index); //再执行关闭
+            }
+	    });
+    });
+
+    $('.all').on('click', function(e){
+        
+		var order_id = '<?php echo $info["id"];?>';
+		var houses_id = $(this).attr('data-houses_id');
+		var status = 0;
+		//true全选，false反选
+		if($(this).prop('checked')){
+			status = 1;
+		}
+		var obj = $(this);
+		var tmp;
+		$.post('/housesscheduledorders/select_all', {'order_id':order_id, 'houses_id':houses_id, 'status':status}, function(data){
+			if(data.code == 1){
+				window.location.href = '/housesscheduledorders/detail/'+order_id+'/confirm'
+			}else{
+				if(status){
+					tmp = false;
+				}else{
+					tmp = true;
+				}
+				obj.prop('checked', tmp);
+			}
+		});
+    });
+</script>
 <!-- 底部 -->
 <?php $this->load->view("common/bottom");?>

@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="utf-8" />
-    <title>腾讯房产贵州站-媒介管理系统</title>
+    <title>社区媒体|媒介管理系统</title>
 
     <meta name="description" content="User login page" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />

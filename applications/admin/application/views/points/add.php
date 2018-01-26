@@ -200,7 +200,7 @@
                                 <div class="col-sm-4">
                                     <input type="text" name="price" required="required"  id="price" placeholder="请输入点位价格" class="col-xs-10 col-sm-5">
                                      <span class="help-inline col-xs-12 col-sm-7 form-field-description-block">
-                                       <span class="middle">元/日 <i id="price_msg" style="font-style: normal"></i></span>
+                                       <span class="middle">元/年 <i id="price_msg" style="font-style: normal"></i></span>
 									</span>
                                 </div>
                             </div>

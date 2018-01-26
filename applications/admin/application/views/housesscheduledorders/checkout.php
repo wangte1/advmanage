@@ -248,12 +248,12 @@
                                         </div>
 
                                         <div class="form-group">
-                                            <label class="col-sm-2 control-label no-padding-right" for="form-field-2"> 业务员： </label>
+                                            <label class="col-sm-2 control-label no-padding-right" for="form-field-2"> 业务员<?php echo $info['sales_id']?>： </label>
                                             <div class="col-sm-9">
-                                                <select name="sales_id" class="select2" required>
+                                                <select id="sales_id" name="sales_id" class="select2" required>
                                                     <option value="">请选择业务员</option>
-                                                    <?php foreach ($salesman as $value) : ?>
-                                                    <option value="<?php echo $value['id'];?>"><?php echo $value['name'];?></option>
+                                                    <?php foreach($salesman as $val):?>
+                                                    <option value="<?php echo $val['id'];?>" <?php if(isset($info['sales_id']) && $val['id'] == $info['sales_id']){ echo "selected"; }?>><?php echo $val['name'];?></option>
                                                     <?php endforeach;?>
                                                 </select>
                                                 <span class="help-inline form-field-description-block">

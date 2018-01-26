@@ -785,6 +785,12 @@ class Housesorders extends MY_Controller{
 
             $this->write_log($data['userInfo']['id'],2,"  更新订单:".$order_code."状态：".$status_text[$status]);
             
+            //向工程主管广播
+            if($status == 4) {
+            	$msg = "你有新的订单需要派单,请到派单列表页面！";
+            	$this->send(['group_id' => 5, 'message' => $msg]);
+            }
+
             $update_order['order_status'] = $status;
             if($status == 8) {
             	 $update_order['assign_type'] = 2;

@@ -19,4 +19,8 @@ applications/www/application/cache/*
 Uploads/*
 *logs*
 *vendor*
+<<<<<<< HEAD
 composer.lock
+=======
+composer.lock
+>>>>>>> 155541c715e7608222ea5e7bbd7d70651f5f4204
