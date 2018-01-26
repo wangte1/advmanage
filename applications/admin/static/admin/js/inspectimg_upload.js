@@ -70,7 +70,11 @@ $(function(){
                 html += "<img src='"+data.url+"' style='width: 215px; height: 150px' />";
                 html += "</a>";
                 html += ' <div class="tools"> <a href="javascript:;"> <i class="icon-remove red"></i> </a>  </div>';
+<<<<<<< HEAD
+                html += "<input type='hidden' name='"+media_id+"["+name+"][]' value='"+data.url+"'/>";
+=======
                 html += "<input type='text' name='"+media_id+"["+name+"][]' value='"+data.url+"'/>";
+>>>>>>> 155541c715e7608222ea5e7bbd7d70651f5f4204
             }else{
                 var html =     "<p>"+file.name+"上传异常</p>"
             }

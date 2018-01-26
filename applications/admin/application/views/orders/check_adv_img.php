@@ -53,6 +53,8 @@
                                                         <select name="sponsor">
                                                             <option value="贵阳大视传媒有限公司" <?php if($order_info['sponsor'] == '贵阳大视传媒有限公司') { echo "selected"; }?>>贵阳大视传媒有限公司</option>
                                                             <option value="贵州时代纵横传媒有限公司" <?php if($order_info['sponsor'] == '贵州时代纵横传媒有限公司') { echo "selected"; }?>>贵州时代纵横传媒有限公司</option>
+                                                            <option value="贵州时代纵广传媒有限公司" <?php if($order_info['sponsor'] == '贵州时代纵广传媒有限公司') { echo "selected"; }?>>贵州时代纵广传媒有限公司</option>
+
                                                         </select>
                                                     </span>
                                                     <span style="margin-left:20px">

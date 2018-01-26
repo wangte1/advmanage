@@ -48,18 +48,38 @@ $config = array(
             		'name'=> '生成验收报告',
             		'active'=> 'make_report'
             	),
-            		
+
             )
         ),
+    		
+    	'户外订单管理' => array(
+    		'code' => 'orders_manage',
+    		'icon' => 'icon-book  menu-i',
+    		'list' => array(
+    			array(
+    					'url'=>'/scheduledorders',
+    					'name'=> '预定订单',
+    					'active'=> 'scheduled_order_list'
+    			),
+    			array(
+    					'url'=>'/orders',
+    					'name'=> '订单列表',
+    					'active'=> 'order_list'
+    			),
+    			array(
+    					'url'=>'/changepicorders',
+    					'name'=> '换画订单',
+    					'active'=> 'change_pic_order_list'
+    				),
+    			)
+    	),
+    		
     	'网络资源管理' => array(
     		'code' => 'net_manage',
     		'icon' => 'icon-globe  menu-i',
+
     		'list' => array(
-    			array(
-    				 'url'=>'/networkmanage/goindex1', //mod=1是腾讯
-    				 'name'=> '腾讯网络排班',
-    				 'active'=> 'network_manage_list'
-    			),
+
     			array(
     				'url'=>'/networkmanage/goindex2', //mod=2是凤凰
     				'name'=> '凤凰网络排班',
@@ -87,6 +107,8 @@ $config = array(
     			),
     		)
     	),
+
+
     	'社区资源管理' => array(
     		'code' => 'community_manage',
     		'icon' => 'icon-globe  menu-i',
@@ -121,27 +143,7 @@ $config = array(
     		)
     	),
     	
-        '户外订单管理' => array(
-            'code' => 'orders_manage',
-            'icon' => 'icon-book  menu-i',
-            'list' => array(
-                array(
-                    'url'=>'/scheduledorders',
-                    'name'=> '预定订单',
-                    'active'=> 'scheduled_order_list'
-                ),
-                array(
-                    'url'=>'/orders',
-                    'name'=> '订单列表',
-                    'active'=> 'order_list'
-                ),
-                array(
-                    'url'=>'/changepicorders',
-                    'name'=> '换画订单',
-                    'active'=> 'change_pic_order_list'
-                ),
-            )
-        ),
+        
     		
     	'社区订单管理' => array(
     		'code' => 'horders_manage',

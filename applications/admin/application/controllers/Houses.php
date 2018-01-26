@@ -72,6 +72,7 @@ class Houses extends MY_Controller{
 
         if(IS_POST){
             $post = $this->input->post();
+            unset($post['sub_put_trade']);
             $post['creator'] = $data['userInfo']['id'];
             $post['create_time'] = date("Y-m-d H:i:s");
 
@@ -107,6 +108,7 @@ class Houses extends MY_Controller{
 
         if(IS_POST){
             $post = $this->input->post();
+            unset($post['sub_put_trade']);
             //$post['update_user'] = $data['userInfo']['id'];
             //$post['update_time'] = date("Y-m-d H:i:s");
             $result = $this->Mhouses->update_info($post,array("id"=>$id));

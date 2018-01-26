@@ -139,6 +139,9 @@ class Points extends MY_Controller{
     public function edit($id = 0){
         $data = $this->data;
         $data['title'] = array("客户管理","编辑客户");
+        $per_page = $_GET['per_page'];
+        $data['per_page'] = $per_page;
+
 
         if(IS_POST){
             $post = $this->input->post();
@@ -158,7 +161,7 @@ class Points extends MY_Controller{
 
             if($result){
                 $this->write_log($data['userInfo']['id'],2,"编辑点位：");
-                $this->success("编辑成功","/points");
+                $this->success("编辑成功","/points?per_page=".$per_page);
             }else{
                 $this->error("编辑失败");
             }

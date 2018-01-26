@@ -245,6 +245,11 @@
                                                         <a class="green tooltip-info" href="/orders/detail/<?php echo $value['id'];?>"  data-rel="tooltip" data-placement="top" title="" data-original-title="详情">
                                                             <i class="icon-eye-open bigger-130"></i>
                                                         </a> 
+                                                        
+                                                        <a class="green tooltip-info" onclick="deleteOrder(<?php echo $value['id'];?>);" href="javascript:void(0);"  data-rel="tooltip" data-placement="top" title="" data-original-title="删除">
+                                                            <i class="icon-trash bigger-130"></i>
+                                                        </a> 
+
                                                         <?php if($value['order_status'] == 1): ?>
                                                             <a class="green tooltip-info" href="/orders/edit/<?php echo $value['id'];?>"  data-rel="tooltip" data-placement="top" title="" data-original-title="修改">
                                                                 <i class="icon-pencil bigger-130"></i>
@@ -266,7 +271,9 @@
                                                             <i class="fa fa-clone bigger-130"></i>
                                                         </a>
                                                         <?php endif;?>
-                                                        <?php if($value['order_status'] == 7 && $value['order_type'] == 1): ?>
+
+                                                        <!-- 1公交，2高杆 -->
+                                                        <?php if($value['order_status'] == 7  && ( in_array($value['order_type'], [1,2]) ) ): ?>
                                                             <a class="green tooltip-info" href="/orders/edit_points/<?php echo $value['id'];?>"  data-rel="tooltip" data-placement="top" title="" data-original-title="修改点位">
                                                                 <i class="icon-pencil bigger-130"></i>
                                                             </a>
@@ -413,6 +420,30 @@
     //删除提示信息
     function delInfo(obj) {
         $(obj).html('');
+    }
+
+    function deleteOrder(id) {
+    	layer.prompt({title: '请输入删除口令！', formType: 1}, function(pass, index){
+        		if(pass == 'adminnn123') { //等时间充裕以后改到后台获取 yangxiong 2017-0-14
+        			$.ajax({
+                        url:'/orders/del_order',
+                        data: {
+                            'id':id
+                        },
+                        type:'POST',
+                        dataType:'json',
+                        success:function(data) {
+                            if(data) {
+                            	layer.alert(data.msg);
+                            	location.reload();
+                            }
+                            
+                        }
+                       
+                    });
+            	}
+    		  //layer.close(index);
+    		});
     }
 
 </script>

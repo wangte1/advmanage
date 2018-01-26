@@ -479,6 +479,32 @@ class MY_Controller extends CI_Controller {
              die();
         }
     }
+
+    
+    /**
+     * 发送信息到组
+     * @param array $data =['group_id'=> '', 'message' => ''],
+     *             |$data =['uid'=> '', 'message' => '']
+     * @return string success|error
+     */
+    public function send($data){
+        require_once '../../../workerman/gatewayWorker/Gateway.php';
+        // 设置GatewayWorker服务的Register服务ip和端口，请根据实际情况改成实际值
+        Gateway::$registerAddress = '127.0.0.1:1238';
+        
+        // 向任意群组的网站页面发送数据
+        if(isset($data['group_id'])){
+            Gateway::sendToGroup($data['group_id'], json_encode(['type' => 'msg', 'message' => $data['message']]));
+        }else{
+            $uid = Gateway::getClientIdByUid($data['uid']);
+            if(!$uid){
+                return 'error';
+            }
+            Gateway::sendToUid($uid, json_encode(['type' => 'msg', 'message' => $data['message']]));
+        }
+        return 'success';
+    }
+
 }
 
 

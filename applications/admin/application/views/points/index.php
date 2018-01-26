@@ -229,7 +229,8 @@
                                                 </td>
                                                 <td>
                                                     <div class="visible-md visible-lg hidden-sm hidden-xs action-buttons">
-                                                        <a class="green tooltip-info" href="/points/edit/<?php echo $val['id'];?>"  data-rel="tooltip" data-placement="top" data-original-title="修改">
+
+                                                        <a class="green tooltip-info" href="/points/edit/<?php echo $val['id'];?>?per_page=<?php echo $page;?>"  data-rel="tooltip" data-placement="top" data-original-title="修改">
                                                             <i class="icon-pencil bigger-130"></i>
                                                         </a>
                                                         <a class="red tooltip-info potints_del" href="javascript:;" data-url="/points/del/<?php echo $val['id'];?>" data-id="<?php echo $val['id'];?>" data-rel="tooltip" data-placement="top" data-original-title="删除">

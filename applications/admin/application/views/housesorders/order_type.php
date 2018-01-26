@@ -61,7 +61,7 @@
                             </div>
                             
                             <div class="form-group">
-                                <label class="col-sm-4 control-label no-padding-right" for="form-field-2"> 禁投放行业： </label>
+                                <label class="col-sm-4 control-label no-padding-right" for="form-field-2"> 投放行业： </label>
                                 <div class="col-sm-8">
                                 	<select name="put_trade">
                                 		<option value="0">无</option>

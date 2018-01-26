@@ -118,6 +118,11 @@ class Housesassign extends MY_Controller{
     		$add_data = [];
     		$i = 0;
     		foreach ($houses_ids as $k => $v) {
+    			
+    			//向工程人员广播
+    			$msg = "你有新的派单需要确认，请到派单确认界面确认！";
+    			$this->send(['uid' => $charge_users[$k], 'message' => $msg]);
+
 //     			$res_send = $this->sendMsg($charge_users[$k]);
     			
 //     			if($res_send['code'] == 0) {
@@ -542,8 +547,8 @@ class Housesassign extends MY_Controller{
         $app = C('sms.app');
         $parems = [
             'PhoneNumbers' => $info['tel'],
-            'SignName' => C('sms.sign.tgkj'),
-            'TemplateCode' => C('sms.template.yewu'),
+            'SignName' => C('sms.sign.lkcb'),
+            'TemplateCode' => C('sms.template.paidan'),
             'TemplateParam' => array(
                 'name' => $name
             )

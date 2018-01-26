@@ -68,12 +68,10 @@
 							<div class="form-group">
 	                            <label class="col-sm-3 control-label no-padding-right" for="form-field-1"> 禁投放行业： </label>
 	                            <div class="col-sm-9">
-	                                <select class="col-xs-2 " name="put_trade" id="select-font-size " >
-	                                	<option value=0>无</option>
-		                               	<?php foreach($put_trade as $key=>$val){ ?>
-		                                	<option value="<?php echo $key;?>"><?php echo $val;?></option>
-		                                <?php } ?>
-	                                </select>
+	                                <input name="put_trade" type="hidden" value="" />
+	                                <?php foreach($put_trade as $key=>$val){ ?>
+	                                	<label style="margin-right:10px;"><input name="sub_put_trade" type="checkbox" value="<?php echo $key;?>" /><?php echo $val;?></label>
+									<?php } ?>
 	                            </div>
 	                       </div>
                             
@@ -101,7 +99,7 @@
 
                             <div class="clearfix form-actions">
                                 <div class="col-md-offset-3 col-md-9">
-                                    <button class="btn btn-info" type="submit">
+                                    <button id="sub-button" class="btn btn-info" type="button">
                                         <i class="icon-ok bigger-110"></i>
                                         添加
                                     </button>
@@ -140,6 +138,25 @@
 		province: "贵州省",
 		city: "贵阳市"
 	});
+
+	
+	$(function(){
+		$('#sub-button').click(function(){
+			fun();
+		});
+	});
+
+	function fun(){
+	    obj = document.getElementsByName("sub_put_trade");
+	    check_val = [];
+	    for(k in obj){
+	        if(obj[k].checked)
+	            check_val.push(obj[k].value);
+	    }
+
+	    $('input[name="put_trade"]').val(check_val);
+	    $('form').submit();
+	}
 </script>
 
 <!-- 底部 -->

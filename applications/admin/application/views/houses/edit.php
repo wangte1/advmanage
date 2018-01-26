@@ -65,12 +65,10 @@
 						<div class="form-group">
                             <label class="col-sm-3 control-label no-padding-right" for="form-field-1"> 禁投放行业： </label>
                             <div class="col-sm-9">
-                                <select class="col-xs-2 " name="put_trade" id="select-font-size " >
-                                	<option value=0>无</option>
-	                               	<?php foreach($put_trade as $key=>$val){ ?>
-	                                	<option value="<?php echo $key;?>" <?php if($key == $info['put_trade']) {?>selected=selected<?php }?>><?php echo $val;?></option>
-	                                <?php } ?>
-                                </select>
+                                <input name="put_trade" type="hidden" value="<?php echo $info['put_trade'];?>" />
+                                <?php foreach($put_trade as $key=>$val){ ?>
+	                                <label style="margin-right:10px;"><input name="sub_put_trade" type="checkbox" value="<?php echo $key;?>" <?php if(in_array($key,explode(",",$info['put_trade']))) {?>checked="checked"<?php }?> /><?php echo $val;?></label>
+								<?php } ?>
                             </div>
                        </div>
 						
@@ -79,9 +77,9 @@
                             <label class="col-sm-3 control-label no-padding-right" for="form-field-1"> 楼盘类型： </label>
                             <div class="col-sm-9">
                                 <select class="col-xs-2 " name="type" id="select-font-size " >
-                                        <?php foreach($houses_type as $key=>$val){ ?>
-                                            <option value="<?php echo $key;?>" <?php if($key == $info['type']) {?>selected=selected<?php }?>><?php echo $val;?></option>
-                                        <?php } ?>
+                                	<?php foreach($houses_type as $key=>$val){ ?>
+                                    	<option value="<?php echo $key;?>" <?php if($key == $info['type']) {?>selected=selected<?php }?>><?php echo $val;?></option>
+                               		<?php } ?>
                                 </select>
                                 <span class="help-inline col-xs-12 col-sm-7">
 									<span class="middle" style="color: red">*</span>
@@ -99,7 +97,7 @@
 
                         <div class="clearfix form-actions">
                             <div class="col-md-offset-3 col-md-9">
-                                <button class="btn btn-info" type="submit">
+                                <button id="sub-button" class="btn btn-info" type="button">
                                     <i class="icon-ok bigger-110"></i>
                                    保存
                                 </button>
@@ -132,6 +130,24 @@
 		city: "<?php echo $info['city'];?>",
 		district: "<?php echo $info['area'];?>"
 	});
+
+	$(function(){
+		$('#sub-button').click(function(){
+			fun();
+		});
+	});
+
+	function fun(){
+	    obj = document.getElementsByName("sub_put_trade");
+	    check_val = [];
+	    for(k in obj){
+	        if(obj[k].checked)
+	            check_val.push(obj[k].value);
+	    }
+
+	    $('input[name="put_trade"]').val(check_val);
+	    $('form').submit();
+	}
 </script>
 
     <!-- 底部 -->
