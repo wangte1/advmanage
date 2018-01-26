@@ -171,9 +171,9 @@
                                                 </td>
                                                 <td><?php echo $value['admin_name'];?></td>
                                                 <td>
-                                                	<?php foreach ($yewu as $k => $v):?>
+                                                	<?php foreach ($salesman as $k => $v):?>
                                                 	<?php if($value['sales_id'] == $v['id']):?>
-                                                	<?php echo $v['fullname']; $tmpname=$v['fullname'];break;?>
+                                                	<?php echo $v['name']; $tmpname=$v['name'];break;?>
                                                 	<?php endif;?>
                                                 	<?php endforeach;?>
                                                 </td>
