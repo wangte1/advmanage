@@ -1,0 +1,51 @@
+.li-hr{border-bottom: 1px solid #e5e5e5; padding-bottom: 5px;}
+
+.lists-header{margin: 0 0 12px;
+    border-bottom: 1px dotted #e2e2e2;
+    padding-bottom: 35px;
+    padding-top: 7px;}
+.lists-header-label{ line-height: 25px;float: left}
+ .form-field-description-block {
+    color: #999;
+    font-size: 12px;
+}
+ #select-font-size{font-weight: inherit;background: #f7f7f7;}
+ .header-zdy{
+     margin-bottom: 5px;
+     height: 35px;
+     line-height: 35px;
+
+ }
+ .header-zdy-bg a{
+    text-decoration: none  ;
+    font-size: 12px;
+    font-weight: bold;
+    cursor: pointer;
+    color: #999;
+    display: block;
+    float: left;
+    padding-right: 10px;
+     border-right: 2px dotted #fff;
+   text-align: center;
+}
+.header-zdy-bg a:last-child{ padding-left: 10px}
+.header-zdy-bg{background: #efefef;}
+.widget-box-suaxuan{ position: absolute; top: 45px; left: 20px; width: 80%;z-index: 100; display: none; background: white; border: 1px solid #0EA6B2; padding-top: 10px}
+.widget-box-suaxuan-btm{
+    margin-top: 10px;
+    background: #e2efe6;
+    padding: 10px 30px;
+    width: 100%;
+}
+.menu-i{ float: left; line-height: 38px}
+#hidden-div{ display: none;}
+
+.statistics-t {
+    color: #999;
+    font-size: 13px;
+    font-weight: bold;
+    line-height: 26px;
+    display: block;
+    padding-right: 30px;
+    float: left;
+}
