@@ -385,6 +385,103 @@ class Housesscheduledorders extends MY_Controller{
     }
     
     /**
+     * 显示订单内指定楼盘的所有点位选择详情
+     */
+    public function houses_detail(){
+        $data = $this->data;
+        $houses_id = $data['houses_id'] = (int) $this->input->get('houses_id');
+        $order_id = $data['order_id'] =  (int) $this->input->get('order_id');
+        //获取该订单的所有锁定点位，和已确认点位
+        $orderInfo = $this->Mhouses_scheduled_orders->get_one('point_ids,confirm_point_ids', ['id' => $order_id]);
+
+        //已锁定的点位
+        $point_ids = explode(',', $orderInfo['point_ids']);
+        //已确认的点位
+        $confirm_point_ids = $orderInfo['confirm_point_ids'];
+        if($confirm_point_ids){
+            $confirm_point_ids = explode(',', $confirm_point_ids);
+            $data['confirm_point_ids'] = $confirm_point_ids;
+        }else{
+            $confirm_point_ids = [];
+            $data['confirm_point_ids'] = [];
+        }
+        //获取点位列表
+        $point_list = $this->Mhouses_points->get_lists('*', ['in' => ['id' => $point_ids]]);
+        //找出该楼盘的点位
+        $houses_ids = [];
+        $confirm_point_num = 0;
+        foreach ($point_list as $k => $v){
+            if($v['houses_id'] != $houses_id){
+                unset($point_list[$k]);
+            }
+            
+        }
+        $data['confirm_point_num'] = 0;
+        foreach ($point_list as $k => $v){
+            if(in_array($v['id'], $confirm_point_ids)){
+                $data['confirm_point_num'] +=1;
+            } 
+        }
+
+        $data['all_point'] = implode(',', array_column($point_list, 'id'));
+        $data['point_list'] = $point_list;
+        $area_list = $this->Mhouses_area->get_lists('id,name', ['houses_id' => $houses_id]);
+        if($area_list){
+            foreach ($data['point_list'] as $k => $v){
+                $data['point_list'][$k]['area_name'] = '';
+                foreach ($area_list as $key => $val){
+                    if($v['houses_id'] == $val['id']){
+                        $data['point_list'][$k]['area_name'] = $val['name'];
+                    }
+                }
+            }
+        }
+
+        $this->load->view('housesscheduledorders/houses_detail', $data);
+    }
+    
+    /**
+     * 单选或不选
+     */
+    public function select_one(){
+        $status = (int) $this->input->post('status');
+        $order_id = (int) $this->input->post('order_id');
+        $point_id = (int) $this->input->post('point_id');
+        //根据订单id获取用户已确认的点位
+        $orderInfo = $this->Mhouses_scheduled_orders->get_one('point_ids,confirm_point_ids', ['id' => $order_id]);
+
+        $confirm_point_ids = $orderInfo['confirm_point_ids'];
+        if($confirm_point_ids){
+            $confirm_point_ids = explode(',', $confirm_point_ids);
+        }else{
+            $confirm_point_ids = [];
+        }
+        if($status){
+            array_push($confirm_point_ids, $point_id);
+            if(count($confirm_point_ids) >1){
+                $confirm_point_ids = array_unique($confirm_point_ids);
+            }
+        }else{
+            foreach ($confirm_point_ids as $k => $v){
+                if($point_id == $v){
+                    unset($confirm_point_ids[$k]);
+                }
+            }
+        }
+        if(count($confirm_point_ids)==0){
+            $confirm_point_ids = '';
+        }else{
+            $confirm_point_ids = implode(',', $confirm_point_ids);
+        }
+        $res = $this->Mhouses_scheduled_orders->update_info(['confirm_point_ids' => $confirm_point_ids], ['id' => $order_id]);
+        
+        if(!$res){
+            $this->return_json(['code' => 0, 'msg' => '操作失败']);
+        }
+        $this->return_json(['code' => 1, 'msg' => '操作成功']);
+    }
+    
+    /**
      * 全选或全不选
      */
     public function select_all(){

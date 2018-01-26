@@ -215,7 +215,7 @@
                                                         <td><?php echo $val['num']?></td>
                                                         <td><?php echo $val['confirm_num']?></td>
                                                         <td>
-                                                        	<a class="green tooltip-info" href="/housesscheduledorders/houses_detail?houses_id=<?php echo $val['id']?>"  data-rel="tooltip" data-placement="top" data-original-title="详情">
+                                                        	<a style="cursor: pointer;" class="green tooltip-info show_detial" data="<?php echo $val['id']?>" data-name="<?php echo $val['name']?>" data-rel="tooltip" data-placement="top" data-original-title="详情">
                                                                 <i class="icon-eye-open bigger-130"></i>
                                                             </a> 
                                                         </td>
@@ -246,6 +246,24 @@
         window.location.href = '/housesscheduledorders/export/' + id + '/' + type;
     });
 
+    $('.show_detial').on('click', function(){
+	    var order_id = '<?php echo $info["id"];?>';
+	    var houses_id = $(this).attr('data');
+	    var houses_name = $(this).attr('data-name');
+ 	    var index = layer.open({
+            type: 2,
+            title: houses_name,
+            shade: 0.5,
+            area: ['60%', '80%'],
+            content: '/housesscheduledorders/houses_detail?order_id='+order_id+'&houses_id='+houses_id, //iframe的url
+            cancel:function(){
+            	var index = parent.layer.getFrameIndex(window.name); //先得到当前iframe层的索引
+            	parent.window.location.href = '/housesscheduledorders/detail/'+order_id+'/confirm' // 父页面刷新
+            	parent.layer.close(index); //再执行关闭
+            }
+	    });
+    });
+
     $('.all').on('click', function(e){
         
 		var order_id = '<?php echo $info["id"];?>';
@@ -257,7 +275,6 @@
 		}
 		var obj = $(this);
 		var tmp;
-		//请求后台 /housesscheduledorders/select_all
 		$.post('/housesscheduledorders/select_all', {'order_id':order_id, 'houses_id':houses_id, 'status':status}, function(data){
 			if(data.code == 1){
 				window.location.href = '/housesscheduledorders/detail/'+order_id+'/confirm'
@@ -268,11 +285,8 @@
 					tmp = true;
 				}
 				obj.prop('checked', tmp);
-				
 			}
 		});
-		
-		
     });
 </script>
 <!-- 底部 -->
