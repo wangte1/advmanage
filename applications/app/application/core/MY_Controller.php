@@ -381,6 +381,32 @@ class MY_Controller extends CI_Controller {
         }
         return 'success';
     }
+    
+    /**
+     * 检查客户端请求的token是否合法
+     * @param unknown $token
+     * @return boolean
+     */
+    public function doCheckToken($token){
+        if(!$this->checkToken($token)){
+           $this->return_json(['code' => -1, '登录信息已过期，请重新登录']); 
+        }
+    }
+    
+    /**
+     * 检查客户端请求的token是否合法
+     * @param unknown $token
+     * @return boolean
+     */
+    private function checkToken($token){
+        $token = decrypt($token);
+        if(isset($token['user_id'])){
+            if($token['expires'] > time()){
+                return TRUE;
+            }
+        }
+        return FALSE;
+    }
 
 }
 
