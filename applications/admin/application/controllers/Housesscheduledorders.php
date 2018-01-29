@@ -70,15 +70,7 @@ class Housesscheduledorders extends MY_Controller{
         
         //获取所有客户
         $data['customer_list'] = $this->Mhouses_customers->get_lists('id, name', ['is_del' => 0]);
-        //获取所有业务员
-        $data['yewu'] = [];
-        if($data['admins']){
-            foreach ($data['admins'] as $k => $v){
-                if($v['group_id'] == 2){
-                    array_push($data['yewu'], $v);
-                }
-            }
-        }
+        
         $this->load->view('housesscheduledorders/index', $data);
     }
     

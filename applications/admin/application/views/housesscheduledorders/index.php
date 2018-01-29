@@ -107,8 +107,8 @@
                                                 <div class="col-sm-9">
                                                     <select name="sales_id" class="select2">
                                                         <option value="">全部</option>
-                                                        <?php foreach($yewu as $key => $value): ?>
-                                                        <option value="<?php echo $value['id'];?>" <?php if(isset($sales_id) && $sales_id == $value['id']){ echo "selected"; }?>><?php echo $value['fullname'];?></option>
+                                                        <?php foreach($salesman as $key => $value): ?>
+                                                        <option value="<?php echo $value['id'];?>" <?php if(isset($sales_id) && $sales_id == $value['id']){ echo "selected"; }?>><?php echo $value['name'];?></option>
                                                         <?php endforeach;?>
                                                     </select>
                                                 </div>
@@ -173,7 +173,7 @@
                                                 <td>
                                                 	<?php foreach ($salesman as $k => $v):?>
                                                 	<?php if($value['sales_id'] == $v['id']):?>
-                                                	<?php echo $v['name']; $tmpname=$v['name'];break;?>
+                                                	<?php echo $v['name'];break;?>
                                                 	<?php endif;?>
                                                 	<?php endforeach;?>
                                                 </td>
@@ -237,7 +237,15 @@
                                                         </a>
                                                         <?php endif;?>
                                                         <?php if(in_array($value['order_status'], [1,2]) && $value['is_confirm'] == 0):?>
-                                                        <a class="grey tooltip-info sendsms" href="javascript:;" data-id="<?php echo $value['sales_id'];?>" data-salesname="<?php echo $tmpname;?>"  data-rel="tooltip" data-placement="top" data-original-title="提醒业务员">
+                                                        
+                                                    	
+                                                        <a class="grey tooltip-info sendsms" href="javascript:;" 
+                                                        	data-id="<?php echo $value['sales_id'];?>" 
+                                                        	<?php foreach ($salesman as $k => $v):?>
+                                                        	<?php if($value['sales_id'] == $v['id']):?>
+                                                        	data-salesname="<?php echo $v['name'];break;?>"
+                                                        	<?php endif;?>
+                                                    	    <?php endforeach;?>" data-rel="tooltip" data-placement="top" data-original-title="提醒业务员">
                                                             <i class="ace-icon fa fa-envelope-o bigger-130" aria-hidden="true"></i>
                                                         </a>
                                                         <?php endif;?>

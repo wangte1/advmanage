@@ -30,10 +30,12 @@ class Point extends MY_Controller {
         $this->load->library('pagination');
         $page = (int) $this->input->get_post('page') ? : '1';
         $size = (int) $this->input->get_post('size');
-        if(!$size) {
-            $size = $pageconfig['per_page'];
-        }
+        $code = trim( $this->input->get_post('code') );
+        
         $where = ['is_del' => 0];
+        if(!empty($code)) $where['like'] = ['code'=> $code];
+        if(!$size) $size = $pageconfig['per_page'];
+        
         $orderBy = ['houses_id' => 'asc'];
         $list = $this->Mhouses_points->get_lists("*", $where, $orderBy, $size, ($page-1)*$size);
         if(!$list){
