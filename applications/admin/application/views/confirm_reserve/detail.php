@@ -172,7 +172,6 @@
 		var obj = $(this);
 		var tmp;
 		$.post('/housesscheduledorders/select_all_houses', {'order_id':order_id, 'status':status}, function(data){
-		    console.log(data);return;
 			if(data.code == 1){
 				window.location.reload();
 			}else{
