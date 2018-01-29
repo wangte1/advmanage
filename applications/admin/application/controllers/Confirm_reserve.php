@@ -166,6 +166,18 @@ class Confirm_reserve extends MY_Controller{
         }
         
         $data['houses_list'] = $houses_list;
+        
+        $orderInfo = $data['info'];
+        $data['is_all'] = 0;
+        $confirm_num = 0;
+        if($orderInfo['confirm_point_ids']){
+            $confirm_num = count(explode(',', $orderInfo['confirm_point_ids']));
+        }
+        $no_confirm_num = 0;
+        if($orderInfo['point_ids']){
+            $no_confirm_num = count(explode(',', $orderInfo['point_ids']));
+        }
+        if($confirm_num == $no_confirm_num) $data['is_all'] = 1;
         $this->load->view('confirm_reserve/detail', $data);
     }
     

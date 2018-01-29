@@ -65,7 +65,7 @@
                                         	<table class="table table-striped table-bordered">
                                                 <thead>
                                                     <tr>
-                                                    	<th width="80px">全选/反选</th>
+                                                    	<th style="text-align: center;" width="80px"><input class="select_page_all" <?php if($is_all){echo "checked";}?> type="checkbox" /></th>
                                                         <th class="center">行政区域</th>
                                                         <th>楼盘名称</th>
                                                         <th>锁定点位数</th>
@@ -149,6 +149,30 @@
 		var obj = $(this);
 		var tmp;
 		$.post('/housesscheduledorders/select_all', {'order_id':order_id, 'houses_id':houses_id, 'status':status}, function(data){
+			if(data.code == 1){
+				window.location.reload();
+			}else{
+				if(status){
+					tmp = false;
+				}else{
+					tmp = true;
+				}
+				obj.prop('checked', tmp);
+			}
+		});
+    });
+
+    $('.select_page_all').on('click', function(){
+    	var order_id = '<?php echo $info["id"];?>';
+    	var status = 0;
+		//true全选，false反选
+		if($(this).prop('checked')){
+			status = 1;
+		}
+		var obj = $(this);
+		var tmp;
+		$.post('/housesscheduledorders/select_all_houses', {'order_id':order_id, 'status':status}, function(data){
+		    console.log(data);return;
 			if(data.code == 1){
 				window.location.reload();
 			}else{
