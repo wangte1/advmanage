@@ -117,7 +117,7 @@
                                         	<label class="col-sm-2 control-label no-padding-right" for="form-input-readonly"> 合同签字照片： </label>
                                             <div class="col-sm-5">
                                             	<div class="row-fluid">
-                                                    <img alt="" src="<?php echo $orderInfo['confirm_img']?>">
+                                                    <img alt="" style="width: 100%;" src="<?php echo $orderInfo['confirm_img']?>">
                                                 </div>
                                                 
                                             </div>
