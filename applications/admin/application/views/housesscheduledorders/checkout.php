@@ -128,10 +128,10 @@
                                             </div>
                                         </div>
 
-                                        <div class="form-group">
+                                        <div class="form-group" style="display:none;">
                                             <label class="col-sm-2 control-label no-padding-right" for="form-input-readonly"> 投放点位： </label>
                                             <div class="col-sm-10">
-                                                <div class="widget-box">
+                                                <div class="widget-box" >
                                                     <div class="widget-header">
                                                         <h4>选择点位</h4>
                                                         <span class="widget-toolbar">
@@ -474,7 +474,7 @@
                                                         <th width="10%">位置</th>
                                                         <th width="10%">规格</th>
                                                         <th width="10%">状态</th>
-                                                        <th width="10%"><button class="btn btn-xs btn-info select-all" type="button" data-id="3">选择全部<i class="icon-arrow-right icon-on-right"></i></button></th>
+                                                        <!-- <th width="10%"><button class="btn btn-xs btn-info select-all" type="button" data-id="3">选择全部<i class="icon-arrow-right icon-on-right"></i></button></th> -->
                                                     </tr>
                                                 </thead>
                                             </table>
@@ -500,7 +500,7 @@
                                                             	<span class="badge badge-danger">占用</span>
                                                             	<?php }?>
                                                             </td>
-                                                            <td width="10%"><button class="btn btn-xs btn-info do-sel" type="button" data-id="<?php echo $value['id'];?>">移除点位<i class="fa fa-remove" aria-hidden="true"></i></button></td>
+                                                            <!-- <td width="10%"><button class="btn btn-xs btn-info do-sel" type="button" data-id="<?php echo $value['id'];?>">移除点位<i class="fa fa-remove" aria-hidden="true"></i></button></td> -->
                                                         </tr>
                                                         <?php endforeach;?>
                                                     <?php endif;?>

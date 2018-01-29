@@ -234,7 +234,7 @@
                                                                         </thead>
                                                                     </table>
                                                                 </div>
-                                                                <div class="div-tbody">
+                                                                <div class="div-tbody" style="height:380px;">
                                                                     <table id="sample-table-1" class="table table-striped table-bordered table-hover">
                                                                         <tbody id="points_lists">
                                                                         </tbody>
@@ -491,7 +491,7 @@
                                                                                 <th width="10%">位置</th>
                                                                                 <th width="10%">规格</th>
                                                                                 <th width="10%">状态</th>
-                                                                                <th width="10%"><button class="btn btn-xs btn-info select-all" type="button" data-id="3">选择全部<i class="icon-arrow-right icon-on-right"></i></button></th>
+                                                                                <th width="10%"><button class="btn btn-xs btn-info remove-all" type="button">移除全部<i class="fa fa-remove" aria-hidden="true"></i></button></th>
                                                     </tr>
                                                 </thead>
                                             </table>
