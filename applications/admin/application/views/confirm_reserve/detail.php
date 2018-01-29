@@ -58,7 +58,7 @@
                                                 <i class="fa fa-check-square-o" aria-hidden="true"></i> 客户签字
                                             </a>
                                             <?php else :?>
-                                            <a href="javascript:;" class="btn btn-xs btn-info signed" data="<?php echo $info['confirm_img']?>" style="margin-bottom:10px">
+                                            <a href="javascript:;" class="btn btn-xs btn-info sign" data="<?php echo $info['confirm_img']?>" style="margin-bottom:10px">
                                                 <i class="fa fa-check-square-o"></i> 已签字(查看合同)
                                             </a>
                                             <?php endif;?>

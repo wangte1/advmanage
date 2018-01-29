@@ -265,14 +265,17 @@ class Confirm_reserve extends MY_Controller{
         }else{
             $data = $this->data;
             $order_id = $this->input->get('order_id');
-            
             $data['order_id'] = $order_id;
             $orderInfo = $this->Mhouses_scheduled_orders->get_one('*', ['id' =>$order_id]);
             if(!$orderInfo) show_404();
             $customer = $this->Mhouses_customers->get_one('id,name,contact_person', ['id' => $orderInfo['lock_customer_id']]);
             $data['orderInfo'] = $orderInfo;
             $data['customer'] = $customer;
-            $this->load->view('confirm_reserve/sign', $data);
+            if($orderInfo['is_confirm'] == 1){
+                $this->load->view('confirm_reserve/has_sign', $data);
+            }else{
+                $this->load->view('confirm_reserve/sign', $data);
+            }
         }
     }
 }
