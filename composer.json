@@ -7,11 +7,5 @@
 		"yonghua4413/helper" : "^0.01.0",
 		"yonghua4413/ali-sms" : "^0.05.0",
 		"yonghua4413/smtp" : "*"
-	},
-	"repositories": {
-           "packagist": {
-                "type": "composer",
-                "url": "https://packagist.phpcomposer.com"
-           }
-        }
+	}
 }
