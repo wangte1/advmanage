@@ -35,12 +35,6 @@ class Housespoints extends MY_Controller{
         $size = $pageconfig['per_page'];
         $where['A.is_del'] = 0;
         
-        $is_lock = $this->input->get('is_lock');
-        if(strlen($is_lock)){
-            $where['A.is_lock'] = (int) $this->input->get('is_lock');
-            $data['A.is_lock'] = $this->input->get('is_lock');
-        }
-        
         if ($this->input->get('type_id')) $where['A.type_id'] = $this->input->get('type_id');
         if ($this->input->get('province')) $where['B.province'] = $this->input->get('province');
         if ($this->input->get('city')) $where['B.city'] = $this->input->get('city');
@@ -52,7 +46,7 @@ class Housespoints extends MY_Controller{
         if ($this->input->get('floor')) $where['A.area_id'] = $this->input->get('floor');
         if ($this->input->get('addr')) $where['A.addr'] = $this->input->get('addr');
         if ($this->input->get('point_status')) $where['A.point_status'] = $this->input->get('point_status');
-        if ($this->input->get('customer_id')) $where['A.customer_id'] = $this->input->get('customer_id');
+        if ($this->input->get('customer_id')) $where['like']['A.customer_id'] = $this->input->get('customer_id');
         
         $data['point_status'] = $this->input->get('point_status');
         $data['province'] = $this->input->get('province');
@@ -152,8 +146,8 @@ class Housespoints extends MY_Controller{
             	$post['images'] = implode(';', $post['cover_img']);
             	unset($post['cover_img']);
             }
-            //$post['update_user'] = $data['userInfo']['id'];
-            //$post['update_time'] = date("Y-m-d H:i:s");
+
+            $post['update_time'] = date("Y-m-d H:i:s");
             $result = $this->Mhouses_points->update_info($post,array("id"=>$id));
             if($result){
                 $this->write_log($data['userInfo']['id'],2,"社区编辑点位：".$post['code']);

@@ -45,7 +45,6 @@ class Housescustomers extends MY_Controller{
         }
 
         $data['list'] = $this->Mhouses_customers->get_lists('*',$where,array("id"=>"desc"),$size,($page-1)*$size);
-
         $data_count = $this->Mhouses_customers->count($where);
 
         //获取分页
@@ -74,6 +73,11 @@ class Housescustomers extends MY_Controller{
 
         if(IS_POST){
             $post = $this->input->post();
+            if(isset($post['email']) && !empty($post['email'])){
+                if(!preg_match(C('regular_expression.email'), $post['email'])){
+                    $this->error("电子邮件格式不正确");
+                }
+            }
             $post['creator'] = $data['userInfo']['id'];
             $post['create_time'] = date("Y-m-d H:i:s");
 
@@ -101,9 +105,11 @@ class Housescustomers extends MY_Controller{
 
         if(IS_POST){
             $post = $this->input->post();
-            //$post['update_user'] = $data['userInfo']['id'];
-            //$post['update_time'] = date("Y-m-d H:i:s");
-
+            if(isset($post['email']) && !empty($post['email'])){
+                if(!preg_match(C('regular_expression.email'), $post['email'])){
+                    $this->error("电子邮件格式不正确");
+                }
+            }
             $result = $this->Mhouses_customers->update_info($post,array("id"=>$id));
             if($result){
                 $this->write_log($data['userInfo']['id'],2,"编辑社区客户：".$post['name']);
@@ -114,7 +120,7 @@ class Housescustomers extends MY_Controller{
 
         }
 
-        $info = $this->Mhouses_customers->get_one("name,contact_person,contact_tel,type,id,remarks,addr",array("id"=>$id));
+        $info = $this->Mhouses_customers->get_one("*",array("id"=>$id));
         if(empty($info) || !isset($info)){
             die("非法参数");
         }

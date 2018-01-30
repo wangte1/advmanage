@@ -99,8 +99,11 @@
                                                 <th>编号</th>
                                                 <th>客户名称</th>
                                                 <th>联系人</th>
-                                                <th class="hidden-480">联系人手机号</th>
-                                                <th class="hidden-480">类型</th>
+                                                <th>联系人手机号</th>
+                                                <th>联系人微信</th>
+                                                <th>联系人QQ</th>
+                                                <th>联系人email</th>
+                                                <th>类型</th>
                                                 <th>客户地址</th>
                                                 <th>说明</th>
                                                 <th>操作</th>
@@ -118,8 +121,11 @@
                                                     <td><?php echo $val['name'];?></td>
                                                     <td><?php echo $val['contact_person'];?></td>
                                                     <td><?php echo $val['contact_tel'];?></td>
+                                                    <td><?php echo $val['weixin'];?></td>
+                                                    <td><?php echo $val['qq'];?></td>
+                                                    <td><?php echo $val['email'];?></td>
                                                     <td><?php echo $customer_type[$val['type']];?></td>
-                                                    <td class="hidden-480">
+                                                    <td>
                                                         <?php echo $val['addr'];?>
                                                     </td>
                                                     <td>

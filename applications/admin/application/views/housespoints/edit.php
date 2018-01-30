@@ -234,6 +234,16 @@
                                 </div>
                             </div>
                             
+                            <div class="form-group">
+                                <label class="col-sm-3 control-label no-padding-right" for="form-field-1"> 可投放广告数： </label>
+                                <div class="col-sm-9">
+                                    <input type="number" name="ad_num" required  value="<?php if($info['ad_num']) {echo $info['ad_num'];}else {?>6<?php }?>" placeholder="" class="col-xs-6 col-sm-3">
+                                    <span class="help-inline col-xs-12 col-sm-7 form-field-description-block">
+                                       个
+									</span>
+                                </div>
+                            </div>
+                            
                             
                             <div class="form-group">
                                 <label class="col-sm-3 control-label no-padding-right" for="form-field-1">  备注： </label>
