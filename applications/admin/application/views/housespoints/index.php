@@ -236,6 +236,9 @@
                                                 <th>点位位置</th>
                                                 <th>类型</th>
                                                 <th>占用客户</th>
+                                                <th>可投放数量</th>
+                                                <th>已投放数量</th>
+                                                <th>总投放次数</th>
                                                 <th>状态</th>
                                                 <th>锁定状态</th>
                                                 <th>操作</th>
@@ -281,6 +284,9 @@
 													<td>
 														<?php if(isset($customer_name[$val['customer_id']])) echo $customer_name[$val['customer_id']];?>
 													</td>
+													<td><?php echo $val['ad_num']?></td>
+													<td><?php echo $val['ad_use_num']?></td>
+													<td><?php echo $val['used_num']?></td>
 													<td>
                                                         <?php 
 	                                                        switch ($val['point_status']) {
