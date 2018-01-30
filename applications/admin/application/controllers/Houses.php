@@ -45,6 +45,8 @@ class Houses extends MY_Controller{
         $data['province'] = $this->input->get('province');
         $data['city'] = $this->input->get('city');
         $data['area'] = $this->input->get('area');
+        $data['is_check_out'] = $this->input->get('is_check_out');
+        
 
         $data['list'] = $this->Mhouses->get_lists('*',$where,[],$size,($page-1)*$size);
         $data_count = $this->Mhouses->count($where);

@@ -112,6 +112,7 @@
                                                 <th>地区</th>
                                                 <th>禁投放行业</th>
                                                 <th>类型</th>
+                                                <th>发送物业审核</th>
                                                 <th>备注</th>
                                                 <th>操作</th>
                                             </tr>
@@ -127,6 +128,7 @@
                                                     <td><?php echo $val['province'];?>-<?php echo $val['city'];?>-<?php echo $val['area'];?></td>
 													<td><?php if(isset($put_trade[$val['put_trade']])) echo $put_trade[$val['put_trade']];?></td>
 													<td><?php echo $houses_type[$val['type']];?></td>
+													<td><?php if($val['is_check_out'] == 1) echo '是'; else echo '否';?></td>
 													<td class="hidden-480">
                                                         <?php echo $val['remarks'];?>
                                                     </td>
