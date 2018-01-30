@@ -237,7 +237,6 @@
                                                 <th>类型</th>
                                                 <th>占用客户</th>
                                                 <th>状态</th>
-                                                <th>锁定状态</th>
                                                 <th>操作</th>
                                             </tr>
                                         </thead>
@@ -297,20 +296,6 @@
 	                                                    ?>
 	                                                    <span class="badge <?php echo $class; ?>">
 	                                                        <?php echo C('public.points_status')[$val['point_status']];?>
-	                                                    </span>
-                                                    </td>
-                                                    <td>
-                                                        <?php 
-	                                                        switch ($val['is_lock']) {
-	                                                            case '1':
-	                                                                $class = 'badge-warning';
-	                                                                break;
-	                                                            default:
-	                                                                $class = 'badge-success';
-	                                                        }
-	                                                    ?>
-	                                                    <span class="badge <?php echo $class; ?>">
-	                                                        <?php echo C('housesscheduledorder.point_status')[$val['is_lock']];?>
 	                                                    </span>
                                                     </td>
                                                     <td>
