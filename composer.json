@@ -9,9 +9,9 @@
 		"yonghua4413/smtp" : "*"
 	},
 	"repositories": {
-    	    "packagist": {
+           "packagist": {
                 "type": "composer",
                 "url": "https://packagist.phpcomposer.com"
-    	    }
+           }
         }
 }
