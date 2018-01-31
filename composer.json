@@ -5,16 +5,7 @@
 		"php" : "^5.6.31 || ^7.0",
 		"flc/alidayu" : "^2.0",
 		"yonghua4413/helper" : "^0.01.0",
-		"yonghua4413/ali-sms" : "^0.05.0"
-<<<<<<< HEAD
-	},
-	"repositories": {
-    	    "packagist": {
-                "type": "composer",
-                "url": "https://packagist.phpcomposer.com"
-    	    }
-        }
-=======
+		"yonghua4413/ali-sms" : "^0.05.0",
+		"yonghua4413/smtp" : "*"
 	}
->>>>>>> 155541c715e7608222ea5e7bbd7d70651f5f4204
 }

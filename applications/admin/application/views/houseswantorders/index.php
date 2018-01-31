@@ -17,7 +17,7 @@
                         <a href="#">首页</a>
                     </li>
                     <li>
-                        <a href="#">订单管理</a>
+                        <a href="#">社区订单管理</a>
                     </li>
                     <li class="active">意向订单</li>
                 </ul>
@@ -53,19 +53,33 @@
                                 <div class="widget-main">
                                     <form class="form-horizontal" role="form">
                                         <div class="form-group">
-                                            <div class="col-sm-4">
-                                                <label class="col-sm-3 control-label no-padding-right" for="form-field-1"> 订单类型 </label>
+                                        	<div class="col-sm-6">
+                                                <label class="col-sm-3 control-label no-padding-right" for="form-field-1"> 行政区域 </label>
                                                 <div class="col-sm-9">
-                                                    <select name="order_type" class="select2">
+                                                    <div id="distpicker1">
+													  <select name="province" id="province"></select>
+													  <select name="city" id="city"></select>
+													  <select name="area" id="area"></select>
+													</div>
+                                                </div>
+                                            </div>
+                                        	
+                                        	<div class="col-sm-6">
+                                                <label class="col-sm-3 control-label no-padding-right" for="form-field-1"> 投放行业 </label>
+                                                <div class="col-sm-9">
+                                                    <select name="put_trade" class="select2">
                                                         <option value="">全部</option>
-                                                        <?php foreach (C('order.houses_order_type') as $k => $v):?>
-                                                        <option value="<?php echo $k;?>" <?php if($order_type == $k){ echo "selected"; }?>><?php echo $v;?></option>
+                                                        <?php foreach (C('housespoint.put_trade') as $k => $v):?>
+                                                        <option value="<?php echo $k;?>" <?php if($put_trade == $k){ echo "selected"; }?>><?php echo $v;?></option>
                                                        	<?php endforeach;?>
                                                     </select>
                                                 </div>
                                             </div>
-
-                                            <div class="col-sm-4">
+                                            
+                             			</div>
+                             			<div class="form-group">
+                                            
+                             				<div class="col-sm-6">
                                                 <label class="col-sm-3 control-label no-padding-right" for="form-field-1"> 客户 </label>
                                                 <div class="col-sm-9">
                                                     <select name="customer_id" class="select2">
@@ -76,44 +90,19 @@
                                                     </select>
                                                 </div>
                                             </div>
-
-                                            <div class="col-sm-4">
-                                                <label class="col-sm-3 control-label no-padding-right" for="form-field-1"> 锁定人 </label>
+                                            
+                                            <div class="col-sm-6">
+                                                <label class="col-sm-3 control-label no-padding-right" for="form-field-1"> 状态 </label>
                                                 <div class="col-sm-9">
-                                                    <select name="admin_id" class="select2">
+                                                    <select name="status" class="select2">
                                                         <option value="">全部</option>
-                                                        <?php foreach($admins as $val):?>
-                                                        <option value="<?php echo $val['id'];?>" <?php if($val['id'] == $admin_id){ echo "selected"; }?>><?php echo $val['fullname'];?></option>
-                                                        <?php endforeach;?>
-                                                    </select>
-                                                </div>
-                                            </div>
-                             			</div>
-                             			<div class="form-group">
-                                            <div class="col-sm-4">
-                                                <label class="col-sm-3 control-label no-padding-right" for="form-field-1"> 订单状态 </label>
-                                                <div class="col-sm-9">
-                                                    <select name="order_status" class="select2">
-                                                        <option value="">全部</option>
-                                                        <?php foreach(C('housesscheduledorder.order_status.text')as $key => $value): ?>
-                                                        <option value="<?php echo $key;?>" <?php if($key == $order_status){ echo "selected"; }?>><?php echo $value;?></option>
+                                                        <?php foreach(C('houseswantorder.houses_want_status')as $key => $value): ?>
+                                                        <option value="<?php echo $key;?>" <?php if($key == $status){ echo "selected"; }?>><?php echo $value;?></option>
                                                         <?php endforeach;?>
                                                     </select>
                                                 </div>
                                             </div>
                                         	
-            
-                                            <div class="col-sm-4">
-                                                <label class="col-sm-3 control-label no-padding-right" for="form-field-1"> 业务员： </label>
-                                                <div class="col-sm-9">
-                                                    <select name="sales_id" class="select2">
-                                                        <option value="">全部</option>
-                                                        <?php foreach($salesman as $key => $value): ?>
-                                                        <option value="<?php echo $value['id'];?>" <?php if(isset($sales_id) && $sales_id == $value['id']){ echo "selected"; }?>><?php echo $value['name'];?></option>
-                                                        <?php endforeach;?>
-                                                    </select>
-                                                </div>
-                                            </div>
                                         </div>
                                         <div class="clearfix form-actions">
                                             <div class="col-md-offset-3 col-md-9">
@@ -140,127 +129,53 @@
                                     <table id="sample-table-1" class="table table-striped table-bordered table-hover">
                                         <thead>
                                             <tr>
-                                                <th>订单类型</th>
+                                                <th>序号</th>
                                                 <th>客户</th>
-                                                <th>锁定点位</th>
-                                                <th>锁定时间</th>
-                                                <th>锁定人</th>
-                                                <th>业务员</th>
-                                                <th>订单创建日期</th>
+                                                <th>行政区域</th>
+                                                <th>楼盘类型</th>
+                                                <th>点位类型</th>
+                                                <th>交房年份</th>
+                                                <th>投放行业</th>
                                                 <th>状态</th>
-                                                <th>客户确认状态</th>
+                                                <th>业务员</th>
+                                                <th>创建时间</th>
                                                 <th>操作</th>
                                             </tr>
                                         </thead>
                                         <tbody>
                                         <?php if(isset($list) && $list):?>
                                             <?php foreach ($list as $key => $value) : ?>
-                                            <tr>
-                                                <td><?php echo $order_type_text[$value['order_type']];?></td>
-                                                <td id="order_<?php echo $value['id']?>">
-                                                	<?php if($customer_list):?>
-                                                	<?php foreach ($customer_list as $key => $val):?>
-                                                		<?php if($val['id'] == $value['lock_customer_id']):?>
-                                                		<?php echo $val['name'];break;?>
-                                                		<?php endif;?>
-                                                	<?php endforeach;?>
-                                                	<?php endif;?>
-                                                </td>
-                                                <td><?php echo $value['point_ids'] ? count(explode(',', $value['point_ids'])) : 0;?>个点位</td>
-                                                <td>
-                                                    <?php echo $value['lock_start_time'].'至'.$value['lock_end_time'];?>
-                                                </td>
-                                                <td><?php echo $value['admin_name'];?></td>
-                                                <td>
-                                                	<?php foreach ($salesman as $k => $v):?>
-                                                	<?php if($value['sales_id'] == $v['id']):?>
-                                                	<?php echo $v['name'];break;?>
-                                                	<?php endif;?>
-                                                	<?php endforeach;?>
-                                                </td>
-                                                <td><?php echo $value['create_time'];?></td>
-                                                <td>
-                                                    <?php 
-                                                        switch ($value['order_status']) {
-                                                            case '1':
-                                                                $class = 'badge-yellow';
-                                                                break;
-                                                            case '2':
-                                                                $class = 'badge-warning';
-                                                                break;
-                                                            case '3':
-                                                                $class = 'badge-grey';
-                                                                break;
-                                                            case '4':
-                                                                $class = 'badge-grey';
-                                                                break;
-                                                            case '5':
-                                                                $class = 'badge-grey';
-                                                                break;
-                                                        }
-                                                    ?>
-                                                    <span class="badge <?php echo $class; ?>">
-                                                        <?php echo $status_text[$value['order_status']];?>
-                                                    </span>
-                                                </td>
-                                                <td>
-                                                	<?php 
-                                                        switch ($value['is_confirm']) {
-                                                            case '0':
-                                                                $class = 'badge-grey';
-                                                                break;
-                                                            case '1':
-                                                                $class = 'badge-yellow';
-                                                                break;
-                                                        }
-                                                    ?>
-                                                    <span class="badge <?php echo $class; ?>">
-                                                        <?php echo $confirm_text[$value['is_confirm']];?>
-                                                    </span>
-                                                </td>
-                                                <td>
-                                                    <div class="visible-md visible-lg hidden-sm hidden-xs action-buttons">
-                                                        <a class="green tooltip-info" href="/housesscheduledorders/detail/<?php echo $value['id'];?>"  data-rel="tooltip" data-placement="top" data-original-title="详情">
+                                            	<tr>
+                                            		<td><?php echo $key+1;?></td>
+                                            		<td>
+                                            			<?php foreach($customers as $k => $v) {?>
+                                            				<?php if($v['id'] == $value['customer_id']) { echo $v['name'];}?>
+                                            			<?php }?>
+                                            		</td>
+                                            		<td><?php echo $value['province'].$value['city'].$value['area'];?></td>
+                                            		<td><?php echo $value['houses_type'];?></td>
+                                            		<td><?php echo $order_type_text[$value['order_type']];?></td>
+                                            		<td><?php echo $value['begin_year']."-".$value['end_year'];?></td>
+                                            		<td><?php if(isset($put_trade[$value['put_trade']])) echo $put_trade[$value['put_trade']];?></td>
+                                            		<td><?php if(isset(C('houseswantorder.houses_want_status')[$value['status']])) echo C('houseswantorder.houses_want_status')[$value['status']];?></td>
+                                            		<td>
+                                            			<?php foreach($salesman as $k => $v) {?>
+                                            				<?php if($v['id'] == $value['create_user']) { echo $v['name'];}?>
+                                            			<?php }?>
+                                            		</td>
+                                            		<td><?php echo $value['create_time'];?></td>
+                                            		<td>
+                                            			<a class="green tooltip-info" href="/houseswantorders/detail/<?php echo $value['id'];?>"  data-rel="tooltip" data-placement="top" title="" data-original-title="详情">
                                                             <i class="icon-eye-open bigger-130"></i>
                                                         </a> 
-                                                        <?php if($value['order_status'] < C('housesscheduledorder.order_status.code.done_release')):?>
-                                                        <a class="green tooltip-info" href="/housesscheduledorders/edit/<?php echo $value['id'];?>"  data-rel="tooltip" data-placement="top" data-original-title="修改">
-                                                            <i class="icon-pencil bigger-130"></i>
-                                                        </a>
-                                                        <a class="grey tooltip-info release-points" href="javascript:;" data-id="<?php echo $value['id'];?>"  data-rel="tooltip" data-placement="top" data-original-title="解除锁定">
-                                                            <i class="icon-unlock bigger-130" aria-hidden="true"></i>
-                                                        </a>
-                                                        <?php endif;?>
                                                         
-                                                        <?php if($value['order_status'] == 2):?>
-                                                        <a class="grey tooltip-info update" href="javascript:;" data-id="<?php echo $value['id'];?>"  data-rel="tooltip" data-placement="top" data-original-title="续期">
-                                                            <i class="ace-icon glyphicon glyphicon-upload bigger-130" aria-hidden="true"></i>
-                                                        </a>
-                                                        <?php endif;?>
-                                                        <?php if(in_array($value['order_status'], [1,2]) && $value['is_confirm'] == 0):?>
-                                                        
-                                                    	
-                                                        <a class="grey tooltip-info sendsms" href="javascript:;" 
-                                                        	data-id="<?php echo $value['sales_id'];?>" 
-                                                        	<?php foreach ($salesman as $k => $v):?>
-                                                        	<?php if($value['sales_id'] == $v['id']):?>
-                                                        	data-salesname="<?php echo $v['name'];break;?>"
-                                                        	<?php endif;?>
-                                                    	    <?php endforeach;?>" data-rel="tooltip" data-placement="top" data-original-title="提醒业务员">
-                                                            <i class="ace-icon fa fa-envelope-o bigger-130" aria-hidden="true"></i>
-                                                        </a>
-                                                        <?php endif;?>
-                                                        
-                                                        <?php if($value['is_confirm'] == 1 && $value['order_status'] != 5) {?>
-                                                        	 <a class="grey tooltip-info checkout" href="javascript:;" data-id="<?php echo $value['id'];?>" data-customer="<?php echo $value['lock_customer_id']?>"  data-rel="tooltip" data-placement="top" data-original-title="转订单">
-	                                                            <i class="ace-icon fa fa-random bigger-130" aria-hidden="true"></i>
-	                                                        </a>
-                                                        <?php }?>
-                                                    </div>
-                                                </td>
-                                            </tr>
+                                                        <a class="green tooltip-info" href="/houseswantorders/cancle/<?php echo $value['id'];?>"  data-rel="tooltip" data-placement="top" title="" data-original-title="撤回">
+                                                            <i class="icon-reply bigger-130"></i>
+                                                        </a> 
+                                            		</td>
+                                            	</tr>
                                             <?php endforeach; ?>
-                                            <?php endif;?>
+                                        <?php endif;?>
                                         </tbody>
                                     </table>
                                     <!-- 分页 -->
@@ -278,10 +193,18 @@
 <!-- 加载尾部公用js -->
 <?php $this->load->view("common/footer");?>
 <script src="<?php echo css_js_url('select2.min.js','admin');?>"></script>
+<script src="<?php echo css_js_url('jqdistpicker/distpicker.data.js','admin');?>"></script>
+<script src="<?php echo css_js_url('jqdistpicker/distpicker.js','admin');?>"></script>
 
 <script type="text/javascript">
     $(".select2").css('width','240px').select2({allowClear:true});
 
+    $("#distpicker1").distpicker({
+    	province: '<?php if($province){ echo $province;}else {?>贵州省<?php }?>',
+    	city: '<?php if($city){ echo $city;}else {?>贵阳市<?php }?>',
+    	district: '<?php if($area){ echo $area;}else {?><?php }?>'
+    });
+	
     $('.release-points').click(function(){
         var _self = $(this);
         var d = dialog({

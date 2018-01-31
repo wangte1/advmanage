@@ -165,18 +165,6 @@
                                             </div>
                                     	
                                     		<div class="col-sm-3">
-                                                <label class="col-sm-3 control-label no-padding-right" for="form-field-1"> 锁定状态 </label>
-                                                <div class="col-sm-9">
-                                                	<select id="is_lock" class="select2" data-placeholder="Click to Choose..." name="is_lock">
-                                                		<option value="">全部</option>
-                                                		<?php foreach (C('housesscheduledorder.point_status') as $k => $v):?>
-                                                		<option value="<?php echo $k;?>" <?php if(isset($is_lock) && $is_lock == $k){echo 'selected="selected"';}?>><?php echo $v;?></option>
-				                                    	<?php endforeach;?>
-				                                    </select>
-                                                </div>
-                                            </div>
-                                    	
-                                    		<div class="col-sm-3">
                                                 <label class="col-sm-3 control-label no-padding-right" for="form-field-1"> 点位状态 </label>
                                                 <div class="col-sm-9">
                                                 	<select id="area" class="select2" data-placeholder="Click to Choose..." name="point_status">
@@ -236,6 +224,9 @@
                                                 <th>点位位置</th>
                                                 <th>类型</th>
                                                 <th>占用客户</th>
+                                                <th>可投放数量</th>
+                                                <th>已投放数量</th>
+                                                <th>总投放次数</th>
                                                 <th>状态</th>
                                                 <th>操作</th>
                                             </tr>
@@ -278,8 +269,10 @@
                                                     	<?php }?>
                                                     </td>
 													<td>
-														<?php if(isset($customer_name[$val['customer_id']])) echo $customer_name[$val['customer_id']];?>
 													</td>
+													<td><?php echo $val['ad_num']?></td>
+													<td><?php echo $val['ad_use_num']?></td>
+													<td><?php echo $val['used_num']?></td>
 													<td>
                                                         <?php 
 	                                                        switch ($val['point_status']) {
@@ -298,6 +291,7 @@
 	                                                        <?php echo C('public.points_status')[$val['point_status']];?>
 	                                                    </span>
                                                     </td>
+
                                                     <td>
                                                         <div class="visible-md visible-lg hidden-sm hidden-xs action-buttons">
                                                             <a class="green tooltip-info" href="/housespoints/edit/<?php echo $val['id'];?>" data-rel="tooltip" data-placement="top" data-original-title="修改">

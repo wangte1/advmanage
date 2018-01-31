@@ -89,6 +89,35 @@
 									</span>
                                 </div>
                             </div>
+                            
+                            <div class="form-group">
+                                <label class="col-sm-3 control-label no-padding-right" for="form-field-1">  联系人QQ号： </label>
+                                <div class="col-sm-9">
+                                    <input type="text" name="qq" value="<?php echo $info['qq'];?>"  id="form-field-1" placeholder="请输入QQ号" class="col-xs-10 col-sm-5">
+                                     <span class="help-inline col-xs-12 col-sm-7 form-field-description-block">
+                                       <span class="middle">* 输入准确的QQ号便于联系</span>
+									</span>
+                                </div>
+                            </div>
+                            
+                            <div class="form-group">
+                                <label class="col-sm-3 control-label no-padding-right" for="form-field-1">  联系人微信号： </label>
+                                <div class="col-sm-9">
+                                    <input type="text" name="weixin" value="<?php echo $info['weixin'];?>"  id="form-field-1" placeholder="请输入微信号" class="col-xs-10 col-sm-5">
+                                     <span class="help-inline col-xs-12 col-sm-7 form-field-description-block">
+                                       <span class="middle">* 输入准确的微信号便于联系</span>
+									</span>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label class="col-sm-3 control-label no-padding-right" for="form-field-1">  联系人email： </label>
+                                <div class="col-sm-9">
+                                    <input type="text" name="email" value="<?php echo $info['email'];?>"  id="form-field-1" placeholder="请输入email" class="col-xs-10 col-sm-5">
+                                     <span class="help-inline col-xs-12 col-sm-7 form-field-description-block">
+                                       <span class="middle">* 输入准确的email便于联系</span>
+									</span>
+                                </div>
+                            </div>
 
                             <div class="form-group">
                                 <label class="col-sm-3 control-label no-padding-right" for="form-field-1">  客户地址： </label>

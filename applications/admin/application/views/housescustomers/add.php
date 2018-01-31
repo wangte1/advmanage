@@ -18,9 +18,9 @@
                         <a href="#">首页</a>
                     </li>
                     <li>
-                        <a href="/housescustomers">社区客户管理</a>
+                        <a href="/housescustomers">社区联系人管理</a>
                     </li>
-                    <li class="active">添加客户</li>
+                    <li class="active">添加联系人</li>
                 </ul>
             </div>
 
@@ -28,7 +28,7 @@
                 <div class="page-header">
                     <h1>
                         <h1>
-                            添加客户
+                            添加联系人
                         </h1>
                     </h1>
                 </div>
@@ -47,7 +47,7 @@
                             </div>
 
                             <div class="form-group">
-                                <label class="col-sm-3 control-label no-padding-right" for="form-field-1"> 客户类型： </label>
+                                <label class="col-sm-3 control-label no-padding-right" for="form-field-1"> 联系人类型： </label>
                                 <div class="col-sm-9">
                                     <?php
                                     foreach($customer_type as $key=>$val){
@@ -82,16 +82,46 @@
 									</span>
                                 </div>
                             </div>
+                            
+                            <div class="form-group">
+                                <label class="col-sm-3 control-label no-padding-right" for="form-field-1">  联系人QQ号： </label>
+                                <div class="col-sm-9">
+                                    <input type="text" name="qq"  id="form-field-1" placeholder="请输入QQ号" class="col-xs-10 col-sm-5">
+                                     <span class="help-inline col-xs-12 col-sm-7 form-field-description-block">
+                                       <span class="middle">* 输入准确的QQ号便于联系</span>
+									</span>
+                                </div>
+                            </div>
+                            
+                            <div class="form-group">
+                                <label class="col-sm-3 control-label no-padding-right" for="form-field-1">  联系人微信号： </label>
+                                <div class="col-sm-9">
+                                    <input type="text" name="weixin"  id="form-field-1" placeholder="请输入微信号" class="col-xs-10 col-sm-5">
+                                     <span class="help-inline col-xs-12 col-sm-7 form-field-description-block">
+                                       <span class="middle">* 输入准确的微信号便于联系</span>
+									</span>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label class="col-sm-3 control-label no-padding-right" for="form-field-1">  联系人email： </label>
+                                <div class="col-sm-9">
+                                    <input type="text" name="email"  id="form-field-1" placeholder="请输入email" class="col-xs-10 col-sm-5">
+                                     <span class="help-inline col-xs-12 col-sm-7 form-field-description-block">
+                                       <span class="middle">* 输入准确的email便于联系</span>
+									</span>
+                                </div>
+                            </div>
 
                             <div class="form-group">
-                                <label class="col-sm-3 control-label no-padding-right" for="form-field-1">  客户地址： </label>
+                                <label class="col-sm-3 control-label no-padding-right" for="form-field-1">  联系人地址： </label>
                                 <div class="col-sm-9">
-                                    <input type="text" name="addr"  id="form-field-1" placeholder="请输入客户地址" class="col-xs-10 col-sm-5">
+                                    <input type="text" name="addr"  id="form-field-1" placeholder="请输入联系人地址" class="col-xs-10 col-sm-5">
                                     <span class="help-inline col-xs-12 col-sm-7 form-field-description-block">
                                        <span class="middle">* 请输入详细的地址便于联系</span>
 									</span>
                                 </div>
                             </div>
+                            
 
                             <div class="form-group">
                                 <label class="col-sm-3 control-label no-padding-right" for="form-field-1">  备注： </label>
