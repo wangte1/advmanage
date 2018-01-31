@@ -47,6 +47,7 @@ class Houses extends MY_Controller{
         $data['area'] = $this->input->get('area');
         $data['is_check_out'] = $this->input->get('is_check_out');
         
+        
 
         $data['list'] = $this->Mhouses->get_lists('*',$where,[],$size,($page-1)*$size);
         $data_count = $this->Mhouses->count($where);
@@ -60,6 +61,8 @@ class Houses extends MY_Controller{
         $data['pagestr'] = $this->pagination->create_links(); // 分页信息
 		
         $data['houses_type'] = C("public.houses_type");
+        
+        $data['houses_grade'] = C("public.houses_grade");
         
         $this->load->view("houses/index",$data);
     }
@@ -96,6 +99,8 @@ class Houses extends MY_Controller{
         $data['area'] = $this->Marea->get_lists("id,area_name,parent_id,level",array("parent_id"=>35561));
         
         $data['houses_type'] = C("public.houses_type");
+        
+        $data['houses_grade'] = C("public.houses_grade");
 
         $this->load->view("houses/add",$data);
     }
@@ -138,6 +143,8 @@ class Houses extends MY_Controller{
         $data['area'] = $this->Marea->get_lists("id,area_name,parent_id,level",array("parent_id"=>35561));
         
         $data['houses_type'] = C("public.houses_type");
+        
+        $data['houses_grade'] = C("public.houses_grade");
 
         $this->load->view("houses/edit",$data);
     }

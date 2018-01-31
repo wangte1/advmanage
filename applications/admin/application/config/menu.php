@@ -150,6 +150,11 @@ $config = array(
     		'icon' => 'icon-book  menu-i',
     		'list' => array(
     			array(
+    				'url'=>'/houseswantorders',
+    				'name'=> '意向订单（业务）',
+    				'active'=> 'houseswantorders_list'
+    			),
+    			array(
     				'url'=>'/housesscheduledorders',
     				'name'=> '预定订单',
     				'active'=> 'housesscheduledorders_list'
