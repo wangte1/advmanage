@@ -159,6 +159,11 @@ $config = array(
     				'name'=> '预定订单',
     				'active'=> 'housesscheduledorders_list'
     			),
+    		    array(
+    		        'url'=>'/confirm_reserve',
+    		        'name'=> '预定订单确定',
+    		        'active'=> 'confirm_reserve_list'
+    		    ),
     			array(
 			    	'url'=>'/housesorders',
 			    	'name'=> '订单列表',

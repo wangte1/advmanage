@@ -223,11 +223,11 @@
                                                 <th>楼层</th>
                                                 <th>点位位置</th>
                                                 <th>类型</th>
-                                                <th>占用客户</th>
                                                 <th>可投放数量</th>
                                                 <th>已投放数量</th>
                                                 <th>总投放次数</th>
                                                 <th>状态</th>
+                                                <th>占用客户</th>
                                                 <th>操作</th>
                                             </tr>
                                         </thead>
@@ -268,8 +268,6 @@
                                                     		<?php }?>
                                                     	<?php }?>
                                                     </td>
-													<td>
-													</td>
 													<td><?php echo $val['ad_num']?></td>
 													<td><?php echo $val['ad_use_num']?></td>
 													<td><?php echo $val['used_num']?></td>
@@ -291,7 +289,17 @@
 	                                                        <?php echo C('housespoint.points_status')[$val['point_status']];?>
 	                                                    </span>
                                                     </td>
-
+                                                    <td>
+                                                    	<?php if(isset($val['customer_id'])):?>
+                                                    	<?php foreach (explode(',', $val['customer_id']) as $k => $v):?>
+                                                    	<?php foreach ($customers as $k1 => $v2):?>
+                                                    	<?php if($v2['id'] == $v):?>
+                                                    	<?php if($k!=0){echo ',';} echo $v2['name'];?>
+                                                    	<?php endif;?>
+                                                    	<?php endforeach;?>
+                                                    	<?php endforeach;?>
+                                                    	<?php endif;?>
+													</td>
                                                     <td>
                                                         <div class="visible-md visible-lg hidden-sm hidden-xs action-buttons">
                                                             <a class="green tooltip-info" href="/housespoints/edit/<?php echo $val['id'];?>" data-rel="tooltip" data-placement="top" data-original-title="修改">
@@ -300,6 +308,7 @@
                                                            <a class="red tooltip-info m-del" href="javascript:;" data-url="/housespoints/del/<?php echo $val['id']?>" data-id="<?php echo $val['id'];?>" data-rel="tooltip" data-placement="top" data-original-title="删除">
                                                                 <i class="icon-trash bigger-130"></i>
                                                             </a>
+                                                            
                                                         </div>
                                                     </td>
                                                 </tr>

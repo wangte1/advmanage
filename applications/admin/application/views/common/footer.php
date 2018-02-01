@@ -80,7 +80,6 @@
 <!--[if lt IE 9]>
     <script src="<?php echo css_js_url('html5shiv.js','admin');?>"></script>
     <script src="<?php echo css_js_url('respond.min.js','admin');?>"></script>
-<<<<<<< HEAD
 <![endif]-->
 
 <!-- data:2018-01-19 yonghua 254274509@qq.com -->
