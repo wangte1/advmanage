@@ -169,7 +169,7 @@
                                                 <div class="col-sm-9">
                                                 	<select id="area" class="select2" data-placeholder="Click to Choose..." name="point_status">
                                                 		<option value="">全部</option>
-                                                		<?php foreach (C('public.points_status') as $k => $v):?>
+                                                		<?php foreach (C('housespoint.points_status') as $k => $v):?>
                                                 		<option value="<?php echo $k;?>" <?php if(isset($point_status) && $point_status== $k){echo 'selected="selected"';}?>><?php echo $v;?></option>
 				                                    	<?php endforeach;?>
 				                                    </select>
@@ -288,7 +288,7 @@
 	                                                        }
 	                                                    ?>
 	                                                    <span class="badge <?php echo $class; ?>">
-	                                                        <?php echo C('public.points_status')[$val['point_status']];?>
+	                                                        <?php echo C('housespoint.points_status')[$val['point_status']];?>
 	                                                    </span>
                                                     </td>
 

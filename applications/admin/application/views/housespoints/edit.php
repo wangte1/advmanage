@@ -177,7 +177,7 @@
                                 <label class="col-sm-3 control-label no-padding-right" for="form-field-1"> 点位位置： </label>
                                 <div class="col-sm-9">
                                 	<select id="addr" data-placeholder="Click to Choose..." name="addr">
-	                                    <option value="">--请选择点位位置--</option>
+	                                    <option value="0">--请选择点位位置--</option>
 	                                    <option value="1" <?php if($info['addr'] == 1) {?>selected="selected"<?php }?>>门禁</option>
 	                                    <option value="2" <?php if($info['addr'] == 2) {?>selected="selected"<?php }?>>电梯前室</option>
                                     </select>
@@ -237,7 +237,7 @@
                             <div class="form-group">
                                 <label class="col-sm-3 control-label no-padding-right" for="form-field-1"> 可投放广告数： </label>
                                 <div class="col-sm-9">
-                                    <input type="number" name="ad_num" required  value="<?php if($info['ad_num']) {echo $info['ad_num'];}else {?>6<?php }?>" placeholder="" class="col-xs-6 col-sm-3">
+                                    <input type="number" name="ad_num" required  value="<?php echo $info['ad_num'];?>" placeholder="" class="col-xs-6 col-sm-3">
                                     <span class="help-inline col-xs-12 col-sm-7 form-field-description-block">
                                        个
 									</span>

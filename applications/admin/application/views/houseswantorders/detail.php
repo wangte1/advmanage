@@ -19,6 +19,10 @@
         border-top: 1px solid #ddd;
         text-align: center;
     }
+    
+    .margin5{
+    	margin-top: 5px;
+    }
 </style>
 <!-- 头部 -->
 <?php $this->load->view('common/top');?>
@@ -71,31 +75,21 @@
                                         <?php endif;?>
                                         <div class="form-group">
                                             <label class="col-sm-2 control-label no-padding-right" for="form-field-2"> 广告客户： </label>
-                                            <div class="col-sm-10">
-                                                <select id="customer_id" name="customer_id" class="select2" required disabled="disabled">
-                                                    <option value="">请选择客户</option>
-                                                    <?php foreach($customers as $val):?>
-                                                    <option value="<?php echo $val['id'];?>" <?php if(isset($info['customer_id']) && $val['id'] == $info['customer_id']){ echo "selected"; }?>><?php echo $val['name'];?></option>
-                                                    <?php endforeach;?>
-                                                </select>
+                                            <div class="col-sm-4">
+                                            	<input type="hidden" id="customer_id" name="customer_id" value="<?php echo $info['customer_id']?>">
+                                               	<?php foreach($customers as $val):?>
+                                              		<?php if(isset($info['customer_id']) && $val['id'] == $info['customer_id']){?>
+                                                    	<input readonly="readonly" type="text" value="<?php echo $val['name'];?>">
+                                                	<?php }?>
+                                             	<?php endforeach;?>
                                                 
-                                                <span class="help-inline form-field-description-block">
-                                                   <span class="middle" style="color: red">*</span>
-                                                </span>
                                             </div>
-                                        </div>
-                                        
-                                        <div class="form-group">
+                                            
                                             <label class="col-sm-2 control-label no-padding-right" for="form-field-2"> 预定点位数量（个）： </label>
-                                            <div class="col-sm-10">
-                                                
-                                                <input type="text" readonly name="points_count" class="required" value="<?php echo $info['points_count'];?>">
-                                                <span class="help-inline form-field-description-block">
-                                                   <span class="middle" style="color: red">*</span>
-                                                </span>
+                                            <div class="col-sm-4">
+                                            	<input readonly="readonly"  type="text" id="points_count" name="points_count" value="<?php echo $info['points_count']?>">
                                             </div>
                                         </div>
-                                        
 
                                         <div class="space-4"></div>
 
@@ -104,7 +98,7 @@
                                             <div class="col-sm-8">
                                                 <div class="widget-box">
                                                     <div class="widget-header">
-                                                        <h4>输入模糊条件</h4>
+                                                        <h4>模糊条件</h4>
                                                         <span class="widget-toolbar">
                                                             共<span id="all_points_num">0</span>个点位
                                                         </span>
@@ -117,9 +111,9 @@
 	                                                                    <label class="col-sm-2 control-label" for="form-field-1"> 行政区域： </label>
 	                                                                    <div class="col-sm-10" style="padding:0">
 	                                                                        <div id="distpicker1">
-	                                                                        	<input type="text" readonly name="province" id="province" value="<?php echo $info['province'];?>">
-	                                                                        	<input type="text" readonly name="city" id="city" value="<?php echo $info['city'];?>">
-	                                                                        	<input type="text" readonly name="area" id="area" value="<?php echo $info['area'];?>">
+	                                                                        	<input type="text" readonly="readonly" name="province" id="province" value="<?php echo $info['province'];?>">
+	                                                                        	<input type="text" readonly="readonly" name="city" id="city" value="<?php echo $info['city'];?>">
+	                                                                        	<input type="text" readonly="readonly" name="area" id="area" value="<?php echo $info['area'];?>">
 																			</div>
 	                                                                    </div>
 	                                                                </div>
@@ -131,7 +125,7 @@
 	                                                                    <div class="col-sm-8" style="padding:0">
 	                                                                    	<input type="hidden" id="houses_type" name="houses_type">
 	                                                                    	<?php foreach(C('public.houses_type') as $k => $v) {?>
-	                                                                    		<label style="margin-top:10px;margin-right:10px;"><input readonly class="m-checkbox" name="s_houses_type" type="checkbox" <?php if(in_array($k, explode(',',$info['houses_type']))){?>checked="checked"<?php }?> value="<?php echo $k;?>"><?php echo $v;?></label>
+	                                                                    		<label style="margin-top:10px;margin-right:10px;"><input disabled="disabled" class="m-checkbox" name="s_houses_type" type="checkbox" <?php if(in_array($k, explode(',',$info['houses_type']))){?>checked="checked"<?php }?> value="<?php echo $k;?>"><?php echo $v;?></label>
 	                                                                    	<?php }?>
 										                                	
 	                                                                    </div>
@@ -140,9 +134,9 @@
 	                                                                <div class="col-sm-6">
 	                                                                    <label class="col-sm-4 control-label" for="form-field-1"> 交房年份： </label>
 	                                                                    <div class="col-sm-8" style="padding:0">
-	                                                                        <select id="begin_year" name="begin_year" ></select>
+	                                                                    	<input readonly="readonly" type="text" id="begin_year" name="begin_year" value="<?php echo $info['begin_year']?>">
 	                                                                       	至
-	                                                                        <select id="end_year" name="end_year" ></select>
+	                                                                       	<input readonly="readonly" type="text" id="end_year" name="end_year" value="<?php echo $info['end_year']?>">
 	                                                                    </div>
 	                                                                </div>
                                                                 </div>
@@ -151,24 +145,23 @@
 										                            <div class="col-sm-6">
 										                                <label class="col-sm-4 control-label" for="form-field-2"> 投放行业： </label>
 										                                <div class="col-sm-8" style="padding:0">
-										                                	<select id="put_trade" name="put_trade">
-										                                		<option value="0">无</option>
-										                                		<?php foreach (C('housespoint.put_trade') as $k => $v):?>
-										                                			<option value="<?php echo $k;?>"><?php echo $v;?></option>
-										                                   		<?php endforeach;?>
-										                                	</select>
+										                                	<input type="hidden" id="put_trade" name="put_trade" value="<?php echo $info['put_trade']?>">
+										                                	<?php foreach (C('housespoint.put_trade') as $k => $v):?>
+										                                		<?php if($k == $info['put_trade']) {?>
+										                                			<input type="text" readonly="readonly" value="<?php echo $v;?>">
+										                                		<?php }?>
+									                                   		<?php endforeach;?>
 										                                </div>
 										                            </div>
 										                            
 										                            <div class="col-sm-6">
 										                                <label class="col-sm-4 control-label" for="form-field-2"> 点位类型： </label>
 										                                <div class="col-sm-8" style="padding:0">
+										                                	<input type="hidden" id="order_type" name="order_type" value="<?php echo $info['order_type']?>">
 										                                	<?php foreach (C('order.houses_order_type') as $k => $v):?>
-										                                    <label class="blue" style="margin-top:5px;">
-										                                        <input name="order_type" value="<?php echo $k;?>" required type="radio" class="ace m-radio" <?php if($k == 1){echo 'checked="checked"';}?> />
-										                                        <span class="lbl"> <?php echo $v;?> </span>
-										                                    </label>
-										                                    &nbsp;
+										                                		<?php if($k == $info['order_type']) {?>
+										                                			<input type="text" readonly="readonly" value="<?php echo $v;?>">
+										                                		<?php }?>
 										                                   <?php endforeach;?>
 										                                </div>
 										                            </div>
@@ -203,7 +196,7 @@
                                         <div class="form-group">
                                             <label class="col-sm-2 control-label no-padding-right" for="form-field-2"> 备注： </label>
                                             <div class="col-sm-8">
-                                                <textarea class="form-control" name="remark" rows="5" placeholder="备注信息，最多300个字"><?php if(isset($info['remark'])) { echo $info['remark'];}?></textarea>
+                                                <label class="margin5"><?php echo $info['remark'];?></label>
                                             </div>
                                         </div>
                                     </form>
@@ -274,6 +267,36 @@ function get_checkbox(){
     return check_val.toString();
     
 }
+
+function load_houses() {
+	var province = $('#province').val();
+	var city = $('#city').val();
+	var area = $('#area').val();
+	var houses_type = get_checkbox();	//获取楼盘类型
+	var begin_year = $('#begin_year').val();
+	var end_year = $('#end_year').val();
+	var put_trade = $('#put_trade').val();
+	var order_type = $('.m-radio:checked').val();
+
+	var postData = {province:province, city:city, area:area, houses_type:houses_type, begin_year:begin_year, end_year:end_year, put_trade:put_trade,order_type:order_type};
+
+	$.post('/houseswantorders/get_houses', postData, function(data){
+		if(data.flag == true && data.count > 0) {
+			var pointStr = '';
+			$("#all_points_num").text(data.count);
+			for(var i = 0; i < data.houses_lists.length; i++) {
+				pointStr += "<tr><td width='20%'>"+(i+1)+"</td>";
+				pointStr += "<td width='60%'>"+data.houses_lists[i]['houses_name']+"</td>";
+				pointStr += "<td width='20%'>"+data.houses_lists[i]['count']+"</td>";
+			}
+		}else{
+			alert('暂无空闲点位');
+		}
+
+		$("#points_lists").html('');
+		$("#points_lists").html(pointStr);
+	});
+}
                                                     
 $(function(){
 	
@@ -282,8 +305,8 @@ $(function(){
 
     $(".select2").css('width','220px').select2({allowClear:true});
 
-	
-	$('#province, #city, #area, .m-checkbox, #begin_year, #end_year, #put_trade, .m-radio').change(function(){
+    load_houses();
+	/*$('#province, #city, #area, .m-checkbox, #begin_year, #end_year, #put_trade, .m-radio').change(function(){
 
 		var province = $('#province').val();
 		var city = $('#city').val();
@@ -313,7 +336,7 @@ $(function(){
 			$("#points_lists").html(pointStr);
 		});
 		
-	});
+	});*/
 
   	//保存
     $(".btn-save").click(function(){

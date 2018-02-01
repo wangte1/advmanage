@@ -71,7 +71,7 @@
                                         <?php endif;?>
                                         <div class="form-group">
                                             <label class="col-sm-2 control-label no-padding-right" for="form-field-2"> 广告客户： </label>
-                                            <div class="col-sm-10">
+                                            <div class="col-sm-4">
                                                 <select id="customer_id" name="customer_id" class="select2" required>
                                                     <option value="">请选择客户</option>
                                                     <?php foreach($customers as $val):?>
@@ -83,17 +83,19 @@
                                                    <span class="middle" style="color: red">*</span>
                                                 </span>
                                             </div>
-                                        </div>
-                                        
-                                        <div class="form-group">
+                                            
                                             <label class="col-sm-2 control-label no-padding-right" for="form-field-2"> 预定点位数量（个）： </label>
-                                            <div class="col-sm-10">
+                                            <div class="col-sm-4">
                                                 
                                                 <input type="text" name="points_count" class="required">
                                                 <span class="help-inline form-field-description-block">
                                                    <span class="middle" style="color: red">*</span>
                                                 </span>
                                             </div>
+                                        </div>
+                                        
+                                        <div class="form-group">
+                                            
                                         </div>
                                         
 
@@ -309,7 +311,7 @@ $(function(){
 
 		var postData = {province:province, city:city, area:area, houses_type:houses_type, begin_year:begin_year, end_year:end_year, put_trade:put_trade,order_type:order_type};
 
-		$.post('/houseswantorders/get_points', postData, function(data){
+		$.post('/houseswantorders/get_houses', postData, function(data){
 			if(data.flag == true && data.count > 0) {
 				var pointStr = '';
 				$("#all_points_num").text(data.count);

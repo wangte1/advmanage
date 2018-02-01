@@ -136,6 +136,7 @@
                                                 <th>点位类型</th>
                                                 <th>交房年份</th>
                                                 <th>投放行业</th>
+                                                <th>预定点位数量</th>
                                                 <th>状态</th>
                                                 <th>业务员</th>
                                                 <th>创建时间</th>
@@ -157,6 +158,7 @@
                                             		<td><?php echo $order_type_text[$value['order_type']];?></td>
                                             		<td><?php echo $value['begin_year']."-".$value['end_year'];?></td>
                                             		<td><?php if(isset($put_trade[$value['put_trade']])) echo $put_trade[$value['put_trade']];?></td>
+                                            		<td><?php echo $value['points_count'];?></td>
                                             		<td><?php if(isset(C('houseswantorder.houses_want_status')[$value['status']])) echo C('houseswantorder.houses_want_status')[$value['status']];?></td>
                                             		<td>
                                             			<?php foreach($salesman as $k => $v) {?>
@@ -169,9 +171,17 @@
                                                             <i class="icon-eye-open bigger-130"></i>
                                                         </a> 
                                                         
-                                                        <a class="green tooltip-info" href="/houseswantorders/cancle/<?php echo $value['id'];?>"  data-rel="tooltip" data-placement="top" title="" data-original-title="撤回">
-                                                            <i class="icon-reply bigger-130"></i>
-                                                        </a> 
+                                                        <?php if($value['status'] == 1 && $userInfo['id'] == $value['create_user']) {?>
+	                                                        <a class="green tooltip-info" href="/houseswantorders/cancle/<?php echo $value['id'];?>"  data-rel="tooltip" data-placement="top" title="" data-original-title="撤回">
+	                                                            <i class="icon-reply bigger-130"></i>
+	                                                        </a> 
+                                                        <?php }?>
+                                                        
+                                                        
+                                                        <a class="grey tooltip-info checkout" href="/houseswantorders/checkout/<?php echo $value['id'];?>" data-id="129" data-customer="2" data-rel="tooltip" data-placement="top" data-original-title="转预定订单">
+                                                            <i class="ace-icon fa fa-random bigger-130" aria-hidden="true"></i>
+                                                        </a>
+                                                        
                                             		</td>
                                             	</tr>
                                             <?php endforeach; ?>

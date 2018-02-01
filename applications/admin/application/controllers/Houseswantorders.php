@@ -118,9 +118,20 @@ class Houseswantorders extends MY_Controller{
     
     
     /**
-     * 根据条件获取点位的列表和数量
+     * 意向订单转预定订单
      */
-    public function get_points() {
+    public function checkout($id) {
+    	$data = $this->data;
+    	$data['info'] = $this->Mhouses_want_orders->get_one('*', ['id'=>$id]);
+    	
+    	$this->load->view("houseswantorders/checkout", $data);
+    }
+    
+    
+    /**
+     * 根据模糊条件获取楼盘信息
+     */
+    public function get_houses() {
 
         if($this->input->post('order_type')) $where['A.type_id'] = $this->input->post('order_type');
         if(!empty($this->input->post('province'))) $where['B.province'] = $this->input->post('province');
@@ -137,6 +148,8 @@ class Houseswantorders extends MY_Controller{
         if(!empty($this->input->post('end_year'))) $where['B.deliver_year<='] = $this->input->post('end_year');
         if(!empty($this->input->post('put_trade'))) $put_trade = $this->input->post('put_trade');
        	
+        $where['A.point_status'] = 1;
+        
         $points_lists = $this->Mhouses_points->get_points_lists($where);
         $houses_lists = [];
         if(count($points_lists) > 0) {
@@ -159,7 +172,7 @@ class Houseswantorders extends MY_Controller{
         					if(!isset($tmp_arr1[$k1])) {
         						$tmp_arr1[$k1] = 0;
         					}
-        					$tmp_arr1[$k1] = $tmp_arr1[$k1] + 1;
+        					$tmp_arr1[$k1] = $tmp_arr1[$k1] + ($v['ad_num']-$v['ad_use_num']);
         				}
         			}
         		}
@@ -177,7 +190,67 @@ class Houseswantorders extends MY_Controller{
         	}
         }
        
-        $this->return_json(array('flag' => true, 'houses_lists' => $houses_lists, 'count' => count($points_lists)));
+        $this->return_json(array('flag' => true, 'houses_lists' => $houses_lists, 'count' => array_sum($tmp_arr1)));
+    }
+    
+    /*
+     * 获取点位列表
+     */
+    public function get_points() {
+    	
+    	if($this->input->post('order_type')) $where['A.type_id'] = $this->input->post('order_type');
+    	if(!empty($this->input->post('province'))) $where['B.province'] = $this->input->post('province');
+    	if(!empty($this->input->post('city'))) $where['B.city'] = $this->input->post('city');
+    	if(!empty($this->input->post('area'))) $where['B.area'] = $this->input->post('area');
+    	
+    	if(!empty($this->input->post('houses_type'))) {
+    	
+    		$tmp_type_arr = explode(",", $this->input->post('houses_type'));
+    	
+    		$where['in']['B.type'] = $tmp_type_arr;
+    	}
+    	if(!empty($this->input->post('begin_year'))) $where['B.deliver_year>='] = $this->input->post('begin_year');
+    	if(!empty($this->input->post('end_year'))) $where['B.deliver_year<='] = $this->input->post('end_year');
+    	if(!empty($this->input->post('put_trade'))) $put_trade = $this->input->post('put_trade');
+    	
+    	if(!empty($this->input->post('houses_id'))) $where['A.houses_id'] = $this->input->post('houses_id');
+    	if(!empty($this->input->post('area_id'))) $where['A.area_id'] = $this->input->post('area_id');
+    	if(!empty($this->input->post('ban'))) $where['A.ban'] = $this->input->post('ban');
+    	if(!empty($this->input->post('unit'))) $where['A.unit'] = $this->input->post('unit');
+    	if(!empty($this->input->post('floor'))) $where['A.floor'] = $this->input->post('floor');
+    	if(!empty($this->input->post('addr'))) $where['A.addr'] = $this->input->post('addr');
+    	
+    	$where['A.point_status'] = 1;
+    	
+    	$points_lists = $this->Mhouses_points->get_points_lists($where);
+    	
+    	$point_count = 0;
+    	
+    	if(count($points_lists) > 0) {
+    		$houses_lists = array_column($points_lists, 'houses_name', 'houses_id');
+    		$area_lists = array_column($points_lists, 'houses_area_name', 'area_id');
+    		$ban_lists = array_column($points_lists, 'ban');
+    		$unit_lists = array_column($points_lists, 'unit');
+    		$floor_lists = array_column($points_lists, 'floor');
+    		$addr_lists = array_column($points_lists, 'addr');
+    		
+	    	foreach($points_lists as $k => &$v) {
+	    		$point_count = $point_count + ($v['ad_num'] - $v['ad_use_num']);
+	    		$v['point_status_txt'] = C('housespoint.points_status')[$v['point_status']];
+	    	}
+    	}
+    	
+    	$this->return_json(array(
+    			'flag' => true,
+    			'points_lists' => $points_lists,
+    			'houses_lists'=>$houses_lists,
+    			'area_lists'=>$area_lists,
+    			'ban_lists'=>$ban_lists,
+    			'unit_lists'=>$unit_lists,
+    			'floor_lists'=>$floor_lists,
+    			'addr_lists'=>$addr_lists,
+    			'count' => $point_count
+    	));
     }
     
     
