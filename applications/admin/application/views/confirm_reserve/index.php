@@ -19,7 +19,7 @@
                     <li>
                         <a href="#">订单管理</a>
                     </li>
-                    <li class="active">预定订单</li>
+                    <li class="active">预定订单待确认列表</li>
                 </ul>
 
                 <div class="nav-search" id="nav-search">
@@ -33,9 +33,6 @@
             </div>
 
             <div class="page-content">
-                <div class="page-header">
-                    <a href="/housesscheduledorders/order_type" class="btn btn-sm btn-primary"><i class="fa fa-plus-square" aria-hidden="true"></i> 新建预定订单</a>
-                </div> 
 
                 <div class="row">
                     <div class="col-xs-12">
@@ -218,21 +215,35 @@
                                                     </span>
                                                 </td>
                                                 <td>
-                                                    <div class="visible-md visible-lg hidden-sm hidden-xs action-buttons">
-                                                        <a class="green tooltip-info" href="/housesscheduledorders/detail/<?php echo $value['id'];?>"  data-rel="tooltip" data-placement="top" data-original-title="详情">
+                                                    <div class="action-buttons">
+                                                        <a class="green tooltip-info" href="/confirm_reserve/detail/<?php echo $value['id'];?>"  data-rel="tooltip" data-placement="top" data-original-title="详情">
                                                             <i class="icon-eye-open bigger-130"></i>
                                                         </a> 
-                                                        <?php if($value['order_status'] < C('housesscheduledorder.order_status.code.done_release')):?>
-                                                        <a class="green tooltip-info" href="/housesscheduledorders/edit/<?php echo $value['id'];?>"  data-rel="tooltip" data-placement="top" data-original-title="修改">
-                                                            <i class="icon-pencil bigger-130"></i>
-                                                        </a>
-                                                        <?php endif;?>
                                                         
                                                         <?php if($value['order_status'] == 2):?>
                                                         <a class="grey tooltip-info update" href="javascript:;" data-id="<?php echo $value['id'];?>"  data-rel="tooltip" data-placement="top" data-original-title="续期">
                                                             <i class="ace-icon glyphicon glyphicon-upload bigger-130" aria-hidden="true"></i>
                                                         </a>
                                                         <?php endif;?>
+                                                        <?php if(in_array($value['order_status'], [1,2]) && $value['is_confirm'] == 0):?>
+                                                        
+                                                    	
+                                                        <a class="grey tooltip-info sendsms" href="javascript:;" 
+                                                        	data-id="<?php echo $value['sales_id'];?>" 
+                                                        	<?php foreach ($salesman as $k => $v):?>
+                                                        	<?php if($value['sales_id'] == $v['id']):?>
+                                                        	data-salesname="<?php echo $v['name'];break;?>"
+                                                        	<?php endif;?>
+                                                    	    <?php endforeach;?>" data-rel="tooltip" data-placement="top" data-original-title="提醒业务员">
+                                                            <i class="ace-icon fa fa-envelope-o bigger-130" aria-hidden="true"></i>
+                                                        </a>
+                                                        <?php endif;?>
+                                                        
+                                                        <?php if($value['is_confirm'] == 1 && $value['order_status'] != 5) {?>
+                                                        	 <a class="grey tooltip-info checkout" href="javascript:;" data-id="<?php echo $value['id'];?>" data-customer="<?php echo $value['lock_customer_id']?>"  data-rel="tooltip" data-placement="top" data-original-title="转订单">
+	                                                            <i class="ace-icon fa fa-random bigger-130" aria-hidden="true"></i>
+	                                                        </a>
+                                                        <?php }?>
                                                     </div>
                                                 </td>
                                             </tr>

@@ -52,9 +52,6 @@
                                         <li <?php if($tab == 'point'){echo 'class="active"';}?>>
                                             <a data-toggle="tab" href="#points">预选点位</a>
                                         </li>
-                                        <li <?php if($tab == 'confirm'){echo 'class="active"';}?>>
-                                            <a data-toggle="tab" href="#customer_confrim">确认点位</a>
-                                        </li>
                                     </ul>
 
                                     <div class="tab-content">
@@ -184,47 +181,6 @@
                                             </table>
                                             <!--分页start-->
                                     		<?php $this->load->view('common/page');?>
-                                        </div>
-                                        <!-- 客户确认 -->
-                                        <div id="customer_confrim" class="tab-pane <?php if($tab == 'confirm'){echo 'in active';}?>">
-                                        	<a href="javascript:;" class="btn btn-xs btn-info btn-export" data-id="<?php echo $info['id'];?>" data-type="<?php echo $info['order_type'];?>" style="margin-bottom:10px">
-                                                <i class="fa fa-download out_excel" aria-hidden="true"></i> 导出确认点位
-                                            </a>
-                                            <a href="javascript:;" class="btn btn-xs btn-info sign" data-id="<?php echo $info['id'];?>" style="margin-bottom:10px">
-                                                <i class="fa fa-check-square-o" aria-hidden="true"></i> 客户签字
-                                            </a>
-                                        	<table class="table table-striped table-bordered">
-                                                <thead>
-                                                    <tr>
-                                                    	<th width="80px">全选/反选</th>
-                                                        <th class="center">行政区域</th>
-                                                        <th>楼盘名称</th>
-                                                        <th>锁定点位数</th>
-                                                        <th>确认点位数</th>
-                                                        <th>操作</th>
-                                                    </tr>
-                                                </thead>
-                                                <tbody>
-                                                    <?php foreach($houses_list as $val):?>
-                                                    <tr id="houses_<?php echo $val['id']?>">
-                                                    	<td id="all" style="text-align: center;">
-                                                    		<input class="all" data-houses_id="<?php echo $val['id']?>" <?php if($val['num'] == $val['confirm_num']){echo 'checked';}?> type="checkbox" />
-                                                    	</td>
-                                                        <td class="center">
-                                                        	<?php echo $val['province'];?>-<?php echo $val['city'];?>-<?php echo $val['area'];?>
-                                                        </td>
-                                                        <td><?php echo $val['name']?></td>
-                                                        <td><?php echo $val['num']?></td>
-                                                        <td><?php echo $val['confirm_num']?></td>
-                                                        <td>
-                                                        	<a style="cursor: pointer;" class="green tooltip-info show_detial" data="<?php echo $val['id']?>" data-name="<?php echo $val['name']?>" data-rel="tooltip" data-placement="top" data-original-title="详情">
-                                                                <i class="icon-eye-open bigger-130"></i>
-                                                            </a> 
-                                                        </td>
-                                                    </tr>
-                                                    <?php endforeach;?>
-                                                </tbody>
-                                            </table>
                                         </div>
                                     </div>
                                 </div>
