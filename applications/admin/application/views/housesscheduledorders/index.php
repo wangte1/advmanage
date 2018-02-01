@@ -226,9 +226,6 @@
                                                         <a class="green tooltip-info" href="/housesscheduledorders/edit/<?php echo $value['id'];?>"  data-rel="tooltip" data-placement="top" data-original-title="修改">
                                                             <i class="icon-pencil bigger-130"></i>
                                                         </a>
-                                                        <a class="grey tooltip-info release-points" href="javascript:;" data-id="<?php echo $value['id'];?>"  data-rel="tooltip" data-placement="top" data-original-title="解除锁定">
-                                                            <i class="icon-unlock bigger-130" aria-hidden="true"></i>
-                                                        </a>
                                                         <?php endif;?>
                                                         
                                                         <?php if($value['order_status'] == 2):?>
@@ -236,25 +233,6 @@
                                                             <i class="ace-icon glyphicon glyphicon-upload bigger-130" aria-hidden="true"></i>
                                                         </a>
                                                         <?php endif;?>
-                                                        <?php if(in_array($value['order_status'], [1,2]) && $value['is_confirm'] == 0):?>
-                                                        
-                                                    	
-                                                        <a class="grey tooltip-info sendsms" href="javascript:;" 
-                                                        	data-id="<?php echo $value['sales_id'];?>" 
-                                                        	<?php foreach ($salesman as $k => $v):?>
-                                                        	<?php if($value['sales_id'] == $v['id']):?>
-                                                        	data-salesname="<?php echo $v['name'];break;?>"
-                                                        	<?php endif;?>
-                                                    	    <?php endforeach;?>" data-rel="tooltip" data-placement="top" data-original-title="提醒业务员">
-                                                            <i class="ace-icon fa fa-envelope-o bigger-130" aria-hidden="true"></i>
-                                                        </a>
-                                                        <?php endif;?>
-                                                        
-                                                        <?php if($value['is_confirm'] == 1 && $value['order_status'] != 5) {?>
-                                                        	 <a class="grey tooltip-info checkout" href="javascript:;" data-id="<?php echo $value['id'];?>" data-customer="<?php echo $value['lock_customer_id']?>"  data-rel="tooltip" data-placement="top" data-original-title="转订单">
-	                                                            <i class="ace-icon fa fa-random bigger-130" aria-hidden="true"></i>
-	                                                        </a>
-                                                        <?php }?>
                                                     </div>
                                                 </td>
                                             </tr>

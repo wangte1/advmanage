@@ -385,14 +385,6 @@ class Housesscheduledorders extends MY_Controller{
         $this->load->view('housesscheduledorders/detail', $data);
     }
     
-    public function sign(){
-        $order_id = $this->input->post('order_id');
-        $res = $this->Mhouses_scheduled_orders->update_info(['is_confirm' => 1], ['id' => $order_id]);
-        if(!$res){
-            $this->return_json(['code' => 0, 'msg' => '操作失败']);
-        }
-        $this->return_json(['code' => 1, 'msg' => '操作成功']);
-    }
     
     /**
      * 显示订单内指定楼盘的所有点位选择详情
@@ -458,8 +450,10 @@ class Housesscheduledorders extends MY_Controller{
         $order_id = (int) $this->input->post('order_id');
         $point_id = (int) $this->input->post('point_id');
         //根据订单id获取用户已确认的点位
-        $orderInfo = $this->Mhouses_scheduled_orders->get_one('point_ids,confirm_point_ids', ['id' => $order_id]);
-
+        $orderInfo = $this->Mhouses_scheduled_orders->get_one('point_ids,confirm_point_ids,is_confirm', ['id' => $order_id]);
+        if($orderInfo['is_confirm'] == 1){
+            $this->return_json(['code' => 0, 'msg' => '您不能修改已确认的订单！']);
+        }
         $confirm_point_ids = $orderInfo['confirm_point_ids'];
         if($confirm_point_ids){
             $confirm_point_ids = explode(',', $confirm_point_ids);
@@ -501,8 +495,10 @@ class Housesscheduledorders extends MY_Controller{
         $houses_id = (int) $this->input->post('houses_id');
         
         //根据订单id获取用户已确认的点位
-        $orderInfo = $this->Mhouses_scheduled_orders->get_one('point_ids,confirm_point_ids', ['id' => $order_id]);
-        
+        $orderInfo = $this->Mhouses_scheduled_orders->get_one('point_ids,confirm_point_ids,is_confirm', ['id' => $order_id]);
+        if($orderInfo['is_confirm'] == 1){
+            $this->return_json(['code' => 0, 'msg' => '您不能修改已确认的订单！']);
+        }
         $point_ids = explode(',', $orderInfo['point_ids']);
         $confirm_point_ids = $orderInfo['confirm_point_ids'];
         

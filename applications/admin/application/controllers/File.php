@@ -17,15 +17,14 @@ class File extends MY_Controller {
                         'time_method_by_day'=> TRUE, //分目录存放的方式：按天
         );
         $this->load->library('upload', $config);
-       
-        
-        if ( ! $this->upload->do_upload('imgFile')){
-            $error = $this->upload->display_errors();
-            echo json_encode(array('error' => 1, 'message' => '上传错误！'.$error));
-        } else {
-            $data = $this->upload->data();
-            echo json_encode(array('error' => 0, 'url' => '/uploads/'.$file_dir.$data['file_name']));
+        if ( !$this->upload->do_upload('imgFile') ) {
+            if(!$this->upload->do_upload('file')){
+                $error = $this->upload->display_errors();
+                echo json_encode(array('error' => 1, 'message' => '上传错误！'.$error));
+            }
         }
+        $data = $this->upload->data();
+        echo json_encode(array('error' => 0, 'url' => '/uploads/'.$file_dir.$data['file_name']));
         exit();
     }
     

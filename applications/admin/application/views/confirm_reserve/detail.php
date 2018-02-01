@@ -20,7 +20,7 @@
                         <a href="#">订单管理</a>
                     </li>
                     <li>
-                        <a href="/housesscheduledorders">预定订单列表</a>
+                        <a href="/confirm_reserve/index">预定订单列表</a>
                     </li>
                     <li class="active">预定订单详情</li>
                 </ul>
@@ -53,9 +53,15 @@
                                         	<a href="javascript:;" class="btn btn-xs btn-info btn-export" data-id="<?php echo $info['id'];?>" data-type="<?php echo $info['order_type'];?>" style="margin-bottom:10px">
                                                 <i class="fa fa-download out_excel" aria-hidden="true"></i> 导出确认点位
                                             </a>
+                                            <?php if($info['is_confirm'] == 0):?>
                                             <a href="javascript:;" class="btn btn-xs btn-info sign" data-id="<?php echo $info['id'];?>" style="margin-bottom:10px">
                                                 <i class="fa fa-check-square-o" aria-hidden="true"></i> 客户签字
                                             </a>
+                                            <?php else :?>
+                                            <a href="javascript:;" class="btn btn-xs btn-info signed" data="<?php echo $info['confirm_img']?>" style="margin-bottom:10px">
+                                                <i class="fa fa-check-square-o"></i> 已签字(查看合同)
+                                            </a>
+                                            <?php endif;?>
                                         	<table class="table table-striped table-bordered">
                                                 <thead>
                                                     <tr>
@@ -112,22 +118,16 @@
     });
 
     $('.sign').on('click', function(){
-    	var index = layer.confirm('客户是否已经签字确认？', {
-  		  btn: ['确定','取消'] //按钮
-  		}, function(){
-  			var order_id = '<?php echo $info["id"];?>';
-  	    	$.post('/housesscheduledorders/sign', {'order_id':order_id}, function(data){
-  				if(data.code = 1){
-  					layer.msg(data.msg, {icon: 1});
-  	  			}else{
-  	  	  			layer.msg(data.msg, {icon: 2});
-  	  	  		}
-  	        });
-  		}, function(){
-  		  	layer.close(index);
-  		});
-    	
+    	var order_id = '<?php echo $info["id"];?>';
+    	var url = '/confirm_reserve/sign?order_id='+order_id;
+    	window.location.href = url;
     });
+    $('.signed').on('click', function(){
+    	var img = $(this).attr('data');
+    	console.log(img);
+    	window.location.href = "<?php echo $domain['admin']['url']?>"+img;
+    });
+    
 
     $('.show_detial').on('click', function(){
 	    var order_id = '<?php echo $info["id"];?>';

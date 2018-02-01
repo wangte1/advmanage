@@ -41,7 +41,7 @@ class Confirm_reserve extends MY_Controller{
         $pageconfig = C('page.page_lists');
         $this->load->library('pagination');
         $page = $this->input->get_post('per_page') ? : '1';
-        $where = array('A.is_confirm' => 0);
+        $where = array();
         if ($this->input->get('order_type')) $where['A.order_type'] = $this->input->get('order_type');
         if ($this->input->get('customer_id')) $where['A.lock_customer_id'] = $this->input->get('customer_id');
         if ($this->input->get('admin_id')) $where['C.id'] = $this->input->get('admin_id');
@@ -224,5 +224,37 @@ class Confirm_reserve extends MY_Controller{
         }
         
         $this->load->view('confirm_reserve/houses_detail', $data);
+    }
+    
+    /**
+     * 客户确认
+     */
+    public function sign(){
+        if(IS_POST){
+            $order_id = $this->input->post('id');
+            $img = trim($this->input->post('confirm_img'));
+            if(empty($img)){
+                $this->error('合同照片不能为空，请上传！');
+            }
+            $post = $this->input->post();
+            $post['is_confirm'] = 1;
+            unset($post['id'], $post['contact_person'], $post['file']);
+            $res = $this->Mhouses_scheduled_orders->update_info($post, ['id' => $order_id]);
+            if(!$res){
+                $this->error('操作失败');
+            }
+            $this->success('操作成功', '/confirm_reserve/detail/'.$order_id);
+        }else{
+            $data = $this->data;
+            $order_id = $this->input->get('order_id');
+            
+            $data['order_id'] = $order_id;
+            $orderInfo = $this->Mhouses_scheduled_orders->get_one('*', ['id' =>$order_id]);
+            if(!$orderInfo) show_404();
+            $customer = $this->Mhouses_customers->get_one('id,name,contact_person', ['id' => $orderInfo['lock_customer_id']]);
+            $data['orderInfo'] = $orderInfo;
+            $data['customer'] = $customer;
+            $this->load->view('confirm_reserve/sign', $data);
+        }
     }
 }
