@@ -33,9 +33,6 @@
             </div>
 
             <div class="page-content">
-                <div class="page-header">
-                    <a href="/housesorders/order_type" class="btn btn-sm btn-primary"><i class="fa fa-plus-square" aria-hidden="true"></i> 新建订单</a>
-                </div> 
 
                 <div class="row">
                     <div class="col-xs-12">
@@ -153,7 +150,7 @@
                                                 <th width="7%">下单日期</th>
                                                 <th>订单状态</th>
                                                 <th>创建人</th>
-                                                <th width="10%">操作</th>
+                                                <th width="8%">操作</th>
                                             </tr>
                                         </thead>
                                         <tbody>
@@ -194,7 +191,6 @@
                                                     //if(($value['order_status'] == 7 && ($release_end_time - $today_time) >= 0 && ($release_end_time - $today_time) <= $between_time)
                                                     //   || ($value['order_status'] == 7 && ($release_end_time < $today_time))){
                                                     ?>
-                                                    <span class="label label-sm label-primary arrowed arrowed-right expire-time" data-id="<?php echo $value['id'];?>"  data-order="<?php echo $value['order_code'];?>" style="cursor: pointer" title="续期">续期</span>
                                                     <?php //}?>
                                                 </td>
                                                 <td><?php echo $value['create_time'];?></td>
@@ -248,42 +244,11 @@
                                                 </td>
                                                 <td><?php echo $admins[$value['creator']];?></td>
                                                 <td>
-                                                    <div class="visible-md visible-lg hidden-sm hidden-xs action-buttons">
-                                                        <a class="green tooltip-info" href="/housesorders/detail/<?php echo $value['id'];?>"  data-rel="tooltip" data-placement="top" title="" data-original-title="详情">
-                                                            <i class="icon-eye-open bigger-130"></i>
-                                                        </a> 
-                                                        
-                                                        <a class="green tooltip-info" onclick="deleteOrder(<?php echo $value['id'];?>);" href="javascript:void(0);"  data-rel="tooltip" data-placement="top" title="" data-original-title="删除">
-                                                            <i class="icon-trash bigger-130"></i>
-                                                        </a> 
-                                                        
-                                                        <?php if($value['order_status'] == 1): ?>
-                                                            <a class="green tooltip-info" href="/housesorders/edit/<?php echo $value['id'];?>"  data-rel="tooltip" data-placement="top" title="" data-original-title="修改">
-                                                                <i class="icon-pencil bigger-130"></i>
-                                                            </a>
-                                                            <a class="green tooltip-info" href="/housesorders/upload_adv_img/<?php echo $value['id'];?>"  data-rel="tooltip" data-placement="top" title="" data-original-title="广告画面">
-                                                                <i class="fa fa-file-image-o bigger-130"></i>
-                                                            </a>
-                                                            <a class="green tooltip-info" href="/housesorders/contact_list/<?php echo $value['id'];?>" target="_blank" data-rel="tooltip" data-placement="top" title="" data-original-title="生成联系单">
-                                                                <i class="fa fa-building-o bigger-130"></i>
-                                                            </a>
-                                                        <?php endif;?>
-                                                        <?php if($value['order_status'] == 6 || $value['order_status'] == 7):?>
-                                                        <a class="green tooltip-info" href="/housesorders/check_upload_img/<?php echo $value['id'];?>"  data-rel="tooltip" data-placement="top" title="" data-original-title="验收图片">
-                                                            <i class="fa fa-picture-o bigger-130"></i>
-                                                        </a>
-                                                        <?php endif;?>
-                                                        <?php if($value['order_status'] == 6):?>
-                                                        <a class="green tooltip-info" href="/housesorders/confirmation/<?php echo $value['id'];?>" target="_blank" data-rel="tooltip" data-placement="top" title="" data-original-title="生成确认函">
-                                                            <i class="fa fa-clone bigger-130"></i>
-                                                        </a>
-                                                        <?php endif;?>
-                                                        <?php if($value['order_status'] == 7 && $value['order_type'] == 1): ?>
-                                                            <a class="green tooltip-info" href="/housesorders/edit_points/<?php echo $value['id'];?>"  data-rel="tooltip" data-placement="top" title="" data-original-title="修改点位">
-                                                                <i class="icon-pencil bigger-130"></i>
-                                                            </a>
-                                                        <?php endif;?>
-                                                    </div>
+                                                	<?php if($value['order_status'] == 1) {?>
+                                                		<a class="green tooltip-info" href="/uploadadpic/upload_adv_img/<?php echo $value['id'];?>/<?php echo $value['order_status'];?>"  data-rel="tooltip" data-placement="top" title="" data-original-title="上传广告画面">
+                                                     		<i class="fa fa-file-image-o bigger-130"></i>
+                                                     	</a>
+                                                	<?php }?>
                                                 </td>
                                             </tr>
                                             <?php endforeach; ?>

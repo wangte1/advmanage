@@ -666,7 +666,7 @@ class Housesorders extends MY_Controller{
         $data['info']['salesman'] = $this->Msalesman->get_one('name, phone_number', array('id' => $data['info']['sales_id']));
 		
         //投放点位
-        $data['info']['selected_points'] = $this->Mhouses_points->get_points_lists(array('in' => array('A.id' => explode(',', $data['info']['point_ids']))));
+        $data['info']['selected_points'] = $this->Mhouses_points->get_points_lists(array('in' => array('A.id' => explode(',', $data['info']['point_ids']))), [], 0,0,  $group_by = array('houses_id'));
 
         //广告画面
         $data['info']['adv_img'] = $data['info']['adv_img'] ? explode(',', $data['info']['adv_img']) : array();
@@ -703,7 +703,9 @@ class Housesorders extends MY_Controller{
 //         }
         
         //制作公司
-        $data['info']['make_company'] = $this->Mmake_company->get_one('company_name', array('id' => $data['info']['make_company_id']))['company_name'];
+        if(!empty($data['info']['make_company_id'])) {
+        	$data['info']['make_company'] = $this->Mmake_company->get_one('company_name', array('id' => $data['info']['make_company_id']))['company_name'];
+        }
         $data['status_text'] = C('housesorder.houses_order_status.text');
 
         //获取对应订单状态的操作信息
@@ -719,8 +721,26 @@ class Housesorders extends MY_Controller{
     }
     
     
-    /*
-     * 
+    /**
+     * 点位表按行政区域、楼盘分组详情
+     */
+    public function points_detail($order_id, $houses_id) {
+    	$data = $this->data;
+    	
+    	$order_list = $this->Mhouses_orders->get_one('point_ids', ['id'=>$order_id]);
+    	
+    	var_dump(explode(',', $order_list['point_ids']));exit;
+    	
+    	$where['in']['A.id'] = explode(',', $order_list['point_ids']);
+    	$where['A.houses_id'] = $houses_id;
+    	$data['points_list'] = $this->Mhouses_points->get_points_lists($where);
+    	
+    	var_dump($data['points_list']);
+    	$this->load->view('housesorders/points_detail', $data);
+    }
+    
+    
+    /**
      * 删除订单
      */
     function del_order() {

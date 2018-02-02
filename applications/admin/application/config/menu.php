@@ -170,18 +170,23 @@ $config = array(
 			    	'active'=> 'houses_orders_list'
 			    ),
     			array(
+    				'url'=>'/uploadadpic',
+    				'name'=> '上传广告画面',
+    				'active'=> 'uploadadpic_list'
+    			),
+    			array(
     				'url'=>'/houseschangepicorders',
     				'name'=> '换画订单',
     				'active'=> 'houses_change_pic_order_list'
     			),
     			array(
     				'url'=>'/housesassign',
-    				'name'=> '派单列表',
+    				'name'=> '派工单列表',
     				'active'=> 'houses_assign_list'
     			),
     			array(
     				'url'=>'/housesconfirm',
-    				'name'=> '确认派单',
+    				'name'=> '确认工单',
     				'active'=> 'houses_confirm_list'
     			),
     		)

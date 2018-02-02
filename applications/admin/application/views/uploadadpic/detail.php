@@ -56,9 +56,6 @@
                                             <a data-toggle="tab" href="#adv_img">广告画面</a>
                                         </li>
                                         <li>
-                                            <a data-toggle="tab" href="#make_info">制作信息</a>
-                                        </li>
-                                        <li>
                                             <a data-toggle="tab" href="#inspect_img">验收图片</a>
                                         </li>
                                         <li>
@@ -258,48 +255,7 @@
                                                 <i class="fa fa-download out_excel" aria-hidden="true"></i> 导出投放点位
                                             </a>
                                             <?php endif;?>
-                                            
                                             <table class="table table-striped table-bordered">
-                                                <thead>
-                                                    <tr>
-                                                        <th class="center">行政区域</th>
-                                                        <th class="center">楼盘</th>
-                                                        <th class="center">点位数</th>
-                                                        <th class="center">是否需要社区审核</th>
-                                                        <th class="center">操作</th>
-                                                    </tr>
-                                                </thead>
-                                                <tbody>
-                                                    <?php foreach($info['selected_points'] as $value):?>
-                                                    <tr>
-                                                        <td class="center"><?php echo $value['province']."-".$value['city']."-".$value['area'];?></td>
-                                                        <td class="center"><?php echo $value['houses_name'];?></td>
-                                                        <td class="center"><?php echo $value['count'];?></td>
-                                                        <td class="center"><?php if($value['is_check_out'] == 1) {echo "<font style='color:red;'>是</font>";}else{echo "否";}?></td>
-                                                        <td class="center">
-                                                        	<a class="green tooltip-info" onclick="show_points_detail(<?php echo $id;?>,<?php echo $value['houses_id'];?>);" href="#" data-rel="tooltip" data-placement="top" data-original-title="详情">
-	                                                            <i class="icon-eye-open bigger-130"></i>
-	                                                        </a>
-                                                        </td>
-                                                    </tr>
-                                                    <?php endforeach;?>
-                                                </tbody>
-                                            </table>
-                                            
-                                            <script>
-                                            	function show_points_detail(order_id, houses_id) {
-                                            		layer.open({
-                                            			  type: 2,
-                                            			  title: '点位详情',
-                                            			  shadeClose: true,
-                                            			  shade: 0.8,
-                                            			  area: ['70%', '70%'],
-                                            			  content: '/housesorders/points_detail/'+order_id+'/'+houses_id //iframe的url
-                                            			}); 
-                                                }
-                                            </script>
-                                            
-                                            <!-- <table class="table table-striped table-bordered">
                                                 <thead>
                                                     <tr>
                                                         <th class="center">点位编号</th>
@@ -326,38 +282,26 @@
                                                     </tr>
                                                     <?php endforeach;?>
                                                 </tbody>
-                                            </table> -->
-                                            
+                                            </table>
                                         </div>
                                         <div id="adv_img" class="tab-pane">
-                                        	<div class="row" style="margin-top: 20px;">
-                                        	
-	                                        	<div class="col-xs-12">
-								                    <label class="col-sm-2 control-label no-padding-right" style="text-align:right;" for="form-field-2"> 是否打小样： </label>
-								                    <div class="col-sm-10">
-								                    	<?php if($info['is_sample'] == 1) {echo "是";}else{echo "否";}?>
-								                    </div>
-							                   	</div>
-	                                        	
-	                                        	<div class="col-xs-12" style="margin-top:20px;">
-	                                        		<label class="col-sm-2 control-label no-padding-right" style="text-align:right;" for="form-field-2"> 广告画面： </label>
-								                    <div class="col-sm-10">
-								                    	<?php if(count($info['adv_img']) > 0):?>
-			                                                <?php foreach ($info['adv_img'] as $value) : ?>
-			                                                    <a href="<?php echo $value;?>" target="_blank">
-			                                                        <img src="<?php echo $value;?>" style="width:300px; height:200px" />
-			                                                    </a>
-			                                                <?php endforeach;?>
-			                                            <?php else:?>
-			                                            <?php endif;?>
-								                    </div>
-	                                            </div>
-                                            
-                                            </div>  
-                                            
-                                        </div>
-                                        <div id="make_info" class="tab-pane">
-                                            
+                                            <?php if(count($info['adv_img']) > 0):?>
+                                                <?php foreach ($info['adv_img'] as $value) : ?>
+                                                    <a href="<?php echo $value;?>" target="_blank">
+                                                        <img src="<?php echo $value;?>" style="width:300px; height:200px" />
+                                                    </a>
+                                                <?php endforeach;?>
+                                            <?php else:?>
+                                                <div class="alert alert-warning center" style="width:400px">
+                                                    <strong>
+                                                        <i class="icon-warning-sign bigger-120"></i> 您还未上传广告画面！
+                                                    </strong>
+                                                    <a class="btn btn-xs btn-info" href="/housesorders/upload_adv_img/<?php echo $info['id'];?>">
+                                                        立即上传
+                                                        <i class="icon-arrow-right icon-on-right"></i>
+                                                    </a>
+                                                </div>
+                                            <?php endif;?>
                                         </div>
                                         <div id="inspect_img" class="tab-pane">
                                             <?php if(count($info['inspect_img']) > 0):?>

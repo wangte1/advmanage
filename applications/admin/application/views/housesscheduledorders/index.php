@@ -88,7 +88,10 @@
                                                     </select>
                                                 </div>
                                             </div>
-                             
+                                            
+                                       	</div>
+                                       	
+                                     	<div class="form-group">
                                             <div class="col-sm-4">
                                                 <label class="col-sm-3 control-label no-padding-right" for="form-field-1"> 订单状态 </label>
                                                 <div class="col-sm-9">
@@ -188,13 +191,13 @@
                                                                 $class = 'badge-warning';
                                                                 break;
                                                             case '3':
-                                                                $class = 'badge-grey';
+                                                                $class = 'badge-success';
                                                                 break;
                                                             case '4':
                                                                 $class = 'badge-grey';
                                                                 break;
                                                             case '5':
-                                                                $class = 'badge-grey';
+                                                                $class = 'badge-success';
                                                                 break;
                                                         }
                                                     ?>
@@ -209,7 +212,7 @@
                                                                 $class = 'badge-grey';
                                                                 break;
                                                             case '1':
-                                                                $class = 'badge-yellow';
+                                                                $class = 'badge-success';
                                                                 break;
                                                         }
                                                     ?>
