@@ -49,6 +49,14 @@ class MY_Model extends CI_Model {
      * @description 更新信息
      */
     public function update_info($data, $where) {
+
+        //字段间的比较
+        if(isset($where['field'])){
+            foreach ($where['field'] as $key => $value){
+                $this->db->where("{$key}", $value, FALSE);
+            }
+            unset($where['field']); 
+        }
     	
     	if (isset($where['in'])) {
     		foreach ($where['in'] as $key => $value){
@@ -84,6 +92,22 @@ class MY_Model extends CI_Model {
     	         $this->db->set("{$key}", "{$key}" . "+" . "{$value}", FALSE);
     	    }
     	    unset($data['incr']);
+    	}
+    	
+    	//string字段连上某个string
+    	if (isset($data['joint'])){
+    	    foreach ($data['joint'] as $key => $value){
+    	        $this->db->set("{$key}", "CONCAT({$key}, '{$value}')", FALSE);
+    	    }
+    	    unset($data['joint']);
+    	}
+    	
+    	//string字段删除某个string
+    	if (isset($data['delstr'])){
+    	    foreach ($data['joint'] as $key => $value){
+    	        $this->db->set("{$key}", "replace({$key}, '{$value}', '')", FALSE);
+    	    }
+    	    unset($data['delstr']);
     	}
     	
     	//字段减去某个值

@@ -98,7 +98,7 @@
                                             <label class="col-sm-2 control-label no-padding-right" for="form-input-readonly"> 投放开始时间： </label>
                                             <div class="col-sm-5">
                                                 <div class="input-group date datepicker">
-                                                    <input class="form-control date-picker" type="text" name="release_start_time" value="<?php if(isset($info['release_start_time'])){ echo $info['release_start_time'];}?>" data-date-format="dd-mm-yyyy" required>
+                                                    <input class="form-control date-picker" type="text" name="release_start_time" value="<?php if(isset($info['lock_start_time'])){ echo $info['lock_start_time'];}?>" data-date-format="dd-mm-yyyy" required>
                                                     <span class="input-group-addon">
                                                         <i class="icon-calendar bigger-110"></i>
                                                     </span>
@@ -110,7 +110,7 @@
                                             <label class="col-sm-2 control-label no-padding-right" for="form-input-readonly"> 投放结束时间： </label>
                                             <div class="col-sm-5">
                                                 <div class="input-group date datepicker">
-                                                    <input class="form-control date-picker" type="text" name="release_end_time" value="<?php if(isset($info['release_end_time'])){ echo $info['release_end_time'];}?>" data-date-format="dd-mm-yyyy" required>
+                                                    <input class="form-control date-picker" type="text" name="release_end_time" value="<?php if(isset($info['lock_end_time'])){ echo $info['lock_end_time'];}?>" data-date-format="dd-mm-yyyy" required>
                                                     <span class="input-group-addon">
                                                         <i class="icon-calendar bigger-110"></i>
                                                     </span>
