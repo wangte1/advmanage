@@ -159,7 +159,22 @@
                                             		<td><?php echo $value['begin_year']."-".$value['end_year'];?></td>
                                             		<td><?php if(isset($put_trade[$value['put_trade']])) echo $put_trade[$value['put_trade']];?></td>
                                             		<td><?php echo $value['points_count'];?></td>
-                                            		<td><?php if(isset(C('houseswantorder.houses_want_status')[$value['status']])) echo C('houseswantorder.houses_want_status')[$value['status']];?></td>
+                                            		<td>
+                                            			<?php 
+	                                                        switch ($value['status']) {
+	                                                            case '1':
+	                                                                $class = 'badge-yellow';
+	                                                                break;
+	                                                            case '2':
+	                                                                $class = 'badge-success';
+	                                                                break;
+	                                                        }
+	                                                    ?>
+	                                                    <span class="badge <?php echo $class; ?>">
+	                                                        <?php if(isset(C('houseswantorder.houses_want_status')[$value['status']])) echo C('houseswantorder.houses_want_status')[$value['status']];?>
+	                                                    </span>
+                                            			
+                                            		</td>
                                             		<td>
                                             			<?php foreach($salesman as $k => $v) {?>
                                             				<?php if($v['id'] == $value['create_user']) { echo $v['name'];}?>
@@ -172,15 +187,16 @@
                                                         </a> 
                                                         
                                                         <?php if($value['status'] == 1 && $userInfo['id'] == $value['create_user']) {?>
-	                                                        <a class="green tooltip-info" href="/houseswantorders/cancle/<?php echo $value['id'];?>"  data-rel="tooltip" data-placement="top" title="" data-original-title="撤回">
+	                                                        <a class="green tooltip-info" onclick="cancle(this);" data-id="<?php echo $value['id'];?>" data-rel="tooltip" data-placement="top" title="" data-original-title="撤回">
 	                                                            <i class="icon-reply bigger-130"></i>
 	                                                        </a> 
                                                         <?php }?>
                                                         
-                                                        
-                                                        <a class="grey tooltip-info checkout" href="/houseswantorders/checkout/<?php echo $value['id'];?>" data-id="129" data-customer="2" data-rel="tooltip" data-placement="top" data-original-title="转预定订单">
-                                                            <i class="ace-icon fa fa-random bigger-130" aria-hidden="true"></i>
-                                                        </a>
+                                                        <?php if($value['status'] == 1) {?>
+	                                                        <a class="grey tooltip-info checkout" href="/houseswantorders/checkout/<?php echo $value['id'];?>" data-id="129" data-customer="2" data-rel="tooltip" data-placement="top" data-original-title="转预定订单">
+	                                                            <i class="ace-icon fa fa-random bigger-130" aria-hidden="true"></i>
+	                                                        </a>
+                                                        <?php }?>
                                                         
                                             		</td>
                                             	</tr>
@@ -212,72 +228,26 @@
     $("#distpicker1").distpicker({
     	province: '<?php if($province){ echo $province;}else {?>贵州省<?php }?>',
     	city: '<?php if($city){ echo $city;}else {?>贵阳市<?php }?>',
-    	district: '<?php if($area){ echo $area;}else {?><?php }?>'
-    });
-	
-    $('.release-points').click(function(){
-        var _self = $(this);
-        var d = dialog({
-            title: "提示",
-            content: '解锁之后需等待当前订单锁定结束时间到期后才能再次给该客户新建预定订单，请谨慎操作！确定要解锁吗？',
-            okValue: '确定',
-            ok: function () {
-                window.location.href = '/housesscheduledorders/release_points/' + _self.attr('data-id');
-            },
-            cancelValue: '取消',
-            cancel: function () {}
-        });
-        d.width(420);
-        d.showModal();
+    	district: '<?php if($area){ echo $area;}else {?>—— 区 ——<?php }?>'
     });
 
-    $('.update').click(function(){
-        var _self = $(this);
-        var d = dialog({
-            title: "提示",
-            content: '请谨慎操作！确定要续期吗？',
-            okValue: '确定',
-            ok: function () {
-                window.location.href = '/housesscheduledorders/update_points/' + _self.attr('data-id');
-            },
-            cancelValue: '取消',
-            cancel: function () {}
-        });
-        d.width(420);
-        d.showModal();
-    });
-
-    //给客户发送短信
-    $('.sendsms').on('click', function(){
-    	var _obj = $(this);
-    	var id = _obj.attr('data-id');
-    	var salesName = _obj.attr('data-salesname');
-
-        var d = dialog({
-            title: "提示",
-            content: '请谨慎操作！确定要给 '+ salesName +' 业务员发送短信通知吗？',
-            okValue: '确定',
-            ok: function () {
-                var postData = {'sales_id':id};
-                $.post('/housesscheduledorders/sendMsg', postData, function(data){
-					if(data){
-						layer.alert(data.msg);
+	function cancle(obj) {
+		var id = $(obj).attr('data-id');
+		layer.confirm('您确认要撤回吗？', {
+			 	btn: ['确定','取消'] //按钮
+			}, function(){
+				$.post('/houseswantorders/cancle', {id:id}, function(data){
+					if(data) {
+						layer.alert(data.msg, function(){
+							location.reload();
+						});
 					}
-                });
-            },
-            cancelValue: '取消',
-            cancel: function () {}
-        });
-        d.width(420);
-        d.showModal();
-    });
+				});
+			});
+	}
+	
+    
 
-
-    //预定订单转订单
-    $('.checkout').click(function(){
-        var id = $(this).attr('data-id');
-		location.href = "/housesscheduledorders/checkout/"+id;
-    });
 </script>
 
 <!-- 底部 -->

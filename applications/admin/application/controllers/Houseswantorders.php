@@ -19,7 +19,8 @@ class Houseswantorders extends MY_Controller{
             'Model_salesman' => 'Msalesman',
             'Model_make_company' => 'Mmake_company',
             'Model_houses_points' => 'Mhouses_points',
-            'Model_houses_points_format' => 'Mhouses_points_format'
+            'Model_houses_points_format' => 'Mhouses_points_format',
+        	'Model_houses_scheduled_orders' => 'Mhouses_scheduled_orders'
         ]);
         $this->data['code'] = 'horders_manage';
         $this->data['active'] = 'houseswantorders_list';
@@ -124,6 +125,56 @@ class Houseswantorders extends MY_Controller{
     	$data = $this->data;
     	$data['info'] = $this->Mhouses_want_orders->get_one('*', ['id'=>$id]);
     	
+    	if(IS_POST){
+    		$post_data = $this->input->post();
+    		unset($post_data['province'], $post_data['city'], $post_data['area'],$post_data['houses_type'],$post_data['begin_year'],$post_data['end_year'],$post_data['put_trade']);
+    		unset($post_data['ban'], $post_data['unit'], $post_data['floor']);
+    		if (isset($post_data['area_id'])) unset($post_data['area_id']);
+    		if (isset($post_data['addr'])) unset($post_data['addr']);
+    		//判断这个客户是否已锁定点位
+    		$order_type = (int) $post_data['order_type'];
+    		$where['is_del'] = 0;
+    		$where['lock_customer_id'] = $post_data['lock_customer_id'];
+    		$where['order_type'] = $order_type;
+    	
+    		$count = $this->Mhouses_scheduled_orders->count($where);
+    		if ($count > 0) {
+    			$this->success("该客户已存在锁定中的".$data['order_type_text'][$order_type]."订单！", '/housesscheduledorders/addpreorder/'.$order_type);
+    			exit;
+    		}
+    	
+    		//判断该客户是否存在正在锁定日期范围内的已释放的订单
+//     		$where['order_status'] = C('housesscheduledorder.order_status.code.done_release');
+//     		$where['lock_end_time >'] = date('Y-m-d');
+//     		$orderinfo = $this->Mhouses_scheduled_orders->get_one('*', $where);
+//     		if ($orderinfo) {
+//     			$this->success("该客户上一次释放的订单还未到锁定结束日期，不能新建预定订单！", '/housesscheduledorders/addpreorder/'.$order_type);
+//     			exit;
+//     		}
+    	
+    		$post_data['create_user'] = $post_data['update_user'] = $data['userInfo']['id'];
+    		$post_data['create_time'] = $post_data['update_time'] = date('Y-m-d H:i:s');
+    		$post_data['point_ids'] = implode(',', array_unique(explode(',', $post_data['point_ids'])));
+    		$post_data['confirm_point_ids'] = '';
+    		$id = $this->Mhouses_scheduled_orders->create($post_data);
+    		if ($id) {
+    			//意向订单
+    			$update_data['status'] = 2;
+    			$this->Mhouses_want_orders->update_info($update_data, ['id' => $id]);
+    			
+    			//decr
+    			$update_data = [];
+    			$update_data['incr']['lock_num'] = 1;
+    			$this->Mhouses_points->update_info($update_data, array('in' => array('id' => explode(',', $post_data['point_ids']))));
+    	
+    			$this->write_log($data['userInfo']['id'], 1, "新增".$data['order_type_text'][$post_data['order_type']]."预定订单,订单id【".$id."】");
+    			$this->success("添加成功！","/housesscheduledorders");
+    		} else {
+    			$this->success("添加失败！");
+    		}
+    	}
+    	
+    	
     	$this->load->view("houseswantorders/checkout", $data);
     }
     
@@ -172,7 +223,7 @@ class Houseswantorders extends MY_Controller{
         					if(!isset($tmp_arr1[$k1])) {
         						$tmp_arr1[$k1] = 0;
         					}
-        					$tmp_arr1[$k1] = $tmp_arr1[$k1] + ($v['ad_num']-$v['ad_use_num']);
+        					$tmp_arr1[$k1] = $tmp_arr1[$k1] + 1;
         				}
         			}
         		}
@@ -224,8 +275,6 @@ class Houseswantorders extends MY_Controller{
     	
     	$points_lists = $this->Mhouses_points->get_points_lists($where);
     	
-    	$point_count = 0;
-    	
     	if(count($points_lists) > 0) {
     		$houses_lists = array_column($points_lists, 'houses_name', 'houses_id');
     		$area_lists = array_column($points_lists, 'houses_area_name', 'area_id');
@@ -235,7 +284,7 @@ class Houseswantorders extends MY_Controller{
     		$addr_lists = array_column($points_lists, 'addr');
     		
 	    	foreach($points_lists as $k => &$v) {
-	    		$point_count = $point_count + ($v['ad_num'] - $v['ad_use_num']);
+	    		$v['houses_grade'] = C('public.houses_grade')[$v['grade']];
 	    		$v['point_status_txt'] = C('housespoint.points_status')[$v['point_status']];
 	    	}
     	}
@@ -249,8 +298,7 @@ class Houseswantorders extends MY_Controller{
     			'unit_lists'=>$unit_lists,
     			'floor_lists'=>$floor_lists,
     			'addr_lists'=>$addr_lists,
-    			'count' => $point_count
-    	));
+    			'count' => count($points_lists)));
     }
     
     
@@ -312,82 +360,18 @@ class Houseswantorders extends MY_Controller{
         $objWriter->save('php://output');
     }
     
-    
-    
     /**
-     * 给业务员发送短信
-     * @author yonghua 254274509@qq.com
+     * 撤回意向订单
      */
-    public function sendMsg(){
-
-        $sales_id = intval($this->input->post('sales_id'));
-        $info = $this->Msalesman->get_one('phone_number, name', ['id' => $sales_id]);
-        if(!$info) $this->return_json(['code' => 0, 'msg' => '业务员不存在']);
-        if(empty($info['phone_number'])){
-            $this->return_json(['code' => 0, 'msg' => '电话不能为空！']);
-        }
-        if(!preg_match('/^1[3|4|5|8|7][0-9]\d{8}$/', $info['phone_number'])){
-            $this->return_json(['code' => 0, 'msg' => '业务员手机号格式不正确！']);
-        }
-        // 配置短信信息
-        $app = C('sms.app');
-        $parems = [
-            'PhoneNumbers' => $info['phone_number'],
-            'SignName' => C('sms.sign.lkcb'),
-            'TemplateCode' => C('sms.template.yewuyuan'),
-            'TemplateParam' => array(
-                'name' => $info['name']
-            )
-        ];
-        //发送短信
-        set_time_limit(0);
-        $sms = new SendSms($app, $parems);
-        try {
-            $info = (array) $sms->send();
-            if(isset($info['Code'])) {
-                if(strtolower($info['Code']) == 'ok'){
-                    $this->return_json(['code' => 1, 'msg' => '发送成功']);
-                }else{
-                    $this->return_json(['code' => 0, 'msg' => '错误码：'.$info['Code']]);
-                }
-            }
-            $this->return_json(['code' => 0, 'msg' => '请稍后重试']);
-        } catch (Exception $e) {
-            $this->return_json(['code' => 0, 'msg' => $e->getMessage()]);
-        }
-        
-    }
-    
-    /**
-     * 将url转换成短网址，避免被屏蔽
-     * @author yonghua 254274509@qq.com
-     * @param string $url
-     * @throws Exception
-     * @return number[]|string[]|number[]|mixed[]
-     */
-    private function getShortUrl($url=""){
-        if(empty($url)) return ['code' => 0, 'msg' => 'url不能为空'];
-        $key = C('short_url.user_key');
-        $apiurl = 'https://ni2.org/api/create.json';
-        $info = Http::Request($apiurl, ['url' => $url ,'user_key' => $key], 'POST');
-        if(!$info) throw new Exception('无法连接api服务器');
-        $info = (array) json_decode($info);
-        if($info['result'] == 0){
-            return ['code' => 1, 'url' => $info['url']];
-        }
-        $error = '';
-        switch ($info['result']){
-            case 1 :
-                $error = '生成URL失败';
-                break;
-            case 2 :
-                $error = 'URL不符合格式';
-                break;
-            case 3 :
-                $error = '该域名已被加入黑名单';
-                break;
-        }
-        return ['code' => 0, 'msg' => $error];
+    public function cancle() {
+    	$id = $this->input->post('id');
+    	if(!empty($id)) {
+    		$update_data['is_del'] = 1;
+    		$this->Mhouses_want_orders->update_info($update_data, ['id' => $id]);
+    		$this->return_json(['code' => 1, 'msg' => '撤回成功！' ]);
+    	}
+    	
+    	$this->return_json(['code' => 0, 'msg' => '撤回失败！' ]);
     }
     
 }

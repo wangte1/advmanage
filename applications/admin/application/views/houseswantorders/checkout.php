@@ -74,7 +74,8 @@
                                         <div class="form-group">
                                             <label class="col-sm-2 control-label no-padding-right" for="form-field-2"> 广告客户： </label>
                                             <div class="col-sm-10">
-                                                <select id="lock_customer_id" name="lock_customer_id" class="select2" required disabled="disabled">
+                                            	<input id="lock_customer_id" name="lock_customer_id" type="hidden" value="<?php echo $info['customer_id'];?>">
+                                                <select  class="select2" required disabled="disabled">
                                                     <option value="">请选择客户</option>
                                                     <?php foreach($customers as $val):?>
                                                     <option value="<?php echo $val['id'];?>" <?php if(isset($info['customer_id']) && $val['id'] == $info['customer_id']){ echo "selected"; }?>><?php echo $val['name'];?></option>
@@ -90,10 +91,11 @@
                                         <div class="form-group">
                                             <label class="col-sm-2 control-label no-padding-right" for="form-field-2"> 业务员： </label>
                                             <div class="col-sm-10">
-                                                <select id="sales_id" name="sales_id" class="select2" required disabled="disabled">
+                                            	<input type="hidden" id="sales_id" name="sales_id" value="<?php echo $info['create_user'];?>">
+                                                <select  class="select2" required disabled="disabled">
                                                     <option value="">请选择业务员</option>
                                                     <?php foreach($salesman as $val):?>
-                                                    <option value="<?php echo $val['id'];?>" <?php if(isset($info['sales_id']) && $val['id'] == $info['create_user']){ echo "selected"; }?>><?php echo $val['name'];?></option>
+                                                    <option value="<?php echo $val['id'];?>" <?php if(isset($info['create_user']) && $val['id'] == $info['create_user']){ echo "selected"; }?>><?php echo $val['name'];?></option>
                                                     <?php endforeach;?>
                                                 </select>
                                                 
@@ -137,7 +139,8 @@
                                             <div class="col-sm-10">
                                                 <div class="widget-box">
                                                     <div class="widget-header">
-                                                        <h4>选择点位</h4>
+                                                        <h4>选择点位（意向点位数量：<?php echo $info['points_count'];?>个）</h4>
+                                                        <button type="button" style="margin-top:-3px;" class="btn btn-info btn-xs" onclick="machine_sel();">机选</button>
                                                         <span class="widget-toolbar">
                                                             共<span id="all_points_num">0</span>个点位
                                                         </span>
@@ -281,7 +284,8 @@
                                                                                 <th width="10%">单元</th>
                                                                                 <th width="10%">楼层</th>
                                                                                 <th width="10%">位置</th>
-                                                                                <th width="10%">规格</th>
+<!--                                                                                 <th width="10%">规格</th> -->
+                                                                                <th width="10%">楼盘等级</th>
                                                                                 <th width="10%">可投放数量</th>
                                                                                 <th width="10%">状态</th>
                                                                                 <th width="10%"><button class="btn btn-xs btn-info select-all" type="button" data-id="3">选择全部<i class="icon-arrow-right icon-on-right"></i></button></th>
@@ -339,7 +343,7 @@
                     <div class="col-xs-5">
                         <div class="widget-box">
                             <div class="widget-header">
-                                <h4>已选择点位</h4>
+                                <h4>已选择点位<span id="grade-percent">（0/0/0/0）</span></h4>
                                 <span class="widget-toolbar">
                                     已选择<span id="selected_points_num"><?php if(isset($selected_points)) { echo count($selected_points);} else { echo 0; }?></span>个点位
                                 </span>
@@ -359,7 +363,8 @@
                                                         <th width="10%">单元</th>
                                                         <th width="10%">楼层</th>
                                                         <th width="10%">位置</th>
-                                                        <th width="10%">规格</th>
+                                                        <!-- <th width="10%">规格</th>-->
+                                                        <th width="10%">楼盘等级</th>
                                                         <th width="10%">可投放数量</th>
                                                         <th width="10%">状态</th>
                                                         <th width="10%"><button class="btn btn-xs btn-info remove-all" type="button">移除全部<i class="fa fa-remove" aria-hidden="true"></i></button></th>
@@ -384,7 +389,8 @@
                                                             <?php else:?>
                                                             <td width="10%">电梯前室</td>
                                                             <?php endif;?>
-                                                            <td width="10%"><?php echo $value['size'];?></td>
+                                                            <!-- <td width="10%"><?php echo $value['size'];?></td> -->
+                                                            <td width="10%"><?php echo $value['grade'];?></td>
                                                             <td width="10%"><?php echo $value['ad_num'];?></td>
                                                             <td width="10%">
                                                             	<?php 
@@ -419,6 +425,31 @@
     </div>
 </div>
 
+<style>
+.text-right {
+	text-align:right;
+}
+
+.margintop10 {
+	margin-top:10px;
+}
+                                                                
+</style>
+
+<div id="machine-sel-panel" style="display:none;">
+	<?php foreach (C('public.houses_grade') as $k => $v) {?>
+	<div class="row margintop10">
+		<div class="col-xs-4 text-right" ><label><?php echo $v;?></label></div>
+		<div class="col-xs-6"><input class="grade-input" type="text" id="grade-<?php echo $k;?>" m-id="<?php echo $k;?>" value="0"></div>
+	</div>
+	<?php }?>
+	
+	<div class="row margintop10">
+		<center><button onclick="machine_sub();" class="btn btn-sm btn-info">确定</button></center>
+	</div>
+
+</div>
+
 <!-- 加载尾部公用js -->
 <?php $this->load->view("common/footer");?>
 <script src="<?php echo css_js_url('bootstrap-timepicker.min.js','admin');?>"></script>
@@ -428,6 +459,63 @@
 <!-- <script src="<?php echo css_js_url('order.js','admin');?>"></script> -->
 <script type="text/javascript">
 
+//机选
+function machine_sel() {
+	layer.open({
+		  type: 1,
+		  title: '机选(填写楼盘等级对应的点位数量)',
+		  area: ['420px', '300px'], //宽高
+		  content: $('#machine-sel-panel').html()
+		});
+}
+
+//机选确认
+function machine_sub() {
+	var m_arr = new Array();
+	$('.layui-layer .grade-input').each(function(){
+		m_arr.push($(this).val());
+	});
+	
+	for(var i = 0; i < m_arr.length; i++) {
+		for(var j = 0; j < m_arr[i]; j++) {
+			$('#points_lists tr').each(function(){
+				if($(this).attr('grade') == (i + 1)) {
+					$(this).find('button').click();
+					return false;
+				}
+			});
+		}
+	}
+
+	layer.closeAll('page');
+}
+
+//计算已选点位的等级比率
+function count_percent() {
+	
+	var count_arr = new Array();
+	
+	<?php foreach (C('public.houses_grade') as $k => $v) {?>
+		count_arr['<?php echo $k-1;?>'] = 0;
+		$('#selected_points tr').each(function(){
+			if($(this).attr('grade') == '<?php echo $k;?>') {
+				count_arr['<?php echo $k-1;?>'] = count_arr['<?php echo $k-1;?>']+1;
+			}
+		});
+	<?php }?>
+
+	count_arr.toString();
+	
+	$('#grade-percent').text('（'+count_arr.toString().replaceAll(',', '/')+'）');
+	
+}
+
+String.prototype.replaceAll = function (FindText, RepText) {  
+    let regExp = new RegExp(FindText,'g');  
+    return this.replace(regExp, RepText);  
+};  
+
+                                                                
 window.onload=function(){ 
 	//设置年份的选择 
 	var myDate= new Date(); 
@@ -461,7 +549,6 @@ $("#distpicker1").distpicker({
 });
 
 function get_checkbox(){
-	
     obj = document.getElementsByName("s_houses_type");
     check_val = [];
     for(k in obj){
@@ -548,7 +635,7 @@ function load_houses(num) {
 			var pointStr = '';
 			$("#all_points_num").text(data.count);
 			for(var i = 0; i < data.points_lists.length; i++) {
-				pointStr += "<tr point-id='"+(data.points_lists)[i]['id']+"'><td width='10%'>"+(data.points_lists)[i]['code']+"</td>";
+				pointStr += "<tr point-id='"+(data.points_lists)[i]['id']+"' grade='"+(data.points_lists)[i]['grade']+"'><td width='10%'>"+(data.points_lists)[i]['code']+"</td>";
 				pointStr += "<td width='10%'>"+(data.points_lists)[i]['houses_name']+"</td>";
 				pointStr += "<td width='10%'>"+(data.points_lists)[i]['houses_area_name']+"</td>";
 				pointStr += "<td width='10%'>"+(data.points_lists)[i]['ban']+"</td>";
@@ -559,7 +646,8 @@ function load_houses(num) {
 				}else{
 					pointStr += "<td width='10%'>电梯前室</td>";
 				}
-				pointStr += "<td width='10%'>"+(data.points_lists)[i]['size']+"</td>";
+				//pointStr += "<td width='10%'>"+(data.points_lists)[i]['size']+"</td>";
+				pointStr += "<td width='10%'>"+(data.points_lists)[i]['houses_grade']+"</td>";
 				pointStr += "<td width='10%'>"+(data.points_lists)[i]['ad_num']+"</td>";
 				var $class;
 				switch ((data.points_lists)[i]['point_status']) {
@@ -576,8 +664,6 @@ function load_houses(num) {
 		}else{
 			alert('暂无空闲点位');
 		}
-
-		
 
 		$("#points_lists").html('');
 		$("#points_lists").html(pointStr);
@@ -619,6 +705,8 @@ $(function(){
 
         
         $("input[name='point_ids']").val(point_ids);
+
+        count_percent();
     });
 
   	//移除点位
@@ -639,6 +727,8 @@ $(function(){
         });
         var ids = point_ids.length >= 1 ? point_ids.join(',') : '';
         $("input[name='point_ids']").val(ids);
+
+        count_percent();
     });
 
   	//选择全部
@@ -656,6 +746,8 @@ $(function(){
             var point_ids = $("input[name='point_ids']").val() ? $("input[name='point_ids']").val() + ',' + $(this).attr('point-id') :  $(this).attr('point-id');
             $("input[name='point_ids']").val(point_ids);
         });
+
+        count_percent();
     });
 
   	//移除全部
@@ -669,6 +761,8 @@ $(function(){
             $("input[name='point_ids']").val('');
             $("#points_lists button").html('选择点位<i class="icon-arrow-right icon-on-right"></i>');
         });
+
+        count_percent();
     });
 
   	//保存
