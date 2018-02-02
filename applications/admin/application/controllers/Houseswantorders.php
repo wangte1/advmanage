@@ -166,7 +166,11 @@ class Houseswantorders extends MY_Controller{
     			$update_data = [];
     			$update_data['incr']['lock_num'] = 1;
     			$this->Mhouses_points->update_info($update_data, array('in' => array('id' => explode(',', $post_data['point_ids']))));
-    	
+    			
+    			//如果锁定数量+占用数量=可投放数量，那么点位状态变为已占满
+    			$_where['field']['`ad_num`'] = '`lock_num`+`ad_use_num`';
+    			$this->Mhouses_points->update_info(['point_status' => 3], $_where);
+    			
     			$this->write_log($data['userInfo']['id'], 1, "新增".$data['order_type_text'][$post_data['order_type']]."预定订单,订单id【".$id."】");
     			$this->success("添加成功！","/housesscheduledorders");
     		} else {
@@ -200,8 +204,8 @@ class Houseswantorders extends MY_Controller{
         if(!empty($this->input->post('put_trade'))) $put_trade = $this->input->post('put_trade');
        	
         $where['A.point_status'] = 1;
-        
         $points_lists = $this->Mhouses_points->get_points_lists($where);
+        
         $houses_lists = [];
         if(count($points_lists) > 0) {
         	$tmp_arr = array_column($points_lists, 'houses_name', 'houses_id');

@@ -299,7 +299,7 @@ $(function(){
 
 	
 	$('#province, #city, #area, .m-checkbox, #begin_year, #end_year, #put_trade, .m-radio').change(function(){
-
+		
 		var province = $('#province').val();
 		var city = $('#city').val();
 		var area = $('#area').val();
