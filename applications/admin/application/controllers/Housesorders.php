@@ -901,6 +901,15 @@ class Housesorders extends MY_Controller{
         }
 
     }
+    
+    /**
+     * 录入制作信息
+     */
+    public function insert_make_info() {
+    	$data = $this->data;
+    	
+    	$this->load->view('housesorders/insert_make_info', $data);
+    }
 
 
 	/*
