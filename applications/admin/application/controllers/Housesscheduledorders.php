@@ -718,6 +718,7 @@ class Housesscheduledorders extends MY_Controller{
     	
     	if(IS_POST) {
     		$post_data = $this->input->post();
+    		
     		$order_type = $post_data['order_type'];
             $post_data['order_code'] = date('YmdHis').$post_data['customer_id']; //订单编号：年月日时分秒+客户id
             
@@ -731,31 +732,33 @@ class Housesscheduledorders extends MY_Controller{
             unset($post_data['point_ids_old']);
             $order_id = $this->Mhouses_orders->create($post_data);
             if ($order_id) {
-                    //如果选择的点位包含预定点位，则把对应的预定订单释放掉
-                    $where['id'] = $id;
-                    $info = $this->Mhouses_scheduled_orders->get_one("*", $where);
-                    if ($info && count(array_intersect(explode(',', $post_data['point_ids']), explode(',', $info['point_ids']))) > 0) {
-                        //释放该预定订单的所有点位
-                        //$update_data['lock_customer_id'] = $update_data['lock_start_time'] = $update_data['lock_end_time'] = $update_data['expire_time'] = '';
-                    	$update_data['lock_customer_id'] = 0;
-                    	$update_data['is_lock'] = 0;
-                        $this->Mhouses_points->update_info($update_data, array('in' => array('id' => explode(',', $info['point_ids']))));
+                //如果选择的点位包含预定点位，则把对应的预定订单释放掉
+                $where['id'] = $id;
+                $info = $this->Mhouses_scheduled_orders->get_one("*", $where);
+                if ($info && count(array_intersect(explode(',', $post_data['point_ids']), explode(',', $info['point_ids']))) > 0) {
+                    //释放该预定订单的所有点位
+                	$update_data['decr'] = ['lock_num' => 1];//释放点位锁定数
+                    $this->Mhouses_points->update_info($update_data, array('in' => array('id' => explode(',', $info['point_ids']))));
 
-                        //更新该订单的状态为“已释放”
-                        $this->Mhouses_scheduled_orders->update_info(array('order_status' => 5), array('id' => $info['id']));
-                    }
+                    //更新该订单的状态为“已释放”
+                    $this->Mhouses_scheduled_orders->update_info(array('order_status' => 5), array('id' => $info['id']));
+                }
 
-                    //下单成功把选择的点位置为占用状态(只针对公交灯箱和户外高杆)
-                    $update_data['order_id'] = $id;
-                    $update_data['customer_id'] = $post_data['customer_id'];
-//                     $update_data['lock_start_time'] = '';
-//                     $update_data['lock_end_time'] = '';
-//                     $update_data['expire_time'] = '';
-                    $update_data['point_status'] = 3;
-                    $this->Mhouses_points->update_info($update_data, array('in' => array('id' => explode(',', $post_data['point_ids']))));
-
-//                 } 
-
+                //下单成功把选择的点增加占用客户，和增加上画次数
+                $update_data['joint']['`customer_id`'] = ','.$post_data['customer_id'];
+                //增加投放总量，一天为一次
+                $update_data['incr']['used_num'] = ceil( ($post_data['release_start_time']-$post_data['release_start_time']) / (24*3600) );                    
+                //增加点位可使用量1次，表示该点位少一次可放。
+                $update_data['incr']['`ad_use_num`'] = 1;
+                $this->Mhouses_points->update_info($update_data, array('in' => array('id' => explode(',', $post_data['point_ids']))));
+                
+                //更新点位状态
+                $_where = [];
+                $_where['in'] = array('id' => explode(',', $post_data['point_ids']));
+                //字段的比较where['field']
+                $_where['field']['`ad_use_num`'] = '`ad_num`';
+                $this->Mhouses_points->update_info(['point_status' => 3], $_where);
+                
                 $this->write_log($data['userInfo']['id'], 1, "社区资源管理转预定订单".$data['order_type_text'][$post_data['order_type']]."为订单,订单id【".$id."】");
                 $this->success("预定订单转订单成功！","/housesorders");
             } else {
@@ -862,4 +865,8 @@ class Housesscheduledorders extends MY_Controller{
         return ['code' => 0, 'msg' => $error];
     }
     
+    public function test(){
+        $info = $this->Mhouses_points->get_lists('*', ['ad_num >' => 'ad_use_num']);
+        var_dump($info, $this->db->last_query());exit;
+    }    
 }
