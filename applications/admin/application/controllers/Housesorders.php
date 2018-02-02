@@ -729,13 +729,15 @@ class Housesorders extends MY_Controller{
     	
     	$order_list = $this->Mhouses_orders->get_one('point_ids', ['id'=>$order_id]);
     	
-    	var_dump(explode(',', $order_list['point_ids']));exit;
+    	//var_dump(explode(',', $order_list['point_ids']));exit;
     	
     	$where['in']['A.id'] = explode(',', $order_list['point_ids']);
     	$where['A.houses_id'] = $houses_id;
-    	$data['points_list'] = $this->Mhouses_points->get_points_lists($where);
+    	$data['list'] = $this->Mhouses_points->get_points_lists($where);
     	
-    	var_dump($data['points_list']);
+    	echo $this->db->last_query();exit;
+    	
+    	var_dump($data['list']);
     	$this->load->view('housesorders/points_detail', $data);
     }
     
