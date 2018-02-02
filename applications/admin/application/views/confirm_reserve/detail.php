@@ -51,7 +51,7 @@
                                         <!-- 客户确认 -->
                                         <div id="customer_confrim" class="tab-pane in active">
                                         	<a href="javascript:;" class="btn btn-xs btn-info btn-export" data-id="<?php echo $info['id'];?>" data-type="<?php echo $info['order_type'];?>" style="margin-bottom:10px">
-                                                <i class="fa fa-download out_excel" aria-hidden="true"></i> 导出确认点位
+                                                <i class="fa fa-download out_excel" aria-hidden="true"></i> 导出点位
                                             </a>
                                             <?php if($info['is_confirm'] == 0):?>
                                             <a href="javascript:;" class="btn btn-xs btn-info sign" data-id="<?php echo $info['id'];?>" style="margin-bottom:10px">
