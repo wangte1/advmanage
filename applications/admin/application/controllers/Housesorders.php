@@ -814,32 +814,22 @@ class Housesorders extends MY_Controller{
             $this->write_log($data['userInfo']['id'],2,"  更新订单:".$order_code."状态：".$status_text[$status]);
             
             //向工程主管广播
-<<<<<<< HEAD
+
             if($status == 3) {
-=======
-            if($status == 4) {
->>>>>>> 6bff7a606ef211505e503b6e9fa7c679e85943c9
             	$msg = "你有新的订单需要派单,请到派单列表页面！";
             	$this->send(['group_id' => 5, 'message' => $msg]);
             }
 
             $update_order['order_status'] = $status;
-<<<<<<< HEAD
+
             if($status == 7) {
-=======
-            if($status == 8) {
->>>>>>> 6bff7a606ef211505e503b6e9fa7c679e85943c9
             	 $update_order['assign_type'] = 2;
             	 $update_order['assign_status'] = 1;
             }
             //同时更新对应的订单
             $result = $this->Mhouses_orders->update_info($update_order,array("id"=>$id));
             
-<<<<<<< HEAD
             if($status == 8){
-=======
-            if($status == 9){
->>>>>>> 6bff7a606ef211505e503b6e9fa7c679e85943c9
                 if($result){
                     //如果订单已经下画则释放所有点位
                     $update_data['order_id'] = 0;
