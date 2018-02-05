@@ -310,10 +310,13 @@ $(function(){
 
 	
 	$('#province, #city, #area, .m-checkbox, #begin_year, #end_year, #put_trade, .m-radio').change(function(){
+
+		alert($('.multiselect').attr('title'));
+		
 		
 		var province = $('#province').val();
 		var city = $('#city').val();
-		var area = $('#area').val();
+		var area = '';
 		var houses_type = get_checkbox();	//获取楼盘类型
 		var begin_year = $('#begin_year').val();
 		var end_year = $('#end_year').val();
@@ -340,10 +343,6 @@ $(function(){
 		});
 		
 	});
-
-	$('#area').change(function(){
-		alert();
-	})
 
   	//保存
     $(".btn-save").click(function(){
@@ -385,9 +384,10 @@ $(function(){
         });
 
         $('#area option:eq(0)').remove();
-        $('#area option:eq(1)').attr("selected",false);
+        $('#area option:eq(0)').attr("selected",false);
 
         $('.multiselect-container li:eq(1)').remove();
+        $('.multiselect-container li:eq(1)').removeClass('active');
         $('.multiselect-container li:eq(1)').find('input[type="checkbox"]').prop("checked",false);
 
         $('.multiselect').attr('title','请选择区域');
