@@ -905,7 +905,7 @@ class Housesorders extends MY_Controller{
     /**
      * 录入制作信息
      */
-<<<<<<< HEAD
+
     public function insert_make_info($order_id) {
     	$data = $this->data;
     	
@@ -930,12 +930,6 @@ class Housesorders extends MY_Controller{
     	
     	
     	$data['info'] = $this->Mhouses_orders->get_one('is_sample', ['id' => $order_id]);
-    	
-=======
-    public function insert_make_info() {
-    	$data = $this->data;
-    	
->>>>>>> 6bff7a606ef211505e503b6e9fa7c679e85943c9
     	$this->load->view('housesorders/insert_make_info', $data);
     }
 
