@@ -54,15 +54,49 @@
             				<tr>
             					<th>
             						<input 
-            							class="select_all" 
-            							<?php if(count($point_list) == $confirm_point_num){echo 'checked';}?>
+            							class="select_page_all" 
+            							<?php if(count($point_list) == $page_confirm_point_num){echo 'checked';}?>
+            							value="<?php echo implode(',', array_column($point_list, 'id'));?>"
             							type="checkbox" />
             					</th>
             					<th>点位编号</th>
-            					<th>组团</th>
-            					<th>楼栋</th>
-            					<th>楼层</th>
+            					<th class="col-sm-1">
+            						<select id="area_id" name="area_id" style="width:100%;" class="select">
+            							<option value="0">组团</option>
+            							<?php if(isset($point_list)):?>
+            							<?php $area_list = array_column($point_list, 'area_name', 'area_id');?>
+            							<?php foreach (array_unique(array_column($point_list, 'area_id')) as $k => $v):?>
+            							<option 
+            								<?php if(isset($area_id) && ($v == $area_id)){echo 'selected';}?>
+            								value="<?php echo $v;?>">
+            								<?php foreach (array_unique($area_list) as $key => $val):?>
+            								<?php if(!empty($val)):?>
+            								<?php if($v == $key):?>
+            								<?php echo $val;?>
+            								<?php endif;?>
+            								<?php endif;?>
+            								<?php endforeach;?>
+            							</option>
+            							<?php endforeach;?>
+            							<?php endif;?>
+            						</select>
+            					</th>
+            					<th class="col-sm-1">
+            						<select id="ban" name="ban" style="width:100%;" class="select">
+            							<option value="0">楼栋</option>
+            							<?php if(isset($point_list)):?>
+            							<?php foreach (array_unique(array_column($point_list, 'ban')) as $k => $v):?>
+            							<?php if(!empty($v)):?>
+            							<option 
+            								<?php if(isset($ban)&& ($v == $ban)){echo 'selected';}?>
+            								value="<?php echo $v;?>"><?php echo $v;?></option>
+            							<?php endif;?>
+            							<?php endforeach;?>
+            							<?php endif;?>
+            						</select>
+            					</th>
             					<th>单元</th>
+            					<th>楼层</th>
             					<th>位置</th>
             					<th>点位类型</th>
             				</tr>
@@ -79,14 +113,16 @@
             					<td><?php echo $v['code'];?></td>
             					<td><?php echo $v['area_name']?></td>
             					<td><?php echo $v['ban'];?></td>
-            					<td><?php echo $v['floor'];?></td>
             					<td><?php echo $v['unit'];?></td>
+            					<td><?php echo $v['floor'];?></td>
             					<td><?php if(isset($point_addr[$v['addr']])) echo $point_addr[$v['addr']];?></td>
             					<td><?php if(isset($order_type_text[$v['type_id']])) echo $order_type_text[$v['type_id']];?></td>
             				</tr>
             				<?php }?>
             			</tbody>
             		</table>
+            		<!--分页start-->
+                    <?php $this->load->view('common/page');?>
 	</div>
                 </div>
                 </div>
@@ -101,16 +137,25 @@
 
 	var order_id = '<?php echo $order_id?>';
 	var houses_id = '<?php echo $houses_id?>';
-	$('.select_all').on('click', function(data){
+	$('.select_page_all').on('click', function(data){
 		var status = 0;
+		var point_ids = $(this).val();
 		//true全选，false反选
 		if($(this).prop('checked')){
 			status = 1;
 		}
-		$.post('/housesscheduledorders/select_all', {'order_id':order_id, 'houses_id':houses_id, 'status':status}, function(data){
-			if(data){
-				window.location.reload();
-			}
+		$.post(
+			'/housesscheduledorders/select_page_all',
+			{
+				'order_id':order_id, 
+				'houses_id':houses_id, 
+				'point_ids':point_ids,
+				'status':status
+			},
+			function(data){
+    			if(data){
+    				window.location.reload();
+    			}
 		});
 	});
 
@@ -126,6 +171,23 @@
 				window.location.reload();
 			}
 		});
+	});
+	
+	//组团或楼栋筛选
+	$('#ban,#area_id').on('change', function(){
+		var url  = '/confirm_reserve/houses_detail';
+			url += '?order_id=<?php echo $order_id;?>';
+			url +='&houses_id=<?php echo $houses_id;?>';
+			url +='&houses_name=<?php echo $houses_name;?>';
+		var area_id = $('#area_id').val();
+		if(area_id != 0){
+			url += '&area_id='+area_id; 
+		}
+		var ban = $('#ban').val();
+		if(ban != 0){
+			url += '&ban='+ban; 
+		}
+		window.location.href = url;
 	});
 </script>
 <!-- 底部 -->

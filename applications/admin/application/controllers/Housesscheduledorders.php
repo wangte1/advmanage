@@ -548,6 +548,62 @@ class Housesscheduledorders extends MY_Controller{
         $this->return_json(['code' => 1, 'msg' => '操作成功']);
     }
     
+    /**
+     * 选择一页的所有点位
+     */
+    public function select_page_all(){
+        
+        $status = (int) $this->input->post('status');
+        $order_id = (int) $this->input->post('order_id');
+        $houses_id = (int) $this->input->post('houses_id');
+        $page_point_ids = explode(',', $this->input->post('point_ids'));
+        
+        //根据订单id获取用户已确认的点位
+        $orderInfo = $this->Mhouses_scheduled_orders->get_one('point_ids,confirm_point_ids,is_confirm', ['id' => $order_id]);
+        if($orderInfo['is_confirm'] == 1){
+            $this->return_json(['code' => 0, 'msg' => '您不能修改已确认的订单！']);
+        }
+
+        $confirm_point_ids = $orderInfo['confirm_point_ids'];
+        
+        if($confirm_point_ids){
+            $confirm_point_ids = explode(',', $confirm_point_ids);
+        }else{
+            $confirm_point_ids = [];
+        }
+        
+        if($status){
+            //如果是全选 合并，去重
+            if(!empty($confirm_point_ids)){
+                $confirm_point_ids = array_unique(array_merge($confirm_point_ids, $page_point_ids));
+            }else{
+                $confirm_point_ids = $page_point_ids;
+            }
+            $confirm_point_ids = implode(',', $confirm_point_ids);
+        }else{
+            //反选
+            if($confirm_point_ids){
+                foreach ($confirm_point_ids as $k => $v){
+                    if(in_array($v, $page_point_ids)){
+                        unset($confirm_point_ids[$k]);
+                    }
+                }
+            }
+            if(count($confirm_point_ids) == 0){
+                $confirm_point_ids = '';
+            }else{
+                $confirm_point_ids = implode(',', $confirm_point_ids);
+            }
+        }
+        
+        $res = $this->Mhouses_scheduled_orders->update_info(['confirm_point_ids' => $confirm_point_ids], ['id' => $order_id]);
+        
+        if(!$res){
+            $this->return_json(['code' => 0, 'msg' => '操作失败']);
+        }
+        $this->return_json(['code' => 1, 'msg' => '操作成功']);
+    }
+    
     
     
     /**
@@ -791,5 +847,84 @@ class Housesscheduledorders extends MY_Controller{
     public function test(){
         $info = $this->Mhouses_points->get_lists('*', ['ad_num >' => 'ad_use_num']);
         var_dump($info, $this->db->last_query());exit;
-    }    
+    }
+    
+    /*
+     * 预定订单转订单
+     */
+    public function checkout($id) {
+        $data = $this->data;
+        
+        if(IS_POST) {
+            $post_data = $this->input->post();
+            
+            $order_type = $post_data['order_type'];
+            $post_data['order_code'] = date('YmdHis').$post_data['customer_id']; //订单编号：年月日时分秒+客户id
+            
+            if (isset($post_data['make_complete_time'])) {
+                $post_data['make_complete_time'] = $post_data['make_complete_time'].' '.$post_data['hour'].':'.$post_data['minute'].':'.$post_data['second'];
+            }
+            
+            $post_data['creator'] =  $data['userInfo']['id'];
+            $post_data['create_time'] =  date('Y-m-d H:i:s');
+            unset($post_data['houses_id'], $post_data['area_id'],$post_data['ban'],$post_data['unit'],$post_data['floor'],$post_data['addr'], $post_data['hour'], $post_data['minute'], $post_data['second']);
+            unset($post_data['point_ids_old']);
+            $order_id = $this->Mhouses_orders->create($post_data);
+            if ($order_id) {
+                //如果选择的点位包含预定点位，则把对应的预定订单释放掉
+                $where['id'] = $id;
+                $info = $this->Mhouses_scheduled_orders->get_one("*", $where);
+                if ($info && count(array_intersect(explode(',', $post_data['point_ids']), explode(',', $info['point_ids']))) > 0) {
+                    //释放该预定订单的所有点位
+                    $update_data['decr'] = ['lock_num' => 1];//释放点位锁定数
+                    $this->Mhouses_points->update_info($update_data, array('in' => array('id' => explode(',', $info['point_ids']))));
+                    
+                    //更新该订单的状态为“已释放”
+                    $this->Mhouses_scheduled_orders->update_info(array('order_status' => 5), array('id' => $info['id']));
+                }
+                
+                //下单成功把选择的点增加占用客户，和增加上画次数
+                $update_data['joint']['`customer_id`'] = ','.$post_data['customer_id'];
+                //增加投放总量，一天为一次
+                $update_data['incr']['used_num'] = ceil( ($post_data['release_start_time']-$post_data['release_start_time']) / (24*3600) );
+                //增加点位可使用量1次，表示该点位少一次可放。
+                $update_data['incr']['`ad_use_num`'] = 1;
+                $this->Mhouses_points->update_info($update_data, array('in' => array('id' => explode(',', $post_data['point_ids']))));
+                
+                //更新点位状态
+                $_where = [];
+                $_where['in'] = array('id' => explode(',', $post_data['point_ids']));
+                //字段的比较where['field']
+                $_where['field']['`ad_use_num`'] = '`ad_num`';
+                $this->Mhouses_points->update_info(['point_status' => 3], $_where);
+                
+                $this->write_log($data['userInfo']['id'], 1, "社区资源管理转预定订单".$data['order_type_text'][$post_data['order_type']]."为订单,订单id【".$id."】");
+                $this->success("预定订单转订单成功！","/confirm_reserve");
+            } else {
+                $this->success("预定订单转订单失败！","/confirm_reserve");
+            }
+        }
+        
+        if(!empty($id)) {
+            $where['id'] = $id;
+            $data['info'] = $this->Mhouses_scheduled_orders->get_one('*', $where);
+            
+            //已选择点位列表
+            $where = [];
+            $where['in']['A.id'] = explode(',', $data['info']['confirm_point_ids']);
+            $data['selected_points'] = $this->Mhouses_points->get_points_lists($where);
+            
+            if(!empty($data['info']['put_trade'])) {
+                $housesList = $this->Mhouses->get_lists("id, name,", ['put_trade<>' => $this->input->post('put_trade')]);
+            }else {
+                $housesList = $this->Mhouses->get_lists("id, name,", ['is_del' => 0]);
+            }
+            
+            $data['order_type'] = $data['info']['order_type'];
+            $data['put_trade'] = $data['info']['put_trade'];
+            $data['housesList'] = $housesList;
+        }
+        
+        $this->load->view('housesscheduledorders/checkout', $data);
+    }
 }

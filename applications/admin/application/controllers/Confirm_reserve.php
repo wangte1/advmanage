@@ -174,14 +174,18 @@ class Confirm_reserve extends MY_Controller{
      */
     public function houses_detail(){
         $data = $this->data;
+        $point_where = [];//点位查询条件
+        if($this->input->get('area_id')) $point_where['area_id'] = $data['area_id'] = $area_id = $this->input->get('area_id');
+        if($this->input->get('ban')) $point_where['ban'] = $data['ban'] = $ban = $this->input->get('ban');
+        
         $houses_id = $data['houses_id'] = (int) $this->input->get('houses_id');
         $order_id = $data['order_id'] =  (int) $this->input->get('order_id');
-        $data['houses_name'] = $this->input->get('houses_name');
+        $data['houses_name'] = $houses_name = $this->input->get('houses_name');
         //获取该订单的所有锁定点位，和已确认点位
         $orderInfo = $this->Mhouses_scheduled_orders->get_one('point_ids,confirm_point_ids', ['id' => $order_id]);
         
         //已锁定的点位
-        $point_ids = explode(',', $orderInfo['point_ids']);
+        $total = $point_ids = explode(',', $orderInfo['point_ids']);
         //已确认的点位
         $confirm_point_ids = $orderInfo['confirm_point_ids'];
         if($confirm_point_ids){
@@ -191,8 +195,24 @@ class Confirm_reserve extends MY_Controller{
             $confirm_point_ids = [];
             $data['confirm_point_ids'] = [];
         }
-        //获取点位列表
-        $point_list = $this->Mhouses_points->get_lists('*', ['in' => ['id' => $point_ids]]);
+        //获取点位列表=====模拟分页
+        $pageconfig = C('page.page_lists');
+        $this->load->library('pagination');
+        $page = $this->input->get_post('per_page') ? : '1';
+        $size = $pageconfig['per_page'] = 20;
+        $point_ids = array_chunk($point_ids, $size);
+        $point_ids = $point_ids[$page -1];
+        
+        $point_where['in']= ['id' => $point_ids];
+        $point_list = $this->Mhouses_points->get_lists('*', $point_where, ['ban' => 'asc']);
+        //=====准备分页
+        $data['data_count'] = count($point_list);
+        $pageconfig['base_url'] = "/confirm_reserve/houses_detail";
+        $pageconfig['total_rows'] = count($total);
+        
+        $this->pagination->initialize($pageconfig);
+        $data['pagestr'] = $this->pagination->create_links(); // 分页信息
+        //=====模拟分页查询结束
         //找出该楼盘的点位
         $houses_ids = [];
         $confirm_point_num = 0;
@@ -200,12 +220,11 @@ class Confirm_reserve extends MY_Controller{
             if($v['houses_id'] != $houses_id){
                 unset($point_list[$k]);
             }
-            
         }
-        $data['confirm_point_num'] = 0;
+        $data['page_confirm_point_num'] = 0;
         foreach ($point_list as $k => $v){
             if(in_array($v['id'], $confirm_point_ids)){
-                $data['confirm_point_num'] +=1;
+                $data['page_confirm_point_num'] +=1;
             }
         }
         
@@ -222,7 +241,6 @@ class Confirm_reserve extends MY_Controller{
                 }
             }
         }
-        
         $this->load->view('confirm_reserve/houses_detail', $data);
     }
     
@@ -256,84 +274,5 @@ class Confirm_reserve extends MY_Controller{
             $data['customer'] = $customer;
             $this->load->view('confirm_reserve/sign', $data);
         }
-    }
-    
-    /*
-     * 预定订单转订单
-     */
-    public function checkout($id) {
-    	$data = $this->data;
-    	 
-    	if(IS_POST) {
-    		$post_data = $this->input->post();
-    
-    		$order_type = $post_data['order_type'];
-    		$post_data['order_code'] = date('YmdHis').$post_data['customer_id']; //订单编号：年月日时分秒+客户id
-    
-    		if (isset($post_data['make_complete_time'])) {
-    			$post_data['make_complete_time'] = $post_data['make_complete_time'].' '.$post_data['hour'].':'.$post_data['minute'].':'.$post_data['second'];
-    		}
-    
-    		$post_data['creator'] =  $data['userInfo']['id'];
-    		$post_data['create_time'] =  date('Y-m-d H:i:s');
-    		unset($post_data['houses_id'], $post_data['area_id'],$post_data['ban'],$post_data['unit'],$post_data['floor'],$post_data['addr'], $post_data['hour'], $post_data['minute'], $post_data['second']);
-    		unset($post_data['point_ids_old']);
-    		$order_id = $this->Mhouses_orders->create($post_data);
-    		if ($order_id) {
-    			//如果选择的点位包含预定点位，则把对应的预定订单释放掉
-    			$where['id'] = $id;
-    			$info = $this->Mhouses_scheduled_orders->get_one("*", $where);
-    			if ($info && count(array_intersect(explode(',', $post_data['point_ids']), explode(',', $info['point_ids']))) > 0) {
-    				//释放该预定订单的所有点位
-    				$update_data['decr'] = ['lock_num' => 1];//释放点位锁定数
-    				$this->Mhouses_points->update_info($update_data, array('in' => array('id' => explode(',', $info['point_ids']))));
-    
-    				//更新该订单的状态为“已释放”
-    				$this->Mhouses_scheduled_orders->update_info(array('order_status' => 5), array('id' => $info['id']));
-    			}
-    
-    			//下单成功把选择的点增加占用客户，和增加上画次数
-    			$update_data['joint']['`customer_id`'] = ','.$post_data['customer_id'];
-    			//增加投放总量，一天为一次
-    			$update_data['incr']['used_num'] = ceil( ($post_data['release_start_time']-$post_data['release_start_time']) / (24*3600) );
-    			//增加点位可使用量1次，表示该点位少一次可放。
-    			$update_data['incr']['`ad_use_num`'] = 1;
-    			$this->Mhouses_points->update_info($update_data, array('in' => array('id' => explode(',', $post_data['point_ids']))));
-    
-    			//更新点位状态
-    			$_where = [];
-    			$_where['in'] = array('id' => explode(',', $post_data['point_ids']));
-    			//字段的比较where['field']
-    			$_where['field']['`ad_use_num`'] = '`ad_num`';
-    			$this->Mhouses_points->update_info(['point_status' => 3], $_where);
-    
-    			$this->write_log($data['userInfo']['id'], 1, "社区资源管理转预定订单".$data['order_type_text'][$post_data['order_type']]."为订单,订单id【".$id."】");
-    			$this->success("预定订单转订单成功！","/confirm_reserve");
-    		} else {
-    			$this->success("预定订单转订单失败！","/confirm_reserve");
-    		}
-    	}
-    	 
-    	if(!empty($id)) {
-    		$where['id'] = $id;
-    		$data['info'] = $this->Mhouses_scheduled_orders->get_one('*', $where);
-    
-    		//已选择点位列表
-    		$where = [];
-    		$where['in']['A.id'] = explode(',', $data['info']['confirm_point_ids']);
-    		$data['selected_points'] = $this->Mhouses_points->get_points_lists($where);
-    
-    		if(!empty($data['info']['put_trade'])) {
-    			$housesList = $this->Mhouses->get_lists("id, name,", ['put_trade<>' => $this->input->post('put_trade')]);
-    		}else {
-    			$housesList = $this->Mhouses->get_lists("id, name,", ['is_del' => 0]);
-    		}
-    
-    		$data['order_type'] = $data['info']['order_type'];
-    		$data['put_trade'] = $data['info']['put_trade'];
-    		$data['housesList'] = $housesList;
-    	}
-    	 
-    	$this->load->view('confirm_reserve/checkout', $data);
     }
 }
