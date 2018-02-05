@@ -121,10 +121,14 @@ class Housesscheduledorders extends MY_Controller{
             $post_data['confirm_point_ids'] = '';
             $id = $this->Mhouses_scheduled_orders->create($post_data);
             if ($id) {
-                //更新点位的lock_customer_id和状态和is_lock
-                $update_data['lock_customer_id'] = $post_data['lock_customer_id'];
-                $update_data['is_lock'] = 1;
-                $this->Mhouses_points->update_info($update_data, array('in' => array('id' => explode(',', $post_data['point_ids']))));
+                //更新点位的锁定数
+                $update_data['incr']['lock_num'] = 1;
+                $point_where['in'] = array('id' => explode(',', $post_data['point_ids']));
+                $this->Mhouses_points->update_info($update_data, $point_where);
+                //更新点位状态处理
+                $_where['field']['`ad_num`'] = '`lock_num`+`ad_use_num`';
+                $_where['in'] = array('id' => explode(',', $post_data['point_ids']));
+                $this->Mhouses_points->update_info(['point_status' => 3], $_where);
                 
                 $this->write_log($data['userInfo']['id'], 1, "新增".$data['order_type_text'][$post_data['order_type']]."预定订单,订单id【".$id."】");
                 $this->success("添加成功！","/housesscheduledorders");
