@@ -295,7 +295,7 @@
                             </div>
 
                             <div class="widget-body" style="height:1538px">
-                                <div class="widget-main">
+                                <div style="height: 100%;" class="widget-main">
                                     <div id="scrollTable">
                                         <div class="div-thead">
                                             <table id="sample-table-1" class="table table-striped table-bordered table-hover">
