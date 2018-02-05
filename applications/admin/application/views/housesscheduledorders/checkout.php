@@ -248,7 +248,7 @@
                                         </div>
 
                                         <div class="form-group">
-                                            <label class="col-sm-2 control-label no-padding-right" for="form-field-2"> 业务员<?php echo $info['sales_id']?>： </label>
+                                            <label class="col-sm-2 control-label no-padding-right" for="form-field-2"> 业务员： </label>
                                             <div class="col-sm-9">
                                                 <select id="sales_id" name="sales_id" class="select2" required>
                                                     <option value="">请选择业务员</option>
@@ -277,8 +277,7 @@
                                             </div>
                                         </div>
 
-                                        <?php if($order_type == 1 || $order_type == 2):?>
-                                        <div class="form-group page-make-company">
+                                        <!-- <div class="form-group page-make-company">
                                             <label class="col-sm-2 control-label no-padding-right" for="form-field-2"> 制作公司： </label>
                                             <div class="col-sm-9">
                                                 <select name="make_company_id" class="select2" required>
@@ -300,7 +299,6 @@
                                                 </span>
                                             </div>
                                         </div>
-                                        <?php endif;?>
 
                                         <div class="form-group">
                                             <label class="col-sm-2 control-label no-padding-right" for="form-field-2"> 制作要求： </label>
@@ -325,7 +323,6 @@
                                                         }
                                                     }
                                                 ?>
-                                                <!-- <textarea class="form-control" name="make_requirement" rows="5" placeholder="请填写制作要求"><?php echo $make_requirement;?></textarea> -->
                                             	<textarea class="form-control" name="make_requirement" rows="5" placeholder="请填写制作要求"></textarea>
                                             </div>
                                         </div>
@@ -406,7 +403,7 @@
                                             </div>
                                         </div>
                                         <?php endif;?>
-                                        <?php endif;?>
+                                        <?php endif;?> -->
 
                                         <div class="form-group">
                                             <label class="col-sm-2 control-label no-padding-right" for="form-field-2"> 备注： </label>

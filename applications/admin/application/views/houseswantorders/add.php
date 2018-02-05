@@ -122,8 +122,7 @@
 																			  	<select name="province" id="province"></select>
 																			  	<select name="city" id="city"></select>
 																			  	<!-- <select name="area" id="area"></select> -->
-																				<select id="example-getting-started" multiple="multiple">
-																				</select>
+																				<select name="area" id="area" multiple="multiple"></select>
 																			</div>
 
 	                                                                    </div>
@@ -237,14 +236,13 @@
     </div>
 </div>
 
-<<<<<<< HEAD
+
 <style>
 .btn-default {
 	background-color: #fff;
 }
 </style>
-=======
->>>>>>> 6bff7a606ef211505e503b6e9fa7c679e85943c9
+
 <!-- 加载尾部公用js -->
 <?php $this->load->view("common/footer");?>
 <script src="<?php echo css_js_url('bootstrap-timepicker.min.js','admin');?>"></script>
@@ -252,11 +250,8 @@
 <script src="<?php echo css_js_url('jqdistpicker/distpicker.js','admin');?>"></script>
 <script src="<?php echo css_js_url('select2.min.js','admin');?>"></script>
 <!-- <script src="<?php echo css_js_url('order.js','admin');?>"></script> -->
-<<<<<<< HEAD
 <script src="<?php echo css_js_url('bootstrap-multiselect.js','admin');?>"></script>
 <link href="<?php echo css_js_url('bootstrap-multiselect.css', 'admin');?>" rel="stylesheet" />
-=======
->>>>>>> 6bff7a606ef211505e503b6e9fa7c679e85943c9
 <script type="text/javascript">
 
 window.onload=function(){ 
@@ -289,7 +284,7 @@ window.onload=function(){
 $("#distpicker1").distpicker({
 	province: '贵州省',
 	city: '贵阳市',
-	//district: ''
+	district: ''
 });
 
 
@@ -346,6 +341,10 @@ $(function(){
 		
 	});
 
+	$('#area').change(function(){
+		alert();
+	})
+
   	//保存
     $(".btn-save").click(function(){
     	if($('#customer_id').val() == '') {
@@ -378,8 +377,24 @@ $(function(){
 <!-- Initialize the plugin: -->
 <script type="text/javascript">
     $(document).ready(function() {
-        $('#example-getting-started').multiselect();
+        $('#area').multiselect({
+        	includeSelectAllOption: true,
+        	selectAllText : '选择所有',
+        	nonSelectedText : '请选择区域',
+        	allSelectedText : '选择所有'
+        });
+
+        $('#area option:eq(0)').remove();
+        $('#area option:eq(1)').attr("selected",false);
+
+        $('.multiselect-container li:eq(1)').remove();
+        $('.multiselect-container li:eq(1)').find('input[type="checkbox"]').prop("checked",false);
+
+        $('.multiselect').attr('title','请选择区域');
+        $('.multiselect-selected-text').text('请选择区域');
+         
     });
+
 </script>
 
 <!-- 底部 -->
