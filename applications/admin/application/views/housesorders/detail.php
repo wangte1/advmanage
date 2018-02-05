@@ -888,6 +888,12 @@
 
 		var now_status = "<?php echo $info['order_status']?>";
 
+		//录入制作信息
+		if(status == 2) {
+			alert();
+			return;
+		}
+		
 		if(now_status >= 5 && status <= 5) {
 			var d = dialog({
                 title: '提示信息',

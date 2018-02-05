@@ -726,16 +726,26 @@ class Housesorders extends MY_Controller{
      */
     public function points_detail($order_id, $houses_id) {
     	$data = $this->data;
+    	$pageconfig = C('page.page_lists');
+    	$this->load->library('pagination');
+    	$page =  intval($this->input->get("per_page",true)) ?  : 1;
+    	$size = $pageconfig['per_page'];
     	
     	$order_list = $this->Mhouses_orders->get_one('point_ids', ['id'=>$order_id]);
     	
-    	var_dump(explode(',', $order_list['point_ids']));exit;
-    	
     	$where['in']['A.id'] = explode(',', $order_list['point_ids']);
     	$where['A.houses_id'] = $houses_id;
-    	$data['points_list'] = $this->Mhouses_points->get_points_lists($where);
+    	$data['list'] = $this->Mhouses_points->get_points_lists($where, [],$size,($page-1)*$size);
+    	$data_count = $this->Mhouses_points->get_count($where);
+    	$data['page'] = $page;
+    	$data['data_count'] = $data_count;
     	
-    	var_dump($data['points_list']);
+    	//获取分页
+    	$pageconfig['base_url'] = "/houses";
+    	$pageconfig['total_rows'] = $data_count;
+    	$this->pagination->initialize($pageconfig);
+    	$data['pagestr'] = $this->pagination->create_links(); // 分页信息
+    	
     	$this->load->view('housesorders/points_detail', $data);
     }
     
@@ -890,6 +900,15 @@ class Housesorders extends MY_Controller{
             $this->load->view('housesorders/upload_adv_img', $data);
         }
 
+    }
+    
+    /**
+     * 录入制作信息
+     */
+    public function insert_make_info() {
+    	$data = $this->data;
+    	
+    	$this->load->view('housesorders/insert_make_info', $data);
     }
 
 

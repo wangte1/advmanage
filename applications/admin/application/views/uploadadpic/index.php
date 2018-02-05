@@ -227,7 +227,7 @@
                                                         }
                                                     ?>
                                                     <span class="badge <?php echo $class; ?>">
-                                                        <?php echo $status_text[$value['order_status']];?>
+                                                        <?php if(isset($status_text[$value['order_status']]))echo $status_text[$value['order_status']];?>
                                                     </span>
 
                                                     <?php if($value['order_status'] == 7):?>
