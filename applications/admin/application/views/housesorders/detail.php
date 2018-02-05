@@ -357,7 +357,6 @@
                                             
                                         </div>
                                         <div id="make_info" class="tab-pane">
-                                            
                                             <div class="row" style="margin-top: 20px;">
                                         	
 	                                        	<div class="col-xs-12">
@@ -410,8 +409,6 @@
 	                                            </div>
                                             
                                             </div>  
-                                            
-                                            
                                         </div>
                                         <div id="inspect_img" class="tab-pane">
                                             <?php if(count($info['inspect_img']) > 0):?>
@@ -936,10 +933,24 @@
 
     //更新订单状态
     $(".status-step").click(function(){
+<<<<<<< HEAD
+=======
+        
+>>>>>>> 6bff7a606ef211505e503b6e9fa7c679e85943c9
         var order_id = $("#order_id").val();
         var status = $(this).attr("data-status");
 
 		var now_status = "<?php echo $info['order_status']?>";
+<<<<<<< HEAD
+=======
+
+		//录入制作信息
+		if(status == 2) {
+			alert();
+			return;
+		}
+		
+>>>>>>> 6bff7a606ef211505e503b6e9fa7c679e85943c9
 		if(now_status >= 5 && status <= 5) {
 			var d = dialog({
                 title: '提示信息',
@@ -956,10 +967,17 @@
         if (adv_img_count == 0) {
             var d = dialog({
                 title: '提示信息',
+<<<<<<< HEAD
                 content: '请联系业务人员先上传广告画面！',
                 okValue: '确定',
                 ok: function () {
                     //window.location.href = '/housesorders/upload_adv_img/<?php echo $info["id"];?>';
+=======
+                content: '请先上传广告画面！',
+                okValue: '立即上传',
+                ok: function () {
+                    window.location.href = '/housesorders/upload_adv_img/<?php echo $info["id"];?>';
+>>>>>>> 6bff7a606ef211505e503b6e9fa7c679e85943c9
                 },
             });
             d.width(320);
@@ -967,6 +985,7 @@
             return false;
         }
 
+<<<<<<< HEAD
       	//录入制作信息
 		if(status == 2 && adv_img_count != 0) {
 			layer.open({
@@ -982,6 +1001,10 @@
 		}
         
 		if(status == 4) {
+=======
+
+		if(status == 6) {
+>>>>>>> 6bff7a606ef211505e503b6e9fa7c679e85943c9
 			if(now_status == status) {
 				return false;
 			}
@@ -999,7 +1022,11 @@
             return false;
         }
 
+<<<<<<< HEAD
 		if(status == 5) {
+=======
+		if(status == 7) {
+>>>>>>> 6bff7a606ef211505e503b6e9fa7c679e85943c9
 			 var d = dialog({
                title: '提示信息',
                content: '工程人员上传验收图片中，当工程人员完成验收图片上传此状态自动更新',
@@ -1014,7 +1041,11 @@
        }
         
 
+<<<<<<< HEAD
         if (status == 6 && inspect_img_count == 0) {
+=======
+        if (status == 8 && inspect_img_count == 0) {
+>>>>>>> 6bff7a606ef211505e503b6e9fa7c679e85943c9
             var d = dialog({
                 title: '提示信息',
                 content: '您还没有上传验收图片进行验收！',
@@ -1029,7 +1060,11 @@
         }
 
 		//提前主动变为下画派单
+<<<<<<< HEAD
 		if(status == 7 && !($(this).parent().hasClass('active'))) {
+=======
+		if(status == 9 && !($(this).parent().hasClass('active'))) {
+>>>>>>> 6bff7a606ef211505e503b6e9fa7c679e85943c9
 			var d = dialog({
                 title: '提示信息',
                 content: '该订单还没有到投放结束时间，您确认要提前进行下画派单吗？',
@@ -1065,7 +1100,11 @@
 			d.width(320);
             d.showModal();
             return false;
+<<<<<<< HEAD
 		}else if(status == 7 && $(this).parent().hasClass('active')) {
+=======
+		}else if(status == 8 && $(this).parent().hasClass('active')) {
+>>>>>>> 6bff7a606ef211505e503b6e9fa7c679e85943c9
 			return false;
 		}
 

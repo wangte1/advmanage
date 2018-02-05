@@ -125,13 +125,7 @@
 																				<select id="example-getting-started" multiple="multiple">
 																				</select>
 																			</div>
-																			
-																			
-																			
-																			
-																			
-																			
-																			
+
 	                                                                    </div>
 	                                                                </div>
                                                             	</div>
@@ -243,11 +237,14 @@
     </div>
 </div>
 
+<<<<<<< HEAD
 <style>
 .btn-default {
 	background-color: #fff;
 }
 </style>
+=======
+>>>>>>> 6bff7a606ef211505e503b6e9fa7c679e85943c9
 <!-- 加载尾部公用js -->
 <?php $this->load->view("common/footer");?>
 <script src="<?php echo css_js_url('bootstrap-timepicker.min.js','admin');?>"></script>
@@ -255,8 +252,11 @@
 <script src="<?php echo css_js_url('jqdistpicker/distpicker.js','admin');?>"></script>
 <script src="<?php echo css_js_url('select2.min.js','admin');?>"></script>
 <!-- <script src="<?php echo css_js_url('order.js','admin');?>"></script> -->
+<<<<<<< HEAD
 <script src="<?php echo css_js_url('bootstrap-multiselect.js','admin');?>"></script>
 <link href="<?php echo css_js_url('bootstrap-multiselect.css', 'admin');?>" rel="stylesheet" />
+=======
+>>>>>>> 6bff7a606ef211505e503b6e9fa7c679e85943c9
 <script type="text/javascript">
 
 window.onload=function(){ 
@@ -381,5 +381,6 @@ $(function(){
         $('#example-getting-started').multiselect();
     });
 </script>
+
 <!-- 底部 -->
 <?php $this->load->view("common/bottom");?>
