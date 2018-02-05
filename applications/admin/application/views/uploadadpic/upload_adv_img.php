@@ -69,7 +69,7 @@
 		                    <ul class="ace-thumbnails" id="uploader_cover_img">
 	                            <li class="pic pic-add add-pic" style="float: left;width: 300px;height: 300px;clear:none; border: 1px solid #f18a1b">
 	                            	<a href="javascript:;" class="up-img">
-	                            		<img src="<?php echo $adv_img[0];?>">
+	                            		<img src="<?php if(isset($adv_img[0])) echo $adv_img[0];?>">
 	                            	</a>
 	                            </li>
                            	</ul>

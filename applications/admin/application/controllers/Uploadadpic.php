@@ -307,7 +307,7 @@ class Uploadadpic extends MY_Controller{
             $res = $this->Mhouses_orders->update_info(array("adv_img"=>$adv_img, "is_sample" => $is_sample), array("id"=>$order_id));
             if ($res) {
                 $this->write_log($data['userInfo']['id'], 2, "社区资源上传订单广告画面，订单id【".$order_id."】");
-                $this->success("保存广告画面成功！", "/uploadadpic/upload_adv_img/".$order_id);
+                $this->success("保存广告画面成功！", "/uploadadpic/upload_adv_img/".$order_id."/".$order_status);
             } else {
                 $this->error("操作失败！请重试！");
             }
