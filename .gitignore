@@ -1,0 +1,26 @@
+*uploads*
+*cache*
+*development*
+*production*
+*DS_Store*
+*Test*
+*test*
+bb.zip
+Runtime
+Admin/Conf/config.php
+Admin/Conf/debug.php
+Home/Conf/debug.php
+hotel.offset
+front-end
+.project
+.buildpath
+.settings/*
+applications/www/application/cache/*
+Uploads/*
+*logs*
+*vendor*
+<<<<<<< HEAD
+composer.lock
+=======
+composer.lock
+>>>>>>> 155541c715e7608222ea5e7bbd7d70651f5f4204
