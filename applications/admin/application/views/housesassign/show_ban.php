@@ -101,23 +101,29 @@ $(function(){
 
 	$('.charge-sel, .remark').change(function(){
 
+		var ban_str = '';
 		var charge_str = '';
 		var remark_str = '';
 
 		var i = 0;
-		$('.select2-chosen').each(function(){
-			charge_str += $(this).text() + ',';
-			if($(this).text() != '') {
-				i += parseInt($(this).parent().parent().parent().prev().text());
+		
+		$('.charge-sel').each(function(){
+			if(typeof($(this).attr('id'))=="undefined") {
+				charge_str += $(this).val() + ',';
+
+				if($(this).val() != '') {
+					i += parseInt($(this).parent('td').prev().text());
+					ban_str += $(this).parent('td').prev().prev().text() + ',';
+				}
 			}
 		});
 
 		$('.remark').each(function(){
 			remark_str += $(this).val() + ',';
 		});
-
 		
 		window.parent.$('#count_<?php echo $houses_id;?>').text(i);
+		window.parent.$('#ban_<?php echo $houses_id;?>').val(ban_str);
 		window.parent.$('#charge_<?php echo $houses_id;?>').val(charge_str);
 		window.parent.$('#remark_<?php echo $houses_id;?>').val(remark_str);
 

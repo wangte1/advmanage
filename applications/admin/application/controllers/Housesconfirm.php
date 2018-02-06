@@ -124,7 +124,11 @@ class Housesconfirm extends MY_Controller{
     	}
     	 
     	if($this->input->get('houses_id')) {
-    		$data['houses_id'] = $this->input->get('houses_id');
+    		$where_p['A.houses_id'] = $data['houses_id'] = $this->input->get('houses_id');
+    	}
+    	
+    	if($this->input->get('ban')) {
+    		$where_p['A.ban'] = $data['ban'] = $this->input->get('ban');
     	}
     
     	//客户名称
@@ -132,58 +136,24 @@ class Housesconfirm extends MY_Controller{
     
     	//业务员
     	$data['info']['salesman'] = $this->Msalesman->get_one('name, phone_number', array('id' => $data['info']['sales_id']));
-    
+    	
+    	$where_p['in']['A.id'] = explode(',', $data['info']['point_ids']);
     	//投放点位
-    	$data['info']['selected_points'] = $this->Mhouses_points->get_points_lists(array('in' => array('A.id' => explode(',', $data['info']['point_ids']))));
+    	$data['info']['selected_points'] = $this->Mhouses_points->get_points_lists($where_p);
     
     	//广告画面
     	$data['info']['adv_img'] = $data['info']['adv_img'] ? explode(',', $data['info']['adv_img']) : array();
-    
-    	//验收图片
-    	$data['info']['inspect_img'] = $this->Mhouses_order_inspect_images->get_inspect_img(array('A.order_id' => $id, 'A.type' => 1));
-    
-    	//换画记录
-    	$data['info']['change_pic_record'] = $this->Mhouses_changepicorders->get_order_lists(array('A.order_code' => $data['info']['order_code']));
-    
-    	//换点记录
-    	$data['info']['change_points_record'] = $this->Mhouses_change_points_record->get_lists('*', array('order_id' => $id), array('operate_time' => 'desc'));
-    	foreach ($data['info']['change_points_record'] as $key => $value) {
-    		$remove_points = $this->Mhouses_points->get_lists('code', array('in' => array('id' => explode(',', $value['remove_points']))));
-    		$data['info']['change_points_record'][$key]['remove_points'] = implode(',', array_column($remove_points, 'code'));
-    
-    		$add_points= $this->Mhouses_points->get_lists('code', array('in' => array('id' => explode(',', $value['add_points']))));
-    		$data['info']['change_points_record'][$key]['add_points'] = implode(',', array_column($add_points, 'code'));
-    	}
-    
-    	//上画派单列表
-    	$data['info']['assign_list'] = $this->Mhouses_assign->get_join_lists(['A.order_id' => $id, 'A.is_del' => 0]);
-    
-    	//下画派单列表
-    	$data['info']['assign_down_list'] = $this->Mhouses_assign_down->get_join_lists(['A.order_id' => $id, 'A.is_del' => 0]);
-    
-    	//         if(count($data['info']['assign_list']) > 0) {
-    	//         	$houses_ids = array_column($data['info']['assign_list'], 'houses_id');
-    	//         	$where = [];
-    	//         	$where['order_id'] = $id;
-    	//         	$where['in']['houses_id'] = $houses_ids;
-    	//         	$group_by = ['houses_id'];
-    	//         	$data['houses_count'] = $this->Mhouses_points->get_lists('houses_id,count(0) as count', $where, [],  0,0,  $group_by);  //点位分组
-    	//         }
     
     	//制作公司
     	$data['info']['make_company'] = $this->Mmake_company->get_one('company_name', array('id' => $data['info']['make_company_id']))['company_name'];
     	$data['status_text'] = C('housesorder.houses_order_status.text');
     
-    	//获取对应订单状态的操作信息
-    	$operate_time = $this->Mhouses_status_operate_time->get_lists("value,operate_remark,operate_time",array("order_id" => $id , 'type' => 1));
-    	if($operate_time){
-    		$data['time'] = array_column($operate_time, "operate_time", "value");
-    		$data['operate_remark'] = array_column($operate_time, "operate_remark", "value");
-    	}
-    
     	$data['id'] = $id;
     	$data['assign_type'] = $assign_type;
-    
+    	
+    	//$tmp_ = $this->Mhouses_assign->get_lists('', ['order_id' => $id, 'houses_id' => $this->input->get('houses_id'), 'ban' => $this->input->get('ban')]);
+    	
+    	
     	$this->load->view('housesconfirm/order_detail', $data);
     }
     

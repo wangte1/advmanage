@@ -49,9 +49,10 @@
 					<td><?php echo $v['houses_name'];?><input type="hidden" name="houses_id[]" value="<?php echo $v['houses_id'];?>"></td>
 					<td><span><?php echo $v['count'];?></span><input type="hidden" name="points_count[]" value="<?php echo $v['count'];?>"></td>
 					<td>
-						<span id="count_<?php echo $v['houses_id'];?>">0</span>
-						<input id="charge_<?php echo $v['houses_id'];?>" name="ban_assign[]" type="text" class="ban_assign">
-						<input id="remark_<?php echo $v['houses_id'];?>" name="ban_assign[]" type="text" class="ban_assign">
+						<span id="count_<?php echo $v['houses_id'];?>" class="sel_count">0</span>
+						<input id="ban_<?php echo $v['houses_id'];?>" name="ban[]" type="text">
+						<input id="charge_<?php echo $v['houses_id'];?>" name="ban_charge[]" type="text">
+						<input id="remark_<?php echo $v['houses_id'];?>" name="ban_remark[]" type="text">
 					</td>
 					<?php if($assign_type == 2) {?>
 						<td>
@@ -112,8 +113,26 @@ $(function(){
 			  content: '/housesassign/show_ban?order_id='+order_id+'&houses_id='+houses_id //iframe的url
 			}); 
 	});
+
+	$('.charge-sel').change(function(){
+		$(this).parent('td').prev().find('span').text( $(this).parent('td').prev().prev().find('span').text() );
+	});
 	
 	$('.sub-button').click(function(){
+
+		var flag = false;
+		$('.sel_count').each(function(){
+			if($(this).text() == '' || ($(this).parent('td').prev().find('span').text() != $(this).text())) {
+				flag = true;
+				return false;
+			}
+		});
+
+		if(flag == true) {
+			layer.alert('您还没有点位没有分配！');
+			return;
+		}
+		
 		layer.confirm('您确定保存并给负责人发送短信通知吗？', {
 			  	btn: ['确定','取消'] //按钮
 			}, function(){

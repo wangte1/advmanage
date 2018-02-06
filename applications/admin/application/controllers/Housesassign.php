@@ -110,42 +110,70 @@ class Housesassign extends MY_Controller{
     	if ($this->input->get('order_id')) $data['order_id'] =  $this->input->get('order_id');
     	
     	if(IS_POST){
+    		$post_data = $this->input->post();
+    		
     		$order_id = $this->input->post('order_id');
     		$houses_ids = $this->input->post('houses_id');
     		$points_counts = $this->input->post('points_count');
     		$charge_users = $this->input->post('charge_user');
     		$remark = $this->input->post('remark');
     		
+    		
     		$add_data = [];
-    		$i = 0;
+    		$tmp_arr = [];
+    		$i = $j = 0;
     		foreach ($houses_ids as $k => $v) {
     			
-    			//向工程人员广播
-    			$msg = "你有新的派单需要确认，请到派单确认界面确认！";
-    			//$this->send(['uid' => $charge_users[$k], 'message' => $msg]);
-
-//     			$res_send = $this->sendMsg($charge_users[$k]);
-    			
-//     			if($res_send['code'] == 0) {
-//     				$this->write_log($charge_users[$k],2,"发送短信失败".date("Y-m-d H:i:s"));	//发送短信失败记录
-//     			}
-    			$add_data[$i]['order_id'] = $order_id;
-    			$add_data[$i]['houses_id'] = $v;
-    			$add_data[$i]['points_count'] = $points_counts[$k];
-    			$add_data[$i]['charge_user'] = $charge_users[$k];
-    			$add_data[$i]['assign_user'] = $data['userInfo']['id'];
-    			$add_data[$i]['assign_time'] = date("Y-m-d H:i:s");
-    			if(isset($remark[$k])) {
-    				$add_data[$i]['remark'] = $remark[$k];
+    			if($charge_users[$k] == '') {	//通过楼栋派单
+    				$tmp1 = array_filter(explode(',', $post_data['ban_charge'][$k]));
+    				$tmp2 = explode(',', $post_data['ban_remark'][$k]);
+    				$tmp3 = explode(',', $post_data['ban'][$k]);
+    				$tmp4 = explode(',', $post_data['ban_count'][$k]);
+    				foreach($tmp1 as $k1 => $v1) {
+    						$tmp_arr[$j]['order_id'] = $order_id;
+    						$tmp_arr[$j]['houses_id'] = $v;
+    						$tmp_arr[$j]['ban'] = $tmp3[$k1];
+    						$tmp_arr[$j]['points_count'] = $tmp4[$k1];
+    						$tmp_arr[$j]['charge_user'] = $v1;
+    						$tmp_arr[$j]['assign_user'] = $data['userInfo']['id'];
+    						$tmp_arr[$j]['assign_time'] = date("Y-m-d H:i:s");
+    						if(isset($tmp2[$k1])) {
+    							$tmp_arr[$j]['remark'] = $tmp2[$k1];
+    						}
+    						
+    						
+    						$tmp_arr[$j]['type'] = $this->input->get('assign_type');
+    						$j++;
+    				}
+    			}else {
+    				//向工程人员广播
+    				$msg = "你有新的派单需要确认，请到派单确认界面确认！";
+    				//$this->send(['uid' => $charge_users[$k], 'message' => $msg]);
+    				
+    				//     			$res_send = $this->sendMsg($charge_users[$k]);
+    				 
+    				//     			if($res_send['code'] == 0) {
+    				//     				$this->write_log($charge_users[$k],2,"发送短信失败".date("Y-m-d H:i:s"));	//发送短信失败记录
+    				//     			}
+    				$add_data[$i]['order_id'] = $order_id;
+    				$add_data[$i]['houses_id'] = $v;
+    				$add_data[$i]['ban'] = '';
+    				$add_data[$i]['points_count'] = $points_counts[$k];
+    				$add_data[$i]['charge_user'] = $charge_users[$k];
+    				$add_data[$i]['assign_user'] = $data['userInfo']['id'];
+    				$add_data[$i]['assign_time'] = date("Y-m-d H:i:s");
+    				if(isset($remark[$k])) {
+    					$add_data[$i]['remark'] = $remark[$k];
+    				}
+    				 
+    				 
+    				$add_data[$i]['type'] = $this->input->get('assign_type');
     			}
-    			
-    			
-    			$add_data[$i]['type'] = $this->input->get('assign_type');
-    			
-//     			if($this->input->get('assign_type') == 3) {
-//     				$add_data[$i]['type'] = 2;
-//     			}
     			$i++;
+    		}
+    		
+    		if(count($tmp_arr) > 0) {
+    			$add_data = array_merge_recursive($add_data,$tmp_arr);
     		}
     		
     		$res = $this->Mhouses_assign->create_batch($add_data);
@@ -259,8 +287,9 @@ class Housesassign extends MY_Controller{
     		$where['in']['id'] = $point_ids_arr;
     	}
     
-    	$group_by = ['houses_id'];
-    	$list = $this->Mhouses_points->get_lists('houses_id,count(0) as count', $where, [],  0,0,  $group_by);  //点位分组
+    	//$group_by = ['houses_id'];
+    	//$list = $this->Mhouses_points->get_lists('houses_id,count(0) as count', $where, [],  0,0,  $group_by);  //点位分组
+    	$list = $this->Mhouses_assign->get_lists('houses_id,ban, points_count', ['order_id' => $this->input->get('order_id')]);  //点位分组
     
     	if($list) {
     		$houses_ids = array_column($list, 'houses_id');

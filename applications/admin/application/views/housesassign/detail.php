@@ -33,6 +33,7 @@
 					<th>序号</th>
 					<th>行政区域</th>
 					<th>楼盘</th>
+					<th>楼栋</th>
 					<th>点位数量（个）</th>
 					<th>负责人</th>
 					<th>派单人</th>
@@ -48,7 +49,8 @@
 					<td><?php echo $k+1;?></td>
 					<td><?php echo $v['ad_area'];?></td>
 					<td><?php echo $v['houses_name'];?></td>
-					<td><?php echo $v['count'];?></td>
+					<td><?php echo $v['ban'];?></td>
+					<td><?php echo $v['points_count'];?></td>
 					<td>
 						<?php if(isset($assign_list)) {?>
 							<?php foreach ($assign_list as $k1 => $v1) {?>
@@ -86,13 +88,9 @@
 						<?php }?>
 					</td>
 					<td>
-						<?php if(isset($assign_list)) {?>
-							<?php foreach ($assign_list as $k1 => $v1) {?>
-								<?php if($v['houses_id'] == $v1['houses_id']) {?>
-									<?php if(isset($houses_assign_status[$v1['status']])) echo $houses_assign_status[$v1['status']];?>
-								<?php }?>
-							<?php }?>
-						<?php }?>
+						
+						<?php if(isset($houses_assign_status[$v1['status']])) echo $houses_assign_status[$v1['status']];?>
+								
 					</td>
 					<td>
 						<a class="green tooltip-info m-detail" data-id="<?php echo $v['houses_id'];?>"  data-rel="tooltip" data-placement="top" title="" data-original-title="详情">

@@ -145,6 +145,7 @@
 			                                                <th class="phone-hide">序号</th>
 			                                                <th nowrap>行政区域</th>
 			                                                <th nowrap>楼盘名称</th>
+			                                                <th nowrap>楼栋</th>
 			                                                <th nowrap>点位类型</th>
 			                                                <th class="phone-hide">客户名称</th>
 			                                                <th class="phone-hide">点位数量（个）</th>
@@ -170,6 +171,10 @@
 			                                                    </td>
 			                                                    <td>
 			                                                    	<?php echo $val['houses_name'];?>
+			                                                    </td>
+			                                                    
+			                                                    <td>
+			                                                    	<?php echo $val['ban'];?>
 			                                                    </td>
 			                                                   
 			                                                    <td>
@@ -243,7 +248,7 @@
 			                                                   	
 			                                                    <td nowrap>
 			                                                        <div class="">
-			                                                            <a class="green tooltip-info" href="/housesconfirm/order_detail/<?php echo $val['order_id'];?>/<?php echo $assign_type;?>?houses_id=<?php echo $val['houses_id'];?>"  data-rel="tooltip" data-placement="top" title="" data-original-title="详情">
+			                                                            <a class="green tooltip-info" href="/housesconfirm/order_detail/<?php echo $val['order_id'];?>/<?php echo $assign_type;?>?houses_id=<?php echo $val['houses_id'];?>&ban=<?php echo $val['ban'];?>"  data-rel="tooltip" data-placement="top" title="" data-original-title="详情">
 				                                                            <i class="icon-eye-open bigger-130"></i>
 				                                                        </a> 
 			                                                            
