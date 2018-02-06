@@ -134,26 +134,6 @@ class Houseswantorders extends MY_Controller{
     		unset($post_data['ban'], $post_data['unit'], $post_data['floor']);
     		if (isset($post_data['area_id'])) unset($post_data['area_id']);
     		if (isset($post_data['addr'])) unset($post_data['addr']);
-    		//判断这个客户是否已锁定点位
-    		$order_type = (int) $post_data['order_type'];
-    		$where['is_del'] = 0;
-    		$where['lock_customer_id'] = $post_data['lock_customer_id'];
-    		$where['order_type'] = $order_type;
-    	
-    		$count = $this->Mhouses_scheduled_orders->count($where);
-    		if ($count > 0) {
-    			$this->success("该客户已存在锁定中的".$data['order_type_text'][$order_type]."订单！", '/housesscheduledorders/addpreorder/'.$order_type);
-    			exit;
-    		}
-    	
-    		//判断该客户是否存在正在锁定日期范围内的已释放的订单
-//     		$where['order_status'] = C('housesscheduledorder.order_status.code.done_release');
-//     		$where['lock_end_time >'] = date('Y-m-d');
-//     		$orderinfo = $this->Mhouses_scheduled_orders->get_one('*', $where);
-//     		if ($orderinfo) {
-//     			$this->success("该客户上一次释放的订单还未到锁定结束日期，不能新建预定订单！", '/housesscheduledorders/addpreorder/'.$order_type);
-//     			exit;
-//     		}
     	
     		$post_data['create_user'] = $post_data['update_user'] = $data['userInfo']['id'];
     		$post_data['create_time'] = $post_data['update_time'] = date('Y-m-d H:i:s');

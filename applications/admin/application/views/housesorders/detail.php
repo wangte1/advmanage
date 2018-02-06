@@ -242,9 +242,11 @@
                                                 <div class="profile-info-row">
                                                     <div class="profile-info-name"> 联系单与确认函</div>
 
-                                                    <div class="profile-info-value">
+                                                    <div class="profile-info-value" style="height: 40px;">
+                                                    	<?php if($info['order_status'] > 1):?>
                                                         <a href="/housesorders/contact_list/<?php echo $info['id'];?>" target="_blank">查看联系单</a>
-
+														<?php endif;?>
+														
                                                         <?php if($info['order_status'] > 6):?>
                                                         <a href="/housesorders/confirmation/<?php echo $info['id'];?>" target="_blank">查看确认函</a>
                                                         <?php endif;?>
@@ -357,58 +359,68 @@
                                             
                                         </div>
                                         <div id="make_info" class="tab-pane">
-                                            <div class="row" style="margin-top: 20px;">
+                                        	<?php if($info['order_status'] > 1):?>
+                                                <div class="row" style="margin-top: 20px;">
                                         	
-	                                        	<div class="col-xs-12">
-								                    <label class="col-sm-2 control-label no-padding-right" style="text-align:right;" for="form-field-2"> 制作公司： </label>
-								                    <div class="col-sm-10">
-								                    	<span class="editable editable-click"><?php echo $info['make_company'];?></span>
-								                    </div>
-							                   	</div>
-	                                        	
-	                                        	<div class="col-xs-12" style="margin-top:20px;">
-	                                        		<label class="col-sm-2 control-label no-padding-right" style="text-align:right;" for="form-field-2"> 制作要求： </label>
-								                    <div class="col-sm-10">
-								                    	<span class="editable editable-click"> <?php if($info['make_requirement']) { echo $info['make_requirement']; } else { echo '无'; } ?></span>
-								                    </div>
-	                                            </div>
+		                                        	<div class="col-xs-12">
+									                    <label class="col-sm-2 control-label no-padding-right" style="text-align:right;" for="form-field-2"> 制作公司： </label>
+									                    <div class="col-sm-10">
+									                    	<span class="editable editable-click"><?php echo $info['make_company'];?></span>
+									                    </div>
+								                   	</div>
+		                                        	
+		                                        	<div class="col-xs-12" style="margin-top:20px;">
+		                                        		<label class="col-sm-2 control-label no-padding-right" style="text-align:right;" for="form-field-2"> 制作要求： </label>
+									                    <div class="col-sm-10">
+									                    	<span class="editable editable-click"> <?php if($info['make_requirement']) { echo $info['make_requirement']; } else { echo '无'; } ?></span>
+									                    </div>
+		                                            </div>
+		                                            
+		                                            <div class="col-xs-12" style="margin-top:20px;">
+		                                        		<label class="col-sm-2 control-label no-padding-right" style="text-align:right;" for="form-field-2"> 制作费用： </label>
+									                    <div class="col-sm-10">
+									                    	<span class="editable editable-click"> <?php if($info['make_fee']) { echo $info['make_fee']; } else { echo '无'; } ?></span>
+									                    </div>
+		                                            </div>
+		                                            
+		                                            <div class="col-xs-12" style="margin-top:20px;">
+		                                        		<label class="col-sm-2 control-label no-padding-right" style="text-align:right;" for="form-field-2"> 制作完成时间： </label>
+									                    <div class="col-sm-10">
+									                    	<span class="editable editable-click"> <?php if($info['make_complete_time']) { echo $info['make_complete_time']; } else { echo '无'; } ?></span>
+									                    </div>
+		                                            </div>
+		                                            
+		                                            <div class="col-xs-12" style="margin-top:20px;">
+		                                        		<label class="col-sm-2 control-label no-padding-right" style="text-align:right;" for="form-field-2"> 是否打小样： </label>
+									                    <div class="col-sm-10">
+									                    	<span class="editable editable-click"> <?php if($info['is_sample'] == 1) { echo '是('.$info['sample_color'].')'; } else { echo '否'; } ?></span>
+									                    </div>
+		                                            </div>
+		                                            
+		                                            <div class="col-xs-12" style="margin-top:20px;">
+		                                        		<label class="col-sm-2 control-label no-padding-right" style="text-align:right;" for="form-field-2"> 小样签字： </label>
+									                    <div class="col-sm-10">
+									                    	
+									                    </div>
+		                                            </div>
+		                                            
+		                                            <div class="col-xs-12" style="margin-top:20px;">
+		                                        		<label class="col-sm-2 control-label no-padding-right" style="text-align:right;" for="form-field-2"> 备注： </label>
+									                    <div class="col-sm-10">
+									                    	<span class="editable editable-click"> <?php if($info['remark']) { echo $info['remark']; } else { echo '无'; } ?></span>
+									                    </div>
+		                                            </div>
 	                                            
-	                                            <div class="col-xs-12" style="margin-top:20px;">
-	                                        		<label class="col-sm-2 control-label no-padding-right" style="text-align:right;" for="form-field-2"> 制作费用： </label>
-								                    <div class="col-sm-10">
-								                    	<span class="editable editable-click"> <?php if($info['make_fee']) { echo $info['make_fee']; } else { echo '无'; } ?></span>
-								                    </div>
-	                                            </div>
-	                                            
-	                                            <div class="col-xs-12" style="margin-top:20px;">
-	                                        		<label class="col-sm-2 control-label no-padding-right" style="text-align:right;" for="form-field-2"> 制作完成时间： </label>
-								                    <div class="col-sm-10">
-								                    	<span class="editable editable-click"> <?php if($info['make_complete_time']) { echo $info['make_complete_time']; } else { echo '无'; } ?></span>
-								                    </div>
-	                                            </div>
-	                                            
-	                                            <div class="col-xs-12" style="margin-top:20px;">
-	                                        		<label class="col-sm-2 control-label no-padding-right" style="text-align:right;" for="form-field-2"> 是否打小样： </label>
-								                    <div class="col-sm-10">
-								                    	<span class="editable editable-click"> <?php if($info['is_sample'] == 1) { echo '是('.$info['sample_color'].')'; } else { echo '否'; } ?></span>
-								                    </div>
-	                                            </div>
-	                                            
-	                                            <div class="col-xs-12" style="margin-top:20px;">
-	                                        		<label class="col-sm-2 control-label no-padding-right" style="text-align:right;" for="form-field-2"> 小样签字： </label>
-								                    <div class="col-sm-10">
-								                    	
-								                    </div>
-	                                            </div>
-	                                            
-	                                            <div class="col-xs-12" style="margin-top:20px;">
-	                                        		<label class="col-sm-2 control-label no-padding-right" style="text-align:right;" for="form-field-2"> 备注： </label>
-								                    <div class="col-sm-10">
-								                    	<span class="editable editable-click"> <?php if($info['remark']) { echo $info['remark']; } else { echo '无'; } ?></span>
-								                    </div>
-	                                            </div>
-                                            
-                                            </div>  
+	                                            </div> 
+                                            <?php else:?>
+                                                <div class="alert alert-warning center" style="width:400px">
+                                                    <strong>
+                                                        <i class="icon-warning-sign bigger-120"></i> 您还没有录入制作信息！
+                                                    </strong>
+                                                </div>
+                                            <?php endif;?>
+                                        
+                                             
                                         </div>
                                         <div id="inspect_img" class="tab-pane">
                                             <?php if(count($info['inspect_img']) > 0):?>
