@@ -244,12 +244,31 @@ class Housesassign extends MY_Controller{
     	$data['user_list'] = $this->Madmins->get_lists('id,name,fullname', $where);  //工程人员信息
     	
     	
-    	if($this->input->get('assign_type') == 2) {
+    	if($this->input->get('assign_type') == 2) { //下画
     		$assign_list = $this->Mhouses_assign->get_lists('*', ['order_id' => $data['order_id'], 'is_del' => 0]);
     		
     		if(isset($assign_list)) {
+    			
+//     			$tmp_houses_arr = [];
+    			
+//     			foreach($assign_list as $k => $v) {
+    				
+//     				if(count($tmp_houses_arr) > 0) {
+//     					foreach($tmp_houses_arr as $k1 => &$v1) {
+//     						if($k1 == $v['houses_id']) {
+//     							$v1 .= $v['charge_user'].',';
+//     						}
+//     					}
+//     				}else {
+//     					$tmp_houses_arr[$v['houses_id']] = $v['charge_user'].',';
+//     				}
+    				
+//     			}
+    			
     			$data['assign_list'] = array_column($assign_list, 'charge_user', 'houses_id');
     		}
+    		
+    		//var_dump($tmp_houses_arr);
     	}
     	
     	$data['assign_type'] = $this->input->get('assign_type');
@@ -289,7 +308,7 @@ class Housesassign extends MY_Controller{
     
     	//$group_by = ['houses_id'];
     	//$list = $this->Mhouses_points->get_lists('houses_id,count(0) as count', $where, [],  0,0,  $group_by);  //点位分组
-    	$list = $this->Mhouses_assign->get_lists('houses_id,ban, points_count', ['order_id' => $this->input->get('order_id')]);  //点位分组
+    	$list = $this->Mhouses_assign->get_lists('houses_id,ban, points_count,status', ['order_id' => $this->input->get('order_id')]);  //点位分组
     
     	if($list) {
     		$houses_ids = array_column($list, 'houses_id');
@@ -593,6 +612,7 @@ class Housesassign extends MY_Controller{
     	}
     	 
     	if ($this->input->get('houses_id')) $where['houses_id'] = $data['houses_id'] =  $this->input->get('houses_id');
+    	if ($this->input->get('ban')) $where['ban'] = $data['ban'] =  $this->input->get('ban');
     	$data['list'] = $this->Mhouses_points->get_lists('id,code,houses_id,area_id,ban,unit,floor,addr,type_id', $where,[],$size,($page-1)*$size);  //工程人员信息
     	$data_count = $this->Mhouses_points->count($where);
     	$data['page'] = $page;

@@ -89,7 +89,7 @@
 					</td>
 					<td>
 						
-						<?php if(isset($houses_assign_status[$v1['status']])) echo $houses_assign_status[$v1['status']];?>
+						<?php if(isset($houses_assign_status[$v['status']])) echo $houses_assign_status[$v['status']];?>
 								
 					</td>
 					<td>

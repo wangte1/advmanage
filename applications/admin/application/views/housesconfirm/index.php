@@ -263,12 +263,12 @@
 				                                                        <?php }?>
 				                                                        
 				                                                        <?php if($val['status'] == 4 || $val['status'] == 5) {?>
-				                                                        	<a class="green tooltip-info m-detail2" data-id="<?php echo $val['id'];?>" order-id="<?php echo $val['order_id'];?>" houses-id="<?php echo $val['houses_id'];?>" data-rel="tooltip" data-placement="top" title="" data-original-title="验收图片">
+				                                                        	<a class="green tooltip-info m-detail2" data-id="<?php echo $val['id'];?>" order-id="<?php echo $val['order_id'];?>" houses-id="<?php echo $val['houses_id'];?>" ban="<?php echo $val['ban'];?>" data-rel="tooltip" data-placement="top" title="" data-original-title="验收图片">
 					                                                            <i class="fa fa-picture-o bigger-130"></i>
 					                                                        </a>
 				                                                        <?php }?>
 				                                                        <?php if($val['status'] == 3 ||  $val['status'] == 6 || $val['status'] == 9) {?>
-				                                                        	<a class="green tooltip-info m-upload" data-id="<?php echo $val['id'];?>" order-id="<?php echo $val['order_id'];?>" houses-id="<?php echo $val['houses_id'];?>"  data-rel="tooltip" data-placement="top" title="" data-original-title="验收图片">
+				                                                        	<a class="green tooltip-info m-upload" data-id="<?php echo $val['id'];?>" order-id="<?php echo $val['order_id'];?>" houses-id="<?php echo $val['houses_id'];?>" ban="<?php echo $val['ban'];?>" data-rel="tooltip" data-placement="top" title="" data-original-title="验收图片">
 					                                                            <i class="fa fa-picture-o bigger-130"></i>
 					                                                        </a>
 					                                                        <a class="green tooltip-info m-submit" data-id="<?php echo $val['id'];?>" order-id="<?php echo $val['order_id'];?>"  data-rel="tooltip" data-placement="top" title="" data-original-title="提交<?php if($assign_type == 2) {?>下画<?php }else {?>上画<?php }?>">
@@ -353,9 +353,10 @@
 			var id = $(this).attr('data-id');
 			var order_id = $(this).attr('order-id');
 			var houses_id = $(this).attr('houses-id');
+			var ban = $(this).attr('ban');
 			var assign_type = '<?php echo $assign_type;?>';
 
-			location.href='/housesconfirm/upload_detail?order_id='+order_id+'&assign_id='+id+'&houses_id='+houses_id+'&assign_type='+assign_type //iframe的url
+			location.href='/housesconfirm/upload_detail?order_id='+order_id+'&assign_id='+id+'&houses_id='+houses_id+'&ban='+ban+'&assign_type='+assign_type //iframe的url
 			return;
 			
 // 			layer.open({
@@ -394,9 +395,10 @@
 			var id = $(this).attr('data-id');
 			var order_id = $(this).attr('order-id');
 			var houses_id = $(this).attr('houses-id');
+			var ban = $(this).attr('ban');
 			var assign_type = '<?php echo $assign_type;?>';
 
-			location.href='/housesconfirm/check_upload_img?order_id='+order_id+'&assign_id='+id+'&houses_id='+houses_id+'&assign_type='+assign_type //iframe的url
+			location.href='/housesconfirm/check_upload_img?order_id='+order_id+'&assign_id='+id+'&houses_id='+houses_id+'&ban='+ban+'&assign_type='+assign_type //iframe的url
 			return;
 			
 // 			layer.open({

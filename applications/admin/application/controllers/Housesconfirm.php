@@ -229,6 +229,7 @@ class Housesconfirm extends MY_Controller{
     	$assign_id = $this->input->get('assign_id');
     	$order_id = $this->input->get('order_id');
     	$houses_id = $this->input->get('houses_id');
+    	$ban = $this->input->get('ban');
     	$assign_type = $this->input->get('assign_type');
     	
     	if(IS_POST){
@@ -274,9 +275,13 @@ class Housesconfirm extends MY_Controller{
     	$order = $tmp_moudle->get_one("*",array("id" => $order_id));
     	$where_point['in']['A.id'] = explode(',', $order['point_ids']);
     	$where_point['A.houses_id'] = $houses_id;
+    	if($ban) {
+    		$where_point['A.ban'] = $ban;
+    	}
     	
     	//获取该订单下面的所有楼盘
     	$points = $this->Mhouses_points->get_points_lists($where_point,[],$size,($page-1)*$size);
+    	
     	$data_count = $this->Mhouses_points->count(['in' => ['id' => explode(',', $order['point_ids'])]]);
     	$data['page'] = $page;
     	$data['data_count'] = $data_count;
@@ -333,6 +338,7 @@ class Housesconfirm extends MY_Controller{
     	$assign_id = $this->input->get('assign_id');
     	$order_id = $this->input->get('order_id');
     	$houses_id = $this->input->get('houses_id');
+    	$ban = $this->input->get('ban');
     	$assign_type = $this->input->get('assign_type');
     	 
     	if($assign_type == 3) {
@@ -347,6 +353,7 @@ class Housesconfirm extends MY_Controller{
     		$where_point['in']['A.id'] = $point_ids_arr;
     	}
     	$where_point['A.houses_id'] = $houses_id;
+    	$where_point['A.ban'] = $ban;
     	$where_point['A.is_del'] = 0;
     	 
     	//获取该订单下面的所有楼盘

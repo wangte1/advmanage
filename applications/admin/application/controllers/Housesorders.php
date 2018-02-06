@@ -948,6 +948,7 @@ class Housesorders extends MY_Controller{
     	$assign_id = $this->input->get('assign_id');
     	$order_id = $this->input->get('order_id');
     	$houses_id = $this->input->get('houses_id');
+    	$ban = $this->input->get('ban');
     	$assign_type = $this->input->get('assign_type');
     	
     	if($assign_type == 3) {
@@ -962,6 +963,9 @@ class Housesorders extends MY_Controller{
     		$where_point['in']['A.id'] = $point_ids_arr;
     	}
     	$where_point['A.houses_id'] = $houses_id;
+    	if($ban) {
+    		$where_point['A.ban'] = $ban;
+    	}
     	$where_point['A.is_del'] = 0;
     	
     	//获取该订单下面的所有楼盘

@@ -596,6 +596,7 @@
                                                     <tr>
                                                         <th class="center">行政区域</th>
                                                         <th class="center">楼盘名称</th>
+                                                        <th class="center">楼栋</th>
                                                         <th class="center">点位数量（个）</th>
                                                         <th class="center">上画负责人</th>
                                                         <th class="center">状态</th>
@@ -607,6 +608,7 @@
                                             			<tr>
                                             				<td class="center"><?php echo $v['province']."-".$v['city']."-".$v['area'];?></td>
                                             				<td class="center"><?php echo $v['houses_name'];?></td>
+                                            				<td class="center"><?php echo $v['ban'];?></td>
                                             				<td class="center">
                                             					<?php echo $v['points_count'];?>
                                             				</td>
@@ -650,10 +652,10 @@
                                             				</td>
                                             				
                                             				<td class="center">
-																<a class="green tooltip-info m-detail" data-id="<?php echo $v['houses_id'];?>"  data-rel="tooltip" data-placement="top" title="" data-original-title="点位详情">
+																<a class="green tooltip-info m-detail" data-id="<?php echo $v['houses_id'];?>" ban="<?php echo $v['ban'];?>"  data-rel="tooltip" data-placement="top" title="" data-original-title="点位详情">
 										                        	<i class="icon-eye-open bigger-130"></i>
 										                        </a>
-										                        <a class="green tooltip-info m-upload" data-id="<?php echo $v['id'];?>" order-id = "<?php echo $v['order_id'];?>" houses-id = "<?php echo $v['houses_id'];?>"  data-rel="tooltip" data-placement="top" title="" data-original-title="查看验收图片">
+										                        <a class="green tooltip-info m-upload" data-id="<?php echo $v['id'];?>" order-id = "<?php echo $v['order_id'];?>" houses-id = "<?php echo $v['houses_id'];?>" ban = "<?php echo $v['ban'];?>" data-rel="tooltip" data-placement="top" title="" data-original-title="查看验收图片">
 										                        	<i class="fa fa-picture-o bigger-130"></i>
 										                        </a>
 										                        
@@ -883,6 +885,7 @@
     $('.m-detail').click(function(){
         var order_id = '<?php echo $id;?>';
 		var houses_id = $(this).attr('data-id');
+		var ban = $(this).attr('ban');
 		
 		layer.open({
 			  type: 2,
@@ -890,7 +893,7 @@
 			  shadeClose: true,
 			  shade: 0.6,
 			  area: ['60%', '60%'],
-			  content: '/housesassign/show_points?order_id='+order_id+'&houses_id='+houses_id //iframe的url
+			  content: '/housesassign/show_points?order_id='+order_id+'&houses_id='+houses_id+'&ban='+ban //iframe的url
 			}); 
 	});
 
@@ -933,6 +936,7 @@
 		var id = $(this).attr('data-id');
 		var order_id = $(this).attr('order-id');
 		var houses_id = $(this).attr('houses-id');
+		var ban = $(this).attr('ban');
 
 		layer.open({
 			  type: 2,
@@ -940,7 +944,7 @@
 			  shadeClose: true,
 			  shade: 0.6,
 			  area: ['80%', '80%'],
-			  content: '/housesorders/check_upload_img?order_id='+order_id+'&assign_id='+id+'&houses_id='+houses_id //iframe的url
+			  content: '/housesorders/check_upload_img?order_id='+order_id+'&assign_id='+id+'&houses_id='+houses_id+'&ban='+ban //iframe的url
 			}); 
 	});
 
