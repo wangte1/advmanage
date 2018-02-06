@@ -4,6 +4,8 @@
 * @author yonghua 254274509@qq.com
 */
 use YYHSms\SendSms;
+use PHPMailer\PHPMailer\PHPMailer;
+use PHPMailer\PHPMailer\Exception;
 
 defined('BASEPATH') or exit('No direct script access allowed');
 class Housesscheduledorders extends MY_Controller{
@@ -983,5 +985,41 @@ class Housesscheduledorders extends MY_Controller{
         }
         
         $this->load->view('housesscheduledorders/checkout', $data);
+    }
+    
+    
+    private function sendEmail($subect="", $body="", $alt="", $email="", $file=""){
+        
+        $mail = new PHPMailer(true);                              // Passing `true` enables exceptions
+        $config = C('smtp');
+        try {
+            //Server settings
+            $mail->SMTPDebug = 1;                                 // Enable verbose debug output
+            $mail->isSMTP();                                      // Set mailer to use SMTP
+            $mail->Host = $config['host'];                    // Specify main and backup SMTP servers
+            $mail->SMTPAuth = true;                               // Enable SMTP authentication
+            $mail->Username = $config['user'];                 // SMTP username
+            $mail->Password = $config['passwd'];                           // SMTP password
+            $mail->Port = 80;                                     // TCP port to connect to
+            
+            //Recipients
+            $mail->setFrom($config['user'], $config['nickname']);
+            $mail->addAddress($email);
+            
+            //Attachments
+            if(@is_file($file)){
+                $mail->addAttachment($file);            // Add attachments
+            }
+            
+            //Content
+            $mail->isHTML(true);                                  // Set email format to HTML
+            $mail->Subject = $subect;
+            $mail->Body    = $body;
+            $mail->AltBody = $alt;
+            
+            $mail->send();
+        } catch (Exception $e) {
+            echo 'Message could not be sent. Mailer Error: ', $mail->ErrorInfo;
+        }
     }
 }
