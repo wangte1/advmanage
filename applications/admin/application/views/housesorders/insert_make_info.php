@@ -55,27 +55,6 @@
                                         <div class="form-group">
                                             <label class="col-sm-2 control-label no-padding-right" for="form-field-2"> 制作要求： </label>
                                             <div class="col-sm-8">
-                                                <!--<?php 
-                                                    if(isset($info['make_requirement'])) { 
-                                                        $make_requirement = $info['make_requirement'];
-                                                    } else { 
-                                                        switch ($order_type) {
-                                                            case '2':
-                                                                $make_requirement = "喷绘";
-                                                                break;
-                                                            case '3':
-                                                                $make_requirement = "LED画面";
-                                                                break;
-                                                            case '4':
-                                                                $make_requirement = "LED画面";
-                                                                break;
-                                                            default:
-                                                                $make_requirement = "公交站台户外写真";
-                                                                break;
-                                                        }
-                                                    }
-                                                ?>-->
-                                                <!-- <textarea class="form-control" name="make_requirement" rows="5" placeholder="请填写制作要求"><?php echo $make_requirement;?></textarea> -->
                                             	<textarea class="form-control" name="make_requirement" rows="5" placeholder="请填写制作要求"></textarea>
                                             </div>
                                         </div>

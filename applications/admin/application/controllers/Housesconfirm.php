@@ -60,9 +60,9 @@ class Housesconfirm extends MY_Controller{
         
         $assign_type = $this->input->get('assign_type') ? : 1;
         
-        if ($assign_type == 1) {
+        if ($assign_type == 1) {	//上画
         	$tmp_moudle = $this->Mhouses_assign;
-        }else {
+        }else {		//下画和换画
         	$tmp_moudle = $this->Mhouses_assign_down;
         }
         

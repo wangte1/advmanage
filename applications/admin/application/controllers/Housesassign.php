@@ -57,13 +57,12 @@ class Housesassign extends MY_Controller{
         
         $data['assign_type'] = $this->input->get('assign_type') ? : 1;
         
-        
-        if ($data['assign_type'] == 2 || $data['assign_type'] == 1) {
+        if ($data['assign_type'] == 2 || $data['assign_type'] == 1) {	//上画和下画派单
         	$where['A.order_status>='] = 3;
 
         	$where['A.assign_type'] = $data['assign_type'];
         	$tmp_moudle = $this->Mhouses_orders;
-        }else {
+        }else {			//换画派单
         	$tmp_moudle = $this->Mhouses_changepicorders;
         }
 
@@ -123,7 +122,7 @@ class Housesassign extends MY_Controller{
     			
     			//向工程人员广播
     			$msg = "你有新的派单需要确认，请到派单确认界面确认！";
-    			$this->send(['uid' => $charge_users[$k], 'message' => $msg]);
+    			//$this->send(['uid' => $charge_users[$k], 'message' => $msg]);
 
 //     			$res_send = $this->sendMsg($charge_users[$k]);
     			
@@ -139,19 +138,25 @@ class Housesassign extends MY_Controller{
     			if(isset($remark[$k])) {
     				$add_data[$i]['remark'] = $remark[$k];
     			}
-    			if($this->input->get('assign_type') == 3) {
-    				$add_data[$i]['type'] = 2;
-    			}
+    			
+    			
+    			$add_data[$i]['type'] = $this->input->get('assign_type');
+    			
+//     			if($this->input->get('assign_type') == 3) {
+//     				$add_data[$i]['type'] = 2;
+//     			}
     			$i++;
     		}
     		
-    		if($this->input->get('assign_type') == 1){
-    			$res = $this->Mhouses_assign->create_batch($add_data);
-    		}else if($this->input->get('assign_type') == 2) {
-    			$res = $this->Mhouses_assign_down->create_batch($add_data);
-    		}else if($this->input->get('assign_type') == 3) {
-    			$res = $this->Mhouses_assign_down->create_batch($add_data);
-    		}
+    		$res = $this->Mhouses_assign->create_batch($add_data);
+    		
+//     		if($this->input->get('assign_type') == 1){
+//     			$res = $this->Mhouses_assign->create_batch($add_data);
+//     		}else if($this->input->get('assign_type') == 2) {
+//     			$res = $this->Mhouses_assign_down->create_batch($add_data);
+//     		}else if($this->input->get('assign_type') == 3) {
+//     			$res = $this->Mhouses_assign_down->create_batch($add_data);
+//     		}
     		
     		if($res) {
     			$update_data['assign_status'] = 2;
@@ -235,13 +240,13 @@ class Housesassign extends MY_Controller{
     	
     	$assign_type = $this->input->get('assign_type') ? : 1;
     	
-    	if($assign_type == 1) {
+    	if($assign_type == 1) {	//上画
     		$tmp_moudle = $this->Mhouses_orders;
     		$tmp_assign = $this->Mhouses_assign;
-    	}else if($this->input->get('assign_type') == 2) {
+    	}else if($this->input->get('assign_type') == 2) {	//下画
     		$tmp_moudle = $this->Mhouses_orders;
     		$tmp_assign = $this->Mhouses_assign_down;
-    	}else if($this->input->get('assign_type') == 3) {
+    	}else if($this->input->get('assign_type') == 3) {	//换画
     		$tmp_moudle = $this->Mhouses_changepicorders;
     		$tmp_assign = $this->Mhouses_assign_down;
     	}
@@ -474,6 +479,62 @@ class Housesassign extends MY_Controller{
     	$data['assign_list'] = $tmp_moudle->get_lists('id,houses_id,charge_user,assign_user,assign_time,status', ['order_id' => $data['order_id'], 'is_del' => 0]);  //点位分组
     	
     	$this->load->view('housesassign/edit', $data);
+    }
+    
+    /**
+     * 派单显示到楼栋
+     */
+    public function show_ban() {
+    	$data = $this->data;
+    	
+    	$pageconfig = C('page.page_lists');
+    	$this->load->library('pagination');
+    	
+    	$page =  intval($this->input->get("per_page",true)) ?  : 1;
+    	$size = $pageconfig['per_page'];
+    	$where_orders['is_del'] = $where['is_del'] = 0;
+    	if ($this->input->get('order_id')) $where_orders['id'] = $data['order_id'] =  $this->input->get('order_id');
+    	 
+    	if($this->input->get('assign_type') == 3) {
+    		$tmp_moudle = $this->Mhouses_changepicorders;
+    	}else {
+    		$tmp_moudle = $this->Mhouses_orders;
+    	}
+    	 
+    	$orders_list = $tmp_moudle->get_one('id,point_ids', $where_orders);
+    	if(isset($orders_list['point_ids'])) {
+    		$point_ids_arr = explode(',', $orders_list['point_ids']);
+    		$where['in']['id'] = $point_ids_arr;
+    	}
+    	
+    	if ($this->input->get('houses_id')) $where['houses_id'] = $data['houses_id'] =  $this->input->get('houses_id');
+    	$data['list'] = $this->Mhouses_points->get_lists('houses_id,area_id,ban, count(0) as count', $where,[],$size,($page-1)*$size, ['houses_id','area_id','ban']);  //工程人员信息
+    	$data_count = $this->Mhouses_points->count($where);
+    	$data['page'] = $page;
+    	$data['data_count'] = $data_count;
+    	
+    	if(count($data['list']) > 0) {
+    		$houses_ids = array_column($data['list'], 'houses_id');
+    		$area_ids = array_column($data['list'], 'area_id');
+    	
+    		$whereh['in']['id'] = $houses_ids;
+    		$data['houses_list'] = $this->Mhouses->get_lists("id, name", $whereh);
+    	
+    		$wherea['in']['id'] = $area_ids;
+    		$data['area_list'] = $this->Mhouses_area->get_lists("id, name", $wherea);
+    	}
+    	
+    	//获取分页
+    	$pageconfig['base_url'] = "/houses";
+    	$pageconfig['total_rows'] = $data_count;
+    	$this->pagination->initialize($pageconfig);
+    	$data['pagestr'] = $this->pagination->create_links(); // 分页信息
+    	
+    	$where = [];
+    	$where['group_id'] = 4;	//工程人员角色
+    	$data['user_list'] = $this->Madmins->get_lists('id,name,fullname', $where);  //工程人员信息
+    	
+    	$this->load->view('housesassign/show_ban', $data);
     }
     
     /**

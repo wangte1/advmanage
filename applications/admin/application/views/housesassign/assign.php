@@ -32,6 +32,7 @@
 					<th>行政区域</th>
 					<th>楼盘</th>
 					<th>点位数量（个）</th>
+					<th>已分派数量</th>
 					<th>上画负责人</th>
 					<?php if($assign_type == 2) {?>
 						<th width="15%">下画负责人</th>
@@ -46,7 +47,12 @@
 					<td><?php echo $k+1;?></td>
 					<td><?php echo $v['ad_area'];?></td>
 					<td><?php echo $v['houses_name'];?><input type="hidden" name="houses_id[]" value="<?php echo $v['houses_id'];?>"></td>
-					<td><?php echo $v['count'];?><input type="hidden" name="points_count[]" value="<?php echo $v['count'];?>"></td>
+					<td><span><?php echo $v['count'];?></span><input type="hidden" name="points_count[]" value="<?php echo $v['count'];?>"></td>
+					<td>
+						<span id="count_<?php echo $v['houses_id'];?>">0</span>
+						<input id="charge_<?php echo $v['houses_id'];?>" name="ban_assign[]" type="text" class="ban_assign">
+						<input id="remark_<?php echo $v['houses_id'];?>" name="ban_assign[]" type="text" class="ban_assign">
+					</td>
 					<?php if($assign_type == 2) {?>
 						<td>
 							<?php foreach($user_list as $k1 => $v1) {?>
@@ -99,11 +105,11 @@ $(function(){
 		
 		layer.open({
 			  type: 2,
-			  title: '包含点位',
+			  title: '按楼栋派单',
 			  shadeClose: true,
 			  shade: 0.6,
 			  area: ['90%', '90%'],
-			  content: '/housesassign/show_points?order_id='+order_id+'&houses_id='+houses_id //iframe的url
+			  content: '/housesassign/show_ban?order_id='+order_id+'&houses_id='+houses_id //iframe的url
 			}); 
 	});
 	

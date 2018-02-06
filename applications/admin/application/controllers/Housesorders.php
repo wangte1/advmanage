@@ -913,10 +913,11 @@ class Housesorders extends MY_Controller{
     			$post_data['make_complete_time'] = $post_data['make_complete_time'].' '.$post_data['hour'].':'.$post_data['minute'].':'.$post_data['second'];
     		}
     		
+    		unset($post_data['hour'],$post_data['minute'],$post_data['second']);
     		$post_data['update_user'] = $data['userInfo']['id'];
     		$post_data['update_time'] = date('Y-m-d H:i:s');
-    		$update_data['order_status'] = 2;
-    		$res = $this->Mhouses_orders->update_info($update_data, ['id' => $order_id]);
+    		$post_data['order_status'] = 2;
+    		$res = $this->Mhouses_orders->update_info($post_data, ['id' => $order_id]);
     		if($res) {
     			$this->success("录入制作信息成功！", "/housesorders/detail/".$order_id);
     		}else {
