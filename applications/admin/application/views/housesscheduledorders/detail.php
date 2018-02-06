@@ -52,11 +52,6 @@
                                         <li <?php if($tab == 'point'){echo 'class="active"';}?>>
                                             <a data-toggle="tab" href="#points">预选点位</a>
                                         </li>
-                                        <?php if($info['is_confirm']):?>
-                                        <li>
-                                            <a data-toggle="tab" href="#contract">合同</a>
-                                        </li>
-                                        <?php endif;?>
                                     </ul>
 
                                     <div class="tab-content">
@@ -137,6 +132,19 @@
                                                         </span>
                                                     </div>
                                                 </div>
+                                                <div class="profile-info-row">
+                                                    <div class="profile-info-name"> 点位签字合同： </div>
+
+                                                    <div class="profile-info-value">
+                                                        <span class="editable editable-click">
+                                                        	<?php if($info['is_confirm']):?>
+                                                        	<img style="width:100%;" alt="" src="<?php echo $info['confirm_img']?>">
+                                                        	<?php else:?>
+                                                        	未签字
+                                                        	<?php endif;?>
+                                                        </span>
+                                                    </div>
+                                                </div>
                                             </div>
                                         </div>
                                         <div id="points" class="tab-pane <?php if($tab == 'point'){echo 'in active';}?>">
@@ -187,17 +195,7 @@
                                             <!--分页start-->
                                     		<?php $this->load->view('common/page');?>
                                         </div>
-                                        <div id="contract" class="tab-pane">
-                                            <div class="profile-user-info profile-user-info-striped">
-                                                <div class="profile-info-row">
-                                                    <div class="profile-info-name"> 合同照片 </div>
-
-                                                    <div class="profile-info-value">
-                                                        <span class="editable editable-click"><img style="width:100%;" alt="" src="<?php echo $info['confirm_img']?>"></span>
-                                                    </div>
-                                                </div> 
-                                            </div>
-                                        </div>
+                                        
                                     </div>
                                 </div>
                             </div>
