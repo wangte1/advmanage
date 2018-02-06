@@ -72,7 +72,7 @@ class Housesassign extends MY_Controller{
         $data['customer_id'] = $this->input->get('customer_id');
         $data['assign_status'] = $this->input->get('assign_status');
 
-        $data['list'] = $tmp_moudle->get_order_lists($where, [], $pageconfig['per_page'], ($page-1)*$pageconfig['per_page']);
+        $data['list'] = $tmp_moudle->get_order_lists($where, ['id'=>'desc'], $pageconfig['per_page'], ($page-1)*$pageconfig['per_page']);
         //var_dump($data['list']);
         //echo $this->db->last_query();
         $data_count = $tmp_moudle->get_order_count($where);

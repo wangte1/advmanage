@@ -176,8 +176,8 @@
                                             			
                                             		</td>
                                             		<td>
-                                            			<?php foreach($salesman as $k => $v) {?>
-                                            				<?php if($v['id'] == $value['create_user']) { echo $v['name'];}?>
+                                            			<?php foreach($admins as $k => $v) {?>
+                                            				<?php if($v['id'] == $value['create_user']) { echo $v['fullname'];}?>
                                             			<?php }?>
                                             		</td>
                                             		<td><?php echo $value['create_time'];?></td>

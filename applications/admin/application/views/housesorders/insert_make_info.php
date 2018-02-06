@@ -124,13 +124,6 @@
                                             </div>
                                         </div>
                                         
-                                        <div class="form-group page-is-sample">
-                                            <label class="col-sm-2 control-label no-padding-right" for="form-field-2"> 小样签字： </label>
-                                            <div class="col-sm-9">
-                                                
-                                            </div>
-                                        </div>
-
                                         <!-- <div class="form-group page-is-sample">
                                             <label class="col-sm-2 control-label no-padding-right" for="form-field-2"> 委托内容： </label>
                                             <div class="col-sm-9">

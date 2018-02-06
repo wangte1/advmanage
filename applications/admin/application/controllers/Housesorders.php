@@ -80,7 +80,7 @@ class Housesorders extends MY_Controller{
 
         //$data['project'] = array_column($this->Mcustomer_project->get_lists('id, project_name', array('is_del' => 0)), 'project_name', 'id');
 
-        $data['list'] = $this->Mhouses_orders->get_order_lists($where, ($page-1)*$pageconfig['per_page'], $pageconfig['per_page']);
+        $data['list'] = $this->Mhouses_orders->get_order_lists($where, ['A.id' => 'desc'], ($page-1)*$pageconfig['per_page'], $pageconfig['per_page']);
         $data_count = $this->Mhouses_orders->get_order_count($where);
         $data['data_count'] = $data_count;
         $data['page'] = $page;
@@ -835,9 +835,6 @@ class Housesorders extends MY_Controller{
                     $update_data['order_id'] = 0;
                     $update_data['customer_id'] = 0;
                     $update_data['point_status'] = 1;
-                    //$update_data['lock_start_time'] = "";
-                    //$update_data['lock_end_time'] = "";
-                    //$update_data['expire_time'] = "";
 
                     $this->Mhouses_points->update_info($update_data,array("order_id"=>$id));
 

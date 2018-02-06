@@ -86,7 +86,7 @@ class Housesconfirm extends MY_Controller{
             $where['A.type'] = 2;
         }
         
-        $data['list'] = $tmp_moudle->get_join_lists($where,[],$size,($page-1)*$size);
+        $data['list'] = $tmp_moudle->get_join_lists($where,['A.id'=>'desc'],$size,($page-1)*$size);
         
         $data_count = $tmp_moudle->join_count($where);
         $data_count = $data_count[0]['count'];

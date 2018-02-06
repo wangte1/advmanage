@@ -332,30 +332,38 @@
                                             
                                         </div>
                                         <div id="adv_img" class="tab-pane">
-                                        	<div class="row" style="margin-top: 20px;">
-                                        	
-	                                        	<div class="col-xs-12">
-								                    <label class="col-sm-2 control-label no-padding-right" style="text-align:right;" for="form-field-2"> 是否打小样： </label>
-								                    <div class="col-sm-10">
-								                    	<?php if($info['is_sample'] == 1) {echo "是";}else{echo "否";}?>
-								                    </div>
-							                   	</div>
+                                        	<?php if(count($info['adv_img']) > 0) {?>
+	                                        	<div class="row" style="margin-top: 20px;">
 	                                        	
-	                                        	<div class="col-xs-12" style="margin-top:20px;">
-	                                        		<label class="col-sm-2 control-label no-padding-right" style="text-align:right;" for="form-field-2"> 广告画面： </label>
-								                    <div class="col-sm-10">
-								                    	<?php if(count($info['adv_img']) > 0):?>
-			                                                <?php foreach ($info['adv_img'] as $value) : ?>
-			                                                    <a href="<?php echo $value;?>" target="_blank">
-			                                                        <img src="<?php echo $value;?>" style="width:300px; height:200px" />
-			                                                    </a>
-			                                                <?php endforeach;?>
-			                                            <?php else:?>
-			                                            <?php endif;?>
-								                    </div>
+		                                        	<div class="col-xs-12">
+									                    <label class="col-sm-2 control-label no-padding-right" style="text-align:right;" for="form-field-2"> 是否打小样： </label>
+									                    <div class="col-sm-10">
+									                    	<?php if($info['is_sample'] == 1) {echo "是";}else{echo "否";}?>
+									                    </div>
+								                   	</div>
+		                                        	
+		                                        	<div class="col-xs-12" style="margin-top:20px;">
+		                                        		<label class="col-sm-2 control-label no-padding-right" style="text-align:right;" for="form-field-2"> 广告画面： </label>
+									                    <div class="col-sm-10">
+									                    	<?php if(count($info['adv_img']) > 0):?>
+				                                                <?php foreach ($info['adv_img'] as $value) : ?>
+				                                                    <a href="<?php echo $value;?>" target="_blank">
+				                                                        <img src="<?php echo $value;?>" style="width:300px; height:200px" />
+				                                                    </a>
+				                                                <?php endforeach;?>
+				                                            <?php else:?>
+				                                            <?php endif;?>
+									                    </div>
+		                                            </div>
+	                                            
 	                                            </div>
-                                            
-                                            </div>  
+                                            <?php }else{?>
+                                            	<div class="alert alert-warning center" style="width:400px">
+                                                    <strong>
+                                                        <i class="icon-warning-sign bigger-120"></i> 业务人员还未上传广告画面
+                                                    </strong>
+                                                </div>
+                                            <?php }?>
                                             
                                         </div>
                                         <div id="make_info" class="tab-pane">
@@ -394,13 +402,6 @@
 		                                        		<label class="col-sm-2 control-label no-padding-right" style="text-align:right;" for="form-field-2"> 是否打小样： </label>
 									                    <div class="col-sm-10">
 									                    	<span class="editable editable-click"> <?php if($info['is_sample'] == 1) { echo '是('.$info['sample_color'].')'; } else { echo '否'; } ?></span>
-									                    </div>
-		                                            </div>
-		                                            
-		                                            <div class="col-xs-12" style="margin-top:20px;">
-		                                        		<label class="col-sm-2 control-label no-padding-right" style="text-align:right;" for="form-field-2"> 小样签字： </label>
-									                    <div class="col-sm-10">
-									                    	
 									                    </div>
 		                                            </div>
 		                                            

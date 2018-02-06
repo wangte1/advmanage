@@ -157,7 +157,7 @@
                                             <?php foreach ($list as $key => $value) : ?>
                                             <tr>
                                                 <td>
-                                                    <a href="/housesorders/detail/<?php echo $value['id'];?>"><?php echo $value['order_code'];?></a>
+                                                    <a href="#"><?php echo $value['order_code'];?></a>
                                                     <!--<?php if($value['order_status'] == 7):?>
                                                     <a class="green tooltip-info" href="/changepicorders/add/<?php echo $value['order_type'];?>/<?php echo $value['order_code'];?>"  data-rel="tooltip" data-placement="top" data-original-title="新建换画">
                                                         <i class="fa fa-plus-square bigger-130" aria-hidden="true"></i>

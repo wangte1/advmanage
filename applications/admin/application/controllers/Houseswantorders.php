@@ -28,10 +28,10 @@ class Houseswantorders extends MY_Controller{
         $this->data['customers'] = $this->Mhouses_customers->get_lists("id, name", array('is_del' => 0));  //客户
         $this->data['make_company'] = $this->Mmake_company->get_lists('id, company_name, business_scope', array('is_del' => 0));  //制作公司
         $this->data['order_type_text'] = C('order.houses_order_type'); //订单类型
-        $this->data['salesman'] = $this->Msalesman->get_lists('id, name, sex, phone_number', array('is_del' => 0));  //业务员
         $this->data['point_addr'] = C('housespoint.point_addr');	//点位位置
         $this->data['put_trade'] = C('housespoint.put_trade'); //禁投放行业
         $this->data['houses_type_text'] = C('public.houses_type'); //订单类型
+        $this->data['admins'] = $this->Madmins->get_lists('id, group_id, fullname', array('is_del' => 1));        
         
     }
     
@@ -73,8 +73,6 @@ class Houseswantorders extends MY_Controller{
         
         $data['status_text'] = C('housesscheduledorder.order_status.text');
         $data['confirm_text'] = C('housesscheduledorder.customer_status');
-        
-        $data['admins'] = $this->Madmins->get_lists('id, group_id, fullname', array('is_del' => 1));
         
         //获取所有客户
         $data['customer_list'] = $this->Mhouses_customers->get_lists('id, name', ['is_del' => 0]);

@@ -94,8 +94,8 @@
                                             	<input type="hidden" id="sales_id" name="sales_id" value="<?php echo $info['create_user'];?>">
                                                 <select  class="select2" required disabled="disabled">
                                                     <option value="">请选择业务员</option>
-                                                    <?php foreach($salesman as $val):?>
-                                                    <option value="<?php echo $val['id'];?>" <?php if(isset($info['create_user']) && $val['id'] == $info['create_user']){ echo "selected"; }?>><?php echo $val['name'];?></option>
+                                                    <?php var_dump($admins); foreach($admins as $val):?>
+                                                    <option value="<?php echo $val['id'];?>" <?php if(isset($info['create_user']) && $val['id'] == $info['create_user']){ echo "selected"; }?>><?php echo $val['fullname'];?></option>
                                                     <?php endforeach;?>
                                                 </select>
                                                 
