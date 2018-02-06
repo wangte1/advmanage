@@ -190,14 +190,14 @@ class Confirm_reserve extends MY_Controller{
         if($this->input->get('area_id')) $point_where['area_id'] = $data['area_id'] = $area_id = $this->input->get('area_id');
         if($this->input->get('ban')) $point_where['ban'] = $data['ban'] = $ban = $this->input->get('ban');
         
-        $houses_id = $data['houses_id'] = (int) $this->input->get('houses_id');
+        $houses_id = $point_where['houses_id'] = $data['houses_id'] = (int) $this->input->get('houses_id');
         $order_id = $data['order_id'] =  (int) $this->input->get('order_id');
         $data['houses_name'] = $houses_name = $this->input->get('houses_name');
         //获取该订单的所有锁定点位，和已确认点位
         $orderInfo = $this->Mhouses_scheduled_orders->get_one('point_ids,confirm_point_ids', ['id' => $order_id]);
         
         //已锁定的点位
-        $total = $point_ids = explode(',', $orderInfo['point_ids']);
+        $point_ids = explode(',', $orderInfo['point_ids']);
         //已确认的点位
         $confirm_point_ids = $orderInfo['confirm_point_ids'];
         if($confirm_point_ids){
@@ -207,48 +207,32 @@ class Confirm_reserve extends MY_Controller{
             $confirm_point_ids = [];
             $data['confirm_point_ids'] = [];
         }
-        //获取点位列表=====模拟分页
-        $pageconfig = C('page.page_lists');
-        $this->load->library('pagination');
-        $page = $this->input->get_post('per_page') ? : '1';
-        $size = $pageconfig['per_page'] = 20;
-        $point_ids = array_chunk($point_ids, $size);
-        $point_ids = $point_ids[$page -1];
-        
         $point_where['in']= ['id' => $point_ids];
-        $point_list = $this->Mhouses_points->get_lists('*', $point_where, ['ban' => 'asc']);
-        //=====准备分页
-        $data['data_count'] = count($point_list);
-        $pageconfig['base_url'] = "/confirm_reserve/houses_detail";
-        $pageconfig['total_rows'] = count($total);
-        
-        $this->pagination->initialize($pageconfig);
-        $data['pagestr'] = $this->pagination->create_links(); // 分页信息
-        //=====模拟分页查询结束
-        //找出该楼盘的点位
-        $houses_ids = [];
-        $confirm_point_num = 0;
-        foreach ($point_list as $k => $v){
-            if($v['houses_id'] != $houses_id){
-                unset($point_list[$k]);
-            }
-        }
-        $data['page_confirm_point_num'] = 0;
-        foreach ($point_list as $k => $v){
-            if(in_array($v['id'], $confirm_point_ids)){
-                $data['page_confirm_point_num'] +=1;
-            }
-        }
-        
-        $data['all_point'] = implode(',', array_column($point_list, 'id'));
-        $data['point_list'] = $point_list;
-        $area_list = $this->Mhouses_area->get_lists('id,name', ['houses_id' => $houses_id]);
+        $point_list = $this->Mhouses_points->get_lists('houses_id,area_id,ban,count(`ban`) as num', $point_where, ['ban' => 'asc'], 0, 0, 'ban');
+        $data['list'] = $point_list;
+        //获取所有组团名称
+        $area_ids = array_unique(array_column($point_list, 'area_id'));
+        $area_list = $this->Mhouses_area->get_lists('id,name', ['in' => ['houses_id' => $area_ids] ]);
         if($area_list){
-            foreach ($data['point_list'] as $k => $v){
-                $data['point_list'][$k]['area_name'] = '';
+            foreach ($point_list as $k => $v){
+                $data['list'][$k]['area_name'] = '';
+                $data['list'][$k]['select_num'] = 0;
                 foreach ($area_list as $key => $val){
                     if($v['houses_id'] == $val['id']){
-                        $data['point_list'][$k]['area_name'] = $val['name'];
+                        $data['list'][$k]['area_name'] = $val['name'];
+                    }
+                }
+            }
+        }
+        
+        //查询点位，统计
+        if(count($confirm_point_ids)){
+            $point_where['in'] = ['id' => $confirm_point_ids];
+            $point_lists = $this->Mhouses_points->get_lists('ban', $point_where);
+            foreach ($data['list'] as $k => $v){
+                foreach ($point_lists as $key => $val){
+                    if($v['ban'] == $val['ban']){
+                        $data['list'][$k]['select_num'] +=1;
                     }
                 }
             }

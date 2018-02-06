@@ -447,42 +447,63 @@ class Housesscheduledorders extends MY_Controller{
     }
     
     /**
-     * 单选或不选
+     * 全选选一个楼栋或反选
      */
-    public function select_one(){
+    public function select_ban(){
         $status = (int) $this->input->post('status');
         $order_id = (int) $this->input->post('order_id');
-        $point_id = (int) $this->input->post('point_id');
+        $area_id = (int) $this->input->post('area_id');
+        $ban = (int) $this->input->post('ban');
+        
         //根据订单id获取用户已确认的点位
         $orderInfo = $this->Mhouses_scheduled_orders->get_one('point_ids,confirm_point_ids,is_confirm', ['id' => $order_id]);
         if($orderInfo['is_confirm'] == 1){
             $this->return_json(['code' => 0, 'msg' => '您不能修改已确认的订单！']);
         }
+        $point_ids = explode(',', $orderInfo['point_ids']);
         $confirm_point_ids = $orderInfo['confirm_point_ids'];
+        
         if($confirm_point_ids){
             $confirm_point_ids = explode(',', $confirm_point_ids);
         }else{
             $confirm_point_ids = [];
         }
-        if($status){
-            array_push($confirm_point_ids, $point_id);
-            if(count($confirm_point_ids) >1){
-                $confirm_point_ids = array_unique($confirm_point_ids);
+        
+        //获取当前订单楼盘锁定点位的列表信息
+        $point_list = $this->Mhouses_points->get_lists('id, ban, area_id', ['in' => ['id' => $point_ids]]);
+        //找出该楼盘的点位
+        $houses_ids = [];
+        foreach ($point_list as $k => $v){
+            if(($v['area_id'] == $area_id) && ($v['ban'] == $ban)){
+                array_push($houses_ids, $v['id']);
             }
+        }
+        
+        if($status){
+            //如果是全选 合并，去重
+            if(!empty($confirm_point_ids)){
+                $confirm_point_ids = array_unique(array_merge($confirm_point_ids, $houses_ids));
+            }else{
+                $confirm_point_ids = $houses_ids;
+            }
+            $confirm_point_ids = implode(',', $confirm_point_ids);
         }else{
-            foreach ($confirm_point_ids as $k => $v){
-                if($point_id == $v){
-                    unset($confirm_point_ids[$k]);
+            //反选
+            if($confirm_point_ids){
+                foreach ($confirm_point_ids as $k => $v){
+                    if(in_array($v, $houses_ids)){
+                        unset($confirm_point_ids[$k]);
+                    }
                 }
             }
+            if(count($confirm_point_ids) == 0){
+                $confirm_point_ids = '';
+            }else{
+                $confirm_point_ids = implode(',', $confirm_point_ids);
+            }
         }
-        if(count($confirm_point_ids)==0){
-            $confirm_point_ids = '';
-        }else{
-            $confirm_point_ids = implode(',', $confirm_point_ids);
-        }
-        $res = $this->Mhouses_scheduled_orders->update_info(['confirm_point_ids' => $confirm_point_ids], ['id' => $order_id]);
         
+        $res = $this->Mhouses_scheduled_orders->update_info(['confirm_point_ids' => $confirm_point_ids], ['id' => $order_id]);
         if(!$res){
             $this->return_json(['code' => 0, 'msg' => '操作失败']);
         }
@@ -584,14 +605,13 @@ class Housesscheduledorders extends MY_Controller{
         $status = (int) $this->input->post('status');
         $order_id = (int) $this->input->post('order_id');
         $houses_id = (int) $this->input->post('houses_id');
-        $page_point_ids = explode(',', $this->input->post('point_ids'));
         
         //根据订单id获取用户已确认的点位
         $orderInfo = $this->Mhouses_scheduled_orders->get_one('point_ids,confirm_point_ids,is_confirm', ['id' => $order_id]);
         if($orderInfo['is_confirm'] == 1){
             $this->return_json(['code' => 0, 'msg' => '您不能修改已确认的订单！']);
         }
-
+        $point_ids = explode(',', $orderInfo['point_ids']);
         $confirm_point_ids = $orderInfo['confirm_point_ids'];
         
         if($confirm_point_ids){
@@ -600,19 +620,29 @@ class Housesscheduledorders extends MY_Controller{
             $confirm_point_ids = [];
         }
         
+        //获取当前订单楼盘锁定点位的列表信息
+        $point_list = $this->Mhouses_points->get_lists('id, houses_id', ['in' => ['id' => $point_ids]]);
+        //找出该楼盘的点位
+        $houses_ids = [];
+        foreach ($point_list as $k => $v){
+            if($v['houses_id'] == $houses_id){
+                array_push($houses_ids, $v['id']);
+            }
+        }
+        
         if($status){
             //如果是全选 合并，去重
             if(!empty($confirm_point_ids)){
-                $confirm_point_ids = array_unique(array_merge($confirm_point_ids, $page_point_ids));
+                $confirm_point_ids = array_unique(array_merge($confirm_point_ids, $houses_ids));
             }else{
-                $confirm_point_ids = $page_point_ids;
+                $confirm_point_ids = $houses_ids;
             }
             $confirm_point_ids = implode(',', $confirm_point_ids);
         }else{
             //反选
             if($confirm_point_ids){
                 foreach ($confirm_point_ids as $k => $v){
-                    if(in_array($v, $page_point_ids)){
+                    if(in_array($v, $houses_ids)){
                         unset($confirm_point_ids[$k]);
                     }
                 }
@@ -625,7 +655,6 @@ class Housesscheduledorders extends MY_Controller{
         }
         
         $res = $this->Mhouses_scheduled_orders->update_info(['confirm_point_ids' => $confirm_point_ids], ['id' => $order_id]);
-        
         if(!$res){
             $this->return_json(['code' => 0, 'msg' => '操作失败']);
         }
