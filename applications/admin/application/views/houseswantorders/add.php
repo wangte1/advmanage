@@ -122,7 +122,8 @@
 																			  	<select name="province" id="province"></select>
 																			  	<select name="city" id="city"></select>
 																			  	<!-- <select name="area" id="area"></select> -->
-																				<select name="area" id="area" multiple="multiple"></select>
+																				<select id="area" multiple="multiple"></select>
+																				<input id="hid-area" name="area" type="hidden" value="">
 																			</div>
 
 	                                                                    </div>
@@ -311,12 +312,15 @@ $(function(){
 	
 	$('#province, #city, #area, .m-checkbox, #begin_year, #end_year, #put_trade, .m-radio').change(function(){
 
-		alert($('.multiselect').attr('title'));
-		
+		var area_str = '';
+		$('.multiselect-container .active input[type="checkbox"]:checked').each(function(){
+			area_str += $(this).val()+',';
+		});
+		$('#hid-area').val(area_str);
 		
 		var province = $('#province').val();
 		var city = $('#city').val();
-		var area = '';
+		var area = area_str;
 		var houses_type = get_checkbox();	//获取楼盘类型
 		var begin_year = $('#begin_year').val();
 		var end_year = $('#end_year').val();

@@ -154,7 +154,7 @@
                                             			<?php }?>
                                             		</td>
                                             		<td><?php echo $value['province'].$value['city'].$value['area'];?></td>
-                                            		<td><?php echo $value['houses_type'];?></td>
+                                            		<td><?php if(isset($houses_type_text[$value['houses_type']])) echo $houses_type_text[$value['houses_type']];?></td>
                                             		<td><?php echo $order_type_text[$value['order_type']];?></td>
                                             		<td><?php echo $value['begin_year']."-".$value['end_year'];?></td>
                                             		<td><?php if(isset($put_trade[$value['put_trade']])) echo $put_trade[$value['put_trade']];?></td>

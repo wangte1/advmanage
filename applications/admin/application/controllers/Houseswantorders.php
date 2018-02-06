@@ -31,6 +31,8 @@ class Houseswantorders extends MY_Controller{
         $this->data['salesman'] = $this->Msalesman->get_lists('id, name, sex, phone_number', array('is_del' => 0));  //业务员
         $this->data['point_addr'] = C('housespoint.point_addr');	//点位位置
         $this->data['put_trade'] = C('housespoint.put_trade'); //禁投放行业
+        $this->data['houses_type_text'] = C('public.houses_type'); //订单类型
+        
     }
     
     /**
@@ -88,6 +90,7 @@ class Houseswantorders extends MY_Controller{
         $data = $this->data;
         if(IS_POST){
             $post_data = $this->input->post();
+            unset($post_data['s_houses_type']);
             $post_data['create_user'] = $data['userInfo']['id'];
             $post_data['create_time'] = date('Y-m-d H:i:s');
             $id = $this->Mhouses_want_orders->create($post_data);
@@ -191,26 +194,29 @@ class Houseswantorders extends MY_Controller{
         if($this->input->post('order_type')) $where['A.type_id'] = $this->input->post('order_type');
         if(!empty($this->input->post('province'))) $where['B.province'] = $this->input->post('province');
         if(!empty($this->input->post('city'))) $where['B.city'] = $this->input->post('city');
-        if(!empty($this->input->post('area'))) $where['B.area'] = $this->input->post('area');
-        
-        if(!empty($this->input->post('houses_type'))) {
-        	 
-        	$tmp_type_arr = explode(",", $this->input->post('houses_type'));
-        	 
-        	$where['in']['B.type'] = $tmp_type_arr;
-        }
-        if(!empty($this->input->post('begin_year'))) $where['B.deliver_year>='] = $this->input->post('begin_year');
+        //if(!empty($this->input->post('area'))) $where['B.area'] = $this->input->post('area');        if(!empty($this->input->post('begin_year'))) $where['B.deliver_year>='] = $this->input->post('begin_year');
         if(!empty($this->input->post('end_year'))) $where['B.deliver_year<='] = $this->input->post('end_year');
         if(!empty($this->input->post('put_trade'))) $put_trade = $this->input->post('put_trade');
+        
+        if(!empty($this->input->post('area'))) {
+        	$tmp_area_arr = array_filter(explode(',', $this->input->post('area')));
+        	if(count($tmp_area_arr) > 0) {
+        		$where['in']['B.area'] = $tmp_area_arr;
+        	}
+        }
+        
+        if(!empty($this->input->post('houses_type'))) {
+        	$tmp_type_arr = explode(",", $this->input->post('houses_type'));
+        	$where['in']['B.type'] = $tmp_type_arr;
+        }
        	
         $where['A.point_status'] = 1;
         $points_lists = $this->Mhouses_points->get_points_lists($where);
         
         $houses_lists = [];
+        $tmp_arr1 = [];
         if(count($points_lists) > 0) {
         	$tmp_arr = array_column($points_lists, 'houses_name', 'houses_id');
-        	$tmp_arr1 = [];
-        	
         	foreach($points_lists as $k => $v) {
         		$mark = false;
         		if(!empty($put_trade)) {
@@ -231,7 +237,6 @@ class Houseswantorders extends MY_Controller{
         				}
         			}
         		}
-        		
         	}
         	
         	$i = 0;
@@ -244,7 +249,6 @@ class Houseswantorders extends MY_Controller{
         		$i++;
         	}
         }
-       
         $this->return_json(array('flag' => true, 'houses_lists' => $houses_lists, 'count' => array_sum($tmp_arr1)));
     }
     
@@ -256,14 +260,9 @@ class Houseswantorders extends MY_Controller{
     	if($this->input->post('order_type')) $where['A.type_id'] = $this->input->post('order_type');
     	if(!empty($this->input->post('province'))) $where['B.province'] = $this->input->post('province');
     	if(!empty($this->input->post('city'))) $where['B.city'] = $this->input->post('city');
-    	if(!empty($this->input->post('area'))) $where['B.area'] = $this->input->post('area');
+    	//if(!empty($this->input->post('area'))) $where['B.area'] = $this->input->post('area');
     	
-    	if(!empty($this->input->post('houses_type'))) {
     	
-    		$tmp_type_arr = explode(",", $this->input->post('houses_type'));
-    	
-    		$where['in']['B.type'] = $tmp_type_arr;
-    	}
     	if(!empty($this->input->post('begin_year'))) $where['B.deliver_year>='] = $this->input->post('begin_year');
     	if(!empty($this->input->post('end_year'))) $where['B.deliver_year<='] = $this->input->post('end_year');
     	if(!empty($this->input->post('put_trade'))) $put_trade = $this->input->post('put_trade');
@@ -274,6 +273,21 @@ class Houseswantorders extends MY_Controller{
     	if(!empty($this->input->post('unit'))) $where['A.unit'] = $this->input->post('unit');
     	if(!empty($this->input->post('floor'))) $where['A.floor'] = $this->input->post('floor');
     	if(!empty($this->input->post('addr'))) $where['A.addr'] = $this->input->post('addr');
+    	
+    	if(!empty($this->input->post('area'))) {
+    		$tmp_area_arr = array_filter(explode(',', $this->input->post('area')));
+        	if(count($tmp_area_arr) > 0) {
+        		$where['in']['B.area'] = $tmp_area_arr;
+        	}
+    	}
+    	
+    	if(!empty($this->input->post('houses_type'))) {
+    		 
+    		$tmp_type_arr = explode(",", $this->input->post('houses_type'));
+    		 
+    		$where['in']['B.type'] = $tmp_type_arr;
+    	}
+    	
     	
     	$where['A.point_status'] = 1;
     	

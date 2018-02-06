@@ -153,9 +153,10 @@
 	                                                                    <label class="col-sm-2 control-label" for="form-field-1"> 行政区域： </label>
 	                                                                    <div class="col-sm-10" style="padding:0">
 	                                                                        <div id="distpicker1">
-																			  <select name="province" id="province"></select>
-																			  <select name="city" id="city"></select>
-																			  <select name="area" id="area"></select>
+																			  	<select name="province" id="province"></select>
+																			  	<select name="city" id="city"></select>
+																			  	<select id="area" multiple="multiple"></select>
+																				<input id="hid-area" name="area" type="hidden" value="">
 																			</div>
 	                                                                    </div>
 	                                                                </div>
@@ -457,6 +458,8 @@
 <script src="<?php echo css_js_url('jqdistpicker/distpicker.js','admin');?>"></script>
 <script src="<?php echo css_js_url('select2.min.js','admin');?>"></script>
 <!-- <script src="<?php echo css_js_url('order.js','admin');?>"></script> -->
+<script src="<?php echo css_js_url('bootstrap-multiselect.js','admin');?>"></script>
+<link href="<?php echo css_js_url('bootstrap-multiselect.css', 'admin');?>" rel="stylesheet" />
 <script type="text/javascript">
 
 //机选
@@ -545,7 +548,7 @@ window.onload=function(){
 $("#distpicker1").distpicker({
 	province: '<?php echo $info['province'];?>',
 	city: '<?php echo $info['city'];?>',
-	district: '<?php echo $info['area'];?>'
+	district: ''
 });
 
 function get_checkbox(){
@@ -560,10 +563,24 @@ function get_checkbox(){
     
 }
 
-function load_houses(num) {
+//num1用于判断是否需要重新加载楼盘信息，num2判断是否是页面初始化时
+function load_houses(num1, num2) {
+	var area_str = '';
+	if(num2 == 1) {
+		area_str = '<?php echo $info['area'];?>';
+	}else {
+		$('.multiselect-container .active input[type="checkbox"]:checked').each(function(){
+			area_str += $(this).val()+',';
+		});
+		$('#hid-area').val(area_str);
+	}
+	
+	
+
 	var province = $('#province').val();
 	var city = $('#city').val();
-	var area = $('#area').val();
+	
+	var area = area_str;
 	var houses_type = get_checkbox();	//获取楼盘类型
 	var begin_year = $('#begin_year').val();
 	var end_year = $('#end_year').val();
@@ -596,7 +613,7 @@ function load_houses(num) {
 	$.post('/houseswantorders/get_points', postData, function(data){
 		if(data.flag == true && data.count > 0) {
 			//楼盘
-			if(num != 2) {
+			if(num1 != 2) {
 				var housesStr = '<option value="">请选择楼盘</option>';
 				for(m_key1  in data.houses_lists){  
 					housesStr += '<option value="'+m_key1+'">'+data.houses_lists[m_key1]+'</option>';
@@ -677,16 +694,16 @@ $(function(){
 
     $(".select2").css('width','220px').select2({allowClear:true});
 
-    load_houses(1);
+    load_houses(1, 1);
 
     $('#province, #city, #area, .m-checkbox, #begin_year, #end_year, #put_trade, .m-radio').change(function(){
     	$("#points_lists").html('');
-    	load_houses(1);
+    	load_houses(1, 2);
     });
 
     $('#houses_id, #area_id, #ban, #unit, #floor, #addr').change(function(){
     	$("#points_lists").html('');
-    	load_houses(2);
+    	load_houses(2, 2);
     });
 	
 	//选择点位
@@ -799,5 +816,45 @@ $(function(){
 })
 
 </script>
+
+<!-- Initialize the plugin: -->
+<script type="text/javascript">
+    $(document).ready(function() {
+        $('#area').multiselect({
+        	includeSelectAllOption: true,
+        	selectAllText : '选择所有',
+        	nonSelectedText : '请选择区域',
+        	allSelectedText : '选择所有'
+        });
+
+        $('#area option:eq(0)').remove();
+        $('#area option:eq(0)').attr("selected",false);
+
+        $('.multiselect-container li:eq(1)').remove();
+        $('.multiselect-container li:eq(1)').removeClass('active');
+        $('.multiselect-container li:eq(1)').find('input[type="checkbox"]').prop("checked",false);
+
+        $('.multiselect').attr('title','请选择区域');
+        $('.multiselect-selected-text').text('请选择区域');
+
+        var sceneIdList = "<?php echo $info['area'];?>";
+        sceneIdArr = sceneIdList.split(",");
+
+        $('.multiselect-container li input[type="checkbox"]').each(function(i,content){
+           if($.inArray($.trim(content.value),sceneIdArr)>=0){
+               $(this).prop('checked', true);
+               $(this).parent().parent().parent().attr('class', 'active');
+               $('multiselect').attr('title', sceneIdList);
+               $('.multiselect-selected-text').text(sceneIdList);
+           }
+       	});
+
+		//设置选中值后，需要刷新select控件
+		$("#sceneIdSelectBox").multiselect('refresh');
+         
+    });
+
+</script>
+        
 <!-- 底部 -->
 <?php $this->load->view("common/bottom");?>

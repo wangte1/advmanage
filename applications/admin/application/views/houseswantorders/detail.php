@@ -276,11 +276,11 @@ function load_houses() {
 	var begin_year = $('#begin_year').val();
 	var end_year = $('#end_year').val();
 	var put_trade = $('#put_trade').val();
-	var order_type = $('.m-radio:checked').val();
+	var order_type = $('#order_type').val();
 
 	var postData = {province:province, city:city, area:area, houses_type:houses_type, begin_year:begin_year, end_year:end_year, put_trade:put_trade,order_type:order_type};
-
 	$.post('/houseswantorders/get_houses', postData, function(data){
+		console.log(data);
 		if(data.flag == true && data.count > 0) {
 			var pointStr = '';
 			$("#all_points_num").text(data.count);
