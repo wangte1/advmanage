@@ -132,6 +132,19 @@
                                                         </span>
                                                     </div>
                                                 </div>
+                                                <div class="profile-info-row">
+                                                    <div class="profile-info-name"> 点位签字合同： </div>
+
+                                                    <div class="profile-info-value">
+                                                        <span class="editable editable-click">
+                                                        	<?php if($info['is_confirm']):?>
+                                                        	<img style="width:100%;" alt="" src="<?php echo $info['confirm_img']?>">
+                                                        	<?php else:?>
+                                                        	未签字
+                                                        	<?php endif;?>
+                                                        </span>
+                                                    </div>
+                                                </div>
                                             </div>
                                         </div>
                                         <div id="points" class="tab-pane <?php if($tab == 'point'){echo 'in active';}?>">
@@ -182,6 +195,7 @@
                                             <!--分页start-->
                                     		<?php $this->load->view('common/page');?>
                                         </div>
+                                        
                                     </div>
                                 </div>
                             </div>

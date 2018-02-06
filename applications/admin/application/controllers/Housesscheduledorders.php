@@ -4,6 +4,8 @@
 * @author yonghua 254274509@qq.com
 */
 use YYHSms\SendSms;
+use PHPMailer\PHPMailer\PHPMailer;
+use PHPMailer\PHPMailer\Exception;
 
 defined('BASEPATH') or exit('No direct script access allowed');
 class Housesscheduledorders extends MY_Controller{
@@ -121,10 +123,14 @@ class Housesscheduledorders extends MY_Controller{
             $post_data['confirm_point_ids'] = '';
             $id = $this->Mhouses_scheduled_orders->create($post_data);
             if ($id) {
-                //更新点位的lock_customer_id和状态和is_lock
-                $update_data['lock_customer_id'] = $post_data['lock_customer_id'];
-                $update_data['is_lock'] = 1;
-                $this->Mhouses_points->update_info($update_data, array('in' => array('id' => explode(',', $post_data['point_ids']))));
+                //更新点位的锁定数
+                $update_data['incr']['lock_num'] = 1;
+                $point_where['in'] = array('id' => explode(',', $post_data['point_ids']));
+                $this->Mhouses_points->update_info($update_data, $point_where);
+                //更新点位状态处理
+                $_where['field']['`ad_num`'] = '`lock_num`+`ad_use_num`';
+                $_where['in'] = array('id' => explode(',', $post_data['point_ids']));
+                $this->Mhouses_points->update_info(['point_status' => 3], $_where);
                 
                 $this->write_log($data['userInfo']['id'], 1, "新增".$data['order_type_text'][$post_data['order_type']]."预定订单,订单id【".$id."】");
                 $this->success("添加成功！","/housesscheduledorders");
@@ -443,39 +449,84 @@ class Housesscheduledorders extends MY_Controller{
     }
     
     /**
-     * 单选或不选
+     * 全选选一个楼栋或反选
      */
-    public function select_one(){
+    public function select_ban(){
         $status = (int) $this->input->post('status');
         $order_id = (int) $this->input->post('order_id');
-        $point_id = (int) $this->input->post('point_id');
+        $area_id = (int) $this->input->post('area_id');
+        $ban = (int) $this->input->post('ban');
+        
         //根据订单id获取用户已确认的点位
         $orderInfo = $this->Mhouses_scheduled_orders->get_one('point_ids,confirm_point_ids,is_confirm', ['id' => $order_id]);
         if($orderInfo['is_confirm'] == 1){
             $this->return_json(['code' => 0, 'msg' => '您不能修改已确认的订单！']);
         }
+        $point_ids = explode(',', $orderInfo['point_ids']);
         $confirm_point_ids = $orderInfo['confirm_point_ids'];
+        
         if($confirm_point_ids){
             $confirm_point_ids = explode(',', $confirm_point_ids);
         }else{
             $confirm_point_ids = [];
         }
-        if($status){
-            array_push($confirm_point_ids, $point_id);
-            if(count($confirm_point_ids) >1){
-                $confirm_point_ids = array_unique($confirm_point_ids);
-            }
-        }else{
-            foreach ($confirm_point_ids as $k => $v){
-                if($point_id == $v){
-                    unset($confirm_point_ids[$k]);
-                }
+        
+        //获取当前订单楼盘锁定点位的列表信息
+        $point_list = $this->Mhouses_points->get_lists('id, ban, area_id', ['in' => ['id' => $point_ids]]);
+        //找出该楼盘的点位
+        $houses_ids = [];
+        foreach ($point_list as $k => $v){
+            if(($v['area_id'] == $area_id) && ($v['ban'] == $ban)){
+                array_push($houses_ids, $v['id']);
             }
         }
-        if(count($confirm_point_ids)==0){
-            $confirm_point_ids = '';
-        }else{
+        
+        if($status){
+            //如果是全选 合并，去重
+            if(!empty($confirm_point_ids)){
+                $confirm_point_ids = array_unique(array_merge($confirm_point_ids, $houses_ids));
+            }else{
+                $confirm_point_ids = $houses_ids;
+            }
             $confirm_point_ids = implode(',', $confirm_point_ids);
+        }else{
+            //反选
+            if($confirm_point_ids){
+                foreach ($confirm_point_ids as $k => $v){
+                    if(in_array($v, $houses_ids)){
+                        unset($confirm_point_ids[$k]);
+                    }
+                }
+            }
+            if(count($confirm_point_ids) == 0){
+                $confirm_point_ids = '';
+            }else{
+                $confirm_point_ids = implode(',', $confirm_point_ids);
+            }
+        }
+        
+        $res = $this->Mhouses_scheduled_orders->update_info(['confirm_point_ids' => $confirm_point_ids], ['id' => $order_id]);
+        if(!$res){
+            $this->return_json(['code' => 0, 'msg' => '操作失败']);
+        }
+        $this->return_json(['code' => 1, 'msg' => '操作成功']);
+    }
+    
+    /**
+     * 选取所有楼盘/反选
+     */
+    public function select_all_houses(){
+        $status = (int) $this->input->post('status');
+        $order_id = (int) $this->input->post('order_id');
+      
+        //根据订单id获取用户已确认的点位
+        $orderInfo = $this->Mhouses_scheduled_orders->get_one('point_ids,confirm_point_ids,is_confirm', ['id' => $order_id]);
+        if($orderInfo['is_confirm'] == 1){
+            $this->return_json(['code' => 0, 'msg' => '您不能修改已确认的订单！']);
+        }
+        $confirm_point_ids = '';
+        if($status){
+            $confirm_point_ids = $orderInfo['point_ids'];
         }
         $res = $this->Mhouses_scheduled_orders->update_info(['confirm_point_ids' => $confirm_point_ids], ['id' => $order_id]);
         
@@ -556,14 +607,13 @@ class Housesscheduledorders extends MY_Controller{
         $status = (int) $this->input->post('status');
         $order_id = (int) $this->input->post('order_id');
         $houses_id = (int) $this->input->post('houses_id');
-        $page_point_ids = explode(',', $this->input->post('point_ids'));
         
         //根据订单id获取用户已确认的点位
         $orderInfo = $this->Mhouses_scheduled_orders->get_one('point_ids,confirm_point_ids,is_confirm', ['id' => $order_id]);
         if($orderInfo['is_confirm'] == 1){
             $this->return_json(['code' => 0, 'msg' => '您不能修改已确认的订单！']);
         }
-
+        $point_ids = explode(',', $orderInfo['point_ids']);
         $confirm_point_ids = $orderInfo['confirm_point_ids'];
         
         if($confirm_point_ids){
@@ -572,19 +622,29 @@ class Housesscheduledorders extends MY_Controller{
             $confirm_point_ids = [];
         }
         
+        //获取当前订单楼盘锁定点位的列表信息
+        $point_list = $this->Mhouses_points->get_lists('id, houses_id', ['in' => ['id' => $point_ids]]);
+        //找出该楼盘的点位
+        $houses_ids = [];
+        foreach ($point_list as $k => $v){
+            if($v['houses_id'] == $houses_id){
+                array_push($houses_ids, $v['id']);
+            }
+        }
+        
         if($status){
             //如果是全选 合并，去重
             if(!empty($confirm_point_ids)){
-                $confirm_point_ids = array_unique(array_merge($confirm_point_ids, $page_point_ids));
+                $confirm_point_ids = array_unique(array_merge($confirm_point_ids, $houses_ids));
             }else{
-                $confirm_point_ids = $page_point_ids;
+                $confirm_point_ids = $houses_ids;
             }
             $confirm_point_ids = implode(',', $confirm_point_ids);
         }else{
             //反选
             if($confirm_point_ids){
                 foreach ($confirm_point_ids as $k => $v){
-                    if(in_array($v, $page_point_ids)){
+                    if(in_array($v, $houses_ids)){
                         unset($confirm_point_ids[$k]);
                     }
                 }
@@ -597,7 +657,6 @@ class Housesscheduledorders extends MY_Controller{
         }
         
         $res = $this->Mhouses_scheduled_orders->update_info(['confirm_point_ids' => $confirm_point_ids], ['id' => $order_id]);
-        
         if(!$res){
             $this->return_json(['code' => 0, 'msg' => '操作失败']);
         }
@@ -690,6 +749,9 @@ class Housesscheduledorders extends MY_Controller{
             '点位编号' => "code",
             '楼盘名称' => "houses_name",
             '组团' => 'houses_area_name',
+            '楼栋' => 'ban',
+            '单元' => 'unit',
+            '楼层' => 'floor',
             '位置' => "addr",
             '价格' => 'price',
             '规格' => "size"
@@ -733,7 +795,21 @@ class Housesscheduledorders extends MY_Controller{
         header('Cache-Control: max-age=0');
         
         $objWriter = PHPExcel_IOFactory::createWriter($this->phpexcel, 'Excel5');
+        $tmpFileName = "./excel/".md5($id).".xls";
         $objWriter->save('php://output');
+        $objWriter->save("$tmpFileName");
+
+        $sales_id = $scheduledorder['sales_id'];
+        $salesInfo = $this->Madmins->get_one('email', ['id' => $sales_id]);
+        if(!empty($salesInfo['email'])){
+            //发送到邮箱
+            $subject = $customers['name']."的预定点位表";
+            $body = "点击附件下载即可";
+            $alt = "点击附件下载即可";
+            $email = $salesInfo['email'];
+            $file = $tmpFileName;
+            $this->sendEmail($subject, $body, $alt, $email, $file);
+        }
     }
     
     /**
@@ -926,5 +1002,42 @@ class Housesscheduledorders extends MY_Controller{
         }
         
         $this->load->view('housesscheduledorders/checkout', $data);
+    }
+    
+    
+    private function sendEmail($subect="", $body="", $alt="", $email="", $file=""){
+        
+        $mail = new PHPMailer(true);                              // Passing `true` enables exceptions
+        $config = C('smtp');
+        try {
+            //Server settings
+            $mail->SMTPDebug = 1;                                 // Enable verbose debug output
+            $mail->isSMTP();                                      // Set mailer to use SMTP
+            $mail->Host = $config['host'];                    // Specify main and backup SMTP servers
+            $mail->SMTPAuth = true;                               // Enable SMTP authentication
+            $mail->Username = $config['user'];                 // SMTP username
+            $mail->Password = $config['passwd'];                           // SMTP password
+            $mail->Port = 80;                                     // TCP port to connect to
+            
+            //Recipients
+            $mail->setFrom($config['user'], $config['nickname']);
+            $mail->addAddress($email);
+            
+            //Attachments
+            if(@is_file($file)){
+                $mail->addAttachment($file);            // Add attachments
+            }
+            
+            //Content
+            $mail->isHTML(true);                                  // Set email format to HTML
+            $mail->Subject = $subect;
+            $mail->Body    = $body;
+            $mail->AltBody = $alt;
+            
+            $mail->send();
+            unlink($file);
+        } catch (Exception $e) {
+            echo 'Message could not be sent. Mailer Error: ', $mail->ErrorInfo;
+        }
     }
 }

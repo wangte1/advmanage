@@ -19,4 +19,5 @@ applications/www/application/cache/*
 Uploads/*
 *logs*
 /vendor
+/applications/admin/excel
 composer.lock
