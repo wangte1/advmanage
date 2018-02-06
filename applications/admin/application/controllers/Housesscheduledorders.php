@@ -749,6 +749,9 @@ class Housesscheduledorders extends MY_Controller{
             '点位编号' => "code",
             '楼盘名称' => "houses_name",
             '组团' => 'houses_area_name',
+            '楼栋' => 'ban',
+            '单元' => 'unit',
+            '楼层' => 'floor',
             '位置' => "addr",
             '价格' => 'price',
             '规格' => "size"
@@ -792,7 +795,21 @@ class Housesscheduledorders extends MY_Controller{
         header('Cache-Control: max-age=0');
         
         $objWriter = PHPExcel_IOFactory::createWriter($this->phpexcel, 'Excel5');
+        $tmpFileName = "./excel/".md5($id).".xls";
         $objWriter->save('php://output');
+        $objWriter->save("$tmpFileName");
+
+        $sales_id = $scheduledorder['sales_id'];
+        $salesInfo = $this->Madmins->get_one('email', ['id' => $sales_id]);
+        if(!empty($salesInfo['email'])){
+            //发送到邮箱
+            $subject = $customers['name']."的预定点位表";
+            $body = "点击附件下载即可";
+            $alt = "点击附件下载即可";
+            $email = $salesInfo['email'];
+            $file = $tmpFileName;
+            $this->sendEmail($subject, $body, $alt, $email, $file);
+        }
     }
     
     /**
@@ -1018,6 +1035,7 @@ class Housesscheduledorders extends MY_Controller{
             $mail->AltBody = $alt;
             
             $mail->send();
+            unlink($file);
         } catch (Exception $e) {
             echo 'Message could not be sent. Mailer Error: ', $mail->ErrorInfo;
         }
