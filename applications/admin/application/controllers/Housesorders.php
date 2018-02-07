@@ -1019,7 +1019,8 @@ class Housesorders extends MY_Controller{
     	$confirm_remark = $this->input->post("confirm_remark");
     	$mark = $this->input->post("mark");	//mark=1通过，mark=2不通过
     	$assign_type = $this->input->post("assign_type");	//assign_type=1上画派单，assign_type=2下画派单，assign_type=3换画派单
-    	
+    	$houses_id = $this->input->post("houses_id");
+    	$ban = $this->input->post("ban");
 
     	if($mark == 1) {
     		if($assign_type == 2) {
@@ -1063,13 +1064,19 @@ class Housesorders extends MY_Controller{
     	//下画派单
     	if($res && $assign_type == 2) {
     		
-    		//将点位释放
+    		$points_ids = $this->Mhouses_orders->get_one('*', ['id' => $order_id]);
+    		
+    		//将占用的点位释放以及将点位的状态改为1（有空闲）
     		if($mark == 1) {
-//     			$houses_id = $this->input->post("houses_id");
-//     			$update_point['customer_id'] = 0;
-//     			$update_point['order_id'] = 0;
-//     			$update_point['point_status'] = 1;
-//     			$res_points = $this->Mhouses_points->update_info($update_point, ['order_id' => $order_id, 'houses_id' => $houses_id]);
+    			$points_ids_arr = explode(',', $points_ids['point_ids']);
+    			
+    			$where_p['in']['id'] = $points_ids_arr;
+    			if($houses_id) $where_p['houses_id'] = $houses_id;
+    			if($ban) $where_p['ban'] = $ban;
+    			$update_point['point_status'] = 1;
+    			$update_point['decr']['ad_use_num'] = 1;//释放点位占用数
+    			
+    			$this->Mhouses_points->update_info($update_point, $where_p);
     		}
     		
     		$where['order_id'] = $order_id;
