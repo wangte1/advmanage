@@ -69,6 +69,20 @@
                             </div>
                             
                             <div class="form-group">
+                                <label class="col-sm-3 control-label no-padding-right" for="form-field-1"> 组团等级： </label>
+                                <div class="col-sm-9">
+                                    <select class="col-xs-2 " name="grade" id="select-font-size " >
+                                        <?php foreach($area_grade as $key=>$val){ ?>
+                                            <option value="<?php echo $key;?>"><?php echo $val;?></option>
+                                        <?php } ?>
+                                    </select>
+                                    <span class="help-inline col-xs-12 col-sm-7">
+										<span class="middle" style="color: red">*</span>
+									</span>
+                                </div>
+                            </div>
+                            
+                            <!-- <div class="form-group">
                                 <label class="col-sm-3 control-label no-padding-right" for="form-field-1"> 坐标： </label>
                                 <div class="col-sm-9">
                                     <input type="text" class="col-xs-10 col-sm-3" name="coordinate">
@@ -80,7 +94,7 @@
                                 <div class="col-sm-9">
                                     <input type="text" class="col-xs-10 col-sm-3" name="t_coordinate">
                                 </div>
-                            </div>
+                            </div> -->
                             
                             
                             <div class="form-group">

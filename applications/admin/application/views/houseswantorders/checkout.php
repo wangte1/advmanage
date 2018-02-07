@@ -278,7 +278,7 @@
                                                                     <table id="sample-table-1" class="table table-striped table-bordered table-hover">
                                                                         <thead>
                                                                             <tr>
-                                                                                <th width="10%">点位编号</th>
+                                                                                <th width="10%">编号</th>
                                                                                 <th width="10%">楼盘</th>
                                                                                 <th width="10%">组团</th>
                                                                                 <th width="10%">楼栋</th>
@@ -287,8 +287,9 @@
                                                                                 <th width="10%">位置</th>
 <!--                                                                                 <th width="10%">规格</th> -->
                                                                                 <th width="10%">楼盘等级</th>
+                                                                                <th width="10%">组团等级</th>
                                                                                 <th width="10%">可投放数量</th>
-                                                                                <th width="10%">状态</th>
+                                                                                <th width="10%" nowrap="nowrap">状态</th>
                                                                                 <th width="10%"><button class="btn btn-xs btn-info select-all" type="button" data-id="3">选择全部<i class="icon-arrow-right icon-on-right"></i></button></th>
                                                                             </tr>
                                                                         </thead>
@@ -357,7 +358,7 @@
                                             <table id="sample-table-1" class="table table-striped table-bordered table-hover">
                                                 <thead>
                                                     <tr>
-                                                        <th width="10%">点位编号</th>
+                                                        <th width="10%">编号</th>
                                                         <th width="10%">楼盘</th>
                                                         <th width="10%">组团</th>
                                                         <th width="10%">楼栋</th>
@@ -366,6 +367,7 @@
                                                         <th width="10%">位置</th>
                                                         <!-- <th width="10%">规格</th>-->
                                                         <th width="10%">楼盘等级</th>
+                                                        <th width="10%">组团等级</th>
                                                         <th width="10%">可投放数量</th>
                                                         <th width="10%">状态</th>
                                                         <th width="10%"><button class="btn btn-xs btn-info remove-all" type="button">移除全部<i class="fa fa-remove" aria-hidden="true"></i></button></th>
@@ -391,6 +393,7 @@
                                                             <td width="10%">电梯前室</td>
                                                             <?php endif;?>
                                                             <!-- <td width="10%"><?php echo $value['size'];?></td> -->
+                                                            <td width="10%"><?php echo $value['grade'];?></td>
                                                             <td width="10%"><?php echo $value['grade'];?></td>
                                                             <td width="10%"><?php echo $value['ad_num'];?></td>
                                                             <td width="10%">
@@ -464,6 +467,7 @@
 
 //机选
 function machine_sel() {
+	
 	layer.open({
 		  type: 1,
 		  title: '机选(填写楼盘等级对应的点位数量)',
@@ -474,17 +478,30 @@ function machine_sel() {
 
 //机选确认
 function machine_sub() {
+	
 	var m_arr = new Array();
+	var flag = false;
 	$('.layui-layer .grade-input').each(function(){
 		m_arr.push($(this).val());
 	});
+
+	if($('#houses_id').val() != '') {
+		flag = true;
+	}
 	
 	for(var i = 0; i < m_arr.length; i++) {
 		for(var j = 0; j < m_arr[i]; j++) {
 			$('#points_lists tr').each(function(){
-				if($(this).attr('grade') == (i + 1)) {
-					$(this).find('button').click();
-					return false;
+				if(flag == true) {
+					if($(this).attr('area_grade') == (i + 1)) {
+						$(this).find('button').click();
+						return false;
+					}
+				}else {
+					if($(this).attr('grade') == (i + 1)) {
+						$(this).find('button').click();
+						return false;
+					}
 				}
 			});
 		}
@@ -652,7 +669,7 @@ function load_houses(num1, num2) {
 			var pointStr = '';
 			$("#all_points_num").text(data.count);
 			for(var i = 0; i < data.points_lists.length; i++) {
-				pointStr += "<tr point-id='"+(data.points_lists)[i]['id']+"' grade='"+(data.points_lists)[i]['grade']+"'><td width='10%'>"+(data.points_lists)[i]['code']+"</td>";
+				pointStr += "<tr point-id='"+(data.points_lists)[i]['id']+"' grade='"+(data.points_lists)[i]['grade']+"' area_grade='"+(data.points_lists)[i]['area_grade']+"'><td width='10%'>"+(data.points_lists)[i]['code']+"</td>";
 				pointStr += "<td width='10%'>"+(data.points_lists)[i]['houses_name']+"</td>";
 				pointStr += "<td width='10%'>"+(data.points_lists)[i]['houses_area_name']+"</td>";
 				pointStr += "<td width='10%'>"+(data.points_lists)[i]['ban']+"</td>";
@@ -665,6 +682,7 @@ function load_houses(num1, num2) {
 				}
 				//pointStr += "<td width='10%'>"+(data.points_lists)[i]['size']+"</td>";
 				pointStr += "<td width='10%'>"+(data.points_lists)[i]['houses_grade']+"</td>";
+				pointStr += "<td width='10%'>"+(data.points_lists)[i]['area_grade_name']+"</td>";
 				pointStr += "<td width='10%'>"+(data.points_lists)[i]['ad_num']+"</td>";
 				var $class;
 				switch ((data.points_lists)[i]['point_status']) {

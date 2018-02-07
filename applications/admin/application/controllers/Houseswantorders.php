@@ -281,6 +281,7 @@ class Houseswantorders extends MY_Controller{
     		
 	    	foreach($points_lists as $k => &$v) {
 	    		$v['houses_grade'] = C('public.houses_grade')[$v['grade']];
+	    		$v['area_grade_name'] = C('public.houses_grade')[$v['area_grade']];
 	    		$v['point_status_txt'] = C('housespoint.points_status')[$v['point_status']];
 	    	}
     	}

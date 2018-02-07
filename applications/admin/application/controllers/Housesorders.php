@@ -1011,11 +1011,7 @@ class Housesorders extends MY_Controller{
     }
     
     /*
-<<<<<<< HEAD
      * 确认上画和下画
-=======
-     * 确认上画
->>>>>>> cafa224b237528170bc130a8ca3704c8767247d7
      */
     public function confirm_upload() {
     	$assign_id = $this->input->post("assign_id");
