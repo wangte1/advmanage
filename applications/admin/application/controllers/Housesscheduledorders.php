@@ -857,22 +857,22 @@ class Housesscheduledorders extends MY_Controller{
     public function sendMsg(){
 
         $sales_id = intval($this->input->post('sales_id'));
-        $info = $this->Msalesman->get_one('phone_number, name', ['id' => $sales_id]);
+        $info = $this->Madmins->get_one('tel, fullname', ['id' => $sales_id]);
         if(!$info) $this->return_json(['code' => 0, 'msg' => '业务员不存在']);
-        if(empty($info['phone_number'])){
+        if(empty($info['tel'])){
             $this->return_json(['code' => 0, 'msg' => '电话不能为空！']);
         }
-        if(!preg_match('/^1[3|4|5|8|7][0-9]\d{8}$/', $info['phone_number'])){
+        if(!preg_match('/^1[3|4|5|8|7][0-9]\d{8}$/', $info['tel'])){
             $this->return_json(['code' => 0, 'msg' => '业务员手机号格式不正确！']);
         }
         // 配置短信信息
         $app = C('sms.app');
         $parems = [
-            'PhoneNumbers' => $info['phone_number'],
+            'PhoneNumbers' => $info['tel'],
             'SignName' => C('sms.sign.lkcb'),
             'TemplateCode' => C('sms.template.yewuyuan'),
             'TemplateParam' => array(
-                'name' => $info['name']
+                'name' => $info['fullname']
             )
         ];
         //发送短信
