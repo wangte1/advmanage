@@ -90,16 +90,10 @@ class Housesassign extends MY_Controller{
         $data['status_text'] = C('order.order_status.text');
         
         //未确认派单的数量
-<<<<<<< HEAD
+
         $data['no_confirm_count1'] = $this->Mhouses_orders->get_order_count(['A.order_status'=> 3, 'A.assign_status'=>1]);
         $data['no_confirm_count2'] = $this->Mhouses_orders->get_order_count(['A.order_status'=> 7, 'A.assign_status'=>1]);
-        $data['no_confirm_count3'] = $this->Mhouses_changepicorders->get_order_count(['A.order_status'=> 3, 'A.assign_status'=>1]);
-=======
-        $data['no_confirm_count1'] = $this->Mhouses_orders->get_order_count(['A.order_status'=> 4, 'A.assign_status'=>1]);
-        $data['no_confirm_count2'] = $this->Mhouses_orders->get_order_count(['A.order_status'=> 8, 'A.assign_status'=>1]);
-        $data['no_confirm_count3'] = $this->Mhouses_changepicorders->get_order_count(['A.order_status'=> 4, 'A.assign_status'=>1]);
->>>>>>> 6bff7a606ef211505e503b6e9fa7c679e85943c9
-        
+        $data['no_confirm_count3'] = $this->Mhouses_changepicorders->get_order_count(['A.order_status'=> 3, 'A.assign_status'=>1]);      
         //var_dump($data['no_confirm_count3']);
         //echo $this->db->last_query();
         
