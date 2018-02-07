@@ -496,11 +496,7 @@ class MY_Controller extends CI_Controller {
         if(isset($data['group_id'])){
             Gateway::sendToGroup($data['group_id'], json_encode(['type' => 'msg', 'message' => $data['message']]));
         }else{
-            $uid = Gateway::getClientIdByUid($data['uid']);
-            if(!$uid){
-                return 'error';
-            }
-            Gateway::sendToUid($uid, json_encode(['type' => 'msg', 'message' => $data['message']]));
+            Gateway::sendToUid($data['uid'], json_encode(['type' => 'msg', 'message' => $data['message']]));
         }
         return 'success';
     }
