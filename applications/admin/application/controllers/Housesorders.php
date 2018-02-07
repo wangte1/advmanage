@@ -825,8 +825,8 @@ class Housesorders extends MY_Controller{
             if($status == 8){
                 if($result){
                     //如果订单已经下画则释放所有点位
-                    $update_data['order_id'] = 0;
-                    $update_data['customer_id'] = 0;
+                    //$update_data['order_id'] = 0;
+                    //$update_data['customer_id'] = 0;
                     $update_data['point_status'] = 1;
 
                     $this->Mhouses_points->update_info($update_data,array("order_id"=>$id));
