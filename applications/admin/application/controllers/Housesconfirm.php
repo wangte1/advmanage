@@ -10,7 +10,6 @@ class Housesconfirm extends MY_Controller{
         parent::__construct();
         $this->load->model([
         	'Model_houses_assign' => 'Mhouses_assign',
-        	'Model_houses_assign_down' => 'Mhouses_assign_down',
         	'Model_houses' => 'Mhouses',
         	'Model_houses_orders' => 'Mhouses_orders',
         	'Model_houses_change_pic_orders' => 'Mhouses_changepicorders',
@@ -60,17 +59,10 @@ class Housesconfirm extends MY_Controller{
         
         $assign_type = $this->input->get('assign_type') ? : 1;
         
-
-//         if ($assign_type == 1) {	//上画
-//         	$tmp_moudle = $this->Mhouses_assign;
-//         }else {		//下画和换画
-//         	$tmp_moudle = $this->Mhouses_assign_down;
-//         }
-        
         //未确认派单的数量
-        $data['no_confirm_count1'] = $this->Mhouses_assign->join_count(array_merge(['A.status'=> 2], $where));
-        $data['no_confirm_count2'] = $this->Mhouses_assign_down->join_count(array_merge(['A.status'=> 2,'A.type'=> 1],$where));
-        $data['no_confirm_count3'] = $this->Mhouses_assign_down->join_count(array_merge(['A.status'=> 2,'A.type'=> 2],$where));
+        $data['no_confirm_count1'] = $this->Mhouses_assign->join_count(array_merge(['A.status'=> 2,'A.type'=> 1], $where));
+        $data['no_confirm_count2'] = $this->Mhouses_assign->join_count(array_merge(['A.status'=> 2,'A.type'=> 2],$where));
+        $data['no_confirm_count3'] = $this->Mhouses_assign->join_count(array_merge(['A.status'=> 2,'A.type'=> 3],$where));
         
         $data['province'] = $this->input->get('province');
         $data['city'] = $this->input->get('city');
@@ -149,10 +141,6 @@ class Housesconfirm extends MY_Controller{
     
     	$data['id'] = $id;
     	$data['assign_type'] = $assign_type;
-    	
-    	//$tmp_ = $this->Mhouses_assign->get_lists('', ['order_id' => $id, 'houses_id' => $this->input->get('houses_id'), 'ban' => $this->input->get('ban')]);
-    	
-    	
     	$this->load->view('housesconfirm/order_detail', $data);
     }
     
@@ -167,13 +155,6 @@ class Housesconfirm extends MY_Controller{
 
     		$assign_type = $this->input->post('assign_type');
     		$where['id'] = $this->input->post('id');
-    		
-//     		if ($assign_type == 2 || $assign_type == 3) {
-//     			$tmp_moudle = $this->Mhouses_assign_down;
-//     		}else {
-//     			$tmp_moudle = $this->Mhouses_assign;
-//     		}
-    		
     		$update_data['status'] = 3;	//已确认派单
     		$res1 = $this->Mhouses_assign->update_info($update_data, $where);
 
@@ -419,23 +400,16 @@ class Housesconfirm extends MY_Controller{
     		$mark_str = "下画";
     		$tmp_status = 7;
 
-    		//$tmp_moudle  = $this->Mhouses_assign_down;
     	}else if($assign_type == 3) {
     		$mark_str = "换画";
     		$tmp_status = 4;
-    		//$tmp_moudle  = $this->Mhouses_assign_down;
     	}else{
     		$mark_str = "上画";
     		$tmp_status = 4;
-    		//$tmp_moudle  = $this->Mhouses_assign;
     	}
     	
     	$assign_count = $this->Mhouses_assign->get_one('points_count', ['id' => $assign_id, 'is_del' => 0]);
 
-    	
-    	//$this->return_json(['code' => 0, 'msg' => $assign_count['points_count']]);
-    	//$this->return_json(['code' => 0, 'msg' => $upload_count]);
-    	
     	
     	if(isset($upload_count) && isset($assign_count['points_count']) && $upload_count != $assign_count['points_count']) {
     		$this->return_json(['code' => 0, 'msg' => "请确认你已经上传了所有点位的".$mark_str."图片！"]);
