@@ -16,7 +16,7 @@ class Housesarea extends MY_Controller{
         $this->data['code'] = 'community_manage';
         $this->data['active'] = 'houses_area_lists';
         
-        $this->data['houses_grade'] = C("public.houses_grade");
+        $this->data['area_grade'] = C("public.area_grade");
     }
 
     /*

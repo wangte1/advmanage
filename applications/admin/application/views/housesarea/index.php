@@ -75,7 +75,7 @@
                                                 <div class="col-sm-9">
                                                     <select id="state" name="grade"  class="select2" data-placeholder="Click to Choose...">
                                                         <option value="all" <?php if($grade == 'all' || empty($grade)){ echo 'selected'; }?>>全部</option>
-                                                        <?php foreach(C('public.houses_grade') as $key=>$val){ ?>
+                                                        <?php foreach(C('public.area_grade') as $key=>$val){ ?>
                                                             <option value="<?php echo $key;?>" <?php if($grade != 'all' && ($key == $grade)) { echo "selected"; }?>><?php echo $val;?></option>
                                                         <?php } ?>
                                                     </select>
@@ -130,7 +130,7 @@
                                                     <td>
                                                     	<?php echo $houses_name[$val['id']]?>
                                                     </td>
-                                                    <td><?php if(isset($houses_grade[$val['grade']])) echo $houses_grade[$val['grade']];?></td>
+                                                    <td><?php if(isset($area_grade[$val['grade']])) echo $area_grade[$val['grade']];?></td>
                                                     <!-- <td><?php echo $val['coordinate'];?></td>
 													<td><?php echo $val['t_coordinate'];?></td> -->
 													<td class="hidden-480">

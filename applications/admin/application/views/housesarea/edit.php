@@ -68,7 +68,7 @@
 	                            <label class="col-sm-3 control-label no-padding-right" for="form-field-1"> 组团等级： </label>
 	                            <div class="col-sm-9">
 	                                <select class="col-xs-2 " name="grade" id="select-font-size " >
-	                                	<?php foreach($houses_grade as $key=>$val){ ?>
+	                                	<?php foreach($area_grade as $key=>$val){ ?>
 	                                    	<option value="<?php echo $key;?>" <?php if($key == $info['grade']) {?>selected=selected<?php }?>><?php echo $val;?></option>
 	                               		<?php } ?>
 	                                </select>
