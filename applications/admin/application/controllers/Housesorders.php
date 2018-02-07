@@ -689,20 +689,9 @@ class Housesorders extends MY_Controller{
 
         $data['info']['assign_list'] = $this->Mhouses_assign->get_join_lists(['A.order_id' => $id, 'A.type' => 1]);
         
-//         var_dump($data['info']['assign_list']);
-        
         //下画派单列表
         $data['info']['assign_down_list'] = $this->Mhouses_assign->get_join_lists(['A.order_id' => $id, 'A.type' => 2]);
 
-        
-//         if(count($data['info']['assign_list']) > 0) {
-//         	$houses_ids = array_column($data['info']['assign_list'], 'houses_id');
-//         	$where = [];
-//         	$where['order_id'] = $id;
-//         	$where['in']['houses_id'] = $houses_ids;
-//         	$group_by = ['houses_id'];
-//         	$data['houses_count'] = $this->Mhouses_points->get_lists('houses_id,count(0) as count', $where, [],  0,0,  $group_by);  //点位分组
-//         }
         
         //制作公司
         if(!empty($data['info']['make_company_id'])) {
