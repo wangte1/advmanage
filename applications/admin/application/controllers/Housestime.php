@@ -23,31 +23,31 @@ class Housestime extends CI_Controller {
      */
     public function order_time() {
 
-//     	$where['order_status'] = 7;
-//     	$where['release_end_time<='] = date("Y-m-d",strtotime("+1 day"));
+    	$where['order_status'] = 6;
+    	$where['release_end_time<='] = date("Y-m-d",strtotime("+1 day"));
     	
-//     	$order_list = $this->Mhouses_orders->get_lists('id', $where);
+    	$order_list = $this->Mhouses_orders->get_lists('id', $where);
     	
-//     	$update_data['order_status'] = 8;
-//     	$update_data['assign_type'] = 2;
-//     	$update_data['assign_status'] = 1;
-//     	$res = $this->Mhouses_orders->update_info($update_data, $where);
+    	$update_data['order_status'] = 7;
+    	$update_data['assign_type'] = 2;
+    	$update_data['assign_status'] = 1;
+    	$res = $this->Mhouses_orders->update_info($update_data, $where);
     	
-//     	if($res && count($order_list) > 0) {
-//     		$update_data = $where = [];
-//     		$order_ids = array_column($order_list, 'id');
+    	if($res && count($order_list) > 0) {
+    		$update_data = $where = [];
+    		$order_ids = array_column($order_list, 'id');
     		
-//     		$where['in']['order_id'] = $order_ids;
-//     		$update_data['is_del'] = 1;
-// //     		$update_data['assign_type'] = 2;
-// //     		$update_data['status'] = 1;
-// //     		$update_data['remark'] = '';
-// //     		$update_data['assign_user'] = 0;
-// //     		$update_data['assign_time'] = '';
-//     		$res = $this->Mhouses_assign->update_info($update_data, $where);
+    		$where['in']['order_id'] = $order_ids;
+    		$update_data['is_del'] = 1;
+//     		$update_data['assign_type'] = 2;
+//     		$update_data['status'] = 1;
+//     		$update_data['remark'] = '';
+//     		$update_data['assign_user'] = 0;
+//     		$update_data['assign_time'] = '';
+    		$res = $this->Mhouses_assign->update_info($update_data, $where);
     		
-//     		echo "转化以下订单为待下画：".implode(',', $order_ids);
-//     	}
+    		echo "转化以下订单为待下画：".implode(',', $order_ids);
+    	}
     }
 
     
