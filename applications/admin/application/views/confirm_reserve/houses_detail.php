@@ -150,7 +150,6 @@
 				'status':status
 			},
 			function(data){
-				console.log(data);return;
     			if(data){
     				window.location.reload();
     			}
