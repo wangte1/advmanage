@@ -1053,17 +1053,20 @@ class Housesorders extends MY_Controller{
     	//下画派单
     	if($res && $assign_type == 2) {
     		
-    		$points_ids = $this->Mhouses_orders->get_one('*', ['id' => $order_id]);
+    		$tmp_order_list = $this->Mhouses_orders->get_one('*', ['id' => $order_id]);
     		
     		//将占用的点位释放以及将点位的状态改为1（有空闲）
     		if($mark == 1) {
-    			$points_ids_arr = explode(',', $points_ids['point_ids']);
+    			$points_ids_arr = explode(',', $tmp_order_list['point_ids']);
     			
     			$where_p['in']['id'] = $points_ids_arr;
     			if($houses_id) $where_p['houses_id'] = $houses_id;
     			if($ban) $where_p['ban'] = $ban;
     			$update_point['point_status'] = 1;
     			$update_point['decr']['ad_use_num'] = 1;//释放点位占用数
+    			
+    			//下画派单确认成功把选择的点的占用客户移除
+    			$update_point['delstr']['`customer_id`'] = ','.$tmp_order_list['customer_id'];
     			
     			$this->Mhouses_points->update_info($update_point, $where_p);
     		}
