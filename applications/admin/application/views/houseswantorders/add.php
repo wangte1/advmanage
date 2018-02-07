@@ -314,7 +314,9 @@ $(function(){
 
 		var area_str = '';
 		$('.multiselect-container .active input[type="checkbox"]:checked').each(function(){
-			area_str += $(this).val()+',';
+			if($(this).val() != 'multiselect-all') {
+				area_str += $(this).val()+',';
+			}
 		});
 		$('#hid-area').val(area_str);
 		
