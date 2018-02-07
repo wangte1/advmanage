@@ -27,179 +27,81 @@
 
 	<div id="table-panel">
 		
-		
-		<div class="tabbable" id="tabs-260319">
-				<ul class="nav nav-tabs">
-					<li class="active">
-						<a href="#panel-748753" data-toggle="tab">上画派单</a>
-					</li>
-					<li>
-						<a href="#panel-918457" data-toggle="tab">下画派单</a>
-					</li>
-				</ul>
-				<div class="tab-content">
-					<div class="tab-pane active" id="panel-748753">
-						<table id="sample-table-1" class="table table-striped table-bordered table-hover" >
-							<thead>
-								<tr>
-									<th>序号</th>
-									<th>行政区域</th>
-									<th>楼盘</th>
-									<th>点位数量（个）</th>
-									<th>负责人</th>
-									<th>派单人</th>
-									<th>派单时间</th>
-									<th width="20%">说明</th>
-									<th >状态</th>
-									<th>操作</th>
-								</tr>
-							</thead>
-							<tbody>
-								<?php foreach($list as $k => $v) {?>
-								<tr>
-									<td><?php echo $k+1;?></td>
-									<td><?php echo $v['ad_area'];?></td>
-									<td><?php echo $v['houses_name'];?></td>
-									<td><?php echo $v['count'];?></td>
-									<td>
-										<?php if(isset($assign_list)) {?>
-											<?php foreach ($assign_list as $k1 => $v1) {?>
-												<?php if($v['houses_id'] == $v1['houses_id']) {?>
-													<?php echo $user_list[$v1['charge_user']];break;?>
-												<?php }?>
-											<?php }?>
-										<?php }?>
-									</td>
-									<td>
-										<?php if(isset($assign_list)) {?>
-											<?php foreach ($assign_list as $k1 => $v1) {?>
-												<?php if($v['houses_id'] == $v1['houses_id']) {?>
-													<?php echo $user_list[$v1['assign_user']];break;?>
-												<?php }?>
-											<?php }?>
-										<?php }?>
-									</td>
-									<td>
-										<?php if(isset($assign_list)) {?>
-											<?php foreach ($assign_list as $k1 => $v1) {?>
-												<?php if($v['houses_id'] == $v1['houses_id']) {?>
-													<?php echo $v1['assign_time'];break;?>
-												<?php }?>
-											<?php }?>
-										<?php }?>
-									</td>
-									<td>
-										<?php if(isset($assign_list)) {?>
-											<?php foreach ($assign_list as $k1 => $v1) {?>
-												<?php if($v['houses_id'] == $v1['houses_id']) {?>
-													<?php echo $v1['remark'];break;?>
-												<?php }?>
-											<?php }?>
-										<?php }?>
-									</td>
-									<td>
-										<?php if(isset($assign_list)) {?>
-											<?php foreach ($assign_list as $k1 => $v1) {?>
-												<?php if($v['houses_id'] == $v1['houses_id']) {?>
-													<?php if(isset($houses_assign_status[$v1['status']])) echo $houses_assign_status[$v1['status']];?>
-												<?php }?>
-											<?php }?>
-										<?php }?>
-									</td>
-									<td>
-										<a class="green tooltip-info m-detail" data-id="<?php echo $v['houses_id'];?>"  data-rel="tooltip" data-placement="top" title="" data-original-title="详情">
-				                        	<i class="icon-eye-open bigger-130"></i>
-				                        </a>
-									</td>
-								</tr>
+		<table id="sample-table-1" class="table table-striped table-bordered table-hover" >
+			<thead>
+				<tr>
+					<th>序号</th>
+					<th>行政区域</th>
+					<th>楼盘</th>
+					<th>楼栋</th>
+					<th>点位数量（个）</th>
+					<th>负责人</th>
+					<th>派单人</th>
+					<th>派单时间</th>
+					<th width="20%">说明</th>
+					<th >状态</th>
+					<th>操作</th>
+				</tr>
+			</thead>
+			<tbody>
+				<?php foreach($list as $k => $v) {?>
+				<tr>
+					<td><?php echo $k+1;?></td>
+					<td><?php echo $v['ad_area'];?></td>
+					<td><?php echo $v['houses_name'];?></td>
+					<td><?php echo $v['ban'];?></td>
+					<td><?php echo $v['points_count'];?></td>
+					<td>
+						<?php if(isset($assign_list)) {?>
+							<?php foreach ($assign_list as $k1 => $v1) {?>
+								<?php if($v['houses_id'] == $v1['houses_id']) {?>
+									<?php echo $user_list[$v1['charge_user']];break;?>
 								<?php }?>
-							</tbody>
-						</table>
-					</div>
-					<!-- 下画派单 -->
-					<div class="tab-pane" id="panel-918457">
-						<table id="sample-table-1" class="table table-striped table-bordered table-hover" >
-							<thead>
-								<tr>
-									<th>序号</th>
-									<th>行政区域</th>
-									<th>楼盘</th>
-									<th>点位数量（个）</th>
-									<th>负责人</th>
-									<th>派单人</th>
-									<th>派单时间</th>
-									<th width="20%">说明</th>
-									<th >状态</th>
-									<th>操作</th>
-								</tr>
-							</thead>
-							<tbody>
-								<?php foreach($list as $k => $v) {?>
-								<tr>
-									<td><?php echo $k+1;?></td>
-									<td><?php echo $v['ad_area'];?></td>
-									<td><?php echo $v['houses_name'];?></td>
-									<td><?php echo $v['count'];?></td>
-									<td>
-										<?php if(isset($assign_down_list)) {?>
-											<?php foreach ($assign_down_list as $k1 => $v1) {?>
-												<?php if($v['houses_id'] == $v1['houses_id']) {?>
-													<?php echo $user_list[$v1['charge_user']];break;?>
-												<?php }?>
-											<?php }?>
-										<?php }?>
-									</td>
-									<td>
-										<?php if(isset($assign_down_list)) {?>
-											<?php foreach ($assign_down_list as $k1 => $v1) {?>
-												<?php if($v['houses_id'] == $v1['houses_id']) {?>
-													<?php echo $user_list[$v1['assign_user']];break;?>
-												<?php }?>
-											<?php }?>
-										<?php }?>
-									</td>
-									<td>
-										<?php if(isset($assign_down_list)) {?>
-											<?php foreach ($assign_down_list as $k1 => $v1) {?>
-												<?php if($v['houses_id'] == $v1['houses_id']) {?>
-													<?php echo $v1['assign_time'];break;?>
-												<?php }?>
-											<?php }?>
-										<?php }?>
-									</td>
-									<td>
-										<?php if(isset($assign_down_list)) {?>
-											<?php foreach ($assign_down_list as $k1 => $v1) {?>
-												<?php if($v['houses_id'] == $v1['houses_id']) {?>
-													<?php echo $v1['remark'];break;?>
-												<?php }?>
-											<?php }?>
-										<?php }?>
-									</td>
-									<td>
-										<?php if(isset($assign_down_list)) {?>
-											<?php foreach ($assign_down_list as $k1 => $v1) {?>
-												<?php if($v['houses_id'] == $v1['houses_id']) {?>
-													<?php if(isset($houses_assign_status[$v1['status']])) echo $houses_assign_status[$v1['status']];?>
-												<?php }?>
-											<?php }?>
-										<?php }?>
-									</td>
-									<td>
-										<a class="green tooltip-info m-detail" data-id="<?php echo $v['houses_id'];?>"  data-rel="tooltip" data-placement="top" title="" data-original-title="详情">
-				                        	<i class="icon-eye-open bigger-130"></i>
-				                        </a>
-									</td>
-								</tr>
+							<?php }?>
+						<?php }?>
+					</td>
+					<td>
+						<?php if(isset($assign_list)) {?>
+							<?php foreach ($assign_list as $k1 => $v1) {?>
+								<?php if($v['houses_id'] == $v1['houses_id']) {?>
+									<?php echo $user_list[$v1['assign_user']];break;?>
 								<?php }?>
-							</tbody>
-						</table>
-					</div>
-				</div>
-		</div>
-	
-	
-	    
+							<?php }?>
+						<?php }?>
+					</td>
+					<td>
+						<?php if(isset($assign_list)) {?>
+							<?php foreach ($assign_list as $k1 => $v1) {?>
+								<?php if($v['houses_id'] == $v1['houses_id']) {?>
+									<?php echo $v1['assign_time'];break;?>
+								<?php }?>
+							<?php }?>
+						<?php }?>
+					</td>
+					<td>
+						<?php if(isset($assign_list)) {?>
+							<?php foreach ($assign_list as $k1 => $v1) {?>
+								<?php if($v['houses_id'] == $v1['houses_id']) {?>
+									<?php echo $v1['remark'];break;?>
+								<?php }?>
+							<?php }?>
+						<?php }?>
+					</td>
+					<td>
+						
+						<?php if(isset($houses_assign_status[$v['status']])) echo $houses_assign_status[$v['status']];?>
+								
+					</td>
+					<td>
+						<a class="green tooltip-info m-detail" data-id="<?php echo $v['houses_id'];?>"  data-rel="tooltip" data-placement="top" title="" data-original-title="详情">
+                        	<i class="icon-eye-open bigger-130"></i>
+                        </a>
+					</td>
+				</tr>
+				<?php }?>
+			</tbody>
+		</table>
+					
 	</div>
 	
 </form>
@@ -218,6 +120,7 @@ $(function(){
 	$('.m-detail').click(function(){
 		var order_id = '<?php echo $order_id;?>';
 		var houses_id = $(this).attr('data-id');
+		var assign_type = '<?php echo $assign_type;?>';
 		
 		layer.open({
 			  type: 2,
@@ -225,7 +128,7 @@ $(function(){
 			  shadeClose: true,
 			  shade: 0.6,
 			  area: ['90%', '90%'],
-			  content: '/housesassign/show_points?order_id='+order_id+'&houses_id='+houses_id //iframe的url
+			  content: '/housesassign/show_points?order_id='+order_id+'&houses_id='+houses_id+'&assign_type='+assign_type //iframe的url
 			}); 
 	});
 });
