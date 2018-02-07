@@ -911,7 +911,7 @@ class Housesorders extends MY_Controller{
     		$post_data['order_status'] = 2;
     		$res = $this->Mhouses_orders->update_info($post_data, ['id' => $order_id]);
     		if($res) {
-    			$this->success("录入制作信息成功！", "/housesorders/detail/".$order_id);
+    			$this->success("录入制作信息成功！", "/housesorders/insert_make_info/".$order_id);
     		}else {
     			$this->error("操作失败！请重试！");
     		}
@@ -919,7 +919,7 @@ class Housesorders extends MY_Controller{
     	}
     	
     	
-    	$data['info'] = $this->Mhouses_orders->get_one('is_sample', ['id' => $order_id]);
+    	$data['info'] = $this->Mhouses_orders->get_one('*', ['id' => $order_id]);
     	$this->load->view('housesorders/insert_make_info', $data);
     }
 

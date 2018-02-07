@@ -55,7 +55,7 @@
                                         <div class="form-group">
                                             <label class="col-sm-2 control-label no-padding-right" for="form-field-2"> 制作要求： </label>
                                             <div class="col-sm-8">
-                                            	<textarea class="form-control" name="make_requirement" rows="5" placeholder="请填写制作要求"></textarea>
+                                            	<textarea class="form-control" name="make_requirement" rows="5" placeholder="请填写制作要求"><?php if(isset($info['make_requirement'])) { echo $info['make_requirement'];}?></textarea>
                                             </div>
                                         </div>
 
