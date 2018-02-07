@@ -153,7 +153,7 @@
 			                                            <?php foreach ($list as $key => $value) : ?>
 			                                            <tr>
 			                                                <td class="phone-hide">
-			                                                    <a href="/housesassign/order_detail/<?php echo $value['id'];?>/<?php echo $assign_type;?>"><?php echo $value['order_code'];?></a>
+			                                                    <a href="/housesassign/order_detail/<?php echo $value['id'];?>/<?php echo $assign_type;?>/<?php echo $value['assign_status'];?>"><?php echo $value['order_code'];?><?php echo $value['assign_status'];?></a>
 			                                                	<!--<?php echo $value['order_code'];?>-->
 			                                                </td>
 			                                                <td><?php echo $order_type_text[$value['order_type']];?></td>
