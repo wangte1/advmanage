@@ -366,6 +366,7 @@
                                                         <th width="10%">位置</th>
                                                         <!-- <th width="10%">规格</th>-->
                                                         <th width="10%">楼盘等级</th>
+                                                        <th width="10%">组团等级</th>
                                                         <th width="10%">可投放数量</th>
                                                         <th width="10%">状态</th>
                                                         <th width="10%"><button class="btn btn-xs btn-info remove-all" type="button">移除全部<i class="fa fa-remove" aria-hidden="true"></i></button></th>
@@ -391,6 +392,7 @@
                                                             <td width="10%">电梯前室</td>
                                                             <?php endif;?>
                                                             <!-- <td width="10%"><?php echo $value['size'];?></td> -->
+                                                            <td width="10%"><?php echo $value['grade'];?></td>
                                                             <td width="10%"><?php echo $value['grade'];?></td>
                                                             <td width="10%"><?php echo $value['ad_num'];?></td>
                                                             <td width="10%">
