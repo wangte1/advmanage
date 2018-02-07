@@ -30,7 +30,7 @@ class Housesscheduledorders extends MY_Controller{
         $this->data['customers'] = $this->Mhouses_customers->get_lists("id, name", array('is_del' => 0));  //客户
         $this->data['make_company'] = $this->Mmake_company->get_lists('id, company_name, business_scope', array('is_del' => 0));  //制作公司
         $this->data['order_type_text'] = C('order.houses_order_type'); //订单类型
-        $this->data['salesman'] = $this->Msalesman->get_lists('id, name, sex, phone_number', array('is_del' => 0));  //业务员
+        $this->data['salesman'] = $this->Madmins->get_lists('id, fullname as name, tel', array('is_del' => 1));  //业务员
         $this->data['point_addr'] = C('housespoint.point_addr');	//点位位置
     }
     
@@ -809,7 +809,13 @@ class Housesscheduledorders extends MY_Controller{
             $email = $salesInfo['email'];
             $file = $tmpFileName;
             $this->sendEmail($subject, $body, $alt, $email, $file);
+        }else{
+            //邮件发送失败
+            $user_id = $this->data['userInfo']['id'];
+            $this->send(['uid'=> $user_id, 'message' => '邮件发送失败，请先完善您的邮件信息！']);
         }
+        //删除文件
+        unlink($file);
     }
     
     /**
@@ -918,11 +924,6 @@ class Housesscheduledorders extends MY_Controller{
                 break;
         }
         return ['code' => 0, 'msg' => $error];
-    }
-    
-    public function test(){
-        $info = $this->Mhouses_points->get_lists('*', ['ad_num >' => 'ad_use_num']);
-        var_dump($info, $this->db->last_query());exit;
     }
     
     /*
@@ -1035,7 +1036,6 @@ class Housesscheduledorders extends MY_Controller{
             $mail->AltBody = $alt;
             
             $mail->send();
-            unlink($file);
         } catch (Exception $e) {
             echo 'Message could not be sent. Mailer Error: ', $mail->ErrorInfo;
         }
