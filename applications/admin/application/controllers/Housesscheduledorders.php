@@ -811,11 +811,14 @@ class Housesscheduledorders extends MY_Controller{
             $this->sendEmail($subject, $body, $alt, $email, $file);
         }else{
             //邮件发送失败
-            $user_id = $this->data['userInfo']['id'];
-            $this->send(['uid'=> $user_id, 'message' => '邮件发送失败，请先完善您的邮件信息！']);
+            $uid= $this->data['userInfo']['id'];
+            $this->send(['group_id'=> $uid, 'message' => '邮件发送失败，请先完善您的邮件信息！']);
         }
         //删除文件
         unlink($file);
+    }
+    public function test(){
+        var_dump($this->data);
     }
     
     /**
