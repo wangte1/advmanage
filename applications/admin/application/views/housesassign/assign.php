@@ -47,12 +47,14 @@
 					<td><?php echo $k+1;?></td>
 					<td><?php echo $v['ad_area'];?></td>
 					<td><?php echo $v['houses_name'];?><input type="hidden" name="houses_id[]" value="<?php echo $v['houses_id'];?>"></td>
+
 					<td><span class="m-count"><?php echo $v['count'];?></span><input type="hidden" name="points_count[]" value="<?php echo $v['count'];?>"></td>
 					<td>
 						<span id="count_<?php echo $v['houses_id'];?>" class="sel_count">0</span>
 						<input id="ban_<?php echo $v['houses_id'];?>" name="ban[]" type="text">
 						<input id="charge_<?php echo $v['houses_id'];?>" name="ban_charge[]" type="text">
 						<input id="remark_<?php echo $v['houses_id'];?>" name="ban_remark[]" type="text">
+
 						<input id="ban_count_<?php echo $v['houses_id'];?>" name="ban_count[]" type="text">
 					</td>
 					<?php if($assign_type == 2) {?>
@@ -123,6 +125,7 @@ $(function(){
 	});
 
 	$('.charge-sel').change(function(){
+
 		if($(this).val() == '') {
 			<?php if($assign_type == 2) {?>
 				$(this).parent('td').prev().prev().find('input[name="ban_remark[]"]').val('');
@@ -144,6 +147,7 @@ $(function(){
 			<?php }?>
 		}
 		
+
 	});
 	
 	$('.sub-button').click(function(){

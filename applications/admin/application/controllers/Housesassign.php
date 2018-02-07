@@ -47,6 +47,7 @@ class Housesassign extends MY_Controller{
         $pageconfig = C('page.page_lists');
         $this->load->library('pagination');
         $page = $this->input->get_post('per_page') ? : '1';
+
         $where =  array();
         
         if ($this->input->get('order_code')) $where['A.order_code'] = $this->input->get('order_code');
@@ -54,7 +55,9 @@ class Housesassign extends MY_Controller{
         if ($this->input->get('customer_id')) $where['A.customer_id'] = $this->input->get('customer_id');
         if ($this->input->get('assign_status')) $where['A.assign_status'] = $this->input->get('assign_status');
         
+
         $assign_type = $data['assign_type'] = $this->input->get('assign_type') ? : 1;
+
         
         if ($data['assign_type'] == 2 || $data['assign_type'] == 1) {	//上画和下画派单
         	$where['A.order_status>='] = 3;
@@ -116,6 +119,7 @@ class Housesassign extends MY_Controller{
     		$points_counts = $this->input->post('points_count');
     		$charge_users = $this->input->post('charge_user');
     		$remark = $this->input->post('remark');
+
     		$assign_type = $this->input->get('assign_type');
     		
     		$add_data = [];
@@ -129,6 +133,7 @@ class Housesassign extends MY_Controller{
     				$tmp3 = explode(',', $post_data['ban'][$k]);
     				$tmp4 = explode(',', $post_data['ban_count'][$k]);
     				foreach($tmp1 as $k1 => $v1) {
+
     						$tmp_arr[$j]['type'] = $assign_type;
     						$tmp_arr[$j]['order_id'] = $order_id;
     						$tmp_arr[$j]['houses_id'] = $v;
@@ -155,6 +160,7 @@ class Housesassign extends MY_Controller{
     				//     			if($res_send['code'] == 0) {
     				//     				$this->write_log($charge_users[$k],2,"发送短信失败".date("Y-m-d H:i:s"));	//发送短信失败记录
     				//     			}
+
     				$add_data[$i]['type'] = $assign_type;
     				$add_data[$i]['order_id'] = $order_id;
     				$add_data[$i]['houses_id'] = $v;
@@ -190,6 +196,7 @@ class Housesassign extends MY_Controller{
     		if($res) {
     			$update_data['assign_status'] = 2;
     			
+
     			if($assign_type == 3) {
     				$res1 = $this->Mhouses_changepicorders->update_info($update_data,array("id" => $order_id));
     			}else {
@@ -197,6 +204,7 @@ class Housesassign extends MY_Controller{
     			}
     				
     			if($res1) {
+
     				$this->success("保存并通知成功","/housesassign/detail?order_id=".$order_id."&assign_type=".$assign_type);
     			}
     		}
@@ -242,6 +250,7 @@ class Housesassign extends MY_Controller{
     	
     	$where = [];
     	$where['group_id'] = 4;	//工程人员角色
+
     	$tmp_users = $this->Madmins->get_lists('id,name,fullname', $where);  //工程人员信息
     	$data['user_list'] = array_column($tmp_users, 'fullname', 'id');
     	
@@ -274,6 +283,7 @@ class Housesassign extends MY_Controller{
     			$data['assign_list'] = $tmp_upload_arr;
     		}
     		
+
     	}
     	
     	$data['assign_type'] = $this->input->get('assign_type');
@@ -288,6 +298,7 @@ class Housesassign extends MY_Controller{
     	$data = $this->data;
     
     	$where['is_del'] = 0;
+
     	if ($this->input->get('order_id')) $order_id =  $data['order_id'] =  $this->input->get('order_id');
     	
     	$assign_type = $data['assign_type'] = $this->input->get('assign_type') ? : 1;
@@ -319,6 +330,7 @@ class Housesassign extends MY_Controller{
     
     	//$group_by = ['houses_id'];
     	//$list = $this->Mhouses_points->get_lists('houses_id,count(0) as count', $where, [],  0,0,  $group_by);  //点位分组
+
     	$list = $this->Mhouses_assign->get_lists('houses_id,ban, points_count,status', ['order_id' => $order_id, 'type' => $assign_type]);  //点位分组
     
     	if($list) {
@@ -348,6 +360,7 @@ class Housesassign extends MY_Controller{
     	$data['user_list'] = array_column($tmp_arr, 'fullname', 'id');
     	
     	//派单列表
+
     	$data['assign_list'] = $this->Mhouses_assign->get_lists('id,houses_id,charge_user,assign_user,assign_time,status,remark', ['order_id' => $data['order_id'], 'is_del' => 0]);  //点位分组
     	 
     	$this->load->view('housesassign/detail', $data);
@@ -356,6 +369,7 @@ class Housesassign extends MY_Controller{
     /*
      * 详情
      */
+
     public function order_detail($id, $assign_type, $assign_status) {
     	$data = $this->data;
     	
@@ -381,6 +395,7 @@ class Housesassign extends MY_Controller{
         $data['info']['salesman'] = $this->Msalesman->get_one('name, phone_number', array('id' => $data['info']['sales_id']));
 		
         //投放点位
+
         $data['info']['selected_points'] = $this->Mhouses_points->get_points_lists(array('in' => array('A.id' => explode(',', $data['info']['point_ids']))), [], 0,0,  $group_by = array('houses_id'));
         
         //广告画面
@@ -400,7 +415,6 @@ class Housesassign extends MY_Controller{
         $data['id'] = $id;
         $data['assign_type'] = $assign_type;
         $data['assign_status'] = $assign_status;
-    
     	$this->load->view('housesassign/order_detail', $data);
     }
     

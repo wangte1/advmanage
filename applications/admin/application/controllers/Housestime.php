@@ -22,6 +22,7 @@ class Housestime extends CI_Controller {
      * 订单在投放时间结束的前一天转为待下画状态以便进行下画派单
      */
     public function order_time() {
+
 //     	$where['order_status'] = 7;
 //     	$where['release_end_time<='] = date("Y-m-d",strtotime("+1 day"));
     	

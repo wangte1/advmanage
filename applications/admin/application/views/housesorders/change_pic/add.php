@@ -225,6 +225,7 @@
                                         </div>
                                         <?php endif;?>                                        
 
+
                                         <!--<?php if($order_type == 1 || $order_type == 2):?>
                                         <div class="form-group page-make-company">
                                             <label class="col-sm-2 control-label no-padding-right" for="form-field-2"> 制作公司： </label>
@@ -277,6 +278,7 @@
                                             </div>
                                         </div>
 
+
                                         <div class="form-group page-make-fee">
                                             <label class="col-sm-2 control-label no-padding-right" for="form-field-2"> 制作费用： </label>
                                             <div class="col-sm-8">
@@ -321,12 +323,14 @@
                                             </div>
                                         </div>
 
+
                                         <div class="form-group">
                                             <label class="col-sm-2 control-label no-padding-right" for="form-field-2"> 备注： </label>
                                             <div class="col-sm-8">
                                                 <textarea class="form-control" name="remark" rows="5" placeholder="备注信息，最多300个字"><?php if(isset($info['remark'])) { echo $info['remark'];}?></textarea>
                                             </div>
                                         </div>-->
+
 
                                         <div class="clearfix form-actions">
                                             <div class="col-md-offset-3 col-md-9">

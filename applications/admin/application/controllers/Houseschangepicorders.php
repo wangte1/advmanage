@@ -373,7 +373,9 @@ class Houseschangepicorders extends MY_Controller{
         $data['info']['inspect_img'] = $this->Mhouses_order_inspect_images->get_inspect_img(array('A.order_id' => $id, 'A.assign_type' => 3));
         
         //换画派单列表
+
         $data['info']['assign_down_list'] = $this->Mhouses_assign->get_join_lists(['A.order_id' => $id, 'A.type' => 3, 'A.is_del' => 0]);
+
         
         //每个媒体对应套数
 //         $where_point['in'] = array('B.id' => explode(',', $data['info']['point_ids']));
@@ -388,6 +390,7 @@ class Houseschangepicorders extends MY_Controller{
        
 
         //获取对应订单状态的操作信息
+
         $operate_time = $this->Mhouses_status_operate_time->get_lists("value,operate_remark,operate_time",array("order_id" => $id , 'type' => 2));
         if($operate_time){
             $data['time'] = array_column($operate_time,"operate_time","value");
@@ -488,7 +491,7 @@ class Houseschangepicorders extends MY_Controller{
         }
 
     }
-    
+
     
     /**
      * 录入制作信息

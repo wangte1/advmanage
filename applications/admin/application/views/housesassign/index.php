@@ -218,7 +218,9 @@
 			                                                            <i class="icon-eye-open bigger-130"></i>
 			                                                        </a>-->
 			                                                        
+
 			                                                        <a class="green tooltip-info" href="/housesassign/order_detail/<?php echo $value['id'];?>/<?php echo $assign_type;?>/<?php echo $value['assign_status'];?>"   data-rel="tooltip" data-placement="top" title="" data-original-title="详情">
+
 			                                                            <i class="icon-eye-open bigger-130"></i>
 			                                                        </a>
 			                                                    	<?php if($value['assign_status'] == 1) {?>

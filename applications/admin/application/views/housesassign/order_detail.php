@@ -232,7 +232,7 @@
                                                 </div>
                                             </div>
                                         </div>
-                                        
+
                                         <div id="adv_img" class="tab-pane">
                                             <?php if(count($info['adv_img']) > 0):?>
                                                 <?php foreach ($info['adv_img'] as $value) : ?>
@@ -254,6 +254,7 @@
                                     		<?php if(isset($houses_id)) {?>
                                     			<iframe frameborder="no" border="0" src="/housesassign/show_points?order_id=<?php echo $id;?>&houses_id=<?php echo $houses_id;?>&assign_type=<?php echo $assign_type?>" width="100%" height="650px;"></iframe>
                                     		<?php }else {?>
+
                                     			<?php if($assign_status == 1) {?>
                                     				<table class="table table-striped table-bordered">
 		                                                <thead>
@@ -296,12 +297,14 @@
 	                                            <?php }?>
                                     			
                                     		
+
                                     		<?php }?>
                                     	</div>
                                     	<!-- end -->
                                     
                                     </div>
                                 </div>
+
                             </div>
                         </div>
                     </div>

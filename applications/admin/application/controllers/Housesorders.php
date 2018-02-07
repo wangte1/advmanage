@@ -686,12 +686,14 @@ class Housesorders extends MY_Controller{
         }
         
         //上画派单列表
+
         $data['info']['assign_list'] = $this->Mhouses_assign->get_join_lists(['A.order_id' => $id, 'A.type' => 1]);
         
 //         var_dump($data['info']['assign_list']);
         
         //下画派单列表
         $data['info']['assign_down_list'] = $this->Mhouses_assign->get_join_lists(['A.order_id' => $id, 'A.type' => 2]);
+
         
 //         if(count($data['info']['assign_list']) > 0) {
 //         	$houses_ids = array_column($data['info']['assign_list'], 'houses_id');
@@ -1009,7 +1011,11 @@ class Housesorders extends MY_Controller{
     }
     
     /*
+<<<<<<< HEAD
      * 确认上画和下画
+=======
+     * 确认上画
+>>>>>>> cafa224b237528170bc130a8ca3704c8767247d7
      */
     public function confirm_upload() {
     	$assign_id = $this->input->post("assign_id");
@@ -1018,6 +1024,7 @@ class Housesorders extends MY_Controller{
     	$mark = $this->input->post("mark");	//mark=1通过，mark=2不通过
     	$assign_type = $this->input->post("assign_type");	//assign_type=1上画派单，assign_type=2下画派单，assign_type=3换画派单
     	
+
     	if($mark == 1) {
     		if($assign_type == 2) {
     			$update_data['status'] = 8;
@@ -1033,7 +1040,9 @@ class Housesorders extends MY_Controller{
     	}
     	$update_data['confirm_remark'] = $confirm_remark;
     	
+
     	$res = $this->Mhouses_assign->update_info($update_data, ['id' => $assign_id]);
+
     	
     	//上画派单
     	if($res && $assign_type == 1) {

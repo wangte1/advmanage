@@ -26,6 +26,7 @@ class Model_houses_change_pic_orders extends MY_Model {
             $this->db->limit($pagesize, $offset);
         }
 
+
      	if($order_by) {
             foreach($order_by as $k => $v) {
                 $this->db->order_by($k, $v);

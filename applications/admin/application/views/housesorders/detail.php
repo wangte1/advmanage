@@ -690,7 +690,10 @@
                                                     <tr>
                                                         <th class="center">行政区域</th>
                                                         <th class="center">楼盘名称</th>
+<<<<<<< HEAD
                                                         <th class="center">楼栋</th>
+=======
+>>>>>>> cafa224b237528170bc130a8ca3704c8767247d7
                                                         <th class="center">点位数量（个）</th>
                                                         <th class="center">下画负责人</th>
                                                         <th class="center">状态</th>
@@ -702,7 +705,10 @@
                                             			<tr>
                                             				<td class="center"><?php echo $v['province']."-".$v['city']."-".$v['area'];?></td>
                                             				<td class="center"><?php echo $v['houses_name'];?></td>
+<<<<<<< HEAD
                                             				<td class="center"><?php echo $v['ban'];?></td>
+=======
+>>>>>>> cafa224b237528170bc130a8ca3704c8767247d7
                                             				<td class="center">
                                             					<?php echo $v['points_count'];?>
                                             				</td>
@@ -746,10 +752,17 @@
                                             				</td>
                                             				
                                             				<td class="center">
+<<<<<<< HEAD
 																<a class="green tooltip-info m-detail" data-id="<?php echo $v['houses_id'];?>" ban="<?php echo $v['ban'];?>"  data-rel="tooltip" data-placement="top" title="" data-original-title="点位详情">
 										                        	<i class="icon-eye-open bigger-130"></i>
 										                        </a>
 										                        <a class="green tooltip-info m-upload" data-id="<?php echo $v['id'];?>" order-id = "<?php echo $v['order_id'];?>" houses-id = "<?php echo $v['houses_id'];?>"  ban = "<?php echo $v['ban'];?>"  data-rel="tooltip" data-placement="top" title="" data-original-title="查看验收图片">
+=======
+																<a class="green tooltip-info m-detail" data-id="<?php echo $v['houses_id'];?>"  data-rel="tooltip" data-placement="top" title="" data-original-title="点位详情">
+										                        	<i class="icon-eye-open bigger-130"></i>
+										                        </a>
+										                        <a class="green tooltip-info m-upload" data-id="<?php echo $v['id'];?>" order-id = "<?php echo $v['order_id'];?>" houses-id = "<?php echo $v['houses_id'];?>"  data-rel="tooltip" data-placement="top" title="" data-original-title="查看验收图片">
+>>>>>>> cafa224b237528170bc130a8ca3704c8767247d7
 										                        	<i class="fa fa-picture-o bigger-130"></i>
 										                        </a>
 										                        

@@ -60,6 +60,7 @@ class Housesconfirm extends MY_Controller{
         
         $assign_type = $this->input->get('assign_type') ? : 1;
         
+
 //         if ($assign_type == 1) {	//上画
 //         	$tmp_moudle = $this->Mhouses_assign;
 //         }else {		//下画和换画
@@ -80,6 +81,7 @@ class Housesconfirm extends MY_Controller{
         $data['status'] = $this->input->get('status');
         $data['assign_type'] = $this->input->get('assign_type') ? : 1;
         
+
         $where['A.type'] = $assign_type;
         $where['A.is_del'] = 0;
         
@@ -162,6 +164,7 @@ class Housesconfirm extends MY_Controller{
     	
     	$where['is_del'] = 0;
     	if ($this->input->post('id')) {
+
     		$assign_type = $this->input->post('assign_type');
     		$where['id'] = $this->input->post('id');
     		
@@ -173,12 +176,15 @@ class Housesconfirm extends MY_Controller{
     		
     		$update_data['status'] = 3;	//已确认派单
     		$res1 = $this->Mhouses_assign->update_info($update_data, $where);
+
     		
     		if($res1) {
     			if($this->input->post('order_id')) {
     				$where['status'] = 2;
+
     				$data_count = $this->Mhouses_assign->count($where);
     				if($data_count == 0 && ($assign_type == 1 || $assign_type == 3)) {
+
     					
     					if($this->input->post('assign_type') == 3) {	//换画派单
     						$where  = $update_data = [];
@@ -412,6 +418,7 @@ class Housesconfirm extends MY_Controller{
     	if($assign_type == 2) {
     		$mark_str = "下画";
     		$tmp_status = 7;
+
     		//$tmp_moudle  = $this->Mhouses_assign_down;
     	}else if($assign_type == 3) {
     		$mark_str = "换画";
@@ -424,6 +431,7 @@ class Housesconfirm extends MY_Controller{
     	}
     	
     	$assign_count = $this->Mhouses_assign->get_one('points_count', ['id' => $assign_id, 'is_del' => 0]);
+
     	
     	//$this->return_json(['code' => 0, 'msg' => $assign_count['points_count']]);
     	//$this->return_json(['code' => 0, 'msg' => $upload_count]);
@@ -435,7 +443,9 @@ class Housesconfirm extends MY_Controller{
     	
     	$update_data['status'] = $tmp_status;
     	$update_data['confirm_remark'] = '';
+
     	$res = $this->Mhouses_assign->update_info($update_data, ['id' => $assign_id]);
+
     	if($res) {
     		$this->return_json(['code' => 1, 'msg' => "已经提交".$mark_str."至媒介管理人员处审核！"]);
     	}

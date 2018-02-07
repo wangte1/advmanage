@@ -55,9 +55,11 @@
                                         <li>
                                             <a data-toggle="tab" href="#adv_img">广告画面</a>
                                         </li>
+
                                         <li>
                                             <a data-toggle="tab" href="#make_info">制作信息</a>
                                         </li>
+
                                         <li>
                                             <a data-toggle="tab" href="#assign_down_list">换画派单</a>
                                         </li>
@@ -133,7 +135,9 @@
                                                 </div>
                                                 <?php endif;?>
 
+
                                                 <!--<?php if($info['order_type'] == 1 || $info['order_type'] == 2): ?>
+
                                                 <div class="profile-info-row">
                                                     <div class="profile-info-name"> 制作公司 </div>
                                                     <div class="profile-info-value">
@@ -179,7 +183,9 @@
                                                         <span class="editable editable-click"> <?php if($info['install_type']) { echo C('order.install_type')[$info['install_type']]; } else { echo '无'; } ?></span>
                                                     </div>
                                                 </div>
+
                                                 <?php endif;?>-->
+
 
                                                 <div class="profile-info-row">
                                                     <div class="profile-info-name"> 订单日期 </div>
@@ -293,6 +299,7 @@
                                             <?php endif;?>
                                         </div>
                                         
+
                                         
                                         <div id="make_info" class="tab-pane">
                                         	<?php if($info['order_status'] > 1):?>
@@ -350,7 +357,7 @@
                                             <?php endif;?>
                                         </div>
                                         
-                                        
+
                                         <!-- 换画派单 begin-->
                                         <div id="assign_down_list" class="tab-pane">
                                         	<?php if($info['assign_down_list']) {?>
@@ -717,6 +724,7 @@
             return false;
         }
 
+
       	//录入制作信息
 		if(status == 2 && adv_img_count != 0) {
 			layer.open({
@@ -730,6 +738,7 @@
 
 			return false;
 		}
+
 
 
 		if(status == 5) {
