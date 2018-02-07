@@ -85,10 +85,10 @@
                                             <div class="col-sm-8">
                                                 <label class="col-sm-3 control-label no-padding-right" for="form-field-1"> 等级</label>
                                                 <div class="col-sm-9">
-                                                    <select id="state" name="type"  class="select2" data-placeholder="Click to Choose...">
-                                                        <option value="all" <?php if($type == 'all' || empty($type)){ echo 'selected'; }?>>全部</option>
+                                                    <select id="state" name="grade"  class="select2" data-placeholder="Click to Choose...">
+                                                        <option value="all" <?php if($grade == 'all' || empty($grade)){ echo 'selected'; }?>>全部</option>
                                                         <?php foreach(C('public.houses_grade') as $key=>$val){ ?>
-                                                            <option value="<?php echo $key;?>" <?php if($type != 'all' && ($key == $type)) { echo "selected"; }?>><?php echo $val;?></option>
+                                                            <option value="<?php echo $key;?>" <?php if($grade != 'all' && ($key == $grade)) { echo "selected"; }?>><?php echo $val;?></option>
                                                         <?php } ?>
                                                     </select>
                                                 </div>
@@ -146,7 +146,7 @@
                                                     <td><?php echo $val['province'];?>-<?php echo $val['city'];?>-<?php echo $val['area'];?></td>
 													<td><?php if(isset($put_trade[$val['put_trade']])) echo $put_trade[$val['put_trade']];?></td>
 													<td><?php echo $houses_type[$val['type']];?></td>
-													<td><?php echo $houses_grade[$val['type']];?></td>
+													<td><?php echo $houses_grade[$val['grade']];?></td>
 													<td><?php if($val['deliver_year'] == '0000') echo ''; else echo $val['deliver_year'];?></td>
 													<td><?php if($val['is_check_out'] == 1) echo '是'; else echo '否';?></td>
 													<td class="hidden-480">

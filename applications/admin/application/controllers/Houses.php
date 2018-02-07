@@ -39,9 +39,14 @@ class Houses extends MY_Controller{
         if ($this->input->get('type') != 'all' && !empty($this->input->get('type'))) {
             $where['type'] = $this->input->get('type') ? $this->input->get('type') : 1;
         }
+        
+        if ($this->input->get('grade') != 'all' && !empty($this->input->get('grade'))) {
+        	$where['grade'] = $this->input->get('grade') ? $this->input->get('grade') : 1;
+        }
 
         $data['name'] = $this->input->get('name');
         $data['type'] = $this->input->get('type');
+        $data['grade'] = $this->input->get('grade');
         $data['province'] = $this->input->get('province');
         $data['city'] = $this->input->get('city');
         $data['area'] = $this->input->get('area');

@@ -15,6 +15,8 @@ class Housesarea extends MY_Controller{
          ]);
         $this->data['code'] = 'community_manage';
         $this->data['active'] = 'houses_area_lists';
+        
+        $this->data['houses_grade'] = C("public.houses_grade");
     }
 
     /*
@@ -37,11 +39,16 @@ class Housesarea extends MY_Controller{
         }
         if ($this->input->get('group_id')) $where['group_id'] = $this->input->get('group_id');
         
+        if ($this->input->get('grade') != 'all' && !empty($this->input->get('grade'))) {
+        	$where['grade'] = $this->input->get('grade') ? $this->input->get('grade') : 1;
+        }
+        
 
         $data['name'] = $this->input->get('name');
         $data['houses_id'] = $this->input->get('houses_id');
         $data['group_id'] = $this->input->get('group_id');
-
+        $data['grade'] = $this->input->get('grade');
+        
         $data['list'] = $this->Mhouses_area->get_lists('*',$where,[],$size,($page-1)*$size);
         $data_count = $this->Mhouses_area->count($where);
         $data['page'] = $page;
