@@ -972,7 +972,7 @@ class Housesscheduledorders extends MY_Controller{
                 $_where = [];
                 $_where['in'] = array('id' => explode(',', $post_data['point_ids']));
                 //字段的比较where['field']
-                $_where['field']['`ad_use_num`'] = '`ad_num`';
+                $_where['field']['`ad_num`'] = '`ad_use_num` + `lock_num`';
                 $this->Mhouses_points->update_info(['point_status' => 3], $_where);
                 
                 $this->write_log($data['userInfo']['id'], 1, "社区资源管理转预定订单".$data['order_type_text'][$post_data['order_type']]."为订单,订单id【".$id."】");
