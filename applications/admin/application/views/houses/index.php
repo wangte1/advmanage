@@ -145,8 +145,8 @@
                                                     <td><a href=""><?php echo $val['name'];?></a></td>
                                                     <td><?php echo $val['province'];?>-<?php echo $val['city'];?>-<?php echo $val['area'];?></td>
 													<td><?php if(isset($put_trade[$val['put_trade']])) echo $put_trade[$val['put_trade']];?></td>
-													<td><?php echo $houses_type[$val['type']];?></td>
-													<td><?php echo $houses_grade[$val['grade']];?></td>
+													<td><?php if(isset($houses_type[$val['type']])) echo $houses_type[$val['type']];?></td>
+													<td><?php if(isset($houses_grade[$val['grade']])) echo $houses_grade[$val['grade']];?></td>
 													<td><?php if($val['deliver_year'] == '0000') echo ''; else echo $val['deliver_year'];?></td>
 													<td><?php if($val['is_check_out'] == 1) echo '是'; else echo '否';?></td>
 													<td class="hidden-480">
