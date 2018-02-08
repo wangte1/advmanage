@@ -51,11 +51,11 @@
 					<td><span class="m-count"><?php echo $v['count'];?></span><input type="hidden" name="points_count[]" value="<?php echo $v['count'];?>"></td>
 					<td>
 						<span id="count_<?php echo $v['houses_id'];?>" class="sel_count">0</span>
-						<input id="ban_<?php echo $v['houses_id'];?>" name="ban[]" type="text">
-						<input id="charge_<?php echo $v['houses_id'];?>" name="ban_charge[]" type="text">
-						<input id="remark_<?php echo $v['houses_id'];?>" name="ban_remark[]" type="text">
+						<input id="ban_<?php echo $v['houses_id'];?>" name="ban[]" type="hidden">
+						<input id="charge_<?php echo $v['houses_id'];?>" name="ban_charge[]" type="hidden">
+						<input id="remark_<?php echo $v['houses_id'];?>" name="ban_remark[]" type="hidden">
 
-						<input id="ban_count_<?php echo $v['houses_id'];?>" name="ban_count[]" type="text">
+						<input id="ban_count_<?php echo $v['houses_id'];?>" name="ban_count[]" type="hidden">
 					</td>
 					<?php if($assign_type == 2) {?>
 						<td>
