@@ -967,7 +967,7 @@ class Housesscheduledorders extends MY_Controller{
                 //下单成功把选择的点增加占用客户，和增加上画次数
                 $update_data['joint']['`customer_id`'] = ','.$post_data['customer_id'];
                 //增加投放总量，一天为一次
-                $update_data['incr']['used_num'] = ceil( ($post_data['release_start_time']-$post_data['release_start_time']) / (24*3600) );
+                $update_data['incr']['used_num'] = ceil( ($post_data['release_end_time']-$post_data['release_start_time']) / (24*3600) );
                 //增加点位可使用量1次，表示该点位少一次可放。
                 $update_data['incr']['`ad_use_num`'] = 1;
                 $this->Mhouses_points->update_info($update_data, array('in' => array('id' => explode(',', $post_data['point_ids']))));
