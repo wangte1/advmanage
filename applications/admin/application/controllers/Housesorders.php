@@ -911,7 +911,8 @@ class Housesorders extends MY_Controller{
     		$post_data['order_status'] = 2;
     		$res = $this->Mhouses_orders->update_info($post_data, ['id' => $order_id]);
     		if($res) {
-    			$this->success("录入制作信息成功！", "/housesorders/insert_make_info/".$order_id);
+    			echo "<script>alert('录入制作信息成功！');parent.location.reload();</script>";
+    			//$this->success("录入制作信息成功！", "/housesorders/insert_make_info/".$order_id);
     		}else {
     			$this->error("操作失败！请重试！");
     		}
