@@ -91,13 +91,13 @@
                     <td class="info-item" colspan="4" style="text-align:left; padding-left: 10px">
                         <p>委托单位签章：<span class="border-line">贵阳大视传媒有限公司</span></p>
                         <p><?php echo date('Y年m月d日',strtotime($info['create_time']));?></p>
-                        <p>
+                        <!-- <p>
                             委托内容：<input type="checkbox" disabled/> 仅制作 
                             <?php if($info['leave_content'] == 1):?><span style="color: red">√</span><?php endif;?>
                             &nbsp;&nbsp;&nbsp;&nbsp; 
                             <input type="checkbox" disabled/> 制作及安装
                             <?php if($info['leave_content'] == 2):?><span style="color: red">√</span><?php endif;?>
-                        </p>
+                        </p> -->
                     </td>
                 </tr>
                 <tr>
