@@ -313,7 +313,8 @@ class Uploadadpic extends MY_Controller{
             }
         } else {
             //获取广告画面的图片
-            $info = $this->Mhouses_orders->get_one("adv_img",array("id"=>$order_id));
+            $info = $this->Mhouses_orders->get_one("adv_img, is_sample",array("id"=>$order_id));
+            $data['info'] = $info;
             $data['adv_img'] = "";
             $data['order_id'] = $order_id;
             if($info['adv_img']){

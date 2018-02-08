@@ -52,12 +52,12 @@
 	                    <label class="col-sm-2 control-label no-padding-right" for="form-field-2"> 是否打小样： </label>
 	                    <div class="col-sm-10">
 		                    <label class="blue">
-		                        <input name="is_sample" value="1" type="radio" class="ace" <?php if((isset($info['is_sample']) && $info['is_sample'] == 1) || !isset($info['is_sample'])){ echo "checked"; }?> />
+		                        <input name="is_sample" value="1" type="radio" class="ace" <?php if(isset($info['is_sample']) && $info['is_sample'] == 1){ echo "checked"; }?> />
 		                        <span class="lbl"> 是</span>
 	                        </label>
 	                        &nbsp;
 	                       	<label class="blue">
-		                       	<input name="is_sample" value="0" type="radio" class="ace" <?php if(isset($info['is_sample']) && $info['is_sample'] == 0){ echo "checked"; }?>>
+		                       	<input name="is_sample" value="0" type="radio" class="ace" <?php if((isset($info['is_sample']) && $info['is_sample'] == 0) || !isset($info['is_sample'])){ echo "checked"; }?>>
 		                       	<span class="lbl"> 否</span>
 	                    	</label>
 	                    </div>
