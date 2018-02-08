@@ -963,6 +963,7 @@ class Housesscheduledorders extends MY_Controller{
                     $this->Mhouses_scheduled_orders->update_info(array('order_status' => 5), array('id' => $info['id']));
                 }
                 
+                $update_data = [];
                 //下单成功把选择的点增加占用客户，和增加上画次数
                 $update_data['joint']['`customer_id`'] = ','.$post_data['customer_id'];
                 //增加投放总量，一天为一次
