@@ -23,7 +23,7 @@
                     </a>
                 </li>
             
-                <li class="green">
+                <li class="green" id="quick_menu">
                     <a data-toggle="dropdown" class="dropdown-toggle" href="#">
                         <i class="icon-bell-alt icon-animated-bell"></i>
                         <span class="badge badge-important"><?php echo $expire_scheduleorder_nums + $expire_orders_nums + $overdue_orders_nums;?></span>

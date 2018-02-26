@@ -16,12 +16,14 @@
  		var isPc = IsPC();
 		$(function(){
 			if(!isPc) {	//移动端
+				$('#quick_menu').hide();
 				$('#m-menu-button').show();
 				$('#sidebar-collapse').hide();
 
 				$('.phone-hide').hide();
 				$('.phone-show').show();
 				$('.breadcrumb').css('marginLeft', 0);
+				
 			}else {
 				$('.phone-show').hide();
 			}
