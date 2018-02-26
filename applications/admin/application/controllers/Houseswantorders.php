@@ -88,6 +88,8 @@ class Houseswantorders extends MY_Controller{
         $data = $this->data;
         if(IS_POST){
             $post_data = $this->input->post();
+            $points_count = (int) $post_data['points_count'];
+            if(!$points_count) $this->error("请输入预定点位数量！");
             unset($post_data['s_houses_type']);
             $post_data['create_user'] = $data['userInfo']['id'];
             $post_data['create_time'] = date('Y-m-d H:i:s');
@@ -96,7 +98,7 @@ class Houseswantorders extends MY_Controller{
                 $this->write_log($data['userInfo']['id'], 1, "新增意向订单,订单id【".$id."】");
                 $this->success("添加成功！","/houseswantorders");
             } else {
-                $this->success("添加失败！");
+                $this->error("添加失败！");
             }
         }
        
