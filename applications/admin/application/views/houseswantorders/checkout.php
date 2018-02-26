@@ -478,7 +478,6 @@ function machine_sel() {
 
 //机选确认
 function machine_sub() {
-	
 	var m_arr = new Array();
 	var flag = false;
 	$('.layui-layer .grade-input').each(function(){
@@ -497,8 +496,8 @@ function machine_sub() {
 						$(this).find('button').click();
 						return false;
 					}
-				}else {
-					if($(this).attr('grade') == (i + 1)) {
+				}else {	//这里根据具体业务情况可能有变更
+					if($(this).attr('grade') == (i + 1) || $(this).attr('area_grade') == (i + 1)) {
 						$(this).find('button').click();
 						return false;
 					}
@@ -518,7 +517,7 @@ function count_percent() {
 	<?php foreach (C('public.houses_grade') as $k => $v) {?>
 		count_arr['<?php echo $k-1;?>'] = 0;
 		$('#selected_points tr').each(function(){
-			if($(this).attr('grade') == '<?php echo $k;?>') {
+			if($(this).attr('grade') == '<?php echo $k;?>' || $(this).attr('area_grade') == '<?php echo $k;?>') {
 				count_arr['<?php echo $k-1;?>'] = count_arr['<?php echo $k-1;?>']+1;
 			}
 		});

@@ -54,7 +54,6 @@
 						<input id="ban_<?php echo $v['houses_id'];?>" name="ban[]" type="hidden">
 						<input id="charge_<?php echo $v['houses_id'];?>" name="ban_charge[]" type="hidden">
 						<input id="remark_<?php echo $v['houses_id'];?>" name="ban_remark[]" type="hidden">
-
 						<input id="ban_count_<?php echo $v['houses_id'];?>" name="ban_count[]" type="hidden">
 					</td>
 					<?php if($assign_type == 2) {?>
@@ -75,7 +74,7 @@
 					<?php }?>
 					
 					<td>
-						<select class="select2 charge-sel" name="charge_user[]">
+						<select class="select2 charge-sel" name="charge_user[]" id="p_charge_<?php echo $v['houses_id'];?>">
 							<option value=""></option>
 							<?php foreach($user_list as $k1 => $v1) {?>
 								<option value="<?php echo $k1;?>"><?php echo $v1;?></option>
@@ -113,40 +112,47 @@ $(function(){
 	$('.m-detail').click(function(){
 		var order_id = '<?php echo $order_id;?>';
 		var houses_id = $(this).attr('data-id');
-		
+
+		var charge_id_str = $('#charge_'+houses_id).val();
+		var remark_str = $('#remark_'+houses_id).val();
+
 		layer.open({
 			  type: 2,
 			  title: '按楼栋派单',
 			  shadeClose: true,
 			  shade: 0.6,
 			  area: ['90%', '90%'],
-			  content: '/housesassign/show_ban?order_id='+order_id+'&houses_id='+houses_id //iframe的url
+			  content: '/housesassign/show_ban?order_id='+order_id+'&houses_id='+houses_id+'&charge_id_str='+charge_id_str+'$remark_str='+remark_str //iframe的url
 			}); 
 	});
 
 	$('.charge-sel').change(function(){
+		<?php if($assign_type == 2) {?>
+			$(this).parent('td').prev().prev().find('input[name="ban[]"]').val('');
+			$(this).parent('td').prev().prev().find('input[name="ban_charge[]"]').val('');
+			$(this).parent('td').prev().prev().find('input[name="ban_remark[]"]').val('');
+			$(this).parent('td').prev().prev().find('input[name="ban_count[]"]').val('');
 
-		if($(this).val() == '') {
-			<?php if($assign_type == 2) {?>
-				$(this).parent('td').prev().prev().find('input[name="ban_remark[]"]').val('');
+			var all_count = $(this).parent('td').prev().prev().prev().find('span').text();
+			if($(this).val() == '') {
 				$(this).parent('td').prev().prev().find('span').text('0');
-			<?php }else {?>
-				alert();
-				$(this).parent('td').prev().find('input[name="ban_remark[]"]').val('');
-				$(this).parent('td').prev().find('span').text('0');
-			<?php }?>
-		}else {
-			<?php if($assign_type == 2) {?>
-				var all_count = $(this).parent('td').prev().prev().prev().find('span').text();
-				$(this).parent('td').prev().prev().find('input[name="ban_remark[]"]').val(all_count);
+			}else {
 				$(this).parent('td').prev().prev().find('span').text(all_count);
-			<?php }else {?>
-				var all_count = $(this).parent('td').prev().prev().find('span').text();
-				$(this).parent('td').prev().find('input[name="ban_remark[]"]').val(all_count);
+			}
+		<?php }else {?>
+			$(this).parent('td').prev().find('input[name="ban[]"]').val('');
+			$(this).parent('td').prev().find('input[name="ban_charge[]"]').val('');
+			$(this).parent('td').prev().find('input[name="ban_remark[]"]').val('');
+			$(this).parent('td').prev().find('input[name="ban_count[]"]').val('');
+
+			var all_count = $(this).parent('td').prev().prev().find('span').text();
+			if($(this).val() == '') {
+				$(this).parent('td').prev().find('span').text('0');
+			}else {
 				$(this).parent('td').prev().find('span').text( all_count );
-			<?php }?>
-		}
-		
+			}
+			
+		<?php }?>
 
 	});
 	

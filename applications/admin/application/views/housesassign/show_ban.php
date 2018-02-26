@@ -56,12 +56,12 @@
 						<select class="select2 charge-sel" name="charge_user[]">
 							<option value=""></option>
 							<?php foreach($user_list as $k1 => $v1) {?>
-								<option value="<?php echo $v1['id'];?>"><?php echo $v1['fullname'];?></option>
+								<option value="<?php echo $v1['id'];?>"  <?php if(isset($charge_id_arr[$k]) && $charge_id_arr[$k] == $v1['id']) {?>selected="selected"<?php }?>><?php echo $v1['fullname'];?></option>
 							<?php }?>
 						</select>
 					</td>
 					<td>
-						<textarea class="remark" name="remark[]" rows="1"></textarea>
+						<textarea class="remark" name="remark[]" rows="1"><?php if(isset($remark_arr[$k])) echo $remark_arr[$k];?></textarea>
 					</td>
 				</tr>
 				<?php }?>
@@ -85,19 +85,8 @@ $(".select2").css('width','150px').select2({allowClear:true});
 $(function(){
 	$('#table-panel').height($(window).height()-50);
 
-// 	$('.m-detail').click(function(){
-		var order_id = '<?php echo $order_id;?>';
-// 		var houses_id = $(this).attr('data-id');
-		
-// 		layer.open({
-// 			  type: 2,
-// 			  title: '显示点位',
-// 			  shadeClose: true,
-// 			  shade: 0.6,
-// 			  area: ['90%', '90%'],
-// 			  content: 'housesassign/show_points?order_id='+order_id+'houses_id='+houses_id //iframe的url
-// 			}); 
-// 	});
+
+	var order_id = '<?php echo $order_id;?>';
 
 	$('.charge-sel, .remark').change(function(){
 
@@ -123,7 +112,9 @@ $(function(){
 		$('.remark').each(function(){
 			remark_str += $(this).val() + ',';
 		});
-		
+
+		window.parent.$('#s2id_p_charge_<?php echo $houses_id;?>').find('.select2-chosen').text('');
+		window.parent.$('#p_charge_<?php echo $houses_id;?> option:first').prop("selected", 'selected');
 		window.parent.$('#count_<?php echo $houses_id;?>').text(i);
 		window.parent.$('#ban_<?php echo $houses_id;?>').val(ban_str);
 		window.parent.$('#charge_<?php echo $houses_id;?>').val(charge_str);

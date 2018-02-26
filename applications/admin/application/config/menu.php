@@ -111,7 +111,7 @@ $config = array(
 
     	'社区资源管理' => array(
     		'code' => 'community_manage',
-    		'icon' => 'icon-globe  menu-i',
+    		'icon' => 'icon-group  menu-i',
     		'list' => array(
     			array(
     				'url'=>'/housespoints',
