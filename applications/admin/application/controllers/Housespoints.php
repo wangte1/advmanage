@@ -63,7 +63,9 @@ class Housespoints extends MY_Controller{
         if($data['houses_id']) $data['area_list'] = $this->get_area_info($data['houses_id']);
         
         $data['list'] = $this->Mhouses_points->get_points_lists($where,[],$size,($page-1)*$size);
-        $data_count = $this->Mhouses_points->get_count($where);
+        $data_count = $this->Mhouses_points->get_points_count($where);
+        $data_count = $data_count[0]['count'];
+        
         $data['page'] = $page;
         $data['data_count'] = $data_count;
         
