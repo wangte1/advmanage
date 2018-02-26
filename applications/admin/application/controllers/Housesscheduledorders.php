@@ -198,13 +198,13 @@ class Housesscheduledorders extends MY_Controller{
                 }
             }
             if(!empty($add)){
-                //取消的点位锁定数-1
+                //点位锁定数+1
                 $update_data['incr'] = ['lock_num' => 1];
                 $this->Mhouses_points->update_info($update_data, array('in' => array('id' => $add)));
                 //重置这些点位的状态
-                $_where['field']['`ad_num`>'] = '`lock_num`+`ad_use_num`';
+                $_where['field']['`ad_num`>='] = '`lock_num`+`ad_use_num`';
                 $_where['in'] = ['id' => $add];
-                $this->Mhouses_points->update_info(['point_status' => 1], $_where);
+                $this->Mhouses_points->update_info(['point_status' => 3], $_where);
                 unset($update_data, $_where);
             }
             
@@ -221,7 +221,7 @@ class Housesscheduledorders extends MY_Controller{
                 $update_data['decr'] = ['lock_num' => 1];
                 $this->Mhouses_points->update_info($update_data, array('in' => array('id' => $point_ids_old)));
                 //重置这些点位的状态
-                $_where['field']['`ad_num`>'] = '`lock_num`+`ad_use_num`';
+                $_where['field']['`ad_num`<'] = '`lock_num`+`ad_use_num`';
                 $_where['in'] = ['id' => $point_ids_old];
                 $this->Mhouses_points->update_info(['point_status' => 1], $_where);
             }
