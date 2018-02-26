@@ -540,7 +540,17 @@ class Housesassign extends MY_Controller{
     	}else {
     		$tmp_moudle = $this->Mhouses_orders;
     	}
-    	 
+    	
+    	$charge_id_str = $this->input->get('charge_id_str');
+    	if($charge_id_str) {
+    		$data['charge_id_arr'] = explode(',', $charge_id_str);
+    	}
+    	
+    	$remark_str = $this->input->get('remark_str');
+    	if($remark_str) {
+    		$data['remark_arr'] = explode(',', $remark_str);
+    	}
+    	
     	$orders_list = $tmp_moudle->get_one('id,point_ids', $where_orders);
     	if(isset($orders_list['point_ids'])) {
     		$point_ids_arr = explode(',', $orders_list['point_ids']);
