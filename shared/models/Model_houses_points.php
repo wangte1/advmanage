@@ -25,7 +25,7 @@ class Model_houses_points extends MY_Model {
         $this->db->select($tmp_count.'A.*, C.name as houses_area_name, A.addr, A.point_status, B.province, B.city, B.area,B.name AS houses_name, B.put_trade,B.grade,B.is_check_out,C.grade AS area_grade,D.size');
     	$this->db->from('t_houses_points A', 'left');
     	$this->db->join('t_houses B', 'A.houses_id = B.id', 'left');
-    	$this->db->join('t_houses_area C', 'A.houses_id = C.id', 'left');
+    	$this->db->join('t_houses_area C', 'A.area_id = C.id', 'left');
     	$this->db->join('t_houses_points_format D', 'A.type_id = D.type', 'left');
     	$this->db->where(array('A.is_del' => 0));
     
@@ -91,7 +91,7 @@ class Model_houses_points extends MY_Model {
     	$this->db->select('count(0) as count');
     	$this->db->from('t_houses_points A', 'left');
     	$this->db->join('t_houses B', 'A.houses_id = B.id', 'left');
-    	$this->db->join('t_houses_area C', 'A.houses_id = C.id', 'left');
+    	$this->db->join('t_houses_area C', 'A.area_id = C.id', 'left');
     	$this->db->join('t_houses_points_format D', 'A.type_id = D.type', 'left');
     	$this->db->where(array('A.is_del' => 0));
     

@@ -280,9 +280,22 @@ class Houseswantorders extends MY_Controller{
     		$addr_lists = array_column($points_lists, 'addr');
     		
 	    	foreach($points_lists as $k => &$v) {
-	    		$v['houses_grade'] = C('public.houses_grade')[$v['grade']];
-	    		$v['area_grade_name'] = C('public.houses_grade')[$v['area_grade']];
-	    		$v['point_status_txt'] = C('housespoint.points_status')[$v['point_status']];
+	    		if(isset(C('public.houses_grade')[$v['grade']])) {
+	    			$v['houses_grade'] = C('public.houses_grade')[$v['grade']];
+	    		}else {
+	    			$v['houses_grade'] = '';
+	    		}
+	    			    		if(isset(C('public.houses_grade')[$v['area_grade']])) {
+	    			$v['area_grade_name'] = C('public.houses_grade')[$v['area_grade']];
+	    		}else {
+	    			$v['area_grade_name'] = '';
+	    		}
+	    		
+	    		if(isset(C('housespoint.points_status')[$v['point_status']])) {
+	    			$v['point_status_txt'] = C('housespoint.points_status')[$v['point_status']];
+	    		}else {
+	    			$v['point_status_txt'] = '';
+	    		}
 	    	}
     	}
     	
