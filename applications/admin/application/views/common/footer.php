@@ -21,10 +21,10 @@
 
 				$('.phone-hide').hide();
 				$('.phone-show').show();
+				$('.breadcrumb').css('marginLeft', 0);
 			}else {
 				$('.phone-show').hide();
 			}
-			
 		})
 		
 		function change_menu() {
