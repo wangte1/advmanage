@@ -254,7 +254,7 @@
                                         <div class="form-group">
                                             <label class="col-sm-2 control-label no-padding-right" for="form-field-2"> 备注： </label>
                                             <div class="col-sm-8">
-                                                <textarea class="form-control" name="remarks" rows="5" placeholder="备注信息，最多300个字"><?php if(isset($info['remark'])) { echo $info['remark'];}?></textarea>
+                                                <textarea class="form-control" name="remarks" rows="5" placeholder="备注信息，最多300个字"><?php if(isset($info['remarks'])) { echo $info['remarks'];}?></textarea>
                                             </div>
                                         </div>
 
@@ -345,7 +345,7 @@
                                                                     }
                                                                 ?>
                                                                 <span class="badge <?php echo $class; ?>">
-                                                                    <?php echo C('public.points_status')[$value['point_status']];?>
+                                                                    <?php echo C('housespoint.points_status')[$value['point_status']];?>
                                                                 </span>
                                                             </td>
                                                             <td width="10%"><button class="btn btn-xs btn-info do-sel" type="button" data-id="<?php echo $value['id'];?>">移除点位<i class="fa fa-remove" aria-hidden="true"></i></button></td>
