@@ -290,7 +290,7 @@ function load_houses() {
 				pointStr += "<td width='20%'>"+data.houses_lists[i]['count']+"</td>";
 			}
 		}else{
-			alert('暂无空闲点位');
+			layer.alert('暂无空闲点位');
 		}
 
 		$("#points_lists").html('');
@@ -341,12 +341,12 @@ $(function(){
   	//保存
     $(".btn-save").click(function(){
     	if($('#customer_id').val() == '') {
-			alert('请选择客户');
+    		layer.alert('请选择客户');
 			return;
         }
 
     	if($('#points_count').val() == '') {
-			alert('请输入预定点位数量');
+    		layer.alert('请输入预定点位数量');
 			return;
         }
     });

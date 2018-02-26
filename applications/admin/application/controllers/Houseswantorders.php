@@ -43,7 +43,7 @@ class Houseswantorders extends MY_Controller{
         $pageconfig = C('page.page_lists');
         $this->load->library('pagination');
         $page = $this->input->get_post('per_page') ? : '1';
-        $where = array();
+        $where = array('is_del' => 0);
         if ($this->input->get('province')) $where['province'] = $this->input->get('province');
         if ($this->input->get('city')) $where['city'] = $this->input->get('city');
         if ($this->input->get('area')) $where['area'] = $this->input->get('area');
