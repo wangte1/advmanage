@@ -341,7 +341,7 @@ $(function(){
 					pointStr += "<td width='20%'>"+data.houses_lists[i]['count']+"</td>";
 				}
 			}else{
-				alert('暂无空闲点位');
+				layer.alert('暂无空闲点位');
 			}
 
 			$("#points_lists").html('');
