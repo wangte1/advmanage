@@ -220,7 +220,7 @@ class Housesconfirm extends MY_Controller{
     	if(IS_POST){
     		$post_data = $this->input->post();
     		foreach ($post_data as $key => $value) {
-    			$where = array('order_id' => $order_id, 'assign_id' => $assign_id, 'point_id' => $key, 'type' => 1);
+    			$where = array('order_id' => $order_id, 'assign_id' => $assign_id, 'point_id' => $key, 'type' => 1, 'assign_type' => $assign_type);
     			$img = $this->Mhouses_order_inspect_images->get_one('*', $where);
     
     			//如果是修改验收图片，则先删除该订单下所有验收图片，再重新添加
