@@ -37,7 +37,15 @@
 
             <div class="page-content">
                 <div class="page-header">
-                    <h1>订单详情</h1>
+                    <h1>派单详情</h1>
+                    <br>
+                    <p>
+                    	<a href="/housesconfirm">
+	                    	<button class="btn btn-warning btn-xs">
+								<i class="ace-icon fa fa-reply icon-only"></i>返回
+							</button>
+						</a>
+					</p>
                 </div>
 
                 <div class="row">

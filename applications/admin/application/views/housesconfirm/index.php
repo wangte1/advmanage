@@ -146,7 +146,7 @@
 			                                                <th nowrap>行政区域</th>
 			                                                <th nowrap>楼盘名称</th>
 			                                                <th nowrap>楼栋</th>
-			                                                <th nowrap>点位类型</th>
+			                                                <th nowrap class="phone-hide">点位类型</th>
 			                                                <th class="phone-hide">客户名称</th>
 			                                                <th class="phone-hide">点位数量（个）</th>
 			                                                <th class="phone-hide">投放时间</th>
@@ -177,7 +177,7 @@
 			                                                    	<?php echo $val['ban'];?>
 			                                                    </td>
 			                                                   
-			                                                    <td>
+			                                                    <td class="phone-hide">
 			                                                    	<?php if(isset($order_type_text[$val['order_type']])) echo $order_type_text[$val['order_type']];?>
 			                                                    </td>
 			                                                     <td class="phone-hide">

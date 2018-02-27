@@ -161,7 +161,9 @@ class Task extends MY_Controller {
     		$tmpImg = $this->Mhouses_order_inspect_images->get_one("front_img",$where);
     	}
     	
-    	$points['image'] = $tmpImg['front_img'];
+    	if(isset($tmpImg['front_img'])) {
+    		$points['image'] = $tmpImg['front_img'];
+    	}
     	
     	$this->return_json(['code' => 1, 'data' => json_encode($points)]);
     }
