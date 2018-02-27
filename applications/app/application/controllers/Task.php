@@ -34,6 +34,11 @@ class Task extends MY_Controller {
         $page = (int) $this->input->get_post('page') ? : '1';
         $size = (int) $this->input->get_post('size');
         $status = (int) $this->input->get_post('status');
+        $area = trim($this->input->get_post('area'));
+        
+        
+        
+        
         
         $where = ['A.is_del' => 0];
         if(!$size) $size = $pageconfig['per_page'];
@@ -45,6 +50,14 @@ class Task extends MY_Controller {
         
         $token = decrypt($this->input->get_post('token'));
         $where['A.charge_user'] = $token['user_id'];
+        
+        if(!empty($area)) {
+        	$where_area['like']['area'] = $area;
+        	$tmpHousesArr = $this->Mhouses->get_lists('id',$where_area);
+        	if(count($tmpHousesArr) > 0) {
+        		$where['in']['A.houses_id'] = array_column($tmpHousesArr, 'id');
+        	}
+        }
         
         $list = $this->Mhouses_assign->get_join_lists($where,['A.id'=>'desc'],$size,($page-1)*$size);
  
