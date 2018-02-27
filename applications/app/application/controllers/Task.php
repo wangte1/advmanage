@@ -132,8 +132,24 @@ class Task extends MY_Controller {
     	$assignId = (int) $this->input->get_post('assignId');
     	$pointId = (int) $this->input->get_post('pointId');
     	
+    	$tmpList = $this->Mhouses_assign->get_one('order_id,type', ['id' => $assignId]);
+    	
     	$where_point['A.id'] = $pointId;
     	$points = $this->Mhouses_points->get_points_lists($where_point)[0];
+    	
+    	//根据点位id获取对应的图片
+    	$data['images'] = "";
+    	if(count($points) > 0) {
+    		$where['point_id'] = $pointId;
+    		$where['order_id'] = $tmpList['order_id'];
+    		$where['assign_id'] = $assignId;
+    		$where['assign_type'] = $tmpList['type'];
+    		$where['type'] = 1;
+    		$tmpImg = $this->Mhouses_order_inspect_images->get_one("front_img",$where);
+    	}
+    	
+    	$points['image'] = $tmpImg['front_img'];
+    	
     	$this->return_json(['code' => 1, 'data' => json_encode($points)]);
     }
     
@@ -173,11 +189,13 @@ class Task extends MY_Controller {
      */
     public function upload_save() {
     	$assignId = (int) $this->input->get_post('assignId');
+    	$assignType = (int) $this->input->get_post('assignType');
     	$pointId = (int) $this->input->get_post('pointId');
-    	$imgUrl = (int) $this->input->get_post('imgUrl');
+    	$imgUrl = $this->input->get_post('imgUrl');
     	
-    	$assign_type = 1;	//暂时只添加上画的
-    	$where = array('order_id' => $order_id, 'assign_id' => $assign_id, 'point_id' => $key, 'type' => 1);
+    	$tmpList = $this->Mhouses_assign->get_one('order_id', ['id' => $assignId]);
+    	
+    	$where = array('order_id' => $tmpList['order_id'], 'assign_id' => $assign_id, 'point_id' => $pointId, 'type' => 1, 'assign_type' => $assignType);
     	$img = $this->Mhouses_order_inspect_images->get_one('*', $where);
     	
     	//如果是修改验收图片，则先删除该订单下所有验收图片，再重新添加
@@ -185,16 +203,20 @@ class Task extends MY_Controller {
     		$this->Mhouses_order_inspect_images->delete($where);
     	}
     	
-    	$insert_data['order_id'] = $order_id;
-    	$insert_data['assign_id'] = $assign_id;
-    	$insert_data['assign_type'] = $assign_type;
-    	$insert_data['point_id'] = $key;
-    	$insert_data['front_img'] = $v;
+    	$token = decrypt($this->input->get_post('token'));
+    	
+    	$insert_data['order_id'] = $tmpList['order_id'];
+    	$insert_data['assign_id'] = $assignId;
+    	$insert_data['assign_type'] = $assignType;
+    	$insert_data['point_id'] = $pointId;
+    	$insert_data['front_img'] = $imgUrl;
     	$insert_data['back_img'] = '';
     	$insert_data['type'] = 1;
-    	$insert_data['create_user'] = $insert_data['update_user'] = $data['userInfo']['id'];
+    	$insert_data['create_user'] = $insert_data['update_user'] = $token['user_id'];
     	$insert_data['create_time'] = $insert_data['update_time'] = date('Y-m-d H:i:s');
     	$this->Mhouses_order_inspect_images->create($insert_data);
+   
+    	$this->return_json(['code' => 1, 'msg' => '图片上传成功！']);
     }
     
     
