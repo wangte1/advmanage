@@ -75,7 +75,7 @@ class Task extends MY_Controller {
     }
     
     /**
-     * 获取任务中的点位详情
+     * 获取任务中的点位列表
      */
     public function get_point_list() {
     	
@@ -104,7 +104,7 @@ class Task extends MY_Controller {
     		$where['in'] = array("point_id"=>array_column($points,"id"));
     		$where['order_id'] = $assign_list['order_id'];
     		$where['assign_id'] = $assignId;
-    		$where['assign_type'] = 1;
+    		$where['assign_type'] = 1;	//暂时只取上画
     		$where['type'] = 1;
     		$data['images'] = $this->Mhouses_order_inspect_images->get_lists("*",$where);
     	}
@@ -124,4 +124,124 @@ class Task extends MY_Controller {
     	
     	$this->return_json(['code' => 1, 'data' => json_encode($list), 'page' => $page]);
     }
+    
+    /**
+     * 获取点位详情
+     */
+    public function get_point_detail() {
+    	$assignId = (int) $this->input->get_post('assignId');
+    	$pointId = (int) $this->input->get_post('pointId');
+    	
+    	$where_point['A.id'] = $pointId;
+    	$points = $this->Mhouses_points->get_points_lists($where_point)[0];
+    	$this->return_json(['code' => 1, 'data' => json_encode($points)]);
+    }
+    
+    /**
+     * 指定上传文件的服务器端程序
+     */
+    public function upload(){
+    	
+    	$file_dir = $this->input->get('dir') == 'image' ? 'image/' : 'files/';
+    	$config = array(
+    			'upload_path'   => '../../admin/uploads/'.$file_dir,
+    			'allowed_types' => 'gif|jpg|jpeg|png|bmp|swf|flv|doc|docx|xls|xlsx|ppt',
+    			// 'max_size'     => 1024*5,
+    			// 'max_width'    => 2000,
+    			// 'max_height'   => 2000,
+    			'encrypt_name' => TRUE,
+    			'remove_spaces'=> TRUE,
+    			'use_time_dir'  => TRUE,      //是否按上传时间分目录存放
+    			'time_method_by_day'=> TRUE, //分目录存放的方式：按天
+    	);
+    	$this->load->library('upload', $config);
+    	
+    	if ( ! $this->upload->do_upload('file')){
+    		$error = $this->upload->display_errors();
+    		$this->return_json(array('error' => 1, 'message' => '上传错误！'.$error));
+    	} else {
+    		$data = $this->upload->data();
+    		$imgsrc =  '../../admin/uploads/'.$file_dir.$data['file_name'];
+    		$imgdst =  '../../admin/uploads/'.$file_dir.$data['file_name'];
+    		$this->image_png_size_add($imgsrc, $imgdst);
+    		$this->return_json(array('error' => 0, 'url' => '/uploads/'.$file_dir.$data['file_name']));
+    	}
+    }
+    
+    /**
+     * 保存上传的图片信息
+     */
+    public function upload_save() {
+    	$assignId = (int) $this->input->get_post('assignId');
+    	$pointId = (int) $this->input->get_post('pointId');
+    	$imgUrl = (int) $this->input->get_post('imgUrl');
+    	
+    	$assign_type = 1;	//暂时只添加上画的
+    	$where = array('order_id' => $order_id, 'assign_id' => $assign_id, 'point_id' => $key, 'type' => 1);
+    	$img = $this->Mhouses_order_inspect_images->get_one('*', $where);
+    	
+    	//如果是修改验收图片，则先删除该订单下所有验收图片，再重新添加
+    	if ($img) {
+    		$this->Mhouses_order_inspect_images->delete($where);
+    	}
+    	
+    	$insert_data['order_id'] = $order_id;
+    	$insert_data['assign_id'] = $assign_id;
+    	$insert_data['assign_type'] = $assign_type;
+    	$insert_data['point_id'] = $key;
+    	$insert_data['front_img'] = $v;
+    	$insert_data['back_img'] = '';
+    	$insert_data['type'] = 1;
+    	$insert_data['create_user'] = $insert_data['update_user'] = $data['userInfo']['id'];
+    	$insert_data['create_time'] = $insert_data['update_time'] = date('Y-m-d H:i:s');
+    	$this->Mhouses_order_inspect_images->create($insert_data);
+    }
+    
+    
+    /**
+     * desription 压缩图片
+     * @param sting $imgsrc 图片路径
+     * @param string $imgdst 压缩后保存路径
+     */
+    function image_png_size_add($imgsrc,$imgdst){
+    	list($width,$height,$type)=getimagesize($imgsrc);
+    	$new_width= ($width>800?800:$width)*0.9;
+    	$new_height=($height>600?600:$height)*0.9;
+    	switch($type){
+    		case 1:
+    			$giftype=check_gifcartoon($imgsrc);
+    			if($giftype){
+    				header('Content-Type:image/gif');
+    				$image_wp=imagecreatetruecolor($new_width, $new_height);
+    				$image= imagecreatefromgif($imgsrc);
+    				imagecopyresampled($image_wp, $image, 0, 0, 0, 0, $new_width, $new_height, $width, $height);
+    				imagejpeg($image_wp, $imgdst,75);
+    				imagedestroy($image_wp);
+    			}
+    			break;
+    		case 2:
+    			header('Content-Type:image/jpeg');
+    			$image_wp=imagecreatetruecolor($new_width, $new_height);
+    			$image= imagecreatefromjpeg($imgsrc);
+    			imagecopyresampled($image_wp, $image, 0, 0, 0, 0, $new_width, $new_height, $width, $height);
+    			imagejpeg($image_wp, $imgdst,75);
+    			imagedestroy($image_wp);
+    			break;
+    		case 3:
+    			header('Content-Type:image/png');
+    			$image_wp=imagecreatetruecolor($new_width, $new_height);
+    			$image= imagecreatefrompng($imgsrc);
+    			imagecopyresampled($image_wp, $image, 0, 0, 0, 0, $new_width, $new_height, $width, $height);
+    			imagejpeg($image_wp, $imgdst,75);
+    			imagedestroy($image_wp);
+    			break;
+    	}
+    }
+    
+    
+    
+    
+    
+    
+    
 }
