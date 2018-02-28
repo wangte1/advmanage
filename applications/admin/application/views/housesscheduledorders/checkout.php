@@ -575,8 +575,10 @@ $(function(){
 					pointStr += "<td width='10%'>"+(data.points_lists)[i]['floor']+"</td>";
 					if((data.points_lists)[i]['addr'] == 1){
 						pointStr += "<td width='10%'>门禁</td>";
-					}else{
-						pointStr += "<td width='10%'>电梯前室</td>";
+					}else if((data.points_lists)[i]['addr'] == 2){
+						pointStr += "<td width='10%'>地面电梯前室</td>";
+					}else {
+						pointStr += "<td width='10%'>地下电梯前室</td>";
 					}
 					pointStr += "<td width='10%'>"+(data.points_lists)[i]['size']+"</td>";
 					var $class;
