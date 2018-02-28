@@ -211,7 +211,7 @@
                                 </div>
                             </div>
                             
-                            <div class="form-group">
+                            <!-- <div class="form-group">
                                 <label class="col-sm-3 control-label no-padding-right" for="form-field-1"> 展现形式： </label>
                                 <div class="col-sm-9">
                                     <input type="text" name="show_method" value="<?php echo $info['show_method'];?>"  id="form-field-1" placeholder=""  class="col-xs-10 col-sm-3">
@@ -223,7 +223,7 @@
                                 <div class="col-sm-9">
                                     <input type="text" name="texture" value="<?php echo $info['texture'];?>"  id="form-field-1" placeholder=""  class="col-xs-10 col-sm-3">
                                 </div>
-                            </div>
+                            </div> -->
                             
                             <div class="form-group">
                                 <label class="col-sm-3 control-label no-padding-right" for="form-field-1"> 点位价格： </label>
