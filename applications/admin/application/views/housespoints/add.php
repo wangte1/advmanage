@@ -148,8 +148,9 @@
                                 <div class="col-sm-9">
                                 	<select id="addr"  data-placeholder="Click to Choose..." name="addr">
 	                                    <option value="0">--请选择点位位置--</option>
-	                                    <option value="1">门禁</option>
-	                                    <option value="2">电梯前室</option>
+	                                    <?php foreach (C('housespoint.point_addr') as $k => $v):?>
+                                        	<option value="<?php echo $k;?>"><?php echo $v;?></option>
+                                    	<?php endforeach;?>
                                     </select>
                                 </div>
                             </div>
