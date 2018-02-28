@@ -23,7 +23,7 @@ class MY_Controller extends CI_Controller {
     
     public function setToken($user_id){
         $data['user_id'] = $user_id;
-        $data['token'] = encrypt(['user_id' => $user_id, 'expires' => time()+(7*2600*24)]);
+        $data['token'] = encrypt(['user_id' => $user_id, 'expires' => time()+(7*3600*24)]);
         $res  = $this->Mtoken->count(['user_id' => $user_id]);
         if($res){
             $this->Mtoken->update_info(['token' => $data['token']], ['user_id' => $user_id]);
