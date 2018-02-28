@@ -819,14 +819,23 @@ class Housesscheduledorders extends MY_Controller{
         
         $objWriter = PHPExcel_IOFactory::createWriter($this->phpexcel, 'Excel5');
         $tmpFileName = "./excel/".md5($id).".xls";
-        $objWriter->save('php://output');
         $objWriter->save("$tmpFileName");
+        $objWriter->save('php://output');
 
         $sales_id = $scheduledorder['sales_id'];
         $salesInfo = $this->Madmins->get_one('email', ['id' => $sales_id]);
-        
         $user_id = $this->data['userInfo']['id'];
+        
+        if(!$salesInfo){
+            $this->send(['uid'=> $user_id, 'message' => '业务员不存在,无法发送至邮箱']);
+            exit;
+        }
         if(!empty($salesInfo['email'])){
+            if(!preg_match(C('regular_expression.email'), $salesInfo['email'])){
+                //邮件发送失败
+                $this->send(['uid'=> $user_id, 'message' => '邮件发送失败，请填写您的正确邮箱']);
+                exit;
+            }
             //发送到邮箱
             $subject = $customers['name']."的预定点位表";
             $body = "点击附件下载即可";
