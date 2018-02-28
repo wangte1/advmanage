@@ -10,7 +10,8 @@ class Houses extends MY_Controller{
         parent::__construct();
         $this->load->model([
             'Model_houses' => 'Mhouses',
-        	'Model_area' => 'Marea'
+        	'Model_area' => 'Marea',
+        	'Model_houses_points' => 'Mhouses_points',
          ]);
         $this->data['code'] = 'community_manage';
         $this->data['active'] = 'houses_list';
@@ -52,9 +53,19 @@ class Houses extends MY_Controller{
         $data['area'] = $this->input->get('area');
         $data['is_check_out'] = $this->input->get('is_check_out');
         
+        $tmpList = $this->Mhouses->get_lists('*',$where,[],$size,($page-1)*$size);
         
-
-        $data['list'] = $this->Mhouses->get_lists('*',$where,[],$size,($page-1)*$size);
+        if(count($tmpList) > 0) {
+        	foreach($tmpList as $k => &$v) {
+        		$v['count_1'] = $this->Mhouses_points->get_one('count(0) as count', ['houses_id' => $v['id'], 'addr' => 1, 'is_del' => 0]);
+        		$v['count_2'] = $this->Mhouses_points->get_one('count(0) as count', ['houses_id' => $v['id'], 'addr' => 2, 'is_del' => 0]);
+        		$v['count_3'] = $this->Mhouses_points->get_one('count(0) as count', ['houses_id' => $v['id'], 'addr' => 3, 'is_del' => 0]);
+        		$v['count_4'] = $this->Mhouses_points->get_one('count(0) as count', ['houses_id' => $v['id'], 'is_del' => 0]);
+        	}
+        }
+        
+        $data['list'] = $tmpList;
+        
         $data_count = $this->Mhouses->count($where);
         $data['page'] = $page;
         $data['data_count'] = $data_count;
