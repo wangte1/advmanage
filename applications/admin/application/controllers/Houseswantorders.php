@@ -66,7 +66,7 @@ class Houseswantorders extends MY_Controller{
         //var_dump($data['list']);
         
         //获取分页
-        $pageconfig['base_url'] = "/housesscheduledorders";
+        $pageconfig['base_url'] = "/houseswantorders";
         $pageconfig['total_rows'] = $data_count;
         $this->pagination->initialize($pageconfig);
         $data['pagestr'] = $this->pagination->create_links(); // 分页信息
