@@ -143,8 +143,9 @@
                                                 <div class="col-sm-9">
                                                 	<select id="addr" class="select2" data-placeholder="Click to Choose..." name="addr">
                                                 		<option value="">全部</option>
-                                                		<option value="1" <?php if($addr == 1) {?>selected="selected"<?php }?>>门禁</option>
-                                                		<option value="2" <?php if($addr == 2) {?>selected="selected"<?php }?>>电梯前室</option>
+                                                		<?php foreach (C('housespoint.point_addr') as $k => $v):?>
+                                                			<option value="<?php echo $k;?>" <?php if(isset($addr) && $addr== $k){echo 'selected="selected"';}?>><?php echo $v;?></option>
+				                                    	<?php endforeach;?>
 				                                    </select>
                                                 </div>
                                             </div>
@@ -260,7 +261,7 @@
                                                     <td><?php echo $val['unit'];?></td>
                                                     <td><?php echo $val['floor'];?></td>
                                                     <td>
-                                                    	<?php if($val['addr'] == 1) {echo '门禁';}else if($val['addr'] == 2){echo '电梯前室';}?>
+                                                    	<?php if(isset(C('housespoint.point_addr')[$val['addr']])) echo C('housespoint.point_addr')[$val['addr']];?>
                                                     </td>
                                                     <td>
                                                     	<?php foreach ($tlist as $k => $v) {?>

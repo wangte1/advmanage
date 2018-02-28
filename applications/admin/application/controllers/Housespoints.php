@@ -18,7 +18,7 @@ class Housespoints extends MY_Controller{
          ]);
         $this->data['code'] = 'community_manage';
         $this->data['active'] = 'houses_points_list';
-        
+        $this->data['point_addr'] = C('housespoint.point_addr'); //点位位置
         $this->data['order_type_text'] = C('order.houses_order_type'); //点位类型
     }
 
