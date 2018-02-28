@@ -824,6 +824,8 @@ class Housesscheduledorders extends MY_Controller{
 
         $sales_id = $scheduledorder['sales_id'];
         $salesInfo = $this->Madmins->get_one('email', ['id' => $sales_id]);
+        
+        $user_id = $this->data['userInfo']['id'];
         if(!empty($salesInfo['email'])){
             //发送到邮箱
             $subject = $customers['name']."的预定点位表";
@@ -832,9 +834,9 @@ class Housesscheduledorders extends MY_Controller{
             $email = $salesInfo['email'];
             $file = $tmpFileName;
             $this->sendEmail($subject, $body, $alt, $email, $file);
+            $this->send(['uid'=> $user_id, 'message' => '邮件已发送至 '.$salesInfo['email']]);
         }else{
             //邮件发送失败
-            $user_id = $this->data['userInfo']['id'];
             $this->send(['uid'=> $user_id, 'message' => '邮件发送失败，请先完善您的邮件信息！']);
         }
         //删除文件
