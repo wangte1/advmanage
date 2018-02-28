@@ -60,9 +60,9 @@
                 </div>
                 <div class="row">
                     <div class="col-xs-12">
-                        <div class="widget-box">
+                        <div class="">
                           
-                            <div class="widget-body">
+                            <div class="">
                                 <div class="widget-main">
                                     <form class="form-horizontal" role="form" method="post" action="">
                                         <div class="space-4"></div>
@@ -104,7 +104,7 @@
                                         <div class="form-group">
                                             <label class="col-sm-2 control-label no-padding-right" for="form-input-readonly"> 模糊条件： </label>
                                             <div class="col-sm-8">
-                                                <div class="widget-box">
+                                                <div class="">
                                                     <div class="widget-header">
                                                         <h4>输入模糊条件</h4>
                                                         <span class="widget-toolbar">
