@@ -42,7 +42,8 @@ class Houseswantorders extends MY_Controller{
         $data = $this->data;
         $pageconfig = C('page.page_lists');
         $this->load->library('pagination');
-        $page = $this->input->get_post('per_page') ? : '1';
+        $page =  intval($this->input->get("per_page",true)) ?  : 1;
+        $size = $pageconfig['per_page'];
         $where = array('is_del' => 0);
         if ($this->input->get('province')) $where['province'] = $this->input->get('province');
         if ($this->input->get('city')) $where['city'] = $this->input->get('city');
@@ -58,10 +59,10 @@ class Houseswantorders extends MY_Controller{
         $data['put_trade'] = $this->input->get('put_trade');
         $data['status'] = $this->input->get('status');
         
-        $data['list'] = $this->Mhouses_want_orders->get_lists('*', $where, ($page-1)*$pageconfig['per_page'], $pageconfig['per_page']);
+        $data['list'] = $this->Mhouses_want_orders->get_lists('*', $where,[],$size,($page-1)*$size);
         $data_count = $this->Mhouses_want_orders->count($where);
-        $data['data_count'] = $data_count;
         $data['page'] = $page;
+        $data['data_count'] = $data_count;
         
         //var_dump($data['list']);
         
