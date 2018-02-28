@@ -59,7 +59,7 @@ class Houseswantorders extends MY_Controller{
         $data['put_trade'] = $this->input->get('put_trade');
         $data['status'] = $this->input->get('status');
         
-        $data['list'] = $this->Mhouses_want_orders->get_lists('*', $where,[],$size,($page-1)*$size);
+        $data['list'] = $this->Mhouses_want_orders->get_lists('*', $where,['id' => 'desc'],$size,($page-1)*$size);
         $data_count = $this->Mhouses_want_orders->count($where);
         $data['page'] = $page;
         $data['data_count'] = $data_count;
