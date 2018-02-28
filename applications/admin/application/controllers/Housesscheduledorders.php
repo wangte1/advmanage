@@ -989,7 +989,7 @@ class Housesscheduledorders extends MY_Controller{
                     //释放该预定订单的所有点位
                     $update_data['decr'] = ['lock_num' => 1];//释放点位锁定数
                     $this->Mhouses_points->update_info($update_data, array('in' => array('id' => explode(',', $info['point_ids']))));
-                    
+                    unset($update_data['decr']);
                     //更新该订单的状态为“已释放”
                     $this->Mhouses_scheduled_orders->update_info(array('order_status' => 5), array('id' => $info['id']));
                 }
@@ -997,11 +997,11 @@ class Housesscheduledorders extends MY_Controller{
                 //下单成功把选择的点增加占用客户，和增加上画次数
                 $update_data['joint']['`customer_id`'] = ','.$post_data['customer_id'];
                 //增加投放总量，一天为一次
-                $update_data['incr']['used_num'] = ceil( ($post_data['release_start_time']-$post_data['release_start_time']) / (24*3600) );
+                $update_data['incr']['used_num'] = ceil( ( strtotime($post_data['release_end_time']) - strtotime($post_data['release_start_time'])) / (24*3600) );
                 //增加点位可使用量1次，表示该点位少一次可放。
                 $update_data['incr']['`ad_use_num`'] = 1;
                 $this->Mhouses_points->update_info($update_data, array('in' => array('id' => explode(',', $post_data['point_ids']))));
-                
+
                 //更新点位状态
                 $_where = [];
                 $_where['in'] = array('id' => explode(',', $post_data['point_ids']));
