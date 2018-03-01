@@ -70,7 +70,7 @@
                                         </div>
                                         
                                         <div class="form-group">
-                                            <div class="col-sm-4">
+                                            <!-- <div class="col-sm-4">
                                                 <label class="col-sm-3 control-label no-padding-right" for="form-field-1"> 类型</label>
                                                 <div class="col-sm-9">
                                                     <select id="state" name="type"  class="select2" data-placeholder="Click to Choose...">
@@ -80,9 +80,9 @@
                                                         <?php } ?>
                                                     </select>
                                                 </div>
-                                            </div>
+                                            </div> -->
                                             
-                                            <div class="col-sm-8">
+                                            <div class="col-sm-4">
                                                 <label class="col-sm-3 control-label no-padding-right" for="form-field-1"> 等级</label>
                                                 <div class="col-sm-9">
                                                     <select id="state" name="grade"  class="select2" data-placeholder="Click to Choose...">
@@ -130,7 +130,7 @@
                                                 <th>规划入住户数（户）</th>
                                                 <th>层数（层）</th>
                                                 <th>入住率</th>
-                                                <th>单位数</th>
+                                                <th>单元数</th>
                                                 <th>禁投放行业</th>
                                                 <th>类型</th>
                                                 <th>等级</th>
@@ -159,7 +159,7 @@
                                                     <td><?php echo $val['occ_rate'];?></td>
                                                     <td><?php echo $val['unit_rate'];?></td>
 													<td><?php if(isset($put_trade[$val['put_trade']])) echo $put_trade[$val['put_trade']];?></td>
-													<td><?php if(isset($houses_type[$val['type']])) echo $houses_type[$val['type']];?></td>
+													<td><?php echo $val['type'];?></td>
 													<td><?php if(isset($houses_grade[$val['grade']])) echo $houses_grade[$val['grade']];?></td>
 													<td><?php if($val['deliver_year'] == '0000') echo ''; else echo $val['deliver_year'];?></td>
 													<td><?php if($val['is_check_out'] == 1) echo '是'; else echo '否';?></td>

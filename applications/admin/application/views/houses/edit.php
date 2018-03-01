@@ -108,7 +108,7 @@
                        </div>
 						
                             
-                        <div class="form-group">
+                        <!-- <div class="form-group">
                             <label class="col-sm-3 control-label no-padding-right" for="form-field-1"> 楼盘类型： </label>
                             <div class="col-sm-9">
                                 <select class="col-xs-2 " name="type" id="select-font-size " >
@@ -120,7 +120,7 @@
 									<span class="middle" style="color: red">*</span>
 								</span>
                             </div>
-                        </div>
+                        </div> -->
                        
                         <div class="form-group">
                             <label class="col-sm-3 control-label no-padding-right" for="form-field-1"> 楼盘等级： </label>
