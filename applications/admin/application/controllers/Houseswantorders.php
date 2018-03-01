@@ -188,7 +188,7 @@ class Houseswantorders extends MY_Controller{
         
         if(!empty($this->input->post('houses_type'))) {
         	$tmp_type_arr = explode(",", $this->input->post('houses_type'));
-        	$where['in']['B.type'] = $tmp_type_arr;
+        	$where['in']['A.houses_type'] = $tmp_type_arr;
         }
        	
         $where['A.point_status'] = 1;
@@ -265,8 +265,7 @@ class Houseswantorders extends MY_Controller{
     	if(!empty($this->input->post('houses_type'))) {
     		 
     		$tmp_type_arr = explode(",", $this->input->post('houses_type'));
-    		 
-    		$where['in']['B.type'] = $tmp_type_arr;
+    		$where['in']['A.houses_type'] = $tmp_type_arr;
     	}
     	
     	
