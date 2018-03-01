@@ -75,14 +75,14 @@
                             <div class="form-group">
                                 <label class="col-sm-3 control-label no-padding-right" for="form-field-1"> 规划入住户数： </label>
                                 <div class="col-sm-9">
-                                    <input type="text" name="households" onkeyup="(this.v=function(){this.value=this.value.replace(/[^0-9-]+/,'');}).call(this)" onblur="this.v();">&nbsp;&nbsp;户
+                                    <input type="text" name="households" value="0" onkeyup="(this.v=function(){this.value=this.value.replace(/[^0-9-]+/,'');}).call(this)" onblur="this.v();">&nbsp;&nbsp;户
                                 </div>
                             </div>
                             
                             <div class="form-group">
                                 <label class="col-sm-3 control-label no-padding-right" for="form-field-1"> 建筑层数： </label>
                                 <div class="col-sm-9">
-                                    <input type="text" name="floor_num" onkeyup="(this.v=function(){this.value=this.value.replace(/[^0-9-]+/,'');}).call(this)" onblur="this.v();">&nbsp;&nbsp;层
+                                    <input type="text" name="floor_num" value="0" onkeyup="(this.v=function(){this.value=this.value.replace(/[^0-9-]+/,'');}).call(this)" onblur="this.v();">&nbsp;&nbsp;层
                                 </div>
                             </div>
                             
@@ -93,12 +93,12 @@
                                 </div>
                             </div>
                             
-                            <div class="form-group">
+                            <!-- <div class="form-group">
                                 <label class="col-sm-3 control-label no-padding-right" for="form-field-1"> 单元数： </label>
                                 <div class="col-sm-9">
-                                    <input type="text" name="unit_rate">
+                                    <input type="text" name="unit_rate" value="0">
                                 </div>
-                            </div>                            
+                            </div>-->                         
 							
 							<div class="form-group">
 	                            <label class="col-sm-3 control-label no-padding-right" for="form-field-1"> 禁投放行业： </label>

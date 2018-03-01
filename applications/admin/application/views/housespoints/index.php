@@ -340,9 +340,9 @@
 	var buf_info = '';
 	
 	$("#distpicker1").distpicker({
-		province: '<?php if($province != ''){echo $province;}else { echo '贵州省';}?>',
-		city: '<?php if($city != ''){echo $city;}else{echo '贵阳市';}?>',
-		district: "<?php echo $area;?>"
+		province: "<?php if(isset($province)) { echo $province;}else{?>贵州省<?php }?>",
+		city: "<?php if(isset($city)) { echo $city;}else{?>贵阳市<?php }?>",
+		district : "<?php if(isset($area)) { echo $area;}?>",
 	});
 	
     $(function(){

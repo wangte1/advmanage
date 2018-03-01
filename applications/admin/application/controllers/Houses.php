@@ -136,11 +136,11 @@ class Houses extends MY_Controller{
         }
 
         //获取省级
-        $data['province'] = $this->Marea->get_lists("id,area_name,parent_id,level",array("parent_id"=>0));
+        //$data['province'] = $this->Marea->get_lists("id,area_name,parent_id,level",array("parent_id"=>0));
         //城市
-        $data['city'] = $this->Marea->get_lists("id,area_name,parent_id,level",array("parent_id"=>35560));
+        //$data['city'] = $this->Marea->get_lists("id,area_name,parent_id,level",array("parent_id"=>35560));
         //地区
-        $data['area'] = $this->Marea->get_lists("id,area_name,parent_id,level",array("parent_id"=>35561));
+        //$data['area'] = $this->Marea->get_lists("id,area_name,parent_id,level",array("parent_id"=>35561));
         
         $data['houses_type'] = C("public.houses_type");
         
