@@ -129,11 +129,13 @@ class Housesassign extends MY_Controller{
     				$tmp2 = explode(',', $post_data['ban_remark'][$k]);
     				$tmp3 = explode(',', $post_data['ban'][$k]);
     				$tmp4 = explode(',', $post_data['ban_count'][$k]);
+    				$tmp5 = explode(',', $post_data['area_id'][$k]);
     				foreach($tmp1 as $k1 => $v1) {
 
     						$tmp_arr[$j]['type'] = $assign_type;
     						$tmp_arr[$j]['order_id'] = $order_id;
     						$tmp_arr[$j]['houses_id'] = $v;
+    						$tmp_arr[$j]['area_id'] = $tmp5[$k1];
     						$tmp_arr[$j]['ban'] = $tmp3[$k1];
     						$tmp_arr[$j]['points_count'] = $tmp4[$k1];
     						$tmp_arr[$j]['charge_user'] = $v1;
@@ -161,6 +163,7 @@ class Housesassign extends MY_Controller{
     				$add_data[$i]['type'] = $assign_type;
     				$add_data[$i]['order_id'] = $order_id;
     				$add_data[$i]['houses_id'] = $v;
+    				$add_data[$i]['area_id'] = '';
     				$add_data[$i]['ban'] = '';
     				$add_data[$i]['points_count'] = $points_counts[$k];
     				$add_data[$i]['charge_user'] = $charge_users[$k];
@@ -181,14 +184,6 @@ class Housesassign extends MY_Controller{
     		}
     		
     		$res = $this->Mhouses_assign->create_batch($add_data);
-    		
-//     		if($this->input->get('assign_type') == 1){
-//     			$res = $this->Mhouses_assign->create_batch($add_data);
-//     		}else if($this->input->get('assign_type') == 2) {
-//     			$res = $this->Mhouses_assign_down->create_batch($add_data);
-//     		}else if($this->input->get('assign_type') == 3) {
-//     			$res = $this->Mhouses_assign_down->create_batch($add_data);
-//     		}
     		
     		if($res) {
     			$update_data['assign_status'] = 2;
@@ -302,33 +297,18 @@ class Housesassign extends MY_Controller{
     	
     	if($assign_type == 3) {	//换画
     		$tmp_moudle = $this->Mhouses_changepicorders;
-    		//$tmp_assign = $this->Mhouses_assign_down;
     	}else {	//1上画，2下画
     		$tmp_moudle = $this->Mhouses_orders;
-    		//$tmp_assign = $this->Mhouses_assign;
     	}
-//     	if($assign_type == 1) {	//上画
-//     		$tmp_moudle = $this->Mhouses_orders;
-//     		$tmp_assign = $this->Mhouses_assign;
-//     	}else if($this->input->get('assign_type') == 2) {	//下画
-//     		$tmp_moudle = $this->Mhouses_orders;
-//     		$tmp_assign = $this->Mhouses_assign_down;
-//     	}else if($this->input->get('assign_type') == 3) {	//换画
-//     		$tmp_moudle = $this->Mhouses_changepicorders;
-//     		$tmp_assign = $this->Mhouses_assign_down;
-//     	}
-    	
+
     	$order_list = $tmp_moudle->get_one("id,point_ids",array("id" => $data['order_id']));
     
     	if(isset($order_list['point_ids'])) {
     		$point_ids_arr = explode(',', $order_list['point_ids']);
     		$where['in']['id'] = $point_ids_arr;
     	}
-    
-    	//$group_by = ['houses_id'];
-    	//$list = $this->Mhouses_points->get_lists('houses_id,count(0) as count', $where, [],  0,0,  $group_by);  //点位分组
 
-    	$list = $this->Mhouses_assign->get_lists('houses_id,ban, points_count,status', ['order_id' => $order_id, 'type' => $assign_type]);  //点位分组
+    	$list = $this->Mhouses_assign->get_lists('id,houses_id, area_id, ban, points_count,status,charge_user,assign_user,assign_time,status,remark', ['order_id' => $order_id, 'type' => $assign_type]);  //点位分组
     
     	if($list) {
     		$houses_ids = array_column($list, 'houses_id');
@@ -336,6 +316,12 @@ class Housesassign extends MY_Controller{
     		$where['is_del'] = 0;
     		$where['in']['id'] = $houses_ids;
     		$hlist = $this->Mhouses->get_lists('id,name,province,city,area', $where);  //楼盘信息
+    		
+    		$area_ids = array_column($list, 'area_id');
+    		$where = [];
+    		$where['is_del'] = 0;
+    		$where['in']['id'] = $area_ids;
+    		$alist = $this->Mhouses_area->get_lists('id,name', $where);  //楼盘信息
     
     		if($hlist) {
     			foreach ($list as $k => &$v) {
@@ -343,6 +329,12 @@ class Housesassign extends MY_Controller{
     					if($v['houses_id'] == $v1['id']) {
     						$v['ad_area'] = $v1['province']."-".$v1['city']."-".$v1['area'];
     						$v['houses_name'] = $v1['name'];
+    					}
+    				}
+    				
+    				foreach ($alist as $k2 => $v2) {
+    					if($v['area_id'] == $v2['id']) {
+    						$v['area_name'] = $v2['name'];
     					}
     				}
     			}
@@ -358,7 +350,7 @@ class Housesassign extends MY_Controller{
     	
     	//派单列表
 
-    	$data['assign_list'] = $this->Mhouses_assign->get_lists('id,houses_id,charge_user,assign_user,assign_time,status,remark', ['order_id' => $data['order_id'], 'is_del' => 0]);  //点位分组
+    	//$data['assign_list'] = $this->Mhouses_assign->get_lists('id,houses_id,charge_user,assign_user,assign_time,status,remark', ['order_id' => $data['order_id'], 'type' => $assign_type, 'is_del' => 0]);  //点位分组
     	 
     	$this->load->view('housesassign/detail', $data);
     }
@@ -482,7 +474,7 @@ class Housesassign extends MY_Controller{
     		$point_ids = $this->Mhouses_changepicorders->get_one('id, point_ids', ['id' => $this->input->get('order_id')]);
     	}
     	
-    	$list = $this->Mhouses_assign->get_lists('id,houses_id,ban,charge_user,assign_user,assign_time,status, points_count as count', ['order_id' => $this->input->get('order_id'), 'type' => $assign_type]);
+    	$list = $this->Mhouses_assign->get_lists('id,houses_id,area_id,ban,charge_user,assign_user,assign_time,status, points_count as count', ['order_id' => $this->input->get('order_id'), 'type' => $assign_type]);
     	
     	if($list) {
     		$houses_ids = array_column($list, 'houses_id');
@@ -490,6 +482,12 @@ class Housesassign extends MY_Controller{
     		$where['is_del'] = 0;
     		$where['in']['id'] = $houses_ids;
     		$hlist = $this->Mhouses->get_lists('id,name,province,city,area', $where);  //楼盘信息
+    		
+    		$area_ids = array_column($list, 'area_id');
+    		$where = [];
+    		$where['is_del'] = 0;
+    		$where['in']['id'] = $area_ids;
+    		$alist = $this->Mhouses_area->get_lists('id,name', $where);  //组团信息
     
     		if($hlist) {
     			foreach ($list as $k => &$v) {
@@ -497,6 +495,12 @@ class Housesassign extends MY_Controller{
     					if($v['houses_id'] == $v1['id']) {
     						$v['ad_area'] = $v1['province']."-".$v1['city']."-".$v1['area'];
     						$v['houses_name'] = $v1['name'];
+    					}
+    				}
+    				
+    				foreach ($alist as $k2 => $v2) {
+    					if($v['area_id'] == $v2['id']) {
+    						$v['area_name'] = $v2['name'];
     					}
     				}
     			}

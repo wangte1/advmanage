@@ -32,6 +32,7 @@
 					<th>序号</th>
 					<th>行政区域</th>
 					<th>楼盘</th>
+					<th>组团</th>
 					<th>楼栋</th>
 					<th>点位数量（个）</th>
 					<th>现负责人</th>
@@ -46,6 +47,7 @@
 					<td><?php echo $k+1;?></td>
 					<td><?php echo $v['ad_area'];?></td>
 					<td><?php echo $v['houses_name'];?><input type="hidden" name="houses_id[]" value="<?php echo $v['houses_id'];?>"></td>
+					<td><?php if(isset($v['area_name'])) echo $v['area_name'];?><input type="hidden" name="area_id[]" value="<?php echo $v['area_id'];?>"></td>
 					<td><?php echo $v['ban'];?></td>
 					<td><?php echo $v['count'];?><input type="hidden" name="points_count[]" value="<?php echo $v['count'];?>"></td>
 					<td><?php echo $user_list1[$v['charge_user']];?></td>
