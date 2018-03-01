@@ -85,7 +85,7 @@ class Uploadadpic extends MY_Controller{
         	$where['A.sales_id'] = $data['userInfo']['id'];
         }
         
-        $data['list'] = $this->Mhouses_orders->get_order_lists($where, ($page-1)*$pageconfig['per_page'], $pageconfig['per_page']);
+        $data['list'] = $this->Mhouses_orders->get_order_lists($where,[], ($page-1)*$pageconfig['per_page'], $pageconfig['per_page']);
         $data_count = $this->Mhouses_orders->get_order_count($where);
         $data['data_count'] = $data_count;
         $data['page'] = $page;
