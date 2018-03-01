@@ -16,6 +16,7 @@ class Houses extends MY_Controller{
         $this->data['code'] = 'community_manage';
         $this->data['active'] = 'houses_list';
         
+        $this->data['houses_type'] = C("public.houses_type");
         $this->data['put_trade'] = C('housespoint.put_trade'); //禁投放行业
     }
 
@@ -56,12 +57,39 @@ class Houses extends MY_Controller{
         $tmpList = $this->Mhouses->get_lists('*',$where,[],$size,($page-1)*$size);
         
         if(count($tmpList) > 0) {
+        	$houses_id_arr = array_column($tmpList, 'id');
+        	$where_houses['in']['houses_id'] = $houses_id_arr;
+        	
+        	$houses_dis_list = $this->Mhouses_points->get_distinct_lists($where_houses);
+        	$houses_unit_list = $this->Mhouses_points->get_lists('houses_id,area_id,ban,unit', $where_houses, array(), 0,0,  ['houses_id','area_id','ban','unit']);
+        	
         	foreach($tmpList as $k => &$v) {
+        		$v['type'] = '';
+        		$v['floor_num'] = '';
+        		$v['unit_rate'] = 0;
+        		foreach ($houses_dis_list as $k1 => $v1) {
+        			if($v['id'] == $v1['houses_id']) {
+        				if(isset($data['houses_type'][$v1['houses_type']])) {
+        					$v['type'] .= ",".$data['houses_type'][$v1['houses_type']];
+        					$v['floor_num'] .= ",".$v1['floor_num'];
+        				}
+        			}
+        		}
+        		
+        		foreach ($houses_unit_list as $k2 => $v2) {
+        			if($v['id'] == $v2['houses_id']) {
+        				$v['unit_rate'] += 1;
+        			}
+        		}
+        		
+        		
         		$v['count_1'] = $this->Mhouses_points->get_one('count(0) as count', ['houses_id' => $v['id'], 'addr' => 1, 'is_del' => 0]);
         		$v['count_2'] = $this->Mhouses_points->get_one('count(0) as count', ['houses_id' => $v['id'], 'addr' => 2, 'is_del' => 0]);
         		$v['count_3'] = $this->Mhouses_points->get_one('count(0) as count', ['houses_id' => $v['id'], 'addr' => 3, 'is_del' => 0]);
         		$v['count_4'] = $this->Mhouses_points->get_one('count(0) as count', ['houses_id' => $v['id'], 'is_del' => 0]);
         	}
+        	
+        	
         }
         
         $data['list'] = $tmpList;
@@ -76,7 +104,7 @@ class Houses extends MY_Controller{
         $this->pagination->initialize($pageconfig);
         $data['pagestr'] = $this->pagination->create_links(); // 分页信息
 		
-        $data['houses_type'] = C("public.houses_type");
+        //$data['houses_type'] = C("public.houses_type");
         
         $data['houses_grade'] = C("public.houses_grade");
         
