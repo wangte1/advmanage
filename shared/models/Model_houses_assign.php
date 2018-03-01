@@ -10,12 +10,13 @@ class Model_houses_assign extends MY_Model {
     
     //获取连接查询信息
     public function get_join_lists($where = array(), $order_by = array(), $pagesize = 0,$offset = 0,  $group_by = array()) {
-        $this->db->select('A.*, B.province, B.city, B.area, B.name as houses_name,C.adv_img, C.order_type,C.release_start_time,C.release_end_time,C.customer_id, D.name as customer_name,E.fullname as charge_name');
+        $this->db->select('A.*, B.province, B.city, B.area, B.name as houses_name,F.name as area_name,C.adv_img, C.order_type,C.release_start_time,C.release_end_time,C.customer_id, D.name as customer_name,E.fullname as charge_name');
         $this->db->from('t_houses_assign A');
         $this->db->join('t_houses B', 'A.houses_id = B.id', 'left');
         $this->db->join('t_houses_orders C', 'A.order_id = C.id', 'left');
         $this->db->join('t_houses_customers D', 'C.customer_id = D.id', 'left');
         $this->db->join('t_admins E', 'A.charge_user = E.id', 'left');
+        $this->db->join('t_houses_area F', 'A.area_id = F.id', 'left');
         $this->db->where(array('A.is_del' => 0));
         
         if(isset($where['like'])) {
