@@ -107,13 +107,13 @@
                                                     </div>
                                                 </div>
 
-                                                <div class="profile-info-row">
+                                                <!-- <div class="profile-info-row">
                                                     <div class="profile-info-name"> 广告性质 </div>
 
                                                     <div class="profile-info-value">
                                                         <span class="editable editable-click"><?php echo $info['adv_nature'];?></span>
                                                     </div>
-                                                </div>
+                                                </div> -->
 
                                                 <?php if($info['order_type'] == 3 || $info['order_type'] == 4): ?>
                                                 <div class="profile-info-row">
