@@ -262,7 +262,7 @@
                                             </div>
                                         </div>
 
-                                        <div class="form-group">
+                                        <!-- <div class="form-group">
                                             <label class="col-sm-2 control-label no-padding-right" for="form-field-2"> 广告性质： </label>
                                             <div class="col-sm-9">
                                                 <select name="adv_nature" class="select2" required>
@@ -275,7 +275,7 @@
                                                    <span class="middle" style="color: red">*</span>
                                                 </span>
                                             </div>
-                                        </div>
+                                        </div> -->
 
                                         <!-- <div class="form-group page-make-company">
                                             <label class="col-sm-2 control-label no-padding-right" for="form-field-2"> 制作公司： </label>
