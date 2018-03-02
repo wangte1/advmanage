@@ -59,7 +59,7 @@
                                               		<div id="distpicker1">
 													  <select name="province" id="province"></select>
 													  <select name="city" id="city"></select>
-													  <select name="area" id="area"></select>
+													  <select name="area" id="area0"></select>
 													</div>
                                                 </div>
                                             </div>
@@ -169,7 +169,7 @@
                                     		<div class="col-sm-3">
                                                 <label class="col-sm-3 control-label no-padding-right" for="form-field-1"> 点位状态 </label>
                                                 <div class="col-sm-9">
-                                                	<select id="area" class="select2" data-placeholder="Click to Choose..." name="point_status">
+                                                	<select  class="select2" data-placeholder="Click to Choose..." name="point_status">
                                                 		<option value="">全部</option>
                                                 		<?php foreach (C('housespoint.points_status') as $k => $v):?>
                                                 		<option value="<?php echo $k;?>" <?php if(isset($point_status) && $point_status== $k){echo 'selected="selected"';}?>><?php echo $v;?></option>
@@ -181,7 +181,7 @@
                                             <div class="col-sm-3">
                                                 <label class="col-sm-3 control-label no-padding-right" for="form-field-1"> 占用客户 </label>
                                                 <div class="col-sm-9">
-                                                	<select id="area" class="select2" data-placeholder="Click to Choose..." name="customer_id">
+                                                	<select class="select2" data-placeholder="Click to Choose..." name="customer_id">
                                                 		<option value="">全部</option>
                                                 		<?php foreach ($customers as $k => $v):?>
                                                 		<option value="<?php echo $v['id'];?>" <?php if(isset($customer_id) && $customer_id== $v['id']){echo 'selected="selected"';}?>><?php echo $v['name'];?></option>
@@ -366,7 +366,7 @@
        $("#distpicker1 select").change(function(){
 			var province = $("#province").val();
 			var city = $("#city").val();
-			var area = $("#area").val();
+			var area = $("#area0").val();
 			
 			$.post('/housespoints/ajax_houses_info',{province:province,city:city,area:area},function(data){
 				if(data) {
