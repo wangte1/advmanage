@@ -87,7 +87,7 @@
                                             <label class="col-sm-2 control-label no-padding-right" for="form-field-2"> 预定点位数量（个）： </label>
                                             <div class="col-sm-4">
                                                 
-                                                <input type="text" name="points_count" class="required">
+                                                <input type="text" name="points_count" required>
                                                 <span class="help-inline form-field-description-block">
                                                    <span class="middle" style="color: red">*</span>
                                                 </span>
