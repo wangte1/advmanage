@@ -381,10 +381,9 @@ class Housesassign extends MY_Controller{
         $data['info']['customer_name'] = $this->Mhouses_customers->get_one('name', array('id' => $data['info']['customer_id']))['name'];
 
         //业务员
-        $data['info']['salesman'] = $this->Msalesman->get_one('name, phone_number', array('id' => $data['info']['sales_id']));
-		
+        $data['info']['salesman'] = $this->Madmins->get_one('id, fullname as name, tel as phone_number', array('is_del' => 1, 'id' => $data['info']['sales_id']));  //业务员
+        
         //投放点位
-
         $data['info']['selected_points'] = $this->Mhouses_points->get_points_lists(array('in' => array('A.id' => explode(',', $data['info']['point_ids']))), [], 0,0,  $group_by = array('houses_id'));
         
         //广告画面
