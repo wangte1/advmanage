@@ -45,6 +45,12 @@ class Houseswantorders extends MY_Controller{
         $page =  intval($this->input->get("per_page",true)) ?  : 1;
         $size = $pageconfig['per_page'];
         $where = array('is_del' => 0);
+        
+        
+        if($data['userInfo']['group_id'] != 1) {
+        	$where['create_user'] = $data['userInfo']['id'];
+        }
+        
         if ($this->input->get('province')) $where['province'] = $this->input->get('province');
         if ($this->input->get('city')) $where['city'] = $this->input->get('city');
         if ($this->input->get('area')) $where['area'] = $this->input->get('area');
