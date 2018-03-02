@@ -83,7 +83,7 @@
 	                    </div>
                    	</div>
                                         
-
+					<?php if($order_status == 1) {?>
 	                <div class="clearfix form-actions">
 		                <div style="text-align: center;">
 		                <button class="btn btn-info btn-save" type="submit">
@@ -93,6 +93,7 @@
 		                                              
 		                </div>
 	                </div>
+	                <?php }?>
                 </form>
                 
             </div>

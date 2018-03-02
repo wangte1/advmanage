@@ -244,11 +244,14 @@
                                                 </td>
                                                 <td><?php echo $admins[$value['creator']];?></td>
                                                 <td>
-                                                	<?php if($value['order_status'] == 1) {?>
-                                                		<a class="green tooltip-info" href="/uploadadpic/upload_adv_img/<?php echo $value['id'];?>/<?php echo $value['order_status'];?>"  data-rel="tooltip" data-placement="top" title="" data-original-title="上传广告画面">
-                                                     		<i class="fa fa-file-image-o bigger-130"></i>
-                                                     	</a>
-                                                	<?php }?>
+                                                	<?php if($value['order_status'] == 1) {
+                                                		$tmptip = '上传';
+                                                	 }else {
+                                                		$tmptip = '查看';
+ 													}?>
+                                                	<a class="green tooltip-info" href="/uploadadpic/upload_adv_img/<?php echo $value['id'];?>/<?php echo $value['order_status'];?>"  data-rel="tooltip" data-placement="top" title="" data-original-title="<?php echo $tmptip;?>广告画面">
+                                                     	<i class="fa fa-file-image-o bigger-130"></i>
+                                                     </a>
                                                 </td>
                                             </tr>
                                             <?php endforeach; ?>
