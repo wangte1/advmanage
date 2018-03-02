@@ -34,6 +34,7 @@
             <div class="page-content">
                 <div class="page-header">
                     <a href="/housespoints/add" class="btn btn-sm btn-primary"><i class="fa fa-plus-square" aria-hidden="true"></i> 新增点位</a>
+                	<a href="javascript:;" class="btn btn-sm btn-primary btn-export"><i class="fa fa-download out_excel" aria-hidden="true"></i> 导出</a>
                 </div>
                 <div class="row">
                     <div class="col-xs-12">
@@ -49,7 +50,7 @@
 
                             <div class="widget-body">
                                 <div class="widget-main">
-                                    <form class="form-horizontal" role="form">
+                                    <form id="search-form" class="form-horizontal" role="form">
                                         <div class="form-group">
                                             
                                             <div class="col-sm-6">
@@ -186,6 +187,13 @@
                                                 		<option value="<?php echo $v['id'];?>" <?php if(isset($customer_id) && $customer_id== $v['id']){echo 'selected="selected"';}?>><?php echo $v['name'];?></option>
 				                                    	<?php endforeach;?>
 				                                    </select>
+                                                </div>
+                                            </div>
+                                            
+                                            <div class="col-sm-3">
+                                                <label class="col-sm-3 control-label no-padding-right" for="form-field-1"> 点位编号 </label>
+                                                <div class="col-sm-9">
+                                                	<input type="text" name="code" value="<?php if(isset($point_code)) echo $point_code;?>">
                                                 </div>
                                             </div>
                                         </div>
@@ -348,6 +356,13 @@
 	
     $(function(){
        $(".select2").css('width','230px').select2({allowClear:true});
+
+       $(".btn-export").click(function(){
+        	$("#search-form").attr('action', '/housespoints/out_excel');
+            $("#search-form").submit();
+            $("#search-form").attr('action', '');
+       });
+       
        $("#distpicker1 select").change(function(){
 			var province = $("#province").val();
 			var city = $("#city").val();

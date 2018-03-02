@@ -47,6 +47,7 @@ class Housespoints extends MY_Controller{
         if ($this->input->get('addr')) $where['A.addr'] = $this->input->get('addr');
         if ($this->input->get('point_status')) $where['A.point_status'] = $this->input->get('point_status');
         if ($this->input->get('customer_id')) $where['like']['A.customer_id'] = $this->input->get('customer_id');
+        if ($this->input->get('code')) $where['like']['A.code'] = $this->input->get('code');
         
         $data['point_status'] = $this->input->get('point_status');
         $data['province'] = $this->input->get('province');
@@ -61,6 +62,7 @@ class Housespoints extends MY_Controller{
         $data['customer_id'] = $this->input->get('customer_id');
         $data['houses_id'] = $this->input->get('houses_id');
         if($data['houses_id']) $data['area_list'] = $this->get_area_info($data['houses_id']);
+        $data['point_code'] = $this->input->get('code');
         
         $data['list'] = $this->Mhouses_points->get_points_lists($where,[],$size,($page-1)*$size);
         $data_count = $this->Mhouses_points->get_points_count($where);
@@ -276,6 +278,106 @@ class Housespoints extends MY_Controller{
         if(!$list) $this->return_json(['code' => 0]);
         $this->return_json(['code' => 1, 'list' => $list]);
         
+    }
+    
+    /*
+     * 导出数据
+     * 1034487709@qq.com
+     */
+    public function out_excel(){
+    	if ($this->input->get('type_id')) $where['A.type_id'] = $this->input->get('type_id');
+        if ($this->input->get('province')) $where['B.province'] = $this->input->get('province');
+        if ($this->input->get('city')) $where['B.city'] = $this->input->get('city');
+        if ($this->input->get('area')) $where['B.area'] = $this->input->get('area');
+        if ($this->input->get('houses_id')) $where['A.houses_id'] = $this->input->get('houses_id');
+        if ($this->input->get('area_id')) $where['A.area_id'] = $this->input->get('area_id');
+        if ($this->input->get('ban')) $where['A.ban'] = $this->input->get('ban');
+        if ($this->input->get('unit')) $where['A.area_id'] = $this->input->get('unit');
+        if ($this->input->get('floor')) $where['A.area_id'] = $this->input->get('floor');
+        if ($this->input->get('addr')) $where['A.addr'] = $this->input->get('addr');
+        if ($this->input->get('point_status')) $where['A.point_status'] = $this->input->get('point_status');
+        if ($this->input->get('customer_id')) $where['like']['A.customer_id'] = $this->input->get('customer_id');
+        if ($this->input->get('code')) $where['like']['A.code'] = $this->input->get('code');
+    
+    	//加载phpexcel
+    	$this->load->library("PHPExcel");
+    
+    	$table_header =  array(
+    		'点位编号'=>"code",
+    		'行政区域'=>"admin_area",
+    		'所属楼盘'=>"houses_name",
+    		'所属组团'=>"houses_area_name",
+    		'楼栋'=>"ban",
+    		'单元'=>"unit",
+    		'楼层'=>"floor",
+    		'位置'=>"addr",
+    		'价格'=>"price",
+    	);
+    	
+    
+    	$i = 0;
+    	foreach($table_header as  $k=>$v){
+    		$cell = PHPExcel_Cell::stringFromColumnIndex($i).'1';
+    		$this->phpexcel->setActiveSheetIndex(0)->setCellValue($cell, $k);
+    		$i++;
+    	}
+    	
+    	$list = $this->Mhouses_points->get_points_lists($where);
+    
+    	$h = 2;
+    	foreach($list as $key=>$val){
+    		$j = 0;
+    		foreach($table_header as $k => $v){
+    		$cell = PHPExcel_Cell::stringFromColumnIndex($j++).$h;
+    
+    		if($v == "code") {
+    			$value = $val['code'];
+    		}
+    		
+    		if($v == "admin_area") {
+    			$value = $val['province'].'-'.$val['city'].'-'.$val['area'];
+    		}
+    		
+    		if($v == "houses_name") {
+    			$value = $val['houses_name'];
+    		}
+    		
+    		if($v == "houses_area_name") {
+    			$value = $val['houses_area_name'];
+    		}
+    		
+    		if($v == "ban") {
+    			$value = $val['ban'];
+    		}
+    		
+    		if($v == "unit") {
+    			$value = $val['unit'];
+    		}
+    		
+    		if($v == "floor") {
+    			$value = $val['floor'];
+    		}
+    		
+    		if($v == "addr") {
+    			$value = $val['addr'];
+    		}
+    		
+    		if($v == "price") {
+    			$value = $val['price'];
+    		}
+    		$this->phpexcel->getActiveSheet(0)->setCellValue($cell, $value.' ');
+    		}
+    		$h++;
+    	}
+    
+    	$this->phpexcel->setActiveSheetIndex(0);
+    	// 输出
+    	header('Content-Type: application/vnd.ms-excel');
+    	header('Content-Disposition: attachment;filename=社区点位表.xls');
+    	header('Cache-Control: max-age=0');
+    
+    	$objWriter = PHPExcel_IOFactory::createWriter($this->phpexcel, 'Excel5');
+    	$objWriter->save('php://output');
     }
 
 }
