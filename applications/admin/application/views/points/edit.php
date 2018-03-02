@@ -200,11 +200,7 @@
                                 <div class="col-sm-4">
                                     <input type="text" name="price" required="required" value="<?php echo $info['price'];?>"  id="price" placeholder="请输入点位价格" class="col-xs-10 col-sm-5">
                                      <span class="help-inline col-xs-12 col-sm-7 form-field-description-block">
-<<<<<<< HEAD
                                        <span class="middle">元/年 <i id="price_msg" style="font-style: normal"></i></span>
-=======
-                                       <span class="middle">元/日 <i id="price_msg" style="font-style: normal"></i></span>
->>>>>>> 155541c715e7608222ea5e7bbd7d70651f5f4204
 									</span>
                                 </div>
                             </div>
