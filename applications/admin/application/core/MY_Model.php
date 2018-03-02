@@ -104,7 +104,7 @@ class MY_Model extends CI_Model {
     	
     	//string字段删除某个string
     	if (isset($data['delstr'])){
-    	    foreach ($data['joint'] as $key => $value){
+    	    foreach ($data['delstr'] as $key => $value){
     	        $this->db->set("{$key}", "replace({$key}, '{$value}', '')", FALSE);
     	    }
     	    unset($data['delstr']);

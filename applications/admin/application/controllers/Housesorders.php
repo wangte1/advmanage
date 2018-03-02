@@ -826,10 +826,11 @@ class Housesorders extends MY_Controller{
             if($status == 8){
                 if($result){
                     //如果订单已经下画则释放所有点位
-                    $tmp_list = $this->Mhouses_orders->get_one('point_ids, customer_id', ["order_id"=>$id]);
+                    $tmp_list = $this->Mhouses_orders->get_one('point_ids, customer_id', ["id"=>$id]);
                     $point_ids_arr = explode(',', $tmp_list['point_ids']);
                     
                     $where_point['in']['id'] = $point_ids_arr;
+                    $where_point['ad_use_num >='] = 1;
                     $update_data['point_status'] = 1;
                     $update_data['decr'] = ['ad_use_num' => 1];//释放点位占用数量
                     $update_data['delstr']['`customer_id`'] = ','.$tmp_list['customer_id'];
@@ -837,9 +838,9 @@ class Housesorders extends MY_Controller{
 
                     //更新该订单下所有换画订单的状态为已下画
                     $order_code = $this->Mhouses_orders->get_one('order_code', array('id' => $id))['order_code'];
-                    $change_count = $this->Mhouses_change_pic_orders->count(array('order_code' => $order_code));
+                    $change_count = $this->Mhouses_changepicorders->count(array('order_code' => $order_code));
                     if ($change_count) {
-                        $this->Mhouses_change_pic_orders->update_info(array('order_status' => 9), array('order_code' => $order_code));
+                        $this->Mhouses_changepicorders->update_info(array('order_status' => 9), array('order_code' => $order_code));
                     }
                 }
             }
