@@ -85,13 +85,13 @@ class Uploadadpic extends MY_Controller{
         	$where['A.sales_id'] = $data['userInfo']['id'];
         }
         
-        $data['list'] = $this->Mhouses_orders->get_order_lists($where, ($page-1)*$pageconfig['per_page'], $pageconfig['per_page']);
+        $data['list'] = $this->Mhouses_orders->get_order_lists($where,[], ($page-1)*$pageconfig['per_page'], $pageconfig['per_page']);
         $data_count = $this->Mhouses_orders->get_order_count($where);
         $data['data_count'] = $data_count;
         $data['page'] = $page;
 
         //获取分页
-        $pageconfig['base_url'] = "/housesorders";
+        $pageconfig['base_url'] = "/uploadadpic";
         $pageconfig['total_rows'] = $data_count;
         $this->pagination->initialize($pageconfig);
         $data['pagestr'] = $this->pagination->create_links(); // 分页信息

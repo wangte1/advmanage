@@ -32,11 +32,13 @@
 					<th>序号</th>
 					<th>行政区域</th>
 					<th>楼盘</th>
+					<th>组团</th>
+					<th>楼栋</th>
 					<th>点位数量（个）</th>
 					<th>现负责人</th>
 					<th width="15%">更换负责人</th>
 					<th>说明</th>
-					<th>操作</th>
+					<!-- <th>操作</th> -->
 				</tr>
 			</thead>
 			<tbody>
@@ -45,17 +47,10 @@
 					<td><?php echo $k+1;?></td>
 					<td><?php echo $v['ad_area'];?></td>
 					<td><?php echo $v['houses_name'];?><input type="hidden" name="houses_id[]" value="<?php echo $v['houses_id'];?>"></td>
+					<td><?php if(isset($v['area_name'])) echo $v['area_name'];?><input type="hidden" name="area_id[]" value="<?php echo $v['area_id'];?>"></td>
+					<td><?php echo $v['ban'];?></td>
 					<td><?php echo $v['count'];?><input type="hidden" name="points_count[]" value="<?php echo $v['count'];?>"></td>
-					<td>
-						<?php if(isset($assign_list)) {?>
-							<?php foreach ($assign_list as $k1 => $v1) {?>
-								<?php if($v['houses_id'] == $v1['houses_id']) {?>
-									<input type="hidden" value="<?php echo $v1['charge_user'];?>">
-									<?php echo $user_list1[$v1['charge_user']];?>
-								<?php }?>
-							<?php }?>
-						<?php }?>
-					</td>
+					<td><?php echo $user_list1[$v['charge_user']];?></td>
 					<td>
 						<select class="select2 charge-sel" name="charge_user[]">
 							<option value=""></option>
@@ -65,11 +60,11 @@
 						</select>
 					</td>
 					<td><textarea name="remark[]" rows="1"></textarea></td>
-					<td>
+					<!-- <td>
 						<a class="green tooltip-info m-detail" data-id="<?php echo $v['houses_id'];?>"  data-rel="tooltip" data-placement="top" title="" data-original-title="详情">
                         	<i class="icon-eye-open bigger-130"></i>
                         </a>
-					</td>
+					</td> -->
 				</tr>
 				<?php }?>
 			</tbody>

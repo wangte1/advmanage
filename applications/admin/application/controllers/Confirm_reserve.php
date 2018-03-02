@@ -42,6 +42,11 @@ class Confirm_reserve extends MY_Controller{
         $this->load->library('pagination');
         $page = $this->input->get_post('per_page') ? : '1';
         $where = array();
+        
+        if($data['userInfo']['group_id'] != 1) {
+        	$where['A.sales_id'] = $data['userInfo']['id'];
+        }
+        
         if ($this->input->get('order_type')) $where['A.order_type'] = $this->input->get('order_type');
         if ($this->input->get('customer_id')) $where['A.lock_customer_id'] = $this->input->get('customer_id');
         if ($this->input->get('admin_id')) $where['C.id'] = $this->input->get('admin_id');

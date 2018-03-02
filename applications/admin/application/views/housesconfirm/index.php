@@ -145,6 +145,7 @@
 			                                                <th class="phone-hide">序号</th>
 			                                                <th nowrap>行政区域</th>
 			                                                <th nowrap>楼盘名称</th>
+			                                                <th nowrap>组团</th>
 			                                                <th nowrap>楼栋</th>
 			                                                <th nowrap class="phone-hide">点位类型</th>
 			                                                <th class="phone-hide">客户名称</th>
@@ -171,6 +172,10 @@
 			                                                    </td>
 			                                                    <td>
 			                                                    	<?php echo $val['houses_name'];?>
+			                                                    </td>
+			                                                    
+			                                                    <td>
+			                                                    	<?php echo $val['area_name'];?>
 			                                                    </td>
 			                                                    
 			                                                    <td>

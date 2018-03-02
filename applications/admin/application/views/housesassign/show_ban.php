@@ -46,6 +46,7 @@
 						<?php }?>
 					</td>
 					<td>
+						<input type="hidden" value="<?php echo $v['area_id'];?>">
 						<?php foreach ($area_list as $k1 => $v1) {?>
 							<?php if($v1['id'] == $v['area_id']) {echo $v1['name'];}?>
 						<?php }?>
@@ -90,6 +91,7 @@ $(function(){
 
 	$('.charge-sel, .remark').change(function(){
 
+		var area_id_str = '';
 		var ban_str = '';
 		var charge_str = '';
 		var remark_str = '';
@@ -105,6 +107,7 @@ $(function(){
 					i += parseInt($(this).parent('td').prev().text());
 					ban_count += $(this).parent('td').prev().text() + ',';
 					ban_str += $(this).parent('td').prev().prev().text() + ',';
+					area_id_str += $(this).parent('td').prev().prev().prev().find('input').val() + ',';
 				}
 			}
 		});
@@ -116,6 +119,7 @@ $(function(){
 		window.parent.$('#s2id_p_charge_<?php echo $houses_id;?>').find('.select2-chosen').text('');
 		window.parent.$('#p_charge_<?php echo $houses_id;?> option:first').prop("selected", 'selected');
 		window.parent.$('#count_<?php echo $houses_id;?>').text(i);
+		window.parent.$('#area_id_<?php echo $houses_id;?>').val(area_id_str);
 		window.parent.$('#ban_<?php echo $houses_id;?>').val(ban_str);
 		window.parent.$('#charge_<?php echo $houses_id;?>').val(charge_str);
 		window.parent.$('#remark_<?php echo $houses_id;?>').val(remark_str);

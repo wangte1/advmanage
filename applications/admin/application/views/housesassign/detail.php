@@ -33,6 +33,7 @@
 					<th>序号</th>
 					<th>行政区域</th>
 					<th>楼盘</th>
+					<th>组团</th>
 					<th>楼栋</th>
 					<th>点位数量（个）</th>
 					<th>负责人</th>
@@ -49,43 +50,20 @@
 					<td><?php echo $k+1;?></td>
 					<td><?php echo $v['ad_area'];?></td>
 					<td><?php echo $v['houses_name'];?></td>
+					<td><?php if(isset($v['area_name'])) echo $v['area_name'];?></td>
 					<td><?php echo $v['ban'];?></td>
 					<td><?php echo $v['points_count'];?></td>
 					<td>
-						<?php if(isset($assign_list)) {?>
-							<?php foreach ($assign_list as $k1 => $v1) {?>
-								<?php if($v['houses_id'] == $v1['houses_id']) {?>
-									<?php echo $user_list[$v1['charge_user']];break;?>
-								<?php }?>
-							<?php }?>
-						<?php }?>
+						<?php echo $user_list[$v['charge_user']];?>		
 					</td>
 					<td>
-						<?php if(isset($assign_list)) {?>
-							<?php foreach ($assign_list as $k1 => $v1) {?>
-								<?php if($v['houses_id'] == $v1['houses_id']) {?>
-									<?php echo $user_list[$v1['assign_user']];break;?>
-								<?php }?>
-							<?php }?>
-						<?php }?>
+						<?php echo $user_list[$v['assign_user']];?>
 					</td>
 					<td>
-						<?php if(isset($assign_list)) {?>
-							<?php foreach ($assign_list as $k1 => $v1) {?>
-								<?php if($v['houses_id'] == $v1['houses_id']) {?>
-									<?php echo $v1['assign_time'];break;?>
-								<?php }?>
-							<?php }?>
-						<?php }?>
+						<?php echo $v['assign_time'];?>
 					</td>
 					<td>
-						<?php if(isset($assign_list)) {?>
-							<?php foreach ($assign_list as $k1 => $v1) {?>
-								<?php if($v['houses_id'] == $v1['houses_id']) {?>
-									<?php echo $v1['remark'];break;?>
-								<?php }?>
-							<?php }?>
-						<?php }?>
+						<?php echo $v['remark'];?>
 					</td>
 					<td>
 						

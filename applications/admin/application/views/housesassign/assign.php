@@ -51,6 +51,7 @@
 					<td><span class="m-count"><?php echo $v['count'];?></span><input type="hidden" name="points_count[]" value="<?php echo $v['count'];?>"></td>
 					<td>
 						<span id="count_<?php echo $v['houses_id'];?>" class="sel_count">0</span>
+						<input id="area_id_<?php echo $v['houses_id'];?>" name="area_id[]" type="hidden">
 						<input id="ban_<?php echo $v['houses_id'];?>" name="ban[]" type="hidden">
 						<input id="charge_<?php echo $v['houses_id'];?>" name="ban_charge[]" type="hidden">
 						<input id="remark_<?php echo $v['houses_id'];?>" name="ban_remark[]" type="hidden">
@@ -128,6 +129,7 @@ $(function(){
 
 	$('.charge-sel').change(function(){
 		<?php if($assign_type == 2) {?>
+			$(this).parent('td').prev().prev().find('input[name="area_id[]"]').val('');
 			$(this).parent('td').prev().prev().find('input[name="ban[]"]').val('');
 			$(this).parent('td').prev().prev().find('input[name="ban_charge[]"]').val('');
 			$(this).parent('td').prev().prev().find('input[name="ban_remark[]"]').val('');
@@ -140,6 +142,7 @@ $(function(){
 				$(this).parent('td').prev().prev().find('span').text(all_count);
 			}
 		<?php }else {?>
+			$(this).parent('td').prev().find('input[name="area_id[]"]').val('');
 			$(this).parent('td').prev().find('input[name="ban[]"]').val('');
 			$(this).parent('td').prev().find('input[name="ban_charge[]"]').val('');
 			$(this).parent('td').prev().find('input[name="ban_remark[]"]').val('');

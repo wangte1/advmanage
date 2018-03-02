@@ -11,6 +11,7 @@ class Housesarea extends MY_Controller{
         $this->load->model([
         	'Model_houses' => 'Mhouses',
             'Model_houses_area' => 'Mhouses_area',
+        	'Model_houses_points' => 'Mhouses_points',
         	'Model_houses_group' => 'Mhouses_group'
          ]);
         $this->data['code'] = 'community_manage';
@@ -49,13 +50,25 @@ class Housesarea extends MY_Controller{
         $data['group_id'] = $this->input->get('group_id');
         $data['grade'] = $this->input->get('grade');
         
-        $data['list'] = $this->Mhouses_area->get_lists('*',$where,[],$size,($page-1)*$size);
+        $tmpList = $this->Mhouses_area->get_lists('*',$where,[],$size,($page-1)*$size);
+        
+        if(count($tmpList) > 0) {
+        	foreach($tmpList as $k => &$v) {
+        		$v['count_1'] = $this->Mhouses_points->get_one('count(0) as count', ['area_id' => $v['id'], 'addr' => 1, 'is_del' => 0]);
+        		$v['count_2'] = $this->Mhouses_points->get_one('count(0) as count', ['area_id' => $v['id'], 'addr' => 2, 'is_del' => 0]);
+        		$v['count_3'] = $this->Mhouses_points->get_one('count(0) as count', ['area_id' => $v['id'], 'addr' => 3, 'is_del' => 0]);
+        		$v['count_4'] = $this->Mhouses_points->get_one('count(0) as count', ['area_id' => $v['id'], 'is_del' => 0]);
+        	}
+        }
+        
+        $data['list'] = $tmpList;
+        
         $data_count = $this->Mhouses_area->count($where);
         $data['page'] = $page;
         $data['data_count'] = $data_count;
 
         //获取分页
-        $pageconfig['base_url'] = "/houses";
+        $pageconfig['base_url'] = "/housesarea";
         $pageconfig['total_rows'] = $data_count;
         $this->pagination->initialize($pageconfig);
         $data['pagestr'] = $this->pagination->create_links(); // 分页信息

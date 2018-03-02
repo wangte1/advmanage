@@ -115,6 +115,10 @@
                                                 <th>等级</th>
                                                 <!-- <th>坐标</th>
                                                 <th>腾讯坐标</th> -->
+                                                <th>门禁点位数</th>
+                                                <th>地面电梯前室点位数</th>
+                                                <th>地下电梯前室点位数</th>
+                                                <th>合计点位数</th>
                                                 <th>备注</th>
                                                 <th>操作</th>
                                             </tr>
@@ -133,6 +137,10 @@
                                                     <td><?php if(isset($area_grade[$val['grade']])) echo $area_grade[$val['grade']];?></td>
                                                     <!-- <td><?php echo $val['coordinate'];?></td>
 													<td><?php echo $val['t_coordinate'];?></td> -->
+													<td><?php if($val['count_1']['count']) echo $val['count_1']['count'];?></td>
+													<td><?php if($val['count_2']['count']) echo $val['count_2']['count'];?></td>
+													<td><?php if($val['count_3']['count']) echo $val['count_3']['count'];?></td>
+													<td><?php if($val['count_4']['count']) echo $val['count_4']['count'];?></td>
 													<td class="hidden-480">
                                                         <?php echo $val['remarks'];?>
                                                     </td>

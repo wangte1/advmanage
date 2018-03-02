@@ -262,7 +262,7 @@
                                             </div>
                                         </div>
 
-                                        <div class="form-group">
+                                        <!--<div class="form-group">
                                             <label class="col-sm-2 control-label no-padding-right" for="form-field-2"> 广告性质： </label>
                                             <div class="col-sm-9">
                                                 <select name="adv_nature" class="select2" required>
@@ -342,7 +342,6 @@
                                                         }
                                                     }
                                                 ?>
-                                                <!-- <textarea class="form-control" name="make_requirement" rows="5" placeholder="请填写制作要求"><?php echo $make_requirement;?></textarea> -->
                                             	<textarea class="form-control" name="make_requirement" rows="5" placeholder="请填写制作要求"></textarea>
                                             </div>
                                         </div>
@@ -423,7 +422,7 @@
                                             </div>
                                         </div>
                                         <?php endif;?>
-                                        <?php endif;?>
+                                        <?php endif;?>-->
 
                                         <div class="form-group">
                                             <label class="col-sm-2 control-label no-padding-right" for="form-field-2"> 备注： </label>

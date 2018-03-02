@@ -296,5 +296,62 @@ class Model_houses_points extends MY_Model {
     
     	return $result->result_array();
     }
+    
+    /*
+     * 去重查询楼盘等级
+     */
+    public function get_distinct_lists($where = array()){
+    	
+    	$this->db->distinct();
+    	$this->db->select('houses_id,houses_type,floor_num');
+    	$this->db->from('t_houses_points');
+    	
+    	if(isset($where['like'])) {
+    		foreach($where['like'] as $k => $v) {
+    			$this->db->like($k, $v);
+    		}
+    		unset($where['like']);
+    	}
+    	
+    	if(isset($where['or_like'])) {
+    		foreach($where['or_like'] as $k => $v) {
+    			$this->db->or_like($k, $v);
+    		}
+    		unset($where['or_like']);
+    	}
+    	
+    	if(isset($where['in'])) {
+    		foreach($where['in'] as $k => $v) {
+    			$this->db->where_in($k, $v);
+    		}
+    		unset($where['in']);
+    	}
+    	if(isset($where['not_in'])) {
+    		foreach($where['not_in'] as $k => $v) {
+    			$this->db->where_not_in($k, $v);
+    		}
+    		unset($where['not_in']);
+    	}
+    	
+    	if(isset($where['or'])) {
+    		$this->db->group_start();
+    		foreach($where['or'] as $k => $v) {
+    			$this->db->or_where($k, $v);
+    		}
+    		unset($where['or']);
+    		$this->db->group_end();
+    	}
+    	
+    	if($where){
+    		$this->db->where($where);
+    	}
+    	
+    	$result = $this->db->get();
+    	
+    	return $result->result_array();
+    	//$query = $this->db->query("select distinct houses_id,houses_type from t_houses_points");
+    	//return (array)$query->result();
+    }
+    
 
 }
