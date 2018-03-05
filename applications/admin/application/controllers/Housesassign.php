@@ -163,7 +163,7 @@ class Housesassign extends MY_Controller{
     				$add_data[$i]['type'] = $assign_type;
     				$add_data[$i]['order_id'] = $order_id;
     				$add_data[$i]['houses_id'] = $v;
-    				$add_data[$i]['area_id'] = '';
+    				$add_data[$i]['area_id'] = 0;
     				$add_data[$i]['ban'] = '';
     				$add_data[$i]['points_count'] = $points_counts[$k];
     				$add_data[$i]['charge_user'] = $charge_users[$k];
