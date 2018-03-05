@@ -158,7 +158,16 @@
                                                     <td><?php echo $val['floor_num'];?></td>
                                                     <td><?php echo $val['occ_rate'];?></td>
                                                     <td><?php echo $val['unit_rate'];?></td>
-													<td><?php if(isset($put_trade[$val['put_trade']])) echo $put_trade[$val['put_trade']];?></td>
+													<td>
+														<?php if(isset($put_trade[$val['put_trade']])) {
+														    $put_trade_arr = explode(',', $val['put_trade']);
+														    $put_trade_str = '';
+														    foreach ($put_trade_arr as $k => $v) {
+														        $put_trade_str .= $put_trade[$v];
+														    }
+														    echo $put_trade_str;
+													    }?>
+													</td>
 													<td><?php echo $val['type'];?></td>
 													<td><?php if(isset($houses_grade[$val['grade']])) echo $houses_grade[$val['grade']];?></td>
 													<td><?php if($val['deliver_year'] == '0000') echo ''; else echo $val['deliver_year'];?></td>
