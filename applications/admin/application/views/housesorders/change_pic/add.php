@@ -193,7 +193,7 @@
                                             </div>
                                         </div>
 
-                                        <div class="form-group">
+                                        <!-- <div class="form-group">
                                             <label class="col-sm-2 control-label no-padding-right" for="form-field-2"> 广告性质： </label>
                                             <div class="col-sm-10">
                                                 <select name="adv_nature" class="select2" >
@@ -223,7 +223,7 @@
                                                 </span>
                                             </div>
                                         </div>
-                                        <?php endif;?>                                        
+                                        <?php endif;?>  -->                                      
 
 
                                         <!--<?php if($order_type == 1 || $order_type == 2):?>

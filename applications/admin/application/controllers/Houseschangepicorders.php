@@ -385,7 +385,7 @@ class Houseschangepicorders extends MY_Controller{
         $data['info']['order_type'] = $order['order_type'];
             
         //制作公司
-        $data['info']['make_company'] = $this->Mmake_company->get_one('company_name', array('id' => $data['info']['make_company_id']))['company_name'];
+//        $data['info']['make_company'] = $this->Mmake_company->get_one('company_name', array('id' => $data['info']['make_company_id']))['company_name'];
         $data['status_text'] = C('housesorder.houses_order_status.text');
        
 
