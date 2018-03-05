@@ -159,11 +159,11 @@
                                                     <td><?php echo $val['occ_rate'];?></td>
                                                     <td><?php echo $val['unit_rate'];?></td>
 													<td>
-														<?php if(isset($put_trade[$val['put_trade']])) {
+														<?php if(isset($val['put_trade']) && !empty($val['put_trade'])) {
 														    $put_trade_arr = explode(',', $val['put_trade']);
 														    $put_trade_str = '';
 														    foreach ($put_trade_arr as $k => $v) {
-														        $put_trade_str .= $put_trade[$v];
+														        $put_trade_str .= $put_trade[$v].',';
 														    }
 														    echo $put_trade_str;
 													    }?>
