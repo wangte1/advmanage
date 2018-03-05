@@ -333,6 +333,10 @@ class Housesscheduledorders extends MY_Controller{
         $pageconfig = C('page.page_lists');
         $this->load->library('pagination');
         $page = $this->input->get_post('per_page') ? : '1';
+        
+        if($this->input->get_post('per_page')){
+            if($tab != 'point') $data['tab'] = 'point';
+        }
         $size = $pageconfig['per_page'] = 15;
         $where = array();
 
@@ -364,7 +368,7 @@ class Housesscheduledorders extends MY_Controller{
                 $data['page'] = $page;
                 $totalCount = count(explode(',', $data['info']['point_ids']));
                 $data['data_count'] = $totalCount;
-                $pageconfig['base_url'] = "/housesscheduledorders/detail/{$id}/tab";
+                $pageconfig['base_url'] = "/housesscheduledorders/detail/{$id}/point";
                 $pageconfig['total_rows'] = $totalCount;
                 $this->pagination->initialize($pageconfig);
                 $data['pagestr'] = $this->pagination->create_links();// 分页信息
