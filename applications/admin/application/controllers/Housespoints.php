@@ -154,6 +154,15 @@ class Housespoints extends MY_Controller{
             $post['update_time'] = date("Y-m-d H:i:s");
             $result = $this->Mhouses_points->update_info($post,array("id"=>$id));
             if($result){
+                //更新点位状态
+                $_where1['id'] = $id;
+                $_where1['field']['`ad_num`'] = '`ad_use_num` + `lock_num`';
+                $this->Mhouses_points->update_info(['point_status' => 3], $_where1);
+                
+                $_where2['id'] = $id;
+                $_where2['field']['`ad_num` >'] = '`ad_use_num` + `lock_num`';
+                $this->Mhouses_points->update_info(['point_status' => 1], $_where2);
+                
                 $this->write_log($data['userInfo']['id'],2,"社区编辑点位：".$post['code']);
                 $this->success("编辑成功","/housespoints");
             }else{
