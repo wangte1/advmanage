@@ -217,16 +217,21 @@ class Confirm_reserve extends MY_Controller{
         $data['list'] = $point_list;
         //获取所有组团名称
         $area_ids = array_unique(array_column($point_list, 'area_id'));
-        $area_list = $this->Mhouses_area->get_lists('id,name', ['in' => ['houses_id' => $area_ids] ]);
+        $area_list = $this->Mhouses_area->get_lists('id,name,houses_id', ['in' => ['id' => $area_ids] ]);
         if($area_list){
             foreach ($point_list as $k => $v){
                 $data['list'][$k]['area_name'] = '';
                 $data['list'][$k]['select_num'] = 0;
                 foreach ($area_list as $key => $val){
-                    if($v['houses_id'] == $val['id']){
+                    if($v['houses_id'] == $val['houses_id']){
                         $data['list'][$k]['area_name'] = $val['name'];
                     }
                 }
+            }
+        }else{
+            foreach ($point_list as $k => $v){
+                $data['list'][$k]['area_name'] = '';
+                $data['list'][$k]['select_num'] = 0;
             }
         }
         
