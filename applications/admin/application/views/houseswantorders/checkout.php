@@ -9,7 +9,7 @@
     }
     #scrollTable .div-tbody{
       width:100%;
-      height:450px;
+      height:400px;
       overflow:auto;
     }
     .table thead>tr>th, .table tbody>tr>th, .table tfoot>tr>th, .table thead>tr>td, .table tbody>tr>td, .table tfoot>tr>td {
@@ -646,8 +646,19 @@ function load_houses(num1, num2) {
 
 			//楼栋
 			var banStr = '<option value="">请选择楼栋</option>';
-			for(m_key3  in data.ban_lists){  
-				banStr += '<option value="'+m_key3+'">'+data.ban_lists[m_key3]+'</option>';
+			for(m_key3  in data.ban_lists){
+				var banmark = false;
+				$('#ban option').each(function(){
+					
+					if($(this).text() == data.ban_lists[m_key3]) {
+						banmark = true;
+						return false; 
+					}
+				});
+
+				if(banmark == false) {
+					banStr += '<option value="'+m_key3+'">'+data.ban_lists[m_key3]+'</option>';
+				}
 			}
 			$('#ban').html(banStr);
 
@@ -668,6 +679,9 @@ function load_houses(num1, num2) {
 			var pointStr = '';
 			$("#all_points_num").text(data.count);
 			for(var i = 0; i < data.points_lists.length; i++) {
+				if(i == 1500) {
+					break;
+				}
 				pointStr += "<tr point-id='"+(data.points_lists)[i]['id']+"' grade='"+(data.points_lists)[i]['grade']+"' area_grade='"+(data.points_lists)[i]['area_grade']+"'><td width='10%'>"+(data.points_lists)[i]['code']+"</td>";
 				pointStr += "<td width='10%'>"+(data.points_lists)[i]['houses_name']+"</td>";
 				pointStr += "<td width='10%'>"+(data.points_lists)[i]['houses_area_name']+"</td>";

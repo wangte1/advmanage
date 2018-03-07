@@ -106,7 +106,7 @@
                             </div>
                         </div>
 						
-                        <div class="col-xs-12" style="position: fixed; bottom: 0">
+                        <div class="col-xs-12" style="position: fixed; bottom: 0; margin-top:20px;">
                             <div class="clearfix form-actions" style="padding: 0; margin-bottom: 0">
                                 <div class="col-md-offset-5 col-md-7">
                                     <button class="btn btn-info" type="submit" id="subbtn">
