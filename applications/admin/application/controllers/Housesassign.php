@@ -548,7 +548,7 @@ class Housesassign extends MY_Controller{
     	}
     	
     	if ($this->input->get('houses_id')) $where['houses_id'] = $data['houses_id'] =  $this->input->get('houses_id');
-    	$data['list'] = $this->Mhouses_points->get_lists('houses_id,area_id,ban, count(0) as count', $where,[],$size,($page-1)*$size, ['houses_id','area_id','ban']);  //工程人员信息
+    	$data['list'] = $this->Mhouses_points->get_lists('houses_id,area_id,ban, count(0) as count', $where,[],0,0, ['houses_id','area_id','ban']);  //工程人员信息
     	$data_count = $this->Mhouses_points->count($where);
     	$data['page'] = $page;
     	$data['data_count'] = $data_count;
@@ -565,7 +565,7 @@ class Housesassign extends MY_Controller{
     	}
     	
     	//获取分页
-    	$pageconfig['base_url'] = "/houses";
+    	$pageconfig['base_url'] = "/housesassign/show_ban";
     	$pageconfig['total_rows'] = $data_count;
     	$this->pagination->initialize($pageconfig);
     	$data['pagestr'] = $this->pagination->create_links(); // 分页信息

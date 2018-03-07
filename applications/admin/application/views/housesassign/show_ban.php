@@ -70,7 +70,7 @@
 		</table>
 		
 		<!--分页start-->
-        <?php $this->load->view('common/page');?>
+        <!--<?php $this->load->view('common/page');?>-->
 	</div>
 	
 </form>
