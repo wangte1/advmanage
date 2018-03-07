@@ -53,7 +53,7 @@
                             <i class="icon-leaf green"></i>
                            <span class="white">媒介管理系统</span>
                         </h1>
-                        <h4 class="blue">&copy; 腾讯房产</h4>
+                        <h4 class="blue">&copy; 时代传媒</h4>
                     </div>
 
                     <div class="space-6"></div>
