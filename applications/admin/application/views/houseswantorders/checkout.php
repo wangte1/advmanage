@@ -287,7 +287,7 @@
                                                                                 <th width="10%">位置</th>
 <!--                                                                                 <th width="10%">规格</th> -->
                                                                                 <th width="10%">楼盘等级</th>
-                                                                                <th width="10%">组团等级</th>
+                                                                                <!-- <th width="10%">组团等级</th> -->
                                                                                 <th width="10%">可投放数量</th>
                                                                                 <th width="10%" nowrap="nowrap">状态</th>
                                                                                 <th width="10%"><button class="btn btn-xs btn-info select-all" type="button" data-id="3">选择全部<i class="icon-arrow-right icon-on-right"></i></button></th>
@@ -367,7 +367,7 @@
                                                         <th width="10%">位置</th>
                                                         <!-- <th width="10%">规格</th>-->
                                                         <th width="10%">楼盘等级</th>
-                                                        <th width="10%">组团等级</th>
+                                                        <!-- <th width="10%">组团等级</th> -->
                                                         <th width="10%">可投放数量</th>
                                                         <th width="10%">状态</th>
                                                         <th width="10%"><button class="btn btn-xs btn-info remove-all" type="button">移除全部<i class="fa fa-remove" aria-hidden="true"></i></button></th>
@@ -394,7 +394,7 @@
                                                             <?php endif;?>
                                                             <!-- <td width="10%"><?php echo $value['size'];?></td> -->
                                                             <td width="10%"><?php echo $value['grade'];?></td>
-                                                            <td width="10%"><?php echo $value['grade'];?></td>
+                                                            <!-- <td width="10%"><?php echo $value['grade'];?></td> -->
                                                             <td width="10%"><?php echo $value['ad_num'];?></td>
                                                             <td width="10%">
                                                             	<?php 
@@ -690,7 +690,7 @@ function load_houses(num1, num2) {
 				}
 				//pointStr += "<td width='10%'>"+(data.points_lists)[i]['size']+"</td>";
 				pointStr += "<td width='10%'>"+(data.points_lists)[i]['houses_grade']+"</td>";
-				pointStr += "<td width='10%'>"+(data.points_lists)[i]['area_grade_name']+"</td>";
+				//pointStr += "<td width='10%'>"+(data.points_lists)[i]['area_grade_name']+"</td>";
 				pointStr += "<td width='10%'>"+(data.points_lists)[i]['ad_num']+"</td>";
 				var $class;
 				switch ((data.points_lists)[i]['point_status']) {
