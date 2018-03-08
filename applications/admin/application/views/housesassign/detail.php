@@ -109,6 +109,11 @@ $(function(){
 			  content: '/housesassign/show_points?order_id='+order_id+'&houses_id='+houses_id+'&assign_type='+assign_type //iframe的url
 			}); 
 	});
+
+	$('.layui-layer-close').click(function(){
+		alert();
+		parent.location.reload();
+	});
 });
 
 </script>

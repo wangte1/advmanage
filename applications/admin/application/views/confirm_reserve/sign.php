@@ -303,17 +303,17 @@ uploader.on( 'fileQueued', function( file ) {
     uploader.makeThumb( file, function( error, src ) {
         console.log(error, src);
         if ( error ) {
-            $('.up-img').replaceWith('<span>不能预览</span>');
+            layer.alert('不能预览');
             return;
         }
-        var html = '<img src="'+src+'" />';
-        $('.up-img').html(html);
+        
     }, 150, 150 );
 });
 //文件上传成功
 uploader.on( 'uploadSuccess', function( file, res ) {
 	if(res.error == 0){
-		$('.up-img').append('<input type="hidden" name="confirm_img" value="'+res.url+'"/>');
+		//$('.up-img').append('<input type="hidden" name="confirm_img[]" value="'+res.url+'"/>');
+		$('#uploader_cover_img').append();
 	}else{
 		$('.up-img').html("");
 		layer.msg('图片上传失败');

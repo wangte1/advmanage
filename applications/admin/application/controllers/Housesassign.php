@@ -196,8 +196,8 @@ class Housesassign extends MY_Controller{
     			}
     				
     			if($res1) {
-
-    				$this->success("保存并通知成功","/housesassign/detail?order_id=".$order_id."&assign_type=".$assign_type);
+					echo "<script>alert('派单成功！');parent.location.reload();location.href='/housesassign/detail?order_id=".$order_id."&assign_type=".$assign_type."'</script>";
+    				//$this->success("保存并通知成功","/housesassign/detail?order_id=".$order_id."&assign_type=".$assign_type);
     			}
     		}
     		
