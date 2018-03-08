@@ -283,10 +283,10 @@ class Houseswantorders extends MY_Controller{
     	if(count($points_lists) > 0) {
     		$houses_lists = array_column($points_lists, 'houses_name', 'houses_id');
     		$area_lists = array_column($points_lists, 'houses_area_name', 'area_id');
-    		$ban_lists = array_column($points_lists, 'ban');
-    		$unit_lists = array_column($points_lists, 'unit');
-    		$floor_lists = array_column($points_lists, 'floor');
-    		$addr_lists = array_column($points_lists, 'addr');
+    		$ban_lists = array_unique(array_column($points_lists, 'ban'));
+    		$unit_lists = array_unique(array_column($points_lists, 'unit'));
+    		$floor_lists = array_unique(array_column($points_lists, 'floor'));
+    		$addr_lists = array_unique(array_column($points_lists, 'addr'));
     		
 	    	foreach($points_lists as $k => &$v) {
 	    		if(isset(C('public.houses_grade')[$v['grade']])) {

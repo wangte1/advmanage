@@ -9,7 +9,7 @@
     }
     #scrollTable .div-tbody{
       width:100%;
-      height:400px;
+      height:390px;
       overflow:auto;
     }
     .table thead>tr>th, .table tbody>tr>th, .table tfoot>tr>th, .table thead>tr>td, .table tbody>tr>td, .table tfoot>tr>td {
@@ -646,26 +646,18 @@ function load_houses(num1, num2) {
 
 			//楼栋
 			var banStr = '<option value="">请选择楼栋</option>';
-			for(m_key3  in data.ban_lists){
-				var banmark = false;
-				$('#ban option').each(function(){
-					
-					if($(this).text() == data.ban_lists[m_key3]) {
-						banmark = true;
-						return false; 
-					}
-				});
-
-				if(banmark == false) {
-					banStr += '<option value="'+m_key3+'">'+data.ban_lists[m_key3]+'</option>';
-				}
+			for(m_key3  in data.ban_lists) {
+				
+				banStr += '<option value="'+data.ban_lists[m_key3]+'">'+data.ban_lists[m_key3]+'</option>';
 			}
+			
 			$('#ban').html(banStr);
+
 
 			//单元
 			var unitStr = '<option value="">请选择单元</option>';
 			for(m_key4  in data.unit_lists){  
-				unitStr += '<option value="'+m_key4+'">'+data.unit_lists[m_key4]+'</option>';
+				unitStr += '<option value="'+data.ban_lists[m_key3]+'">'+data.unit_lists[m_key4]+'</option>';
 			}
 			$('#unit').html(unitStr);
 
@@ -690,8 +682,10 @@ function load_houses(num1, num2) {
 				pointStr += "<td width='10%'>"+(data.points_lists)[i]['floor']+"</td>";
 				if((data.points_lists)[i]['addr'] == 1){
 					pointStr += "<td width='10%'>门禁</td>";
-				}else{
-					pointStr += "<td width='10%'>电梯前室</td>";
+				}else if((data.points_lists)[i]['addr'] == 2){
+					pointStr += "<td width='10%'>地面电梯前室</td>";
+				}else {
+					pointStr += "<td width='10%'>地下电梯前室</td>";
 				}
 				//pointStr += "<td width='10%'>"+(data.points_lists)[i]['size']+"</td>";
 				pointStr += "<td width='10%'>"+(data.points_lists)[i]['houses_grade']+"</td>";
