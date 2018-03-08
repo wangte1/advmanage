@@ -492,7 +492,7 @@ function machine_sub() {
 		for(var j = 0; j < m_arr[i]; j++) {
 			$('#points_lists tr').each(function(){
 				if(flag == true) {
-					if($(this).attr('area_grade') == (i + 1)) {
+					if($(this).attr('grade') == (i + 1) || $(this).attr('area_grade') == (i + 1)) {
 						$(this).find('button').click();
 						return false;
 					}
@@ -581,6 +581,8 @@ function get_checkbox(){
 
 //num1用于判断是否需要重新加载楼盘信息，num2判断是否是页面初始化时
 function load_houses(num1, num2) {
+	var index = layer.load(1);
+
 	var area_str = '';
 	if(num2 == 1) {
 		area_str = '<?php echo $info['area'];?>';
@@ -704,12 +706,16 @@ function load_houses(num1, num2) {
 				pointStr += "<td width='10%'><button class='btn btn-xs btn-info do-sel' type='button'>选择点位<i class='icon-arrow-right icon-on-right'></button></td></tr>";
 			}
 		}else{
-			alert('暂无空闲点位');
+			layer.alert('暂无空闲点位');
 		}
 
 		$("#points_lists").html('');
 		$("#points_lists").html(pointStr);
+
+		layer.close(index);
 	});
+
+	
 }
                                                                 
 $(function(){

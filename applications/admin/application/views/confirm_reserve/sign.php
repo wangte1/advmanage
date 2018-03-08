@@ -125,7 +125,7 @@
                                         </div>
                                         
                                         <div class="form-group">
-                                        	<label class="col-sm-2 control-label no-padding-right" for="form-input-readonly"> 合同签字照片： </label>
+                                        	<label class="col-sm-2 control-label no-padding-right" for="form-input-readonly"> 点位签字照片： </label>
                                             <div class="col-sm-5">
                                             	<div class="row-fluid">
                                                     <ul class="ace-thumbnails" id="uploader_cover_img">

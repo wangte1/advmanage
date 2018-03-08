@@ -59,7 +59,7 @@
                                             </a>
                                             <?php else :?>
                                             <a href="javascript:;" class="btn btn-xs btn-info sign" data="<?php echo $info['confirm_img']?>" style="margin-bottom:10px">
-                                                <i class="fa fa-check-square-o"></i> 已签字(查看合同)
+                                                <i class="fa fa-check-square-o"></i> 已签字(查看点位签字)
                                             </a>
                                             <?php endif;?>
                                         	<table class="table table-striped table-bordered">

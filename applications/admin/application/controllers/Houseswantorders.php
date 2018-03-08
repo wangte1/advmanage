@@ -280,6 +280,13 @@ class Houseswantorders extends MY_Controller{
     	
     	$points_lists = $this->Mhouses_points->get_points_lists($where);
     	
+    	$houses_lists = [];
+    	$area_lists = [];
+    	$ban_lists = [];
+    	$unit_lists = [];
+    	$floor_lists = [];
+    	$addr_lists = [];
+    	
     	if(count($points_lists) > 0) {
     		$houses_lists = array_column($points_lists, 'houses_name', 'houses_id');
     		$area_lists = array_column($points_lists, 'houses_area_name', 'area_id');
