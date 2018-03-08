@@ -34,6 +34,7 @@
             <div class="page-content">
                 <div class="page-header">
                     <a href="/houses/add" class="btn btn-sm btn-primary"><i class="fa fa-plus-square" aria-hidden="true"></i> 添加楼盘</a>
+                	<a href="javascript:;" class="btn btn-sm btn-primary btn-export"><i class="fa fa-download out_excel" aria-hidden="true"></i> 导出</a>
                 </div>
                 <div class="row">
                     <div class="col-xs-12">
@@ -49,7 +50,7 @@
 
                             <div class="widget-body">
                                 <div class="widget-main">
-                                    <form class="form-horizontal" role="form">
+                                    <form id="search-form" class="form-horizontal" role="form">
                                         <div class="form-group">
                                             <div class="col-sm-4">
                                                 <label class="col-sm-3 control-label no-padding-right" for="form-field-1"> 楼盘名称</label>
@@ -215,6 +216,14 @@
 		province: "<?php if(isset($province)) { echo $province;}else{?>贵州省<?php }?>",
 		city: "<?php if(isset($city)) { echo $city;}else{?>贵阳市<?php }?>",
 		district : "<?php if(isset($area)) { echo $area;}?>",
+	});
+
+	$(function(){
+		$(".btn-export").click(function(){
+        	$("#search-form").attr('action', '/houses/out_excel');
+            $("#search-form").submit();
+            $("#search-form").attr('action', '');
+       });
 	});
 </script>
 
