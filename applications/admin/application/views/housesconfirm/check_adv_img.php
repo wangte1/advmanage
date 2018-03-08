@@ -36,7 +36,7 @@
 
                 <div class="row">
                     <form action="" method="post">
-                        <div class="col-xs-12">
+                        <div class="col-xs-12" style="padding-bottom:30px;">
                             <div class="row-fluid">
                                 <table class="table table-striped table-bordered table-hover">
                                     <thead>

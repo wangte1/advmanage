@@ -412,7 +412,7 @@ class Housesconfirm extends MY_Controller{
 
     	
     	if(isset($upload_count) && isset($assign_count['points_count']) && $upload_count != $assign_count['points_count']) {
-    		$this->return_json(['code' => 0, 'msg' => "请确认你已经上传了所有点位的".$mark_str."图片！"]);
+    		$this->return_json(['code' => 0, 'msg' => "提交失败，您还有点位没有上传".$mark_str."图片！"]);
     	}
     	
     	$update_data['status'] = $tmp_status;
