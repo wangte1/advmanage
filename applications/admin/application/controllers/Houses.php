@@ -308,7 +308,7 @@ class Houses extends MY_Controller{
     			$cell = PHPExcel_Cell::stringFromColumnIndex($j++).$h;
     
     			if($v1 == "code") {
-    				$value = 1;
+    				$value = $key + 1;
     			}
     
     			if($v1 == "name") {
