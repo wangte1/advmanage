@@ -117,7 +117,17 @@
                                         	<label class="col-sm-2 control-label no-padding-right" for="form-input-readonly"> 点位签字照片： </label>
                                             <div class="col-sm-5">
                                             	<div class="row-fluid">
-                                                    <img alt="" style="width: 100%;" src="<?php echo $orderInfo['confirm_img']?>">
+                                                    <ul class="ace-thumbnails" id="uploader_cover_img" data='0'>
+                                                        <?php if(isset($orderInfo['confirm_img']) && !empty($orderInfo['confirm_img'])):?>
+                                                        <?php foreach (explode(';', $orderInfo['confirm_img']) as $k => $v):?>
+                                                        <li id="uploader_cover_img_<?php echo $k;?>" style="float: left;width: 150px;height: 150px;clear:none; border: 1px solid #f18a1b">
+                                                            <a href="<?php echo $v;?>" target="_blank" class="up-img">
+                                                            	<img style="height:100%;width:100%;" src="<?php echo $v;?>">
+                                                            </a>
+                                                    	</li>
+                                                        <?php endforeach;?>
+                                                        <?php endif;?>
+                                                    </ul>
                                                 </div>
                                                 
                                             </div>
