@@ -128,7 +128,7 @@
                                         	<label class="col-sm-2 control-label no-padding-right" for="form-input-readonly"> 点位签字照片： </label>
                                             <div class="col-sm-5">
                                             	<div class="row-fluid">
-                                                    <ul class="ace-thumbnails" id="uploader_cover_img">
+                                                    <ul class="ace-thumbnails" id="uploader_cover_img" data='0'>
                                                         <li class="pic pic-add add-pic" style="float: left;width: 150px;height: 150px;clear:none; border: 1px solid #f18a1b">
                                                             <a href="javascript:;" class="up-img"></a>
                                                         </li>
@@ -298,6 +298,9 @@ var uploader = WebUploader.create({
     },
     method:'POST',
 });
+
+var _this;
+var html;
 //当有文件添加进来的时候
 uploader.on( 'fileQueued', function( file ) {
     uploader.makeThumb( file, function( error, src ) {
@@ -306,16 +309,25 @@ uploader.on( 'fileQueued', function( file ) {
             layer.alert('不能预览');
             return;
         }
+        html = "";//初始化
+        _this = parseInt($('#uploader_cover_img').attr('data'));
         
+        html += '<li id="uploader_cover_img_'+ _this +'" style="float: left;width: 150px;height: 150px;clear:none; border: 1px solid #f18a1b">';
+        html +=		'<a href="javascript:;" class="up-img">';
+        html +=			'<img src="'+src+'"><input type="hidden" name="confirm_img[]" value="'+src+'">';
+        html += 	'</a>';
+    	html += '</li>';
+    	
+		$('#uploader_cover_img').append(html);
+		$('#uploader_cover_img').attr('data', (_this+1));
     }, 150, 150 );
 });
 //文件上传成功
 uploader.on( 'uploadSuccess', function( file, res ) {
 	if(res.error == 0){
-		//$('.up-img').append('<input type="hidden" name="confirm_img[]" value="'+res.url+'"/>');
 		$('#uploader_cover_img').append();
 	}else{
-		$('.up-img').html("");
+		$('#uploader_cover_img_'+_this).remove();
 		layer.msg('图片上传失败');
 	}
 });
