@@ -154,7 +154,19 @@
                                             			<?php }?>
                                             		</td>
                                             		<td><?php echo $value['province'].$value['city'].$value['area'];?></td>
-                                            		<td><?php if(isset($houses_type_text[$value['houses_type']])) echo $houses_type_text[$value['houses_type']];?></td>
+                                            		<td>
+                                            			<?php if(isset($value['houses_type'])) {
+                                            				$tmp_arr = explode(',', $value['houses_type']);
+                                            				$tmp_str = '';
+                                            				foreach($tmp_arr as $k => $v) {
+                                            					if(isset($houses_type_text[$v])) {
+                                            						$tmp_str .= $houses_type_text[$v] . ',';
+                                            					}
+                                            				}
+                                            				echo $tmp_str;
+                                            			}
+                                            			?>
+                                            		</td>
                                             		<td><?php echo $order_type_text[$value['order_type']];?></td>
                                             		<td><?php echo $value['begin_year']."-".$value['end_year'];?></td>
                                             		<td><?php if(isset($put_trade[$value['put_trade']])) echo $put_trade[$value['put_trade']];?></td>
