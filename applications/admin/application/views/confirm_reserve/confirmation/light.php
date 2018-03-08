@@ -5,7 +5,9 @@
     <title>灯箱广告验收报告</title>
     <meta name="keywords" content="">
     <meta name="description" content="">
-
+    
+    <script src="<?php echo css_js_url('jquery.min.js','common');?>"></script>
+	
     <style type="text/css"> 
         html, body {width: 100%; height: 90%; margin: 0; padding: 0; font-family: "Microsoft YaHei","Helvetica Neue","Helvetica","Arial",sans-serif;}
         .content {width: 1000px; margin: 0 auto; padding: 10px;}
@@ -96,7 +98,7 @@
 </head>
 <body>
     <div class="content" id="container" style="background-color:#fff;">
-    	<table class="detail-info">
+    	<table  class="detail-info">
             <tbody>
             	<tr>
             		<td colspan="4"><center class="title">大视传媒社区广告定版单</center></td>
@@ -204,9 +206,18 @@
             	
             </tbody>
        </table>
-    
-        
-        <div class="noprint btn-print2"><button type="button" onclick="document.getElementById('pic-panel').style.display='none';javascript: window.print();document.getElementById('pic-panel').style.display='block';">下载定版单</button></div>
+    	
+    	<form id="m-form" method="post" action="/confirm_reserve/downloadcon">
+        	<input id="html-str" name="html_str" type="text" value="">
+        </form>
+        <div class="noprint btn-print2"><button type="button" onclick="doupload();" >下载定版单</button></div>
     </div>
+    <script>
+		function doupload() {
+			
+			$('#html-str').val($('#container').html());
+			$('#m-form').submit();
+		}
+    </script>
 </body>
 </html>

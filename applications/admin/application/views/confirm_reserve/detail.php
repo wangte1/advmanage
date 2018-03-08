@@ -53,9 +53,9 @@
                                         	<a href="javascript:;" class="btn btn-xs btn-info btn-export" data-id="<?php echo $info['id'];?>" data-type="<?php echo $info['order_type'];?>" style="margin-bottom:10px">
                                                 <i class="fa fa-download out_excel" aria-hidden="true"></i> 导出点位
                                             </a>
-                                            <a href="/confirm_reserve/confirmation/<?php echo $info['id'];?>" target="_blank" class="btn btn-xs btn-info" style="margin-bottom:10px">
+                                            <!-- <a href="/confirm_reserve/confirmation/<?php echo $info['id'];?>" target="_blank" class="btn btn-xs btn-info" style="margin-bottom:10px">
                                                 <i class="fa fa-download out_excel" aria-hidden="true"></i> 导出定版单
-                                            </a>
+                                            </a> -->
                                             <?php if($info['is_confirm'] == 0):?>
                                             <a href="javascript:;" class="btn btn-xs btn-info sign" data-id="<?php echo $info['id'];?>" style="margin-bottom:10px">
                                                 <i class="fa fa-check-square-o" aria-hidden="true"></i> 客户签字
