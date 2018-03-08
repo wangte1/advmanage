@@ -151,20 +151,22 @@ class Confirm_reserve extends MY_Controller{
         }
         //获取以上点位包含的楼盘id
         $houses_ids = array_unique(array_column($point_all, 'houses_id'));
-        //获取这些楼盘信息
-        $houses_list = $this->Mhouses->get_lists('id, name, province, city, area', ['in' => ['id' => $houses_ids]]);
-        foreach ($houses_list as $k => $v){
-            $houses_list[$k]['num'] = 0;
-            $houses_list[$k]['confirm_num'] = 0;
-            foreach ($point_all as $key => $val){
-                if($v['id'] == $val['houses_id']){
-                    $houses_list[$k]['num'] +=1;
-                }
-            }
-            if(isset($confirm_point_all) && $confirm_point_all){
-                foreach ($confirm_point_all as $key => $val){
+        $houses_list = [];
+        if(count($houses_ids)){
+            $houses_list = $this->Mhouses->get_lists('id, name, province, city, area', ['in' => ['id' => $houses_ids]]);
+            foreach ($houses_list as $k => $v){
+                $houses_list[$k]['num'] = 0;
+                $houses_list[$k]['confirm_num'] = 0;
+                foreach ($point_all as $key => $val){
                     if($v['id'] == $val['houses_id']){
-                        $houses_list[$k]['confirm_num'] +=1;
+                        $houses_list[$k]['num'] +=1;
+                    }
+                }
+                if(isset($confirm_point_all) && $confirm_point_all){
+                    foreach ($confirm_point_all as $key => $val){
+                        if($v['id'] == $val['houses_id']){
+                            $houses_list[$k]['confirm_num'] +=1;
+                        }
                     }
                 }
             }

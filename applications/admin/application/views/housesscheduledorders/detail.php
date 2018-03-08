@@ -141,7 +141,7 @@
                                                         	<?php if(isset($info['confirm_img']) && !empty($info['confirm_img'])):?>
                                                             <?php foreach (explode(';', $info['confirm_img']) as $k => $v):?>
                                                             <li id="uploader_cover_img_<?php echo $k;?>" style="float: left;width: 150px;height: 150px;clear:none; border: 1px solid #f18a1b">
-                                                                <a href="<?php echo $v;?>" target="_blank" class="up-img">
+                                                                <a style="height: 100%;" href="<?php echo $v;?>" target="_blank" class="up-img">
                                                                 	<img style="height:100%;width:100%" src="<?php echo $v;?>">
                                                                 </a>
                                                         	</li>
