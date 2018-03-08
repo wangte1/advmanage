@@ -505,7 +505,6 @@ function machine_sub() {
 			});
 		}
 	}
-
 	layer.closeAll('page');
 }
 
