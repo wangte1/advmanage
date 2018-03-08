@@ -288,4 +288,39 @@ class Confirm_reserve extends MY_Controller{
             }
         }
     }
+    
+    /**
+     * 生成定版单
+     */
+    public function confirmation($id) {
+    	$data = $this->data;
+    	$data['info'] = $this->Mhouses_scheduled_orders->get_one("*", array('id' => $id));
+    
+    	//甲方-委托方（客户名称）
+    	$data['info']['customer_name'] = $this->Mhouses_customers->get_one('name', array('id' => $data['info']['lock_customer_id']))['name'];
+    
+    	$this->load->view('confirm_reserve/confirmation/light', $data);
+    }
+    
+    
+    public function start() {
+    	ob_start();
+    	echo '<html xmlns:o="urn:schemas-microsoft-com:office:office"
+xmlns:w="urn:schemas-microsoft-com:office:word"
+xmlns="http://www.w3.org/TR/REC-html40">';
+    }
+    public function save($path) {
+    
+    	echo "</html>";
+    	$data = ob_get_contents();
+    	ob_end_clean();
+    
+    	$this->wirtefile ($path,$data);
+    }
+    
+    public function wirtefile ($fn,$data) {
+    	$fp=fopen($fn,"wb");
+    	fwrite($fp,$data);
+    	fclose($fp);
+    }
 }
