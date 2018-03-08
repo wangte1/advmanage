@@ -132,17 +132,28 @@
                                                         </span>
                                                     </div>
                                                 </div>
-                                                <div class="profile-info-row">
+                                                <div style="height:auto;min-height:500px;" class="profile-info-row">
                                                     <div class="profile-info-name"> 点位签字合同： </div>
 
                                                     <div class="profile-info-value">
-                                                        <span class="editable editable-click">
-                                                        	<?php if($info['is_confirm']):?>
-                                                        	<img style="width:100%;" alt="" src="<?php echo $info['confirm_img']?>">
-                                                        	<?php else:?>
-                                                        	未签字
-                                                        	<?php endif;?>
-                                                        </span>
+                                                        <ul class="ace-thumbnails" id="uploader_cover_img" data='0'>
+                                                    	<?php if($info['is_confirm']):?>
+                                                        	<?php if(isset($info['confirm_img']) && !empty($info['confirm_img'])):?>
+                                                            <?php foreach (explode(';', $info['confirm_img']) as $k => $v):?>
+                                                            <li id="uploader_cover_img_<?php echo $k;?>" style="float: left;width: 150px;height: 150px;clear:none; border: 1px solid #f18a1b">
+                                                                <a href="<?php echo $v;?>" target="_blank" class="up-img">
+                                                                	<img style="height:100%;width:100%" src="<?php echo $v;?>">
+                                                                </a>
+                                                        	</li>
+                                                            <?php endforeach;?>
+                                                            <?php endif;?>
+                                                    	<?php else:?>
+                                                    	</ul>
+                                                    	<span class="editable editable-click">
+                                                    	未签字
+                                                    	</span>
+                                                    	<?php endif;?>
+                                                        
                                                     </div>
                                                 </div>
                                             </div>

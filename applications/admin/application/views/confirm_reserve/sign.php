@@ -20,6 +20,16 @@
         border-top: 1px solid #ddd;
         text-align: center;
     }
+    .close{
+	    display: block;
+        background: url("/static/admin/images/close.png") no-repeat;
+        width: 22px;
+        height: 22px;
+        position: absolute;
+        top: 6px;
+        right: 8px;
+    	z-index:99;
+    }
 </style>
 <style>
     #uploader_cover_img img, .add-pic{ width: 150px; height: 150px;}
@@ -129,12 +139,9 @@
                                             <div class="col-sm-5">
                                             	<div class="row-fluid">
                                                     <ul class="ace-thumbnails" id="uploader_cover_img" data='0'>
-                                                        <li class="pic pic-add add-pic" style="float: left;width: 150px;height: 150px;clear:none; border: 1px solid #f18a1b">
-                                                            <a href="javascript:;" class="up-img"></a>
-                                                        </li>
+                                                        
                                                     </ul>
                                                 </div>
-                                                
                                             </div>
                                         </div>
                                         <div class="form-group">
@@ -278,6 +285,12 @@ $(function(){
         d.showModal();
     }
 });
+
+$('body').on('click', '.close', function(){
+	$(this).parent().remove();
+});
+
+
 var baseUrl = "<?php echo $domain['admin']['url'];?>";
 //初始化Web Uploader
 var uploader = WebUploader.create({
@@ -304,7 +317,6 @@ var html;
 //当有文件添加进来的时候
 uploader.on( 'fileQueued', function( file ) {
     uploader.makeThumb( file, function( error, src ) {
-        console.log(error, src);
         if ( error ) {
             layer.alert('不能预览');
             return;
@@ -313,8 +325,9 @@ uploader.on( 'fileQueued', function( file ) {
         _this = parseInt($('#uploader_cover_img').attr('data'));
         
         html += '<li id="uploader_cover_img_'+ _this +'" style="float: left;width: 150px;height: 150px;clear:none; border: 1px solid #f18a1b">';
+		html +=     '<a class="close" href="javascript:;"></a>'
         html +=		'<a href="javascript:;" class="up-img">';
-        html +=			'<img src="'+src+'"><input type="hidden" name="confirm_img[]" value="'+src+'">';
+        html +=			'<img style="position: absolute;top: 0;" src="'+src+'">';
         html += 	'</a>';
     	html += '</li>';
     	
@@ -325,6 +338,7 @@ uploader.on( 'fileQueued', function( file ) {
 //文件上传成功
 uploader.on( 'uploadSuccess', function( file, res ) {
 	if(res.error == 0){
+		$('#uploader_cover_img_'+_this).append('<input type="hidden" name="confirm_img[]" value="'+res.url+'">');
 		$('#uploader_cover_img').append();
 	}else{
 		$('#uploader_cover_img_'+_this).remove();
