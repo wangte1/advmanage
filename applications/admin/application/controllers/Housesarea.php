@@ -174,6 +174,123 @@ class Housesarea extends MY_Controller{
         }
     }
     
+    /*
+     * 导出数据
+     * 1034487709@qq.com
+     */
+    public function out_excel(){
+    	$data = $this->data;
+    	$where['is_del'] = 0;
+    	if ($this->input->get('name')) $where['like']['name'] = $this->input->get('name');
+        if ($this->input->get('houses_id') != 'all' && !empty($this->input->get('houses_id'))) {
+        	$where['houses_id'] = $this->input->get('houses_id') ? $this->input->get('houses_id') : 1;
+        	$data['group_arr'] = $this->Mhouses_group->get_lists('id,group_name', $where);
+        }
+        if ($this->input->get('group_id')) $where['group_id'] = $this->input->get('group_id');
+        
+        if ($this->input->get('grade') != 'all' && !empty($this->input->get('grade'))) {
+        	$where['grade'] = $this->input->get('grade') ? $this->input->get('grade') : 1;
+        }
+    
+    	//加载phpexcel
+    	$this->load->library("PHPExcel");
+    
+    	$table_header =  array(
+    			'点位编号'=>"code",
+    			'组团名称'=>"name",
+    			'所属楼盘'=>"houses_name",
+    			'等级'=>"grade",
+    			'门禁点位数'=>"count1",
+    			'地面电梯前室点位数'=>"count2",
+    			'地下电梯前室点位数'=>"count3",
+    			'合计点位数'=>"count",
+    	);
+    	 
+    
+    	$i = 0;
+    	foreach($table_header as  $k=>$v){
+    		$cell = PHPExcel_Cell::stringFromColumnIndex($i).'1';
+    		$this->phpexcel->setActiveSheetIndex(0)->setCellValue($cell, $k);
+    		$i++;
+    	}
+    	 
+    	$tmpList = $this->Mhouses_area->get_lists('*', $where);
+    	
+    	$housesList = $this->Mhouses->get_lists('id,name',['is_del' => 0]);
+    	
+    	if(count($tmpList) > 0) {
+    		$area_ids = array_column($tmpList, 'id');
+    		$where1['in']['A.id'] = $area_ids;
+    		$join_arr = $this->Mhouses_area->get_join_info($where1);
+    	
+    		$houses_name = array_column($join_arr, 'houses_name', 'id');
+    	}
+        
+        if(count($tmpList) > 0) {
+        	foreach($tmpList as $k => &$v) {
+        		$v['count_1'] = $this->Mhouses_points->get_one('count(0) as count', ['area_id' => $v['id'], 'addr' => 1, 'is_del' => 0]);
+        		$v['count_2'] = $this->Mhouses_points->get_one('count(0) as count', ['area_id' => $v['id'], 'addr' => 2, 'is_del' => 0]);
+        		$v['count_3'] = $this->Mhouses_points->get_one('count(0) as count', ['area_id' => $v['id'], 'addr' => 3, 'is_del' => 0]);
+        		$v['count_4'] = $this->Mhouses_points->get_one('count(0) as count', ['area_id' => $v['id'], 'is_del' => 0]);
+        	}
+        }
+    
+    	$h = 2;
+    	foreach($tmpList as $key=>$val){
+    		$j = 0;
+    		foreach($table_header as $k1 => $v1){
+    			$cell = PHPExcel_Cell::stringFromColumnIndex($j++).$h;
+    
+    			if($v1 == "code") {
+    				$value = $key + 1;
+    			}
+    
+    			if($v1 == "name") {
+    				$value = $val['name'];
+    			}
+    
+    			if($v1 == "houses_name") {
+    				$value = $houses_name[$val['id']];
+    			}
+    
+    			if($v1 == "grade") {
+    				if(isset($data['area_grade'][$val['grade']])) {
+    					$value = $data['area_grade'][$val['grade']];
+    				}
+    				
+    			}
+    
+    			if($v1 == "count1") {
+    				$value = $val['count_1']['count'];
+    			}
+    
+    			if($v1 == "count2") {
+    				$value = $val['count_2']['count'];
+    			}
+    			
+    			if($v1 == "count3") {
+    				$value = $val['count_3']['count'];
+    			}
+    			
+    			if($v1 == "count") {
+    				$value = $val['count_4']['count'];
+    			}
+    			
+    			$this->phpexcel->getActiveSheet(0)->setCellValue($cell, $value.' ');
+    		}
+    		$h++;
+    	}
+    
+    	$this->phpexcel->setActiveSheetIndex(0);
+    	// 输出
+    	header('Content-Type: application/vnd.ms-excel');
+    	header('Content-Disposition: attachment;filename=社区点位表.xls');
+    	header('Cache-Control: max-age=0');
+    
+    	$objWriter = PHPExcel_IOFactory::createWriter($this->phpexcel, 'Excel5');
+    	$objWriter->save('php://output');
+    }
+    
 
 
 }
