@@ -227,7 +227,17 @@
                                                         }
                                                     ?>
                                                     <span class="badge <?php echo $class; ?>">
-                                                        <?php if(isset($status_text[$value['order_status']]))echo $status_text[$value['order_status']];?>
+                                                    	<?php 
+	                                                    	if($value['order_status'] == 1) {
+	                                                    		if($value['adv_img'] != '') {
+	                                                    				echo "已上传广告画面";
+	                                                    		}else {
+	                                                    			echo $status_text[$value['order_status']];
+	                                                    		}
+	                                                    	}else {
+	                                                    		echo $status_text[$value['order_status']];
+	                                                    	}
+                                                    	?>
                                                     </span>
 
                                                     <?php if($value['order_status'] == 7):?>
@@ -244,7 +254,7 @@
                                                 </td>
                                                 <td><?php echo $admins[$value['creator']];?></td>
                                                 <td>
-                                                	<?php if($value['order_status'] == 1) {
+                                                	<?php if($value['order_status'] == 1 && $value['adv_img'] == '') {
                                                 		$tmptip = '上传';
                                                 	 }else {
                                                 		$tmptip = '查看';

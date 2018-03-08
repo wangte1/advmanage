@@ -235,8 +235,18 @@
                                                             }
                                                         ?>
                                                         <span class="badge <?php echo $class; ?>">
-                                                            <?php echo $status_text[$info['order_status']];?>
-                                                        </span>
+	                                                    	<?php 
+		                                                    	if($info['order_status'] == 1) {
+		                                                    		if($info['adv_img'] != '') {
+		                                                    				echo "已上传广告画面";
+		                                                    		}else {
+		                                                    			echo $status_text[$info['order_status']];
+		                                                    		}
+		                                                    	}else {
+		                                                    		echo $status_text[$info['order_status']];
+		                                                    	}
+	                                                    	?>
+	                                                    </span>
                                                     </div>
                                                 </div>
                                                 <div class="profile-info-row">
