@@ -74,7 +74,7 @@
 	                            </li>
                            	</ul>
                            	
-                           	<?php if($order_status == 1) {?>
+                           	<?php if($order_status == 1 && $info['adv_img'] == '') {?>
 		                    <div class="col-xs-12">
 		                        <label for="form-input-readonly"></label>
 		                        <div style="margin-left: 5%;" id="file_cover_img">选择图片</div>
