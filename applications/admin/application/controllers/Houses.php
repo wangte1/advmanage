@@ -218,6 +218,7 @@ class Houses extends MY_Controller{
     
     public function out_excel(){
     	$data = $this->data;
+    	$where['is_del'] = 0;
     	if ($this->input->get('name')) $where['like']['name'] = $this->input->get('name');
         if ($this->input->get('province')) $where['province'] = $this->input->get('province');
         if ($this->input->get('city')) $where['city'] = $this->input->get('city');
