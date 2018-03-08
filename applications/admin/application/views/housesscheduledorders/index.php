@@ -220,7 +220,7 @@
                                                     </span>
                                                 </td>
                                                 <td>
-                                                    <div class="visible-md visible-lg hidden-sm hidden-xs action-buttons">
+                                                    <div class="action-buttons">
                                                         <a class="green tooltip-info" href="/housesscheduledorders/detail/<?php echo $value['id'];?>"  data-rel="tooltip" data-placement="top" data-original-title="详情">
                                                             <i class="icon-eye-open bigger-130"></i>
                                                         </a> 
