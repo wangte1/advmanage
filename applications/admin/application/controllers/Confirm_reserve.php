@@ -256,11 +256,13 @@ class Confirm_reserve extends MY_Controller{
     public function sign(){
         if(IS_POST){
             $order_id = $this->input->post('id');
-            $img = trim($this->input->post('confirm_img'));
-            if(empty($img)){
+            $img = $this->input->post('confirm_img');
+            if(empty($img) || count($img) == 0){
                 $this->error('合同照片不能为空，请上传！');
             }
+            
             $post = $this->input->post();
+            $post['confirm_img'] = implode(';', $img);
             $post['is_confirm'] = 1;
             unset($post['id'], $post['contact_person'], $post['file']);
             $res = $this->Mhouses_scheduled_orders->update_info($post, ['id' => $order_id]);
