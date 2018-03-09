@@ -279,6 +279,7 @@ class Houseswantorders extends MY_Controller{
     	$where['A.point_status'] = 1;
     	
     	$points_lists = $this->Mhouses_points->get_points_lists($where);
+    	//echo $this->db->last_query();
     	
     	$houses_lists = [];
     	$area_lists = [];
@@ -289,12 +290,6 @@ class Houseswantorders extends MY_Controller{
     	
     	if(count($points_lists) > 0) {
     		$houses_lists = array_column($points_lists, 'houses_name', 'houses_id');
-    		$area_lists = array_column($points_lists, 'houses_area_name', 'area_id');
-    		$ban_lists = array_unique(array_column($points_lists, 'ban'));
-    		$unit_lists = array_unique(array_column($points_lists, 'unit'));
-    		$floor_lists = array_unique(array_column($points_lists, 'floor'));
-    		$addr_lists = array_unique(array_column($points_lists, 'addr'));
-    		
 	    	foreach($points_lists as $k => &$v) {
 	    		if(isset(C('public.houses_grade')[$v['grade']])) {
 	    			$v['houses_grade'] = C('public.houses_grade')[$v['grade']];
@@ -314,6 +309,19 @@ class Houseswantorders extends MY_Controller{
 	    		}
 	    	}
     	}
+    	
+    	$where_tmp['A.is_del'] = 0;
+    	if(!empty($this->input->post('houses_id'))) $where_tmp['A.houses_id'] = $this->input->post('houses_id');
+    	$tmp_points_lists = $this->Mhouses_points->get_points_lists($where_tmp);
+    	if(count($tmp_points_lists) > 0) {
+    		
+    		$area_lists = array_column($tmp_points_lists, 'houses_area_name', 'area_id');
+    		$ban_lists = array_unique(array_column($tmp_points_lists, 'ban'));
+    		$unit_lists = array_unique(array_column($tmp_points_lists, 'unit'));
+    		$floor_lists = array_unique(array_column($tmp_points_lists, 'floor'));
+    		$addr_lists = array_unique(array_column($tmp_points_lists, 'addr'));
+    	}
+    	
     	
     	$this->return_json(array(
     			'flag' => true,

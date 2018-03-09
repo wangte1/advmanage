@@ -268,7 +268,8 @@
                                                                         <select name="addr" id="addr" class="select2">
                                                                             <option value="">请选择位置</option>
                                                                             <option value="1">门禁</option>
-                                                                            <option value="2">电梯前室</option>
+                                                                            <option value="2">地面电梯前室</option>
+                                                                            <option value="3">地下电梯前室</option>
                                                                         </select>
                                                                     </div>
                                                                 </div>
@@ -628,6 +629,7 @@ function load_houses(num1, num2) {
 	};
 	
 	$.post('/houseswantorders/get_points', postData, function(data){
+		console.log(data);
 		if(data.flag == true && data.count > 0) {
 			//楼盘
 			if(num1 != 2) {
@@ -658,14 +660,14 @@ function load_houses(num1, num2) {
 			//单元
 			var unitStr = '<option value="">请选择单元</option>';
 			for(m_key4  in data.unit_lists){  
-				unitStr += '<option value="'+data.ban_lists[m_key3]+'">'+data.unit_lists[m_key4]+'</option>';
+				unitStr += '<option value="'+data.unit_lists[m_key4]+'">'+data.unit_lists[m_key4]+'</option>';
 			}
 			$('#unit').html(unitStr);
 
 			//楼层
 			var floorStr = '<option value="">请选择楼层</option>';
 			for(m_key5  in data.floor_lists){  
-				floorStr += '<option value="'+m_key5+'">'+data.floor_lists[m_key5]+'</option>';
+				floorStr += '<option value="'+data.floor_lists[m_key5]+'">'+data.floor_lists[m_key5]+'</option>';
 			}
 			$('#floor').html(floorStr);
 
