@@ -42,7 +42,7 @@ class Housespoints extends MY_Controller{
         if ($this->input->get('houses_id')) $where['A.houses_id'] = $this->input->get('houses_id');
         if ($this->input->get('area_id')) $where['A.area_id'] = $this->input->get('area_id');
         if ($this->input->get('ban')) $where['A.ban'] = $this->input->get('ban');
-        if ($this->input->get('unit')) $where['A.area_id'] = $this->input->get('unit');
+        if ($this->input->get('unit')) $where['A.unit'] = $this->input->get('unit');
         if ($this->input->get('floor')) $where['A.area_id'] = $this->input->get('floor');
         if ($this->input->get('addr')) $where['A.addr'] = $this->input->get('addr');
         if ($this->input->get('point_status')) $where['A.point_status'] = $this->input->get('point_status');
