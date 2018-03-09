@@ -53,7 +53,7 @@
                                     <form id="search-form" class="form-horizontal" role="form">
                                         <div class="form-group">
                                             <div class="col-sm-4">
-                                                <label class="col-sm-3 control-label no-padding-right" for="form-field-1"> 楼栋名称</label>
+                                                <label class="col-sm-3 control-label no-padding-right" for="form-field-1"> 组团名称</label>
                                                 <div class="col-sm-9">
                                                     <input type="text" name="name" value="<?php echo $name;?>"  class="col-xs-10 col-sm-12" />
                                                 </div>
