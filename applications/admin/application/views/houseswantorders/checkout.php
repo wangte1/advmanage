@@ -466,10 +466,12 @@
 <link href="<?php echo css_js_url('bootstrap-multiselect.css', 'admin');?>" rel="stylesheet" />
 <script type="text/javascript">
 
+var index1;
+                                                                
 //机选
 function machine_sel() {
 	
-	layer.open({
+	index1 = layer.open({
 		  type: 1,
 		  title: '机选(填写楼盘等级对应的点位数量)',
 		  area: ['420px', '300px'], //宽高
@@ -479,6 +481,8 @@ function machine_sel() {
 
 //机选确认
 function machine_sub() {
+	var index2 = layer.load(1);
+	layer.close(index1);
 	var m_arr = new Array();
 	var flag = false;
 	$('.layui-layer .grade-input').each(function(){
@@ -492,7 +496,7 @@ function machine_sub() {
 	for(var i = 0; i < m_arr.length; i++) {
 		for(var j = 0; j < m_arr[i]; j++) {
 			$('#points_lists tr').each(function(){
-				if(flag == true) {
+				if(flag == true) { //这里根据具体业务情况可能有变更,组团等级代码暂时不取消，怕后面又会加上
 					if($(this).attr('grade') == (i + 1) || $(this).attr('area_grade') == (i + 1)) {
 						$(this).find('button').click();
 						return false;
@@ -506,6 +510,7 @@ function machine_sub() {
 			});
 		}
 	}
+	layer.close(index2);
 	layer.closeAll('page');
 }
 
