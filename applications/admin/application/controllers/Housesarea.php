@@ -36,7 +36,7 @@ class Housesarea extends MY_Controller{
         if ($this->input->get('name')) $where['like']['name'] = $this->input->get('name');
         if ($this->input->get('houses_id') != 'all' && !empty($this->input->get('houses_id'))) {
         	$where['houses_id'] = $this->input->get('houses_id') ? $this->input->get('houses_id') : 1;
-        	$data['group_arr'] = $this->Mhouses_group->get_lists('id,group_name', $where);
+        	//$data['group_arr'] = $this->Mhouses_group->get_lists('id,group_name', $where);
         }
         if ($this->input->get('group_id')) $where['group_id'] = $this->input->get('group_id');
         
