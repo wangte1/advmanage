@@ -41,7 +41,7 @@
 <!-- 头部 -->
 <?php $this->load->view('common/top');?>
 
-<div class="main-container" id="main-container">
+<div class="main-container m-phone-show" id="main-container">
     <div class="main-container-inner">
         <!-- 左边导航菜单 -->
         <?php $this->load->view('common/left');?>
@@ -52,9 +52,6 @@
                     <li>
                         <i class="icon-home home-icon"></i>
                         <a href="#">首页</a>
-                    </li>
-                    <li>
-                        <a href="#">意向订单管理</a>
                     </li>
                     <li>
                         <a href="/confirm_reserve">预定订单待确认列表</a>

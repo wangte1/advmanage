@@ -288,4 +288,18 @@ class Confirm_reserve extends MY_Controller{
             }
         }
     }
+    
+    /**
+     * 生成定版单
+     */
+    public function confirmation($id) {
+    	$data = $this->data;
+    	$data['info'] = $this->Mhouses_scheduled_orders->get_one("*", array('id' => $id));
+    
+    	//甲方-委托方（客户名称）
+    	$data['info']['customer_name'] = $this->Mhouses_customers->get_one('name', array('id' => $data['info']['lock_customer_id']))['name'];
+    
+    	$this->load->view('confirm_reserve/confirmation/light', $data);
+    }
+  
 }

@@ -100,7 +100,7 @@
         <div class="page">
             <center class="title"><?php echo $order_type_text[$info['order_type']];?>广告验收报告</center>
             <p class="page-p"><span style="font-weight: bolder;">甲方（委托方）：<?php echo $info['customer_name'];?></span></p>
-            <p class="page-p"><span style="font-weight: bolder">乙方（承办方）：</span><span style="border-bottom: 1px solid black;"><?php echo $info['sponsor'];?></span></p>
+            <p class="page-p"><span style="font-weight: bolder">乙方（承办方）：</span><span style="border-bottom: 1px solid black;">贵州大视传媒有限公司</span></p>
             <p class="page-p">广告牌上画发布地点、数量及规格：</p>
             <table class="detail-info">
                 <thead>

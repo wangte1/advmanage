@@ -795,7 +795,7 @@ class Housesscheduledorders extends MY_Controller{
         
         $scheduledorder = $this->Mhouses_scheduled_orders->get_one('*', array('id' => $id));
         
-        $where['in']['A.id'] = explode(',', $scheduledorder['point_ids']);
+        $where['in']['A.id'] = explode(',', $scheduledorder['confirm_point_ids']);
         
         $customers = $this->Mhouses_customers->get_one("name", array('id' => $scheduledorder['lock_customer_id'], 'is_del' => 0)); //客户
         

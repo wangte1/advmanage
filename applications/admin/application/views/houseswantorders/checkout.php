@@ -268,7 +268,8 @@
                                                                         <select name="addr" id="addr" class="select2">
                                                                             <option value="">请选择位置</option>
                                                                             <option value="1">门禁</option>
-                                                                            <option value="2">电梯前室</option>
+                                                                            <option value="2">地面电梯前室</option>
+                                                                            <option value="3">地下电梯前室</option>
                                                                         </select>
                                                                     </div>
                                                                 </div>
@@ -287,7 +288,7 @@
                                                                                 <th width="10%">位置</th>
 <!--                                                                                 <th width="10%">规格</th> -->
                                                                                 <th width="10%">楼盘等级</th>
-                                                                                <th width="10%">组团等级</th>
+                                                                                <!-- <th width="10%">组团等级</th> -->
                                                                                 <th width="10%">可投放数量</th>
                                                                                 <th width="10%" nowrap="nowrap">状态</th>
                                                                                 <th width="10%"><button class="btn btn-xs btn-info select-all" type="button" data-id="3">选择全部<i class="icon-arrow-right icon-on-right"></i></button></th>
@@ -367,7 +368,7 @@
                                                         <th width="10%">位置</th>
                                                         <!-- <th width="10%">规格</th>-->
                                                         <th width="10%">楼盘等级</th>
-                                                        <th width="10%">组团等级</th>
+                                                        <!-- <th width="10%">组团等级</th> -->
                                                         <th width="10%">可投放数量</th>
                                                         <th width="10%">状态</th>
                                                         <th width="10%"><button class="btn btn-xs btn-info remove-all" type="button">移除全部<i class="fa fa-remove" aria-hidden="true"></i></button></th>
@@ -394,7 +395,7 @@
                                                             <?php endif;?>
                                                             <!-- <td width="10%"><?php echo $value['size'];?></td> -->
                                                             <td width="10%"><?php echo $value['grade'];?></td>
-                                                            <td width="10%"><?php echo $value['grade'];?></td>
+                                                            <!-- <td width="10%"><?php echo $value['grade'];?></td> -->
                                                             <td width="10%"><?php echo $value['ad_num'];?></td>
                                                             <td width="10%">
                                                             	<?php 
@@ -465,10 +466,12 @@
 <link href="<?php echo css_js_url('bootstrap-multiselect.css', 'admin');?>" rel="stylesheet" />
 <script type="text/javascript">
 
+var index1;
+                                                                
 //机选
 function machine_sel() {
 	
-	layer.open({
+	index1 = layer.open({
 		  type: 1,
 		  title: '机选(填写楼盘等级对应的点位数量)',
 		  area: ['420px', '300px'], //宽高
@@ -478,6 +481,8 @@ function machine_sel() {
 
 //机选确认
 function machine_sub() {
+	var index2 = layer.load(1);
+	layer.close(index1);
 	var m_arr = new Array();
 	var flag = false;
 	$('.layui-layer .grade-input').each(function(){
@@ -491,7 +496,7 @@ function machine_sub() {
 	for(var i = 0; i < m_arr.length; i++) {
 		for(var j = 0; j < m_arr[i]; j++) {
 			$('#points_lists tr').each(function(){
-				if(flag == true) {
+				if(flag == true) { //这里根据具体业务情况可能有变更,组团等级代码暂时不取消，怕后面又会加上
 					if($(this).attr('grade') == (i + 1) || $(this).attr('area_grade') == (i + 1)) {
 						$(this).find('button').click();
 						return false;
@@ -505,6 +510,7 @@ function machine_sub() {
 			});
 		}
 	}
+	layer.close(index2);
 	layer.closeAll('page');
 }
 
@@ -628,6 +634,7 @@ function load_houses(num1, num2) {
 	};
 	
 	$.post('/houseswantorders/get_points', postData, function(data){
+		console.log(data);
 		if(data.flag == true && data.count > 0) {
 			//楼盘
 			if(num1 != 2) {
@@ -658,14 +665,14 @@ function load_houses(num1, num2) {
 			//单元
 			var unitStr = '<option value="">请选择单元</option>';
 			for(m_key4  in data.unit_lists){  
-				unitStr += '<option value="'+data.ban_lists[m_key3]+'">'+data.unit_lists[m_key4]+'</option>';
+				unitStr += '<option value="'+data.unit_lists[m_key4]+'">'+data.unit_lists[m_key4]+'</option>';
 			}
 			$('#unit').html(unitStr);
 
 			//楼层
 			var floorStr = '<option value="">请选择楼层</option>';
 			for(m_key5  in data.floor_lists){  
-				floorStr += '<option value="'+m_key5+'">'+data.floor_lists[m_key5]+'</option>';
+				floorStr += '<option value="'+data.floor_lists[m_key5]+'">'+data.floor_lists[m_key5]+'</option>';
 			}
 			$('#floor').html(floorStr);
 
@@ -690,7 +697,7 @@ function load_houses(num1, num2) {
 				}
 				//pointStr += "<td width='10%'>"+(data.points_lists)[i]['size']+"</td>";
 				pointStr += "<td width='10%'>"+(data.points_lists)[i]['houses_grade']+"</td>";
-				pointStr += "<td width='10%'>"+(data.points_lists)[i]['area_grade_name']+"</td>";
+				//pointStr += "<td width='10%'>"+(data.points_lists)[i]['area_grade_name']+"</td>";
 				pointStr += "<td width='10%'>"+(data.points_lists)[i]['ad_num']+"</td>";
 				var $class;
 				switch ((data.points_lists)[i]['point_status']) {

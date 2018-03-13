@@ -24,9 +24,10 @@
 				$('.phone-show').show();
 				$('.breadcrumb').css('marginLeft', 0);
 				$('.widget-box').each(function(){
-					if(!$(this).parents('body').hasClass("login-layout")) {
+					if(!$(this).parents('body').hasClass("login-layout") && !$(this).parents('div').hasClass("m-phone-show")) {
 						$(this).addClass('collapsed');
 					}
+					
 				});
 
 				$('.pull-left').hide();

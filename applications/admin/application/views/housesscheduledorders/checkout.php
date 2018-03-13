@@ -421,7 +421,7 @@
 
                                                 <input type="hidden" name="order_type" value="<?php echo $order_type;?>" />
                                                 <input type="hidden" name="put_trade" value="<?php echo $put_trade;?>" />
-                                                <input type="hidden" name="point_ids" value="<?php if(isset($info['point_ids'])) { echo $info['point_ids']; } ?>" />
+                                                <input type="hidden" name="point_ids" value="<?php if(isset($info['confirm_point_ids'])) { echo $info['confirm_point_ids']; } ?>" />
                                                 
                                                 <!--<?php if(isset($info['id']) && ($order_type == 1 || $order_type == 2)):?>
                                                     <?php foreach ($points_make_num as $key => $value): ?>
