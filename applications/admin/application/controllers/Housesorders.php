@@ -708,11 +708,12 @@ class Housesorders extends MY_Controller{
         }
 
         $data['id'] = $id;
-        foreach($data['info']['inspect_img'] as $key=>$val){
-            $dos[$key] = $val['point_id'];
+        if($data['info']['inspect_img']){
+            foreach($data['info']['inspect_img'] as $key=>$val){
+                $dos[$key] = $val['point_id'];
+            }
+            array_multisort($dos, SORT_ASC, $data['info']['inspect_img']); 
         }
-        
-        array_multisort($dos, SORT_ASC, $data['info']['inspect_img']); 
         $this->load->view('housesorders/detail', $data);
     }
     

@@ -122,7 +122,7 @@ class Houseschangepicorders extends MY_Controller{
         $where = array(
             'A.order_code' => $this->input->post('order_code'), 
             'A.order_type' => $this->input->post('order_type'),
-            'A.order_status' => 7
+            'A.order_status' => 6
         );
 
         //订单信息
