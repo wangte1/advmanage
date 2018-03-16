@@ -114,7 +114,13 @@ class Housespoints extends MY_Controller{
             
             $post['creator'] = $data['userInfo']['id'];
             $post['create_time'] = date("Y-m-d H:i:s");
-
+            
+            //临时匹配导入数据
+            $tmpArr = $this->Mhouses->get_one("name",array("id" =>$post['houses_id']));
+            $post['houses_name'] = $tmpArr['name'];
+            $tmpArr = $this->Mhouses_area->get_one("name",array("id" => $post['area_id']));
+            $post['area_name'] = $tmpArr['name'];
+            
             $result = $this->Mhouses_points->create($post);
             if($result){
                 $this->write_log($data['userInfo']['id'],1,"社区新增点位：".$post['code']);
