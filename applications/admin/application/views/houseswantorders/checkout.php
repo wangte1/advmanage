@@ -794,13 +794,12 @@ $(function(){
             var numObj = $(this).find('td:eq(3)');
             var inputVal = numObj.children().val();
             numObj.text(inputVal);
-            //$("input[name='point_ids']").after('<input type="hidden" name="make_num['+$(this).attr('point-id')+']" value="'+inputVal+'">');
-
+            
             $("#selected_points button").html('移除点位<i class="fa fa-remove" aria-hidden="true"></i>');
             var point_ids = $("input[name='point_ids']").val() ? $("input[name='point_ids']").val() + ',' + $(this).attr('point-id') :  $(this).attr('point-id');
             $("input[name='point_ids']").val(point_ids);
         });
-
+		
         count_percent();
     });
 

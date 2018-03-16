@@ -256,7 +256,7 @@ class Admin extends MY_Controller{
 
         #所有权限
         $list = $this->Madmins_purview->get_group_purview(explode(",",$data['group_purview_ids']['purview_ids']));
-        var_dump($data['group_purview_ids']);exit;
+
         $data['list'] = class_loop($list);
 
         $this->load->view("admin/purview",$data);
