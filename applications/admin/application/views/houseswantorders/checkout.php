@@ -94,7 +94,7 @@
                                             	<input type="hidden" id="sales_id" name="sales_id" value="<?php echo $info['create_user'];?>">
                                                 <select  class="select2" required disabled="disabled">
                                                     <option value="">请选择业务员</option>
-                                                    <?php var_dump($admins); foreach($admins as $val):?>
+                                                    <?php foreach($admins as $val):?>
                                                     <option value="<?php echo $val['id'];?>" <?php if(isset($info['create_user']) && $val['id'] == $info['create_user']){ echo "selected"; }?>><?php echo $val['fullname'];?></option>
                                                     <?php endforeach;?>
                                                 </select>
@@ -794,13 +794,12 @@ $(function(){
             var numObj = $(this).find('td:eq(3)');
             var inputVal = numObj.children().val();
             numObj.text(inputVal);
-            //$("input[name='point_ids']").after('<input type="hidden" name="make_num['+$(this).attr('point-id')+']" value="'+inputVal+'">');
-
+            
             $("#selected_points button").html('移除点位<i class="fa fa-remove" aria-hidden="true"></i>');
             var point_ids = $("input[name='point_ids']").val() ? $("input[name='point_ids']").val() + ',' + $(this).attr('point-id') :  $(this).attr('point-id');
             $("input[name='point_ids']").val(point_ids);
         });
-
+		
         count_percent();
     });
 
