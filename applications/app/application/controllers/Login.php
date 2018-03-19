@@ -20,10 +20,9 @@ class Login extends MY_Controller {
      * 254274509@qq.com
      */
     public function index(){
-        
         if(IS_POST){
-            $name = $this->input->post("name", true);
-            $password = $this->input->post("password", true);
+            $name = $this->input->get_post("name", true);
+            $password = $this->input->get_post("password", true);
             if(empty($name) || !isset($name)){
                 $this->return_json(array("code"=>0, "msg"=>"用户名不能为空！"));
             }
@@ -60,5 +59,6 @@ class Login extends MY_Controller {
                 }
             }
         }
+        $this->return_json(array("code"=>0, "msg"=>"非法请求!"));
     }
 }
