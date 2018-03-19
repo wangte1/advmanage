@@ -738,7 +738,7 @@ class Housesorders extends MY_Controller{
     	$data['data_count'] = $data_count;
     	
     	//获取分页
-    	$pageconfig['base_url'] = "/houses";
+    	$pageconfig['base_url'] = "/housesorders/points_detail/{$order_id}/{$houses_id}";
     	$pageconfig['total_rows'] = $data_count;
     	$this->pagination->initialize($pageconfig);
     	$data['pagestr'] = $this->pagination->create_links(); // 分页信息
