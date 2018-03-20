@@ -135,7 +135,7 @@
                                         <div class="form-group">
                                             <label class="col-sm-2 control-label no-padding-right" for="form-input-readonly"> 投放点位： </label>
                                             <div class="col-sm-10">
-                                                <div class="widget-box">
+                                                <div class="widget-box" style="overflow: hidden;">
                                                     <div class="widget-header">
                                                         <h4>选择点位</h4>
                                                         <span class="widget-toolbar">
@@ -231,7 +231,7 @@
                                                                                 <th width="10%">单元</th>
                                                                                 <th width="10%">楼层</th>
                                                                                 <th width="10%">位置</th>
-                                                                                <th width="10%">规格</th>
+                                                                                <th width="10%">可投放数</th>
                                                                                 <th width="10%">状态</th>
                                                                                 <th width="10%"><button class="btn btn-xs btn-info select-all" type="button" data-id="3">选择全部<i class="icon-arrow-right icon-on-right"></i></button></th>
                                                                             </tr>
@@ -241,6 +241,32 @@
                                                                 <div class="div-tbody">
                                                                     <table id="sample-table-1" class="table table-striped table-bordered table-hover">
                                                                         <tbody id="points_lists">
+                                                                            <?php if(isset($point_list) && $point_list):?>
+                                                                            <?php foreach ($point_list as $k => $v):?>
+                                                                            <tr point-id="<?php echo $v['id'];?>">
+                                                                                <td width="10%"><?php echo $v['id'];?></td>
+                                                                                <td width="10%"><?php echo $v['houses_name'];?></td>
+                                                                                <td width="10%"><?php echo $v['houses_area_name'];?></td>
+                                                                                <td width="10%"><?php echo $v['ban']?></td>
+                                                                                <td width="10%"><?php echo $v['unit']?></td>
+                                                                                <td width="10%"><?php echo $v['floor']?></td>
+                                                                                <td width="10%">
+                                                                                    <?php if(isset($point_addr[$v['addr']])) echo $point_addr[$v['addr']];?>
+                                                                                </td>
+                                                                                <td width="10%"><?php echo $v['ad_num'] - $v['ad_use_num']?></td>
+                                                                                <td width="10%">
+                                                                                    <?php if($v['point_status'] == 1) {?>
+                                                                                	<span class="badge badge-success">空闲</span>
+                                                                                	<?php }else if($v['point_status'] == 3) {?>
+                                                                                	<span class="badge badge-danger">占用</span>
+                                                                                	<?php }?>
+                                                                                </td>
+                                                                                <td width="10%">
+                                                                                    <button class="btn btn-xs btn-info do-sel" type="button">选择点位<i class="icon-arrow-right icon-on-right"></i></button>
+                                                                                </td>
+                                                                             </tr>
+                                                                             <?php endforeach;?>
+                                                                            <?php endif;?>
                                                                         </tbody>
                                                                     </table>
                                                                 </div>
@@ -308,7 +334,7 @@
                                                         <th width="10%">单元</th>
                                                         <th width="10%">楼层</th>
                                                         <th width="10%">位置</th>
-                                                        <th width="10%">规格</th>
+                                                        <th width="10%">可投放数</th>
                                                         <th width="10%">状态</th>
                                                         <th width="10%"><button class="btn btn-xs btn-info remove-all" type="button">移除全部<i class="fa fa-remove" aria-hidden="true"></i></button></th>
                                                     </tr>
@@ -332,7 +358,7 @@
                                                             <?php else:?>
                                                             <td width="10%">电梯前室</td>
                                                             <?php endif;?>
-                                                            <td width="10%"><?php echo $value['size'];?></td>
+                                                            <td width="10%"><?php echo $value['ad_num'] - $value['ad_use_num'];?></td>
                                                             <td width="10%">
                                                             	<?php 
                                                                     switch ($value['point_status']) {
@@ -416,8 +442,8 @@ $(function(){
 					}else{
 						pointStr += "<td width='10%'>电梯前室</td>";
 					}
-					
-					pointStr += "<td width='10%'>"+tmpList[i]['size']+"</td>";
+					var num = parseInt(tmpList[i]['ad_num'] - tmpList[i]['ad_use_num']); 
+					pointStr += "<td width='10%'>"+ num +"</td>";
 					switch (tmpList[i]['point_status']) {
                         case '1':
                             $class = 'badge-success';

@@ -34,7 +34,7 @@
 
             <div class="page-content">
                 <div class="page-header">
-                    <a href="/housesscheduledorders/order_type" class="btn btn-sm btn-primary"><i class="fa fa-plus-square" aria-hidden="true"></i> 新建预定订单(临时开启)</a>
+                    <a href="/housesscheduledorders/order_type" class="btn btn-sm btn-primary"><i class="fa fa-plus-square" aria-hidden="true"></i> 新建预定订单(临时开启，切勿使用)</a>
                 </div> 
                 <div class="row">
                     <div class="col-xs-12">

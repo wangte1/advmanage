@@ -95,28 +95,7 @@ class Housesscheduledorders extends MY_Controller{
             unset($post_data['ban'], $post_data['unit'], $post_data['floor']);
             if (isset($post_data['area_id'])) unset($post_data['area_id']);
             if (isset($post_data['addr'])) unset($post_data['addr']);
-            //判断这个客户是否已锁定点位
-            $order_type = (int) $post_data['order_type'];
-            $where['is_del'] = 0;
-            $where['lock_customer_id'] = $post_data['lock_customer_id'];
-            $where['order_type'] = $order_type;
-            $where['order_status'] = C('scheduledorder.order_status.code.in_lock');
-            
-            $count = $this->Mhouses_scheduled_orders->count($where);
-            if ($count > 0) {
-                $this->success("该客户已存在锁定中的".$data['order_type_text'][$order_type]."订单！", '/housesscheduledorders/addpreorder/'.$order_type);
-                exit;
-            }
-            
-            //判断该客户是否存在正在锁定日期范围内的已释放的订单
-            $where['order_status'] = C('housesscheduledorder.order_status.code.done_release');
-            $where['lock_end_time >'] = date('Y-m-d');
-            $orderinfo = $this->Mhouses_scheduled_orders->get_one('*', $where);
-            if ($orderinfo) {
-                $this->success("该客户上一次释放的订单还未到锁定结束日期，不能新建预定订单！", '/housesscheduledorders/addpreorder/'.$order_type);
-                exit;
-            }
-            
+
             $post_data['create_user'] = $post_data['update_user'] = $data['userInfo']['id'];
             $post_data['create_time'] = $post_data['update_time'] = date('Y-m-d H:i:s');
             $post_data['point_ids'] = implode(',', array_unique(explode(',', $post_data['point_ids'])));
@@ -157,10 +136,37 @@ class Housesscheduledorders extends MY_Controller{
         
         $data['put_trade'] = $put_trade;
         $data['housesList'] = $houses_list;
+        //获取excel导入的所有点位编号
+        $codeList = $this->getPointsCodeFromExcel();
+        if($codeList){
+            $code_where['in']['A.code'] = array_unique($codeList);
+            $code_where['A.type_id'] = $order_type;
+            $data['point_list'] = $this->Mhouses_points->get_points_by_code($code_where);
+        }
         //end
         //获取所有业务员
         $data['yewu'] = $this->Madmins->get_lists('id, fullname', array('group_id' => 2,'is_del' => 1));
         $this->load->view('housesscheduledorders/add', $data);
+    }
+    
+    private function getPointsCodeFromExcel(){
+        $codeList = [];
+        $filename = './excel/code.xls';
+        //加载phpexcel
+        $this->load->library(['PHPExcel']);
+        require_once './application/libraries/PHPExcel/IOFactory.php';
+        $objReader = PHPExcel_IOFactory::createReader('Excel5');
+        //加载目标Excel
+        $objPHPExcel = $objReader->load($filename);
+        //读取第一个sheet
+        $sheet = $objPHPExcel->getSheet(0);
+        // 取得总行数
+        $highestRow = $sheet->getHighestRow();
+        //从第一行开始读取数据
+        for($j=1; $j <= $highestRow; $j++){
+            $codeList[$j] = (int) $objPHPExcel->getActiveSheet()->getCell("A$j")->getValue();
+        }
+        return $codeList;
     }
     
     /*
@@ -709,7 +715,7 @@ class Housesscheduledorders extends MY_Controller{
         $lock_start_time = $this->input->post('lock_start_time');
         
         $where['is_del'] = 0;
-        $fields = 'id,code,houses_id,area_id,ban,unit,floor,addr,type_id,point_status';
+        $fields = 'id,code,houses_id,area_id,ban,unit,floor,addr,type_id,ad_num, ad_use_num, point_status';
         $points_lists = $this->Mhouses_points->get_usable_point($fields, $where, $lock_start_time);
         if(count($points_lists) > 0) {
             $housesid = array_unique(array_column($points_lists, 'houses_id'));
