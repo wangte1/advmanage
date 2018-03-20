@@ -244,7 +244,7 @@
                                                                             <?php if(isset($point_list) && $point_list):?>
                                                                             <?php foreach ($point_list as $k => $v):?>
                                                                             <tr point-id="<?php echo $v['id'];?>">
-                                                                                <td width="10%"><?php echo $v['id'];?></td>
+                                                                                <td width="10%"><?php echo $v['code'];?></td>
                                                                                 <td width="10%"><?php echo $v['houses_name'];?></td>
                                                                                 <td width="10%"><?php echo $v['houses_area_name'];?></td>
                                                                                 <td width="10%"><?php echo $v['ban']?></td>

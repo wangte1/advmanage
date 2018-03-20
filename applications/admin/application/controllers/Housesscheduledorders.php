@@ -95,7 +95,7 @@ class Housesscheduledorders extends MY_Controller{
             unset($post_data['ban'], $post_data['unit'], $post_data['floor']);
             if (isset($post_data['area_id'])) unset($post_data['area_id']);
             if (isset($post_data['addr'])) unset($post_data['addr']);
-
+            
             $post_data['create_user'] = $post_data['update_user'] = $data['userInfo']['id'];
             $post_data['create_time'] = $post_data['update_time'] = date('Y-m-d H:i:s');
             $post_data['point_ids'] = implode(',', array_unique(explode(',', $post_data['point_ids'])));
@@ -106,11 +106,12 @@ class Housesscheduledorders extends MY_Controller{
                 $update_data['incr']['lock_num'] = 1;
                 $point_where['in'] = array('id' => explode(',', $post_data['point_ids']));
                 $this->Mhouses_points->update_info($update_data, $point_where);
+                
                 //更新点位状态处理
-                $_where['field']['`ad_num`'] = '`lock_num`+`ad_use_num`';
+                $_where['field']['`ad_num` ='] = '`lock_num`+`ad_use_num`';
                 $_where['in'] = array('id' => explode(',', $post_data['point_ids']));
                 $this->Mhouses_points->update_info(['point_status' => 3], $_where);
-                
+
                 $this->write_log($data['userInfo']['id'], 1, "新增".$data['order_type_text'][$post_data['order_type']]."预定订单,订单id【".$id."】");
                 $this->success("添加成功！","/housesscheduledorders");
             } else {
@@ -188,8 +189,6 @@ class Housesscheduledorders extends MY_Controller{
             if (isset($post_data['addr'])) unset($post_data['addr']);
             unset($post_data['id'], $post_data['ban'], $post_data['unit'], $post_data['floor']);
             
-            
-            
             //获取已被取消的点位
             $point_ids = $post_data['point_ids'];
             if(empty($point_ids)) $this->error("请至少选择一个点位！");
@@ -208,7 +207,7 @@ class Housesscheduledorders extends MY_Controller{
                 $update_data['incr'] = ['lock_num' => 1];
                 $this->Mhouses_points->update_info($update_data, array('in' => array('id' => $add)));
                 //重置这些点位的状态
-                $_where['field']['`ad_num`>='] = '`lock_num`+`ad_use_num`';
+                $_where['field']['`ad_num`='] = '`lock_num`+`ad_use_num`';
                 $_where['in'] = ['id' => $add];
                 $this->Mhouses_points->update_info(['point_status' => 3], $_where);
                 unset($update_data, $_where);
@@ -227,7 +226,7 @@ class Housesscheduledorders extends MY_Controller{
                 $update_data['decr'] = ['lock_num' => 1];
                 $this->Mhouses_points->update_info($update_data, array('in' => array('id' => $point_ids_old)));
                 //重置这些点位的状态
-                $_where['field']['`ad_num`<'] = '`lock_num`+`ad_use_num`';
+                $_where['field']['`ad_num`>'] = '`lock_num`+`ad_use_num`';
                 $_where['in'] = ['id' => $point_ids_old];
                 $this->Mhouses_points->update_info(['point_status' => 1], $_where);
             }
@@ -235,6 +234,7 @@ class Housesscheduledorders extends MY_Controller{
             unset($post_data['area_id']);
             
             $result = $this->Mhouses_scheduled_orders->update_info($post_data, array('id' => $id));
+            
             if ($result) {
                 $this->write_log($data['userInfo']['id'], 2, "编辑".$data['order_type_text'][$post_data['order_type']]."订单,订单id【".$id."】");
                 $this->success("修改成功！","/housesscheduledorders");
@@ -367,7 +367,6 @@ class Housesscheduledorders extends MY_Controller{
                     'A.id' => 'asc'
                 ]
             );
-            
             if($point_list){
                 $data['info']['selected_points'] = $point_list;
                 //模拟获取分页
