@@ -114,8 +114,8 @@
                                                 <th>组团名称</th>
                                                 <th>所属楼盘</th>
                                                 <th>等级</th>
-                                                <!-- <th>坐标</th>
-                                                <th>腾讯坐标</th> -->
+                                                <!-- <th>坐标</th-->
+                                                <th>置业类型</th>
                                                 <th>门禁点位数</th>
                                                 <th>地面电梯前室点位数</th>
                                                 <th>地下电梯前室点位数</th>
@@ -136,8 +136,11 @@
                                                     	<?php echo $houses_name[$val['id']]?>
                                                     </td>
                                                     <td><?php if(isset($area_grade[$val['grade']])) echo $area_grade[$val['grade']];?></td>
-                                                    <!-- <td><?php echo $val['coordinate'];?></td>
-													<td><?php echo $val['t_coordinate'];?></td> -->
+                                                    <td>
+                                                    	<?php foreach (C('zhiye') as $k => $v):?>
+                                                    	<?php if($k == $val['zhiye_id']){echo $v;}?>
+                                                    	<?php endforeach;?>
+                                                    </td>
 													<td><?php if($val['count_1']['count']) echo $val['count_1']['count'];?></td>
 													<td><?php if($val['count_2']['count']) echo $val['count_2']['count'];?></td>
 													<td><?php if($val['count_3']['count']) echo $val['count_3']['count'];?></td>

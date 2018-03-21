@@ -63,6 +63,16 @@
                                     </select>
                                 </div>
                             </div>
+                            <div class="form-group">
+                                <label class="col-sm-3 control-label no-padding-right" for="form-field-1"> 置业类型： </label>
+                                <div class="col-sm-9">
+                                    <select class="select2" name="zhiye_id">
+                                    	<?php foreach (C('zhiye') as $k => $v) {?>
+                                    		<option <?php if($info['zhiye_id'] == $k){echo 'selected';}?> value="<?php echo $k;?>"><?php echo $v;?></option>
+                                    	<?php }?>
+                                    </select>
+                                </div>
+                            </div>
                             
                             <div class="form-group">
 	                            <label class="col-sm-3 control-label no-padding-right" for="form-field-1"> 组团等级： </label>
