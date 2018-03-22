@@ -258,7 +258,7 @@ class Housesconfirm extends MY_Controller{
     		$tmp_moudle = $this->Mhouses_orders;
     	}
     	$order = $tmp_moudle->get_one("*",array("id" => $order_id));
-    	$where_point['in']['A.id'] = explode(',', $order['point_ids']);
+    	$where_point['in']['A.id'] = $point_ids_arr = explode(',', $order['point_ids']);
     	$where_point['A.houses_id'] = $houses_id;
     	if($ban) {
     		$where_point['A.ban'] = $ban;
@@ -269,6 +269,10 @@ class Housesconfirm extends MY_Controller{
     	
     	$data_count = $this->Mhouses_points->count(['in' => ['id' => explode(',', $order['point_ids'])]]);
     	$data['page'] = $page;
+    	$data_count = $this->Mhouses_points->count([
+    	    'houses_id' => $houses_id,
+    	    'in' => ['id' => $point_ids_arr]
+    	]);
     	$data['data_count'] = $data_count;
     	
     	//根据点位id获取对应的图片
