@@ -974,7 +974,12 @@ class Housesorders extends MY_Controller{
     	//获取该订单下面的所有楼盘
     	$points = $this->Mhouses_points->get_points_lists($where_point,[],$size,($page-1)*$size);
     	$data_count = $this->Mhouses_points->count(['order_id' => $order_id, 'houses_id' => $houses_id]);
+    	
     	$data['page'] = $page;
+    	$data_count = $this->Mhouses_points->count([
+    	    'houses_id' => $houses_id, 
+    	    'in' => ['id' => $point_ids_arr]
+    	]);
     	$data['data_count'] = $data_count;
     	
     	//根据点位id获取对应的图片
@@ -995,7 +1000,7 @@ class Housesorders extends MY_Controller{
     					$val['image'][] = $v;
     				}
     			}
-    		}
+    		}  
     		$list[] = $val;
     	}
     
