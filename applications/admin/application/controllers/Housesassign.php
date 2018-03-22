@@ -622,7 +622,7 @@ class Housesassign extends MY_Controller{
     	}
     	 
     	//获取分页
-    	$pageconfig['base_url'] = "/houses";
+    	$pageconfig['base_url'] = "/Housesassign/show_points";
     	$pageconfig['total_rows'] = $data_count;
     	$this->pagination->initialize($pageconfig);
     	$data['pagestr'] = $this->pagination->create_links(); // 分页信息
