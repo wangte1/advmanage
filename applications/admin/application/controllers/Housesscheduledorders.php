@@ -143,7 +143,7 @@ class Housesscheduledorders extends MY_Controller{
             $code_where['in']['A.code'] = array_unique($codeList);
             $code_where['A.type_id'] = $order_type;
             $data['point_list'] = $this->Mhouses_points->get_points_by_code($code_where);
-        }
+        }    
         //end
         //获取所有业务员
         $data['yewu'] = $this->Madmins->get_lists('id, fullname', array('group_id' => 2,'is_del' => 1));
@@ -165,7 +165,10 @@ class Housesscheduledorders extends MY_Controller{
         $highestRow = $sheet->getHighestRow();
         //从第一行开始读取数据
         for($j=1; $j <= $highestRow; $j++){
-            $codeList[$j] = (int) $objPHPExcel->getActiveSheet()->getCell("A$j")->getValue();
+            $val = (int) $objPHPExcel->getActiveSheet()->getCell("A$j")->getValue();
+            if(!empty($val) && $val){
+                array_push($codeList, $val);
+            }
         }
         return $codeList;
     }
