@@ -951,6 +951,7 @@ class Housesorders extends MY_Controller{
     	$assign_id = $this->input->get('assign_id');
     	$order_id = $this->input->get('order_id');
     	$houses_id = $this->input->get('houses_id');
+    	$area_id = $this->input->get('area_id');
     	$ban = $this->input->get('ban');
     	$assign_type = $this->input->get('assign_type');
     	
@@ -966,6 +967,9 @@ class Housesorders extends MY_Controller{
     		$where_point['in']['A.id'] = $point_ids_arr;
     	}
     	$where_point['A.houses_id'] = $houses_id;
+    	if($area_id) {
+    	    $where_point['A.area_id'] = $area_id;
+    	}
     	if($ban) {
     		$where_point['A.ban'] = $ban;
     	}
@@ -973,14 +977,12 @@ class Housesorders extends MY_Controller{
     	
     	//获取该订单下面的所有楼盘
     	$points = $this->Mhouses_points->get_points_lists($where_point,[],$size,($page-1)*$size);
+    	$points_count = $this->Mhouses_points->get_points_lists($where_point);
     	$data_count = $this->Mhouses_points->count(['order_id' => $order_id, 'houses_id' => $houses_id]);
     	
     	$data['page'] = $page;
-    	$data_count = $this->Mhouses_points->count([
-    	    'houses_id' => $houses_id, 
-    	    'in' => ['id' => $point_ids_arr]
-    	]);
-    	$data['data_count'] = $data_count;
+    	
+    	$data['data_count'] = $data_count = count($points_count);
     	
     	//根据点位id获取对应的图片
     	$data['images'] = "";
