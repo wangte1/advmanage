@@ -33,44 +33,39 @@
 
 
             <div class="page-content">
-
+				<div class="row" style="height:50px;padding-left: 12px;">
+					<a href="javascript:;" class="btn btn-xs btn-info btn-export"  style="margin-bottom:10px">
+                         <i class="fa fa-download out_excel" aria-hidden="true"></i> 导出点位
+                    </a>
+				</div>
                 <div class="row">
                     <form action="" method="post">
-                        <div class="col-xs-12">
+                        <div class="col-xs-12 table-responsive">
                             <div class="row-fluid" style="margin-bottom: 100px;">
                                 <table class="table table-striped table-bordered table-hover">
                                     <thead>
                                         <tr>
-                                        	<th class="center phone-hide" nowrap>点位编号</th>
-                                        	<th class="center phone-hide" nowrap>楼盘</th>
-                                            <th class="center phone-hide" nowrap>组团</th>
-                                            <th class="center phone-hide" nowrap>楼栋</th>
-                                            <th class="center phone-hide" nowrap>单元</th>
-                                            <th class="center phone-hide" nowrap>楼层</th>
-                                            <th class="center phone-hide" nowrap>点位位置</th>
-                                            <th class="center phone-show" nowrap>地址</th>
+                                        	<th  nowrap>点位编号</th>
+                                        	<th class="center" nowrap>楼盘</th>
+                                            <th class="center" nowrap>组团</th>
+                                            <th class="center" nowrap>楼栋</th>
+                                            <th class="center" nowrap>单元</th>
+                                            <th class="center" nowrap>楼层</th>
+                                            <th class="center" nowrap>点位位置</th>
                                             <th class="center" nowrap>图片</th>
                                         </tr>
                                     </thead>
                                     <tbody>
                                         <?php if(isset($list))foreach ($list as $key => $value) :?>
                                         <tr>
-                                        	<td class="phone-hide" style="text-align: center;vertical-align: middle;"><?php echo $value['code'];?></td>
-                                            <td class="phone-hide" style="text-align: center;vertical-align: middle;"><?php echo $value['houses_name'];?></td>
-                                            <td class="phone-hide" style="text-align: center;vertical-align: middle;"><?php echo $value['houses_area_name'];?></td>
-                                            <td class="phone-hide" style="text-align: center;vertical-align: middle;"><?php echo $value['ban'];?></td>
-                                            <td class="phone-hide" style="text-align: center;vertical-align: middle;"><?php echo $value['unit'];?></td>
-                                            <td class="phone-hide" style="text-align: center;vertical-align: middle;"><?php echo $value['floor'];?></td>
+                                        	<td  style="text-align: center;vertical-align: middle;"><?php echo $value['code'];?></td>
+                                            <td  style="text-align: center;vertical-align: middle;"><?php echo $value['houses_name'];?></td>
+                                            <td  style="text-align: center;vertical-align: middle;"><?php echo $value['houses_area_name'];?></td>
+                                            <td  style="text-align: center;vertical-align: middle;"><?php echo $value['ban'];?></td>
+                                            <td  style="text-align: center;vertical-align: middle;"><?php echo $value['unit'];?></td>
+                                            <td  style="text-align: center;vertical-align: middle;"><?php echo $value['floor'];?></td>
                                             
-                                            <td class="phone-hide" style="text-align: center;vertical-align: middle;"><?php if(isset($point_addr[$value['addr']])) echo $point_addr[$value['addr']];?></td>
-                                            <td class="phone-show" nowrap>
-                                            	<?php echo $value['houses_name'];?><br>
-                                            	<?php echo $value['houses_area_name'];?><br>
-                                            	<?php echo $value['ban'];?><br>
-                                            	<?php echo $value['unit'];?><br>
-                                            	<?php echo $value['floor'];?><br>
-                                            	<?php if(isset($point_addr[$value['addr']])) echo $point_addr[$value['addr']];?>
-                                            </td>
+                                            <td style="text-align: center;vertical-align: middle;"><?php if(isset($point_addr[$value['addr']])) echo $point_addr[$value['addr']];?></td>
                                             <td class="">
                                                 <div id="uploader-demo">
 												    <div id="filePicker-<?php echo $key;?>" class="filePicker" onclick="uploader_id = <?php echo $key;?>;">选择图片</div>
@@ -145,6 +140,8 @@
 	
 	    // 选完文件后，是否自动上传。
 	    auto: true,
+
+	    compress: {quality: 50},
 	
 	    // swf文件路径
 	    swf: '<?php echo css_js_url('Uploader.swf', 'common');?>',
@@ -250,6 +247,15 @@
             $("#cboxLoadingGraphic").append("<i class='icon-spinner orange'></i>");//let's add a custom loading icon
     }
 
+</script>
+<script type="text/javascript">
+	$('.btn-export').on('click', function(){
+		var url  = '/housesconfirm/task_exports?assign_id=<?php echo $assign_id;?>';
+			url += '&order_id=<?php echo $order_id;?>';
+			url += '&houses_id=<?php echo $houses_id;?>';
+			url += '&assign_type=<?php echo $assign_type;?>';
+		window.location.href = url;
+	});
 </script>
 <!-- 底部 -->
 <?php $this->load->view("common/bottom");?>

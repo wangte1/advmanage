@@ -143,7 +143,13 @@ class Housesscheduledorders extends MY_Controller{
             $code_where['in']['A.code'] = array_unique($codeList);
             $code_where['A.type_id'] = $order_type;
             $data['point_list'] = $this->Mhouses_points->get_points_by_code($code_where);
-        }    
+        }
+        $findList = array_column($data['point_list'], 'code');
+        foreach ($codeList as $k => $v){
+            if(!in_array($v, $findList)){
+                echo $v.'--';
+            }
+        }
         //end
         //获取所有业务员
         $data['yewu'] = $this->Madmins->get_lists('id, fullname', array('group_id' => 2,'is_del' => 1));

@@ -119,8 +119,7 @@ class Housespoints extends MY_Controller{
             $tmpArr = $this->Mhouses->get_one("name",array("id" =>$post['houses_id']));
             $post['houses_name'] = $tmpArr['name'];
             $tmpArr = $this->Mhouses_area->get_one("name",array("id" => $post['area_id']));
-            $post['area_name'] = $tmpArr['name'];
-            
+            if($tmpArr) $post['area_name'] = $tmpArr['name'];
             $result = $this->Mhouses_points->create($post);
             if($result){
                 $this->write_log($data['userInfo']['id'],1,"社区新增点位：".$post['code']);

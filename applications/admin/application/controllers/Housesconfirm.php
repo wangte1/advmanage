@@ -92,7 +92,7 @@ class Housesconfirm extends MY_Controller{
         $pageconfig['base_url'] = "/housesconfirm";
         $pageconfig['total_rows'] = $data_count;
         $this->pagination->initialize($pageconfig);
-        //$data['pagestr'] = $this->pagination->create_links(); // 分页信息
+        $data['pagestr'] = $this->pagination->create_links(); // 分页信息
         
         $this->load->view("housesconfirm/index", $data);
     }
@@ -211,11 +211,13 @@ class Housesconfirm extends MY_Controller{
     	$page =  intval($this->input->get("per_page",true)) ?  : 1;
     	$size = $pageconfig['per_page'];
     	
-    	$assign_id = $this->input->get('assign_id');
-    	$order_id = $this->input->get('order_id');
-    	$houses_id = $this->input->get('houses_id');
-    	$ban = $this->input->get('ban');
-    	$assign_type = $this->input->get('assign_type');
+    	$data['assign_id'] = $assign_id = $this->input->get('assign_id');
+    	$data['order_id'] = $order_id = $this->input->get('order_id');
+    	$data['houses_id'] = $houses_id = $this->input->get('houses_id');
+    	$data['area_id'] = $area_id = $this->input->get('area_id');
+    	$data['ban'] = $ban = $this->input->get('ban');
+    	$data['assign_type'] = $assign_type = $this->input->get('assign_type');
+    	$data['num'] = $num = $this->input->get('num');
     	
     	if(IS_POST){
     		$post_data = $this->input->post();
@@ -263,17 +265,15 @@ class Housesconfirm extends MY_Controller{
     	if($ban) {
     		$where_point['A.ban'] = $ban;
     	}
+    	if($area_id){
+    	    $where_point['A.area_id'] = $area_id;
+    	}
     	
     	//获取该订单下面的所有楼盘
     	$points = $this->Mhouses_points->get_points_lists($where_point,[],$size,($page-1)*$size);
-    	
-    	$data_count = $this->Mhouses_points->count(['in' => ['id' => explode(',', $order['point_ids'])]]);
+    	$points_count = $this->Mhouses_points->get_points_lists($where_point);
     	$data['page'] = $page;
-    	$data_count = $this->Mhouses_points->count([
-    	    'houses_id' => $houses_id,
-    	    'in' => ['id' => $point_ids_arr]
-    	]);
-    	$data['data_count'] = $data_count;
+    	$data['data_count'] = count($points_count);
     	
     	//根据点位id获取对应的图片
     	$data['images'] = "";
@@ -303,11 +303,118 @@ class Housesconfirm extends MY_Controller{
     	
     	//获取分页
     	$pageconfig['base_url'] = "/housesconfirm/check_upload_img";
-    	$pageconfig['total_rows'] = $data_count;
+    	$pageconfig['total_rows'] = $data['data_count'];
     	$this->pagination->initialize($pageconfig);
     	$data['pagestr'] = $this->pagination->create_links(); // 分页信息
     
     	$this->load->view('housesconfirm/check_adv_img', $data);
+    }
+    
+    /**
+     * 导出工单
+     */
+    public function  task_exports(){
+        $data = $this->data;
+        $pageconfig = C('page.page_lists');
+        $this->load->library('pagination');
+        $page =  intval($this->input->get("per_page",true)) ?  : 1;
+        $size = $pageconfig['per_page'];
+        
+        $assign_id = $this->input->get('assign_id');
+        $order_id = $this->input->get('order_id');
+        $houses_id = $this->input->get('houses_id');
+        $ban = $this->input->get('ban');
+        $assign_type = $this->input->get('assign_type');
+        
+        if($assign_type == 3) {
+            $tmp_moudle = $this->Mhouses_changepicorders;
+        }else {
+            $tmp_moudle = $this->Mhouses_orders;
+        }
+        $order = $tmp_moudle->get_one("*",array("id" => $order_id));
+        $where_point['in']['A.id'] = $point_ids_arr = explode(',', $order['point_ids']);
+        $where_point['A.houses_id'] = $houses_id;
+        if($ban) {
+            $where_point['A.ban'] = $ban;
+        }
+        
+        //获取该订单下面的所有楼盘
+        $points = $this->Mhouses_points->get_points_lists($where_point);
+
+        //根据点位id获取对应的图片
+        $data['images'] = "";
+        if(count($points) > 0) {
+            $where['in'] = array("point_id"=>array_column($points,"id"));
+            $where['order_id'] = $order_id;
+            $where['assign_id'] = $assign_id;
+            $where['assign_type'] = $assign_type;
+            $where['type'] = 1;
+            $data['images'] = $this->Mhouses_order_inspect_images->get_lists("*",$where);
+        }
+        
+        $list = array();
+        foreach ($points as $key => $val) {
+            $val['image'] = array();
+            if($data['images']){
+                foreach($data['images'] as $k=>$v){
+                    if($val['id'] == $v['point_id']){
+                        $val['image'][] = $v;
+                    }
+                }
+            }
+            $list[] = $val;
+        }
+        
+        if($list){
+            //加载phpexcel
+            $this->load->library("PHPExcel");
+            
+            //设置表头
+            $table_header =  array(
+                '点位编号'=>"code",
+                '楼盘'=>"houses_name",
+                '组团'=>"houses_area_name",
+                '楼栋'=>"ban",
+                '单元'=>"unit",
+                '楼层'=>"floor",
+                '点位位置'=>"addr"
+            );
+            
+            $i = 0;
+            foreach($table_header as  $k=>$v){
+                $cell = PHPExcel_Cell::stringFromColumnIndex($i).'1';
+                $this->phpexcel->setActiveSheetIndex(0)->setCellValue($cell, $k);
+                $i++;
+            }
+
+            
+            $h = 2;
+            foreach($list as $key=>$val){
+                $j = 0;
+                foreach($table_header as $k => $v){
+                    $cell = PHPExcel_Cell::stringFromColumnIndex($j++).$h;
+                    $value = '';
+                    if($v == 'addr') {
+                        if(isset($data['point_addr'][$val[$v]]))
+                            $value = $data['point_addr'][$val[$v]];
+                    }else {
+                        $value = $val[$v];
+                    }
+                    $this->phpexcel->getActiveSheet(0)->setCellValue($cell, $value);
+                }
+                $h++;
+            }
+            
+            $this->phpexcel->setActiveSheetIndex(0);
+            // 输出
+            header('Content-Type: application/vnd.ms-excel');
+            header('Content-Disposition: attachment;filename=工单编号：'.$assign_id.'点位列表'.'）.xls');
+            header('Cache-Control: max-age=0');
+            
+            $objWriter = PHPExcel_IOFactory::createWriter($this->phpexcel, 'Excel5');
+            $objWriter->save('php://output');
+        }
+
     }
     
     

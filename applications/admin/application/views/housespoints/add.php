@@ -195,7 +195,7 @@
                             <div class="form-group">
                                 <label class="col-sm-3 control-label no-padding-right" for="form-field-1"> 可投放广告数： </label>
                                 <div class="col-sm-9">
-                                    <input type="number" name="ad_num" required  value="6" placeholder="" class="col-xs-6 col-sm-3">
+                                    <input type="number" name="ad_num" required  value="1" placeholder="" class="col-xs-6 col-sm-3">
                                     <span class="help-inline col-xs-12 col-sm-7 form-field-description-block">
                                        个
 									</span>

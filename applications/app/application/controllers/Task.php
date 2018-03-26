@@ -33,13 +33,9 @@ class Task extends MY_Controller {
         $this->load->library('pagination');
         $page = (int) $this->input->get_post('page') ? : '1';
         $size = (int) $this->input->get_post('size');
+        $type = (int) $this->input->get_post('type');
         $status = (int) $this->input->get_post('status');
         $area = trim($this->input->get_post('area'));
-        
-        
-        
-        
-        
         $where = ['A.is_del' => 0];
         if(!$size) $size = $pageconfig['per_page'];
         if($status == 4) {
@@ -47,9 +43,14 @@ class Task extends MY_Controller {
         }else {
         	$where['A.status<>'] = 4;
         }
+        //工单类型，1上画，2下画，3换画
+        if($type){
+            $where['A.type'] = $type;
+        }
         
         $token = decrypt($this->input->get_post('token'));
-        $where['A.charge_user'] = $token['user_id'];
+        //临时关闭，调试完成后开启
+        //$where['A.charge_user'] = $token['user_id'];
         
         if(!empty($area)) {
         	$where_area['like']['area'] = $area;
@@ -59,9 +60,11 @@ class Task extends MY_Controller {
         	}
         }
         
-        $list = $this->Mhouses_assign->get_join_lists($where,['A.id'=>'desc'],$size,($page-1)*$size);
- 
-        $this->return_json(['code' => 1, 'data' => json_encode($list), 'page' => $page]);
+        $list = $this->Mhouses_assign->get_join_lists($where, ['A.id'=>'desc'], $size, ($page-1)*$size);
+        if(!$list){
+            $this->return_json(['code' => 0, 'data' => [], 'page' => $page, 'msg' => '没有更多数据']);
+        }
+        $this->return_json(['code' => 1, 'data' => json_encode($list), 'page' => $page, 'msg' => 'ok']);
     }
     
     /**
@@ -79,11 +82,13 @@ class Task extends MY_Controller {
      */
     public function confirm() {
     	$assignId = (int) $this->input->get_post('assignId');
+    	$token = decrypt($this->token);
+    	//临时关闭，
+    	//$res = $this->Mhouses_assign->update_info(['status' => 3], ['id' => $assignId, 'charge_user' => $token['user_id']]);
     	$res = $this->Mhouses_assign->update_info(['status' => 3], ['id' => $assignId]);
     	if(!$res){
     		$this->return_json(['code' => 1, 'msg' => '确认成功!']);
     	}
-    	
     	$this->return_json(['code' => 0, 'msg' => '确认失败，请联系管理员!']);
     }
     

@@ -137,19 +137,20 @@
 												<a href="#panel-2" data-toggle="tab">下画派单&nbsp;<span class="badge badge-important"><?php echo $no_confirm_count2[0]['count'];?></span></a>
 											</li>
 										</ul>
-										<div class="tab-content">
+										<div class="tab-content table-responsive">
 											<div class="tab-pane active" id="panel-1">
 												<table id="sample-table-2" class="table table-striped table-bordered table-hover">
 			                                        <thead>
 			                                            <tr>
 			                                                <th class="phone-hide">序号</th>
+			                                                <th class="phone-hide">订单编号</th>
 			                                                <th nowrap>行政区域</th>
 			                                                <th nowrap>楼盘名称</th>
 			                                                <th nowrap>组团</th>
 			                                                <th nowrap>楼栋</th>
 			                                                <th nowrap class="phone-hide">点位类型</th>
 			                                                <th class="phone-hide">客户名称</th>
-			                                                <th class="phone-hide">点位数量（个）</th>
+			                                                <th>点位数量（个）</th>
 			                                                <th class="phone-hide">投放时间</th>
 			                                                <th class="phone-hide">派单人</th>
 			                                                <th class="phone-hide">说明</th>
@@ -167,6 +168,9 @@
 			                                                ?>
 			                                                <tr>
 			                                                    <td class="phone-hide"><a href=""><?php echo $key+1;?></a></td>
+			                                                    <td class="phone-hide">
+			                                                    	<?php echo $val['order_code'];?>
+			                                                    </td>
 			                                                    <td>
 			                                                    	<?php echo $val['province']."-".$val['city']."-".$val['area'];?>
 			                                                    </td>
@@ -188,7 +192,7 @@
 			                                                     <td class="phone-hide">
 			                                                    	<?php echo $val['customer_name'];?>
 			                                                    </td>
-																<td class="phone-hide">
+																<td>
 																	<?php echo $val['points_count'];?>
 																</td>
 																<td class="phone-hide">
@@ -256,11 +260,6 @@
 			                                                            <a class="green tooltip-info" href="/housesconfirm/order_detail/<?php echo $val['order_id'];?>/<?php echo $assign_type;?>?houses_id=<?php echo $val['houses_id'];?>&ban=<?php echo $val['ban'];?>"  data-rel="tooltip" data-placement="top" title="" data-original-title="详情">
 				                                                            <i class="icon-eye-open bigger-130"></i>
 				                                                        </a> 
-			                                                            
-			                                                            <!-- <a class="green tooltip-info m-detail" houses-id="<?php echo $val['houses_id'];?>" order-id="<?php echo $val['order_id'];?>"  data-rel="tooltip" data-placement="top" title="" data-original-title="详情">
-				                                                            <i class="icon-eye-open bigger-130"></i>
-				                                                        </a>  -->
-				                                                        
 				                                                        <?php if($val['status'] == 2) {?>
 					                                                        <a class="green tooltip-info m-confirm" data-id="<?php echo $val['id'];?>" order-id="<?php echo $val['order_id'];?>"  data-rel="tooltip" data-placement="top" title="" data-original-title="确认">
 					                                                            <i class="icon-check bigger-130"></i>
@@ -277,13 +276,14 @@
 
 				                                                        <?php if($val['status'] == 3 ||  $val['status'] == 6) {?>
 
-				                                                        	<a class="green tooltip-info m-upload" data-id="<?php echo $val['id'];?>" order-id="<?php echo $val['order_id'];?>" houses-id="<?php echo $val['houses_id'];?>" ban="<?php echo $val['ban'];?>" data-rel="tooltip" data-placement="top" title="" data-original-title="验收图片">
+				                                                        	<a class="green tooltip-info m-upload" data-id="<?php echo $val['id'];?>" order-id="<?php echo $val['order_id'];?>" houses-id="<?php echo $val['houses_id'];?>" area_id="<?php echo $val['area_id']?>" ban="<?php echo $val['ban'];?>" num="<?php echo $val['points_count'];?>" data-rel="tooltip" data-placement="top" title="" data-original-title="验收图片">
 					                                                            <i class="fa fa-picture-o bigger-130"></i>
 					                                                        </a>
 					                                                        <a class="green tooltip-info m-submit" data-id="<?php echo $val['id'];?>" order-id="<?php echo $val['order_id'];?>"  data-rel="tooltip" data-placement="top" title="" data-original-title="提交<?php if($assign_type == 2) {?>下画<?php }else {?>上画<?php }?>">
 					                                                            <i class="fa fa-send-o bigger-130"></i>
 					                                                        </a>  
 				                                                        <?php }?>
+				                                                        
 			                                                        </div>
 			                                                    </td>
 			                                                </tr>
@@ -396,19 +396,13 @@
 			var order_id = $(this).attr('order-id');
 			var houses_id = $(this).attr('houses-id');
 			var ban = $(this).attr('ban');
-			var assign_type = '<?php echo $assign_type;?>';
+			var area_id = $(this).attr('area_id');
+ 			var assign_type = '<?php echo $assign_type;?>';
+			var num = $(this).attr('num');
 
-			location.href='/housesconfirm/check_upload_img?order_id='+order_id+'&assign_id='+id+'&houses_id='+houses_id+'&ban='+ban+'&assign_type='+assign_type //iframe的url
+			location.href='/housesconfirm/check_upload_img?order_id='+order_id+'&assign_id='+id+'&houses_id='+houses_id+'&area_id='+area_id+'&ban='+ban+'&assign_type='+assign_type+'&num='+num //iframe的url
 			return;
 			
-// 			layer.open({
-// 				  type: 2,
-// 				  title: '上传验收图片',
-// 				  shadeClose: true,
-// 				  shade: 0.6,
-// 				  area: ['80%', '80%'],
-// 				  content: '/housesconfirm/check_upload_img?order_id='+order_id+'&assign_id='+id+'&houses_id='+houses_id+'&assign_type='+assign_type //iframe的url
-// 				}); 
 		});
 
 		//提交上画
