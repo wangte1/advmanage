@@ -238,6 +238,7 @@
                                                 <th>锁定数</th>
                                                 <th>状态</th>
                                                 <th>占用客户</th>
+                                                <th>备注</th>
                                                 <th>操作</th>
                                             </tr>
                                         </thead>
@@ -288,7 +289,7 @@
 	                                                            case '1':
 	                                                                $class = 'badge-success';
 	                                                                break;
-	                                                            case '2':
+	                                                            case '4':
 	                                                                $class = 'badge-warning';
 	                                                                break;
 	                                                            case '3':
@@ -311,8 +312,19 @@
                                                     	<?php endforeach;?>
                                                     	<?php endif;?>
 													</td>
+													<td><?php echo $val['remarks']?></td>
                                                     <td>
                                                         <div class="visible-md visible-lg hidden-sm hidden-xs action-buttons">
+                                                       		<?php if($val['point_status'] == 4):?>
+                                                        	<a class="green tooltip-info reported" data-rel="tooltip" data-placement="top" data-original-title="修复">
+                                                                <i class="ace-icon glyphicon glyphicon-refresh bigger-130"></i>
+                                                            </a>
+                                                            <?php endif;?>
+                                                            <?php if($val['point_status'] != 4):?>
+                                                        	<a class="green tooltip-info report" data-rel="tooltip" data-placement="top" data-original-title="报损">
+                                                                <i class="ace-icon fa fa-gavel bigger-130"></i>
+                                                            </a>
+                                                            <?php endif;?>
                                                             <a class="green tooltip-info" href="/housespoints/edit/<?php echo $val['id'];?>" data-rel="tooltip" data-placement="top" data-original-title="修改">
                                                                 <i class="icon-pencil bigger-130"></i>
                                                             </a>

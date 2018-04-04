@@ -11,6 +11,7 @@ class Houses extends MY_Controller{
         $this->load->model([
             'Model_houses' => 'Mhouses',
         	'Model_area' => 'Marea',
+            'Model_houses_area' => 'Harea',
         	'Model_houses_points' => 'Mhouses_points',
          ]);
         $this->data['code'] = 'community_manage';
@@ -160,6 +161,9 @@ class Houses extends MY_Controller{
         if(IS_POST){
             $post = $this->input->post();
             unset($post['sub_put_trade']);
+            $oldname = $this->Mhouses->get_one('name',['id' => $id]);
+            $this->Harea->update_info(['houses_name' => $post['name']], ['houses_name' => $oldname['name']]);
+            $this->Mhouses_points->update_info(['houses_name' => $post['name']], ['houses_name' => $oldname['name']]);
             //$post['update_user'] = $data['userInfo']['id'];
             //$post['update_time'] = date("Y-m-d H:i:s");
             $result = $this->Mhouses->update_info($post,array("id"=>$id));

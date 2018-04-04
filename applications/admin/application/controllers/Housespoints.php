@@ -325,7 +325,8 @@ class Housespoints extends MY_Controller{
     		'单元'=>"unit",
     		'楼层'=>"floor",
     		'位置'=>"addr",
-    		'价格'=>"price",
+    	    '状态'=> 'point_status',
+    	    '占用客户' => 'customer_id'
     	);
     	
     
@@ -337,9 +338,34 @@ class Housespoints extends MY_Controller{
     	}
     	
     	$list = $this->Mhouses_points->get_points_lists($where);
-    
+    	$customerList = $this->Mhouses_customers->get_lists('id,name', ['is_del' => 0]);
     	$h = 2;
-    	foreach($list as $key=>$val){
+    	$addrList = C('housespoint.point_addr');
+    	foreach($list as $key=> &$val){
+    	    foreach ($addrList as $k => $v){
+    	        if($val['addr'] == $k) $val['addr'] = $v;
+    	    }
+    	    //拼接占用客户
+    	    if(!empty($val['customer_id'] && $val['customer_id'])){
+    	        $thisCustomer = explode(',', $val['customer_id']);
+    	        foreach ($thisCustomer as $k => $v){
+    	            if($v){
+    	                $val['customer_id'] = '';
+        	            foreach ($customerList as $k1 => $v1){
+        	                if($v == $v1['id']){
+        	                    $val['customer_id'] .= $v1['name'];
+        	                }
+        	            }
+    	            }
+    	        }
+    	    }
+    	    
+    	    if($val['point_status'] == 1){
+    	        $val['point_status'] = '空闲';
+    	    }else if($val['point_status'] == 3){
+    	        $val['point_status'] = '占用';
+    	    }
+    	    
     		$j = 0;
     		foreach($table_header as $k => $v){
     		$cell = PHPExcel_Cell::stringFromColumnIndex($j++).$h;
@@ -375,9 +401,14 @@ class Housespoints extends MY_Controller{
     		if($v == "addr") {
     			$value = $val['addr'];
     		}
-    		
-    		if($v == "price") {
-    			$value = $val['price'];
+    		if($v == "point_status") {
+    		    $value = $val['point_status'];
+    		}
+    		if($v == "customer_id") {
+    		    $value = '';
+    		    if($val['customer_id']){
+    		        $value = $val['customer_id'];
+    		    }
     		}
     		$this->phpexcel->getActiveSheet(0)->setCellValue($cell, $value.' ');
     		}

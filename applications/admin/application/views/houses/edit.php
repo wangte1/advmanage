@@ -135,7 +135,13 @@
 								</span>
                             </div>
                         </div> 
-                            
+                        
+                         <div class="form-group">
+                                <label class="col-sm-3 control-label no-padding-right" for="form-field-1"> 物业公司： </label>
+                                <div class="col-sm-9">
+                                    <input type="text"  name="property_company" value="<?php echo $info['property_company'];?>">
+                                </div>
+                        </div>
                             
                        	<div class="form-group">
 	                       	<label class="col-sm-3 control-label no-padding-right" for="form-field-1">  备注： </label>

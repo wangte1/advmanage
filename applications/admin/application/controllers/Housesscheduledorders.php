@@ -715,7 +715,8 @@ class Housesscheduledorders extends MY_Controller{
     public function get_points() {
 
         if($this->input->post('order_type')) $where['type_id'] = $this->input->post('order_type');
-        if(!empty($this->input->post('houses_id'))) $where['houses_id'] = $this->input->post('houses_id');
+        if(!empty($this->input->post('houses_id'))) {$houses_id = $where['houses_id'] = $this->input->post('houses_id');}
+        if(!empty($this->input->post('area_id'))) {$where['area_id'] = $this->input->post('area_id');}
         if(!empty($this->input->post('ban'))) $where['ban'] = $this->input->post('ban');
         if(!empty($this->input->post('unit'))) $where['unit'] = $this->input->post('unit');
         if(!empty($this->input->post('floor'))) $where['floor'] = $this->input->post('floor');
@@ -775,7 +776,10 @@ class Housesscheduledorders extends MY_Controller{
             }
             
         }
-        $areaList = array_unique(array_column($points_lists, 'area_name'));
+        $areaList = [];
+        if($houses_id){
+            $areaList = $this->Mhouses_area->get_lists('id, name', ['houses_id' => $houses_id]);
+        }
         //获取去重的组团区域
         $this->return_json(array('flag' => true, 'points_lists' => $points_lists, 'count' => count($points_lists), 'area_list' => $areaList));
     }

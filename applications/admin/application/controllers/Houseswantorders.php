@@ -95,6 +95,7 @@ class Houseswantorders extends MY_Controller{
         $data = $this->data;
         if(IS_POST){
             $post_data = $this->input->post();
+            if($post_data['customer_id'] <= 0) $this->error("请选着客户");
             $points_count = (int) $post_data['points_count'];
             if(!$points_count) $this->error("请输入预定点位数量！");
             unset($post_data['s_houses_type']);
@@ -137,6 +138,7 @@ class Houseswantorders extends MY_Controller{
     	
     	if(IS_POST){
     		$post_data = $this->input->post();
+    		var_dump($post_data);exit;
     		unset($post_data['province'], $post_data['city'], $post_data['area'],$post_data['houses_type'],$post_data['begin_year'],$post_data['end_year'],$post_data['put_trade']);
     		unset($post_data['ban'], $post_data['unit'], $post_data['floor']);
     		if (isset($post_data['area_id'])) unset($post_data['area_id']);
@@ -278,8 +280,8 @@ class Houseswantorders extends MY_Controller{
     	
     	$where['A.point_status'] = 1;
     	
-    	$points_lists = $this->Mhouses_points->get_points_lists($where);
-    	//echo $this->db->last_query();
+    	$points_lists = $this->Mhouses_points->get_points_lists_optimize($where);
+    	//echo $this->db->last_query();exit;
     	
     	$houses_lists = [];
     	$area_lists = [];

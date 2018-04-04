@@ -29,7 +29,6 @@ class Admin extends MY_Controller{
     public function index() {
         $data = $this->data;
         $data['title'] = array("管理员列表","管理员列表");
-
         $page =  intval($this->input->get("per_page",true)) ?  : 1;
         $size = $this->pageconfig['per_page'];
         $where['is_del'] = 1;
@@ -71,7 +70,7 @@ class Admin extends MY_Controller{
      * 1034487709@qq.com
      */
     public function add(){
-
+        $data = $this->data;
         if(IS_POST)
         {
             $count = $this->Madmins->count(array('is_del'=>1,'name'=>$this->input->post("name",true)));
@@ -93,6 +92,8 @@ class Admin extends MY_Controller{
             $result_id =  $this->Madmins->create($da);
           
             if($result_id){
+                $group = $this->Madmins_group->get_one('name',array('id'=>$_POST['group_id']));
+                $this->write_log($data['userInfo']['id'],1,"添加管理员：".$_POST['name']."，权限：".$group['name']);
                 $this->success("添加成功","/admin");
             }else{
                $this->error("添加管理员失败");
@@ -117,13 +118,15 @@ class Admin extends MY_Controller{
      */
     public function del($id = 0 )
     {
+        $data = $this->data;
         #不能删除管理员
         if($id==1)
         {
             $this->return_json(array("code"=>1,"msg"=>"不能删除超级管理员。"));
         }
-
+        $tmp = $this->Madmins->get_one('name',array('id'=>$id));
         #标记删除
+        $this->write_log($data['userInfo']['id'],3,"删除用户：".$tmp['name']);
         $this->Madmins->update_info(array("is_del"=>2),array("id"=>$id)) ;
         $this->success("操作成功","/admin");
     }

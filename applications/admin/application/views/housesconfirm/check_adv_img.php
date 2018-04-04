@@ -68,7 +68,7 @@
                                             <td style="text-align: center;vertical-align: middle;"><?php if(isset($point_addr[$value['addr']])) echo $point_addr[$value['addr']];?></td>
                                             <td class="">
                                                 <div id="uploader-demo">
-												    <div id="filePicker-<?php echo $key;?>" class="filePicker" onclick="uploader_id = <?php echo $key;?>;">选择图片</div>
+												    <div id="filePicker-<?php echo $key;?>" style="padding: 1px;" class="filePicker" onclick="uploader_id = <?php echo $key;?>;">上传</div>
 												</div>
                                                 
                                                 <ul style="margin:0;padding:0;text-align:left;" class="ace-thumbnails" media-id="<?php echo $value['id'];?>" id="uploader_front_img<?php echo $key;?>">

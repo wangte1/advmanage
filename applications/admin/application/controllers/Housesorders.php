@@ -756,16 +756,14 @@ class Housesorders extends MY_Controller{
     		$where['id'] = $id;
     	}
     	if($where) {
-    		//$res = $this->Morders->delete($where);
     		$res = $this->Mhouses_orders->update_info(array("is_del"=>1), $where);
     	}
     	
     	if(!empty($res)) {
-    		$res1 = $this->Mhouses_points->update_info(array("customer_id"=>0, "order_id"=>0, "status"=>1), array("order_id"=>$id));
+    		$res1 = $this->Mhouses_points->update_info(array("customer_id"=>0, "order_id"=>0, "point_status"=>1), array("order_id"=>$id));
     		if($res1) {
     			$this->return_json(['code' => 0, 'msg' => '删除成功！']);
     		}
-    		
     		$this->return_json(['code' => 0, 'msg' => '删除订单成功，但由于网络中断点位没有释放！']);
     		
     	}

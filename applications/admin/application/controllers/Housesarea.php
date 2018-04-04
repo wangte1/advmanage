@@ -127,6 +127,11 @@ class Housesarea extends MY_Controller{
 
         if(IS_POST){
             $post = $this->input->post();
+            $newhouse = $this->Mhouses->get_one('name',['id' => $post['houses_id']]);
+            $oldname = $this->Mhouses_area->get_one('name',['id' => $id]);
+            $this->Mhouses_area->update_info(['houses_name' => $newhouse['name']],['id' => $id]);
+            $this->Mhouses_points->update_info(['area_name' => $post['name'],'houses_name' => $newhouse['name']], ['area_name' => $oldname['name']]);
+            
             //$post['update_user'] = $data['userInfo']['id'];
             //$post['update_time'] = date("Y-m-d H:i:s");
             $result = $this->Mhouses_area->update_info($post,array("id"=>$id));

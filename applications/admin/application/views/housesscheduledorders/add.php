@@ -108,8 +108,8 @@
                                         <div class="form-group">
                                             <label class="col-sm-2 control-label no-padding-right" for="form-input-readonly"> 锁定开始时间： </label>
                                             <div class="col-sm-5">
-                                                <div class="input-group">
-                                                    <input class="form-control" id="lock_start_time" type="text" name="lock_start_time" value="<?php if(isset($info['lock_start_time'])){ echo $info['lock_start_time'];} else { echo date('Y-m-d'); }?>" readonly>
+                                                <div class="input-group date datepicker">
+                                                    <input class="form-control date-picker" id="lock_start_time" type="text" name="lock_start_time" value="<?php if(isset($info['lock_start_time'])){ echo $info['lock_start_time'];} else { echo date('Y-m-d'); }?>" >
                                                     <span class="input-group-addon">
                                                         <i class="icon-calendar bigger-110"></i>
                                                     </span>
@@ -120,8 +120,8 @@
                                         <div class="form-group">
                                             <label class="col-sm-2 control-label no-padding-right" for="form-input-readonly"> 锁定结束时间： </label>
                                             <div class="col-sm-5">
-                                                <div class="input-group">
-                                                    <input class="form-control" type="text" name="lock_end_time" value="<?php if(isset($info['lock_end_time'])){ echo $info['lock_end_time'];} else { echo date("Y-m-d",strtotime("+7 day"));} ?>" readonly>
+                                                <div class="input-group date datepicker">
+                                                    <input class="form-control date-picker" type="text" name="lock_end_time" value="<?php if(isset($info['lock_end_time'])){ echo $info['lock_end_time'];} else { echo date("Y-m-d",strtotime("+7 day"));} ?>">
                                                     <span class="input-group-addon">
                                                         <i class="icon-calendar bigger-110"></i>
                                                     </span>
@@ -418,12 +418,13 @@ $(function(){
 	
 	$('#houses_id,#area_id,#ban,#unit,#floor,#addr').change(function(){
 		var houses_id = $('#houses_id').val();
+		var area_id = $('#area_id').val();
 		var ban = $('#ban').val();
 		var unit = $('#unit').val();
 		var floor = $('#floor').val();
 		var addr = $('#addr').val();
 		var lock_start_time = $('#lock_start_time').val();
-		var postData = {order_type:order_type, put_trade:put_trade, houses_id:houses_id, ban:ban, unit:unit, floor:floor, lock_start_time:lock_start_time,addr:addr};
+		var postData = {order_type:order_type, put_trade:put_trade, houses_id:houses_id, area_id:area_id, ban:ban, unit:unit, floor:floor, lock_start_time:lock_start_time,addr:addr};
 		$.post('/housesscheduledorders/get_points', postData, function(data){
 			var pointStr =  '';
 			var areaStr = '<option value="">请选择组团</option>'; 
@@ -457,7 +458,7 @@ $(function(){
 				}
 				$('#area').html();
 				for(var j = 0; j < data.area_list.length; j++) {
-					areaStr += "<option value="+data.area_list[j]['id']+">"+data.area_list[j]+"</option>";
+					areaStr += "<option value="+data.area_list[j]['id']+">"+data.area_list[j]['name']+"</option>";
 				}
 			}else{
 				alert('暂无可预约 <?php echo $order_type_text[$order_type];?> 点位');
