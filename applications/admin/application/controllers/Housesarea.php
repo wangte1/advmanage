@@ -100,6 +100,9 @@ class Housesarea extends MY_Controller{
             $post = $this->input->post();
             $post['creator'] = $data['userInfo']['id'];
             $post['create_time'] = date("Y-m-d H:i:s");
+            //给组团添加临时楼盘字段
+            $temp = $this->Mhouses->get_one('name',['id' => $post['houses_id']]);
+            $post['houses_name'] = $temp['name'];
 
             $result = $this->Mhouses_area->create($post);
             if($result){

@@ -152,13 +152,13 @@ class Housesassign extends MY_Controller{
     			}else {
     				//向工程人员广播
     				$msg = "你有新的派单需要确认，请到派单确认界面确认！";
-    				//$this->send(['uid' => $charge_users[$k], 'message' => $msg]);
+    				$this->send(['uid' => $charge_users[$k], 'message' => $msg]);
     				
-    				//     			$res_send = $this->sendMsg($charge_users[$k]);
-    				 
-    				//     			if($res_send['code'] == 0) {
-    				//     				$this->write_log($charge_users[$k],2,"发送短信失败".date("Y-m-d H:i:s"));	//发送短信失败记录
-    				//     			}
+	    			$res_send = $this->sendMsg($charge_users[$k]);
+	 
+	    			if($res_send['code'] == 0) {
+	    				$this->write_log($charge_users[$k],2,"发送短信失败".date("Y-m-d H:i:s"));	//发送短信失败记录
+	    			}
 
     				$add_data[$i]['type'] = $assign_type;
     				$add_data[$i]['order_id'] = $order_id;
@@ -415,8 +415,8 @@ class Housesassign extends MY_Controller{
     	
     	$where['is_del'] = 0;
     	if ($this->input->get('order_id')) $where['order_id'] = $data['order_id'] =  $this->input->get('order_id');
-    	 
     	$where = [];
+    	
     	$where['group_id'] = 4;	//工程人员角色
     	$data['user_list'] = $this->Madmins->get_lists('id,name,fullname', $where);  //工程人员信息
     	$data['user_list1'] = array_column($data['user_list'], 'fullname', 'id');
@@ -638,7 +638,7 @@ class Housesassign extends MY_Controller{
     	//根据预定订单获取客户电话
     	$info = $this->Madmins->get_one('tel, fullname', ['id' => $uid]);
     	
-    	if(!$info) return ['code' => 0, 'msg' => '客户不存在'];
+    	if(!$info) return ['code' => 0, 'msg' => '工程人员不存在'];
     	if(empty($info['tel'])){
     		return ['code' => 0, 'msg' => '电话不能为空！'];
     	}

@@ -1180,7 +1180,7 @@ class Housesorders extends MY_Controller{
         }
 
         $order = $this->Mhouses_orders->get_one('*', array('id' => $id));
-
+        
         $where['in']['A.id'] = explode(',', $order['point_ids']);
 
         $customers = array_column($this->Mhouses_customers->get_lists("id,name", array('is_del' => 0)), 'name', 'id'); //客户列表

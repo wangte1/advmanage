@@ -138,7 +138,6 @@ class Houseswantorders extends MY_Controller{
     	
     	if(IS_POST){
     		$post_data = $this->input->post();
-    		var_dump($post_data);exit;
     		unset($post_data['province'], $post_data['city'], $post_data['area'],$post_data['houses_type'],$post_data['begin_year'],$post_data['end_year'],$post_data['put_trade']);
     		unset($post_data['ban'], $post_data['unit'], $post_data['floor']);
     		if (isset($post_data['area_id'])) unset($post_data['area_id']);
@@ -280,7 +279,7 @@ class Houseswantorders extends MY_Controller{
     	
     	$where['A.point_status'] = 1;
     	
-    	$points_lists = $this->Mhouses_points->get_points_lists_optimize($where);
+    	$points_lists = $this->Mhouses_points->get_points_lists($where);
     	//echo $this->db->last_query();exit;
     	
     	$houses_lists = [];
