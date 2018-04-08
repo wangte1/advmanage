@@ -269,7 +269,7 @@
 
 				                                                        <?php if($val['status'] == 4 || $val['status'] == 5 || $val['status'] == 7) {?>
 
-				                                                        	<a class="green tooltip-info m-detail2" data-id="<?php echo $val['id'];?>" order-id="<?php echo $val['order_id'];?>" houses-id="<?php echo $val['houses_id'];?>" ban="<?php echo $val['ban'];?>" data-rel="tooltip" data-placement="top" title="" data-original-title="验收图片">
+				                                                        	<a class="green tooltip-info m-detail2" data-id="<?php echo $val['id'];?>" order-id="<?php echo $val['order_id'];?>" area_id="<?php echo $val['area_id'];?>" houses-id="<?php echo $val['houses_id'];?>" ban="<?php echo $val['ban'];?>" data-rel="tooltip" data-placement="top" title="" data-original-title="验收图片">
 					                                                            <i class="fa fa-picture-o bigger-130"></i>
 					                                                        </a>
 				                                                        <?php }?>
@@ -364,8 +364,8 @@
 			var houses_id = $(this).attr('houses-id');
 			var ban = $(this).attr('ban');
 			var assign_type = '<?php echo $assign_type;?>';
-
-			location.href='/housesconfirm/upload_detail?order_id='+order_id+'&assign_id='+id+'&houses_id='+houses_id+'&ban='+ban+'&assign_type='+assign_type //iframe的url
+			var area_id = $(this).attr('area_id');
+			location.href='/housesconfirm/upload_detail?order_id='+order_id+'&assign_id='+id+'&houses_id='+houses_id+ '&area_id='+ area_id +'&ban='+ban+'&assign_type='+assign_type //iframe的url
 			return;
 		});
 

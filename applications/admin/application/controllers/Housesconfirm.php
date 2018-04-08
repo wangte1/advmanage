@@ -427,7 +427,7 @@ class Housesconfirm extends MY_Controller{
     	 
     	$pageconfig = C('page.page_lists');
     	$this->load->library('pagination');
-    	$page =  intval($this->input->get("per_page",true)) ?  : 1;
+    	$page = intval($this->input->get("per_page",true)) ?  : 1;
     	$size = $pageconfig['per_page'];
     	 
     	 
@@ -444,7 +444,7 @@ class Housesconfirm extends MY_Controller{
     		$tmp_moudle = $this->Mhouses_orders;
     	}
     	$order = $tmp_moudle->get_one("*",array("id" => $order_id));
-    	 
+    	if($area_id) $where_point['A.area_id'] = $area_id;
     	if(isset($order['point_ids'])) {
     		$point_ids_arr = explode(',', $order['point_ids']);
     		$where_point['in']['A.id'] = $point_ids_arr;
@@ -455,9 +455,9 @@ class Housesconfirm extends MY_Controller{
     	 
     	//获取该订单下面的所有楼盘
     	$points = $this->Mhouses_points->get_points_lists($where_point,[],$size,($page-1)*$size);
-    	$data_count = $this->Mhouses_points->count(['order_id' => $order_id, 'houses_id' => $houses_id]);
+    	$points_count = $this->Mhouses_points->get_points_lists($where_point);
     	$data['page'] = $page;
-    	$data['data_count'] = $data_count;
+    	$data['data_count'] = count($points_count);
     	 
     	//根据点位id获取对应的图片
     	$data['images'] = "";
@@ -485,7 +485,7 @@ class Housesconfirm extends MY_Controller{
     	 
     	//获取分页
     	$pageconfig['base_url'] = "/housesorders/check_upload_img";
-    	$pageconfig['total_rows'] = $data_count;
+    	$pageconfig['total_rows'] = count($points_count);
     	$this->pagination->initialize($pageconfig);
     	$data['pagestr'] = $this->pagination->create_links(); // 分页信息
     
