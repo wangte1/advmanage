@@ -92,10 +92,10 @@
 				<?php }?>
 			</tbody>
 		</table>
+		<div style="height: 50px;"></div>
 	</div>
-	
 	<center>
-		<button class="btn btn-sm btn-info sub-button" type="button">保存并通知</button>
+		<button style="position: fixed;" class="sub-button" type="button">保存并通知</button>
 	</center>
 </form>
 </div>
@@ -124,7 +124,7 @@ $(function(){
 			  shade: 0.6,
 			  area: ['90%', '90%'],
 			  content: '/housesassign/show_ban?order_id='+order_id+'&houses_id='+houses_id+'&charge_id_str='+charge_id_str+'$remark_str='+remark_str //iframe的url
-			}); 
+		}); 
 	});
 
 	$('.charge-sel').change(function(){

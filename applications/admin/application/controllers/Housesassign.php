@@ -110,7 +110,6 @@ class Housesassign extends MY_Controller{
     	
     	if(IS_POST){
     		$post_data = $this->input->post();
-    		
     		$order_id = $this->input->post('order_id');
     		$houses_ids = $this->input->post('houses_id');
     		$points_counts = $this->input->post('points_count');

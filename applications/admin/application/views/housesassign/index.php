@@ -331,7 +331,7 @@
 				  title: '派单',
 				  shadeClose: true,
 				  shade: 0.6,
-				  area: ['70%', '70%'],
+				  area: ['70%', '72%'],
 				  content: 'housesassign/assign?order_id='+order_id+'&assign_type='+assign_type //iframe的url
 				}); 
 		});
