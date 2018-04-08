@@ -429,14 +429,12 @@ class Housesconfirm extends MY_Controller{
     	$this->load->library('pagination');
     	$page = intval($this->input->get("per_page",true)) ?  : 1;
     	$size = $pageconfig['per_page'];
-    	 
-    	 
-    	$assign_id = $this->input->get('assign_id');
-    	$order_id = $this->input->get('order_id');
-    	$houses_id = $this->input->get('houses_id');
-    	$area_id = $this->input->get('area_id');
-     	$ban = $this->input->get('ban');
-    	$assign_type = $this->input->get('assign_type');
+    	$data['assign_id'] = $assign_id = $this->input->get('assign_id');
+    	$data['order_id'] = $order_id = $this->input->get('order_id');
+    	$data['houses_id'] = $houses_id = $this->input->get('houses_id');
+    	$data['area_id'] = $area_id = $this->input->get('area_id');
+     	$data['ban'] = $ban = $this->input->get('ban');
+    	$data['assign_type']= $assign_type = $this->input->get('assign_type');
     	 
     	if($assign_type == 3) {
     		$tmp_moudle = $this->Mhouses_changepicorders;
