@@ -939,15 +939,12 @@ class Housesorders extends MY_Controller{
      */
     public function check_upload_img(){
     	$data = $this->data;
-    	
     	$pageconfig = C('page.page_lists');
     	$this->load->library('pagination');
     	$page =  intval($this->input->get("per_page",true)) ?  : 1;
     	$size = $pageconfig['per_page'];
-    	
-    	
-    	$assign_id = $this->input->get('assign_id');
     	$order_id = $this->input->get('order_id');
+    	$assign_id = $this->input->get('assign_id');
     	$houses_id = $this->input->get('houses_id');
     	$area_id = $this->input->get('area_id');
     	$ban = $this->input->get('ban');
@@ -958,8 +955,7 @@ class Housesorders extends MY_Controller{
     	}else {
     		$tmp_moudle = $this->Mhouses_orders;
     	}
-    	$order = $tmp_moudle->get_one("*",array("id" => $order_id));
-    	
+    	$order = $tmp_moudle->get_one("*", array("id" => $order_id));
     	if(isset($order['point_ids'])) {
     		$point_ids_arr = explode(',', $order['point_ids']);
     		$where_point['in']['A.id'] = $point_ids_arr;

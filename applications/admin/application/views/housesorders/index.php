@@ -279,9 +279,9 @@
                                                             </a>
                                                         <?php endif;?>
                                                         <?php if($value['order_status'] == 6 || $value['order_status'] == 7):?>
-                                                        <a class="green tooltip-info" href="/housesorders/check_upload_img/<?php echo $value['id'];?>"  data-rel="tooltip" data-placement="top" title="" data-original-title="验收图片">
+                                                        <!--a class="green tooltip-info" href="/housesorders/check_upload_img?ordedr_id=<?php echo $value['id'];?>"  data-rel="tooltip" data-placement="top" title="" data-original-title="验收图片">
                                                             <i class="fa fa-picture-o bigger-130"></i>
-                                                        </a>
+                                                        </a-->
                                                         <?php endif;?>
                                                         <?php if($value['order_status'] == 6):?>
                                                         <a class="green tooltip-info" href="/housesorders/confirmation/<?php echo $value['id'];?>" target="_blank" data-rel="tooltip" data-placement="top" title="" data-original-title="生成确认函">

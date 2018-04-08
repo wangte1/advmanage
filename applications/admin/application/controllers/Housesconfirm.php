@@ -323,6 +323,7 @@ class Housesconfirm extends MY_Controller{
         $assign_id = $this->input->get('assign_id');
         $order_id = $this->input->get('order_id');
         $houses_id = $this->input->get('houses_id');
+        $area_id = $this->input->get('area_id');
         $ban = $this->input->get('ban');
         $assign_type = $this->input->get('assign_type');
         
@@ -337,10 +338,10 @@ class Housesconfirm extends MY_Controller{
         if($ban) {
             $where_point['A.ban'] = $ban;
         }
+        if($area_id) $where_point['A.area_id'] = $area_id;
         
         //获取该订单下面的所有楼盘
         $points = $this->Mhouses_points->get_points_lists($where_point);
-
         //根据点位id获取对应的图片
         $data['images'] = "";
         if(count($points) > 0) {

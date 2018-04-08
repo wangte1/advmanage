@@ -253,6 +253,8 @@
 		var url  = '/housesconfirm/task_exports?assign_id=<?php echo $assign_id;?>';
 			url += '&order_id=<?php echo $order_id;?>';
 			url += '&houses_id=<?php echo $houses_id;?>';
+			url += '&area_id=<?php echo $area_id;?>';
+			url += '&ban=<?php echo $ban;?>';
 			url += '&assign_type=<?php echo $assign_type;?>';
 		window.location.href = url;
 	});
