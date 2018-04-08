@@ -434,7 +434,8 @@ class Housesconfirm extends MY_Controller{
     	$assign_id = $this->input->get('assign_id');
     	$order_id = $this->input->get('order_id');
     	$houses_id = $this->input->get('houses_id');
-    	$ban = $this->input->get('ban');
+    	$area_id = $this->input->get('area_id');
+     	$ban = $this->input->get('ban');
     	$assign_type = $this->input->get('assign_type');
     	 
     	if($assign_type == 3) {

@@ -95,7 +95,7 @@ class Houseswantorders extends MY_Controller{
         $data = $this->data;
         if(IS_POST){
             $post_data = $this->input->post();
-            if($post_data['customer_id'] <= 0) $this->error("请选着客户");
+            if($post_data['customer_id'] <= 0) $this->error("请选择客户");
             $points_count = (int) $post_data['points_count'];
             if(!$points_count) $this->error("请输入预定点位数量！");
             unset($post_data['s_houses_type']);
