@@ -315,18 +315,12 @@ class Housesconfirm extends MY_Controller{
      */
     public function  task_exports(){
         $data = $this->data;
-        $pageconfig = C('page.page_lists');
-        $this->load->library('pagination');
-        $page =  intval($this->input->get("per_page",true)) ?  : 1;
-        $size = $pageconfig['per_page'];
-        
         $assign_id = $this->input->get('assign_id');
         $order_id = $this->input->get('order_id');
         $houses_id = $this->input->get('houses_id');
         $area_id = $this->input->get('area_id');
         $ban = $this->input->get('ban');
         $assign_type = $this->input->get('assign_type');
-        
         if($assign_type == 3) {
             $tmp_moudle = $this->Mhouses_changepicorders;
         }else {
@@ -338,38 +332,22 @@ class Housesconfirm extends MY_Controller{
         if($ban) {
             $where_point['A.ban'] = $ban;
         }
-        if($area_id) $where_point['A.area_id'] = $area_id;
+        if($area_id){
+            $where_point['A.area_id'] = $area_id;
+        }
         
         //获取该订单下面的所有楼盘
-        $points = $this->Mhouses_points->get_points_lists($where_point);
-        //根据点位id获取对应的图片
-        $data['images'] = "";
-        if(count($points) > 0) {
-            $where['in'] = array("point_id"=>array_column($points,"id"));
-            $where['order_id'] = $order_id;
-            $where['assign_id'] = $assign_id;
-            $where['assign_type'] = $assign_type;
-            $where['type'] = 1;
-            $data['images'] = $this->Mhouses_order_inspect_images->get_lists("*",$where);
+        $list = $this->Mhouses_points->get_points_lists($where_point);
+        $customerName = '';
+        //获取订单客户名称
+        $orderInfo = $this->Mhouses_orders->get_one('customer_id', ['id' => $order_id]);
+        if($orderInfo){
+            $customer = $this->Mhouses_customers->get_one('name', ['id' => $orderInfo['customer_id']]);
+            $customerName = $customer['name'];
         }
-        
-        $list = array();
-        foreach ($points as $key => $val) {
-            $val['image'] = array();
-            if($data['images']){
-                foreach($data['images'] as $k=>$v){
-                    if($val['id'] == $v['point_id']){
-                        $val['image'][] = $v;
-                    }
-                }
-            }
-            $list[] = $val;
-        }
-        
         if($list){
             //加载phpexcel
             $this->load->library("PHPExcel");
-            
             //设置表头
             $table_header =  array(
                 '点位编号'=>"code",
@@ -409,7 +387,7 @@ class Housesconfirm extends MY_Controller{
             $this->phpexcel->setActiveSheetIndex(0);
             // 输出
             header('Content-Type: application/vnd.ms-excel');
-            header('Content-Disposition: attachment;filename=工单编号：'.$assign_id.'点位列表'.'）.xls');
+            header('Content-Disposition: attachment;filename=客户：'.$customerName.'的点位列表.xls');
             header('Cache-Control: max-age=0');
             
             $objWriter = PHPExcel_IOFactory::createWriter($this->phpexcel, 'Excel5');
