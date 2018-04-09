@@ -223,6 +223,50 @@ class Housespoints extends MY_Controller{
         }
     }
     
+    /**
+     * 点位报修
+     */
+    public function report(){
+        $data = $this->data;
+        $data['id'] = $this->input->get('id');
+        $this->load->view("housespoints/report",$data);
+    }
+    
+    /**
+     * 提交报损
+     */
+    public function report_add(){
+        if(IS_POST){
+            $post = $this->input->post();
+            $id = $this->input->post('id');
+            unset($post['id']);
+            $post['point_status'] = 4;
+            if(empty($post['destroy'])) $this->return_json(['code' => 0, 'msg' => '请填写报损说明']);
+            $res = $this->Mhouses_points->update_info($post, ['id' => $id]);
+            if(!$res) $this->return_json(['code' => 0, 'msg' => '操作失败，请重试！']);
+            $this->return_json(['code' => 1, 'msg' => '操作成功']);
+        }
+    }
+    
+    /**
+     * 修复报损
+     */
+    public function reported(){
+        if(IS_POST){
+            $id = $this->input->post('id');
+            $info = $this->Mhouses_points->get_one('*', ['id' => $id]);
+            $post['point_status'] = 3;
+            if($info['ad_num'] > $info['ad_use_num'] + $info['lock_num']){
+                $post['point_status'] = 1;
+            }
+            $post['destroy'] = '';
+            $post['destroy_img'] = '';
+            $res = $this->Mhouses_points->update_info($post, ['id' => $id]);
+            if(!$res) $this->return_json(['code' => 0, 'msg' => '操作失败，请重试！']);
+            $this->return_json(['code' => 1, 'msg' => '操作成功']);
+        }
+    }
+    
     /*
      * ajax获取楼盘信息
      */
