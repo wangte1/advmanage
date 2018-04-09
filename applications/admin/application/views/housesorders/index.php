@@ -289,9 +289,9 @@
                                                         </a>
                                                         <?php endif;?>
                                                         <?php if($value['order_status'] == 7 && $value['order_type'] == 1): ?>
-                                                            <a class="green tooltip-info" href="/housesorders/edit_points/<?php echo $value['id'];?>"  data-rel="tooltip" data-placement="top" title="" data-original-title="修改点位">
+                                                            <!--a class="green tooltip-info" href="/housesorders/edit_points/<?php echo $value['id'];?>"  data-rel="tooltip" data-placement="top" title="" data-original-title="修改点位">
                                                                 <i class="icon-pencil bigger-130"></i>
-                                                            </a>
+                                                            </a-->
                                                         <?php endif;?>
                                                     </div>
                                                 </td>

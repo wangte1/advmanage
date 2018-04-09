@@ -19,6 +19,7 @@
         border-top: 1px solid #ddd;
         text-align: center;
     }
+    #points_lists tr:hover, #selected_points tr:hover{background:#6fb3e0;}
 </style>
 <!-- 头部 -->
 <?php $this->load->view('common/top');?>
@@ -239,7 +240,7 @@
                                                                     </table>
                                                                 </div>
                                                                 <div class="div-tbody">
-                                                                    <table id="sample-table-1" class="table table-striped table-bordered table-hover">
+                                                                    <table id="sample-table-1" class="table table-bordered">
                                                                         <tbody id="points_lists">
                                                                             <?php if(isset($point_list) && $point_list):?>
                                                                             <?php foreach ($point_list as $k => $v):?>
@@ -342,7 +343,7 @@
                                             </table>
                                         </div>
                                         <div class="div-tbody" style="height: 1466px">
-                                            <table id="sample-table-1" class="table table-striped table-bordered table-hover">
+                                            <table id="sample-table-1" class="table table-bordered ">
                                                 <tbody id="selected_points">
                                                     <?php if(isset($selected_points)):?>
                                                         <?php foreach($selected_points as $value):?>

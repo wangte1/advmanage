@@ -19,6 +19,7 @@
         border-top: 1px solid #ddd;
         text-align: center;
     }
+    #points_lists tr:hover, #selected_points tr:hover{background:#6fb3e0;}
 </style>
 <!-- 头部 -->
 <?php $this->load->view('common/top');?>
@@ -297,7 +298,7 @@
                                                                     </table>
                                                                 </div>
                                                                 <div class="div-tbody">
-                                                                    <table id="sample-table-1" class="table table-striped table-bordered table-hover">
+                                                                    <table id="sample-table-1" class="table table-bordered">
                                                                         <tbody id="points_lists">
                                                                         </tbody>
                                                                     </table>
@@ -377,7 +378,7 @@
                                             </table>
                                         </div>
                                         <div class="div-tbody" style="height: 1466px">
-                                            <table id="sample-table-1" class="table table-striped table-bordered table-hover">
+                                            <table id="sample-table-1" class="table table-bordered">
                                                 <tbody id="selected_points">
                                                     <?php if(isset($selected_points)):?>
                                                         <?php foreach($selected_points as $value):?>
@@ -709,7 +710,7 @@ function load_houses(num1, num2) {
                     break;
         		}
 				pointStr += "<td width='10%'><span class='badge "+$class+"'>"+(data.points_lists)[i]['point_status_txt']+"</span></td>";
-				pointStr += "<td width='10%'><button class='btn btn-xs btn-info do-sel' type='button'>选择点位<i class='icon-arrow-right icon-on-right'></button></td></tr>";
+				pointStr += "<td width='10%'><button class='btn btn-xs btn-info do-sel tr' type='button'>选择点位<i class='icon-arrow-right icon-on-right'></button></td></tr>";
 			}
 		}else{
 			layer.alert('暂无空闲点位');

@@ -12,6 +12,7 @@
       height:450px;
       overflow:auto;
     }
+#points_lists tr:hover, #selected_points tr:hover{background:#6fb3e0;}
 </style>
 <!-- 头部 -->
 <?php $this->load->view('common/top');?>
@@ -258,7 +259,7 @@
                                                                     </table>
                                                                 </div>
                                                                 <div class="div-tbody">
-                                                                    <table id="sample-table-1" class="table table-striped table-bordered table-hover">
+                                                                    <table id="sample-table-1" class="table table-bordered">
                                                                         <tbody id="points_lists">
                                                                         </tbody>
                                                                     </table>
@@ -329,7 +330,7 @@
                                             </table>
                                         </div>
                                         <div class="div-tbody" style="height: 1466px">
-                                            <table id="sample-table-1" class="table table-striped table-bordered table-hover">
+                                            <table id="sample-table-1" class="table table-bordered">
                                                 <tbody id="selected_points">
                                                     <?php if(isset($selected_points)):?>
                                                         <?php foreach($selected_points as $value):?>
