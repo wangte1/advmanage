@@ -7,7 +7,7 @@
     <meta name="description" content="">
 
     <style type="text/css"> 
-        html, body {width: 100%; height: 90%; margin: 0; padding: 0; font-family: "Microsoft YaHei","Helvetica Neue","Helvetica","Arial",sans-serif;}
+        html, body {width: 100%; height: 90%; margin: 0; padding: 0; font-family: "Microsoft YaHei","Helvetica Neue","Helvetica","Arial",sans-serif;background: "#fff"}
         .content {width: 1000px; margin: 0 auto; padding: 10px;}
         .title {font-size: 38px; font-weight: bold; margin-top: 10px;clear: both}
         .page-p {font-size:24px;height:20px}
@@ -50,46 +50,33 @@
 	<script> 
 	  
 	$(function(){ 
-	  $("#pdf-btn").click(function(){
-	    html2canvas($("#pic-panel"), { 
-	      onrendered: function(canvas) { 
-	    	  var contentWidth = canvas.width;
-	          var contentHeight = canvas.height;
-
-	          //一页pdf显示html页面生成的canvas高度;
-	          var pageHeight = contentWidth / 592.28 * 841.89;
-	          //未生成pdf的html页面高度
-	          var leftHeight = contentHeight;
-	          //页面偏移
-	          var position = 0;
-	          //a4纸的尺寸[595.28,841.89]，html页面生成的canvas在pdf中图片的宽高
-	          var imgWidth = 595.28;
-	          var imgHeight = 592.28/contentWidth * contentHeight;
-
-	          var pageData = canvas.toDataURL('image/jpeg', 1.0);
-
-	          var pdf = new jsPDF('', 'pt', 'a4');
-
-	          //有两个高度需要区分，一个是html页面的实际高度，和生成pdf的页面高度(841.89)
-	          //当内容未超过pdf一页显示的范围，无需分页
-	          if (leftHeight < pageHeight) {
-	              pdf.addImage(pageData, 'JPEG', 0, 0, imgWidth, imgHeight );
-	          } else {
-	              while(leftHeight > 0) {
-	                  pdf.addImage(pageData, 'JPEG', 0, position, imgWidth, imgHeight)
-	                  leftHeight -= pageHeight;
-	                  position -= 841.89;
-	                  //避免添加空白页
-	                  if(leftHeight > 0) {
-	                    pdf.addPage();
-	                  }
-	              }
-	          }
-
-	          pdf.save('<?php echo $info['customer_name'];?>-<?php echo $order_type_text[$info['order_type']];?>广告验收报告.pdf');
-	      } 
-	    }); 
-	  }); 
+		var count = parseInt('<?php echo ceil(count($points)/100);?>');
+        $("#pdf-btn").click(function(){
+            $('#page').hide();
+                html2canvas($('#pic-panel'), { 
+                    onrendered: function(canvas) {
+                    	var imgData = canvas.toDataURL('image/jpeg');
+                        var img = new Image();
+                        img.src = imgData;
+                        //根据图片的尺寸设置pdf的规格，要在图片加载成功时执行，之所以要*0.225是因为比例问题
+                        img.onload = function() {
+                            //此处需要注意，pdf横置和竖置两个属性，需要根据宽高的比例来调整，不然会出现显示不完全的问题
+                            if (this.width > this.height) {
+                            	var doc = new jsPDF('l', 'mm', [this.width * 0.225, this.height * 0.225]);
+                            } else {
+                            	var doc = new jsPDF('p', 'mm', [this.width * 0.225, this.height * 0.225]);
+                            }
+                            doc.addImage(imgData, 'jpeg', 0, 0, this.width * 0.225, this.height * 0.225);
+                            //根据下载保存成不同的文件名
+                            doc.save('report_pdf_.pdf');
+                        }
+                      },
+                      background: "#fff",
+                      //这里给生成的图片默认背景，不然的话，如果你的html根节点没设置背景的话，会用黑色填充。
+                      allowTaint: true //避免一些不识别的图片干扰，默认为false，遇到不识别的图片干扰则会停止处理html2canvas
+                      
+                });
+        }); 
 	}); 
 	</script> 
     
@@ -135,6 +122,8 @@
         </div>
 
         <!-- 验收图片 -->
+        <?php //foreach ($points_lists as $k => $v):?>
+        <?php //if($k == 1):?>
         <div id="pic-panel" style="background-color:#fff;">
 		<table class="detail-info">
 			<thead>
@@ -144,9 +133,10 @@
                	<th width="50%">广告图</th>
 			</thead>
 		</table>
+ 		<?php //$num = ($k*100)+1;?>
  		<?php $num = 1;?>
      	<?php foreach($points as $key => $value):?>
-   		<?php  //if($key < 25): ?>
+     	<?php if($key < 100):?>
        	<table class="detail-info-print">
            	<tbody>
                	<tr>
@@ -161,12 +151,13 @@
            		</tr>
         	</tbody>
         </table>
-        <?php //endif;?>
+        <?php endif;?>
         <?php endforeach;?>
         </div>
-        
+        <?php //endif;?>
+        <?php //endforeach;?>
         <div class="noprint btn-print2"><button type="button" onclick="document.getElementById('pic-panel').style.display='none';javascript: window.print();document.getElementById('pic-panel').style.display='block';">打印文字报告</button></div>
-        <div class="noprint btn-print"><button type="button" onclick="document.getElementById('page').style.display='none';javascript: window.print();document.getElementById('container').style.display='block';">打印图片报告</button></div>
+        <div class="noprint btn-print"><button id="pdf-btn" type="button" >导出图片报告</button></div>
     </div>
 </body>
 </html>

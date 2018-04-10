@@ -586,8 +586,7 @@ class Housesorders extends MY_Controller{
         $where['in'] = array('A.id' => explode(',', $data['info']['point_ids']));
         $data['points'] = $this->Mhouses_points->get_points_lists($where);
 		$data['done_inspect_images'] = array_column($data['inspect_images'], 'front_img', 'point_id');
-        
-
+		$data['points_lists'] = array_chunk($data['points'], 100);
         $this->load->view('housesorders/confirmation/light', $data);
     }
 
