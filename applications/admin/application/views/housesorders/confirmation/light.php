@@ -50,7 +50,7 @@
 	<script> 
 	  
 	$(function(){ 
-	  $("#pdf-btn").click(function(){ 
+	  $("#pdf-btn").click(function(){
 	    html2canvas($("#pic-panel"), { 
 	      onrendered: function(canvas) { 
 	    	  var contentWidth = canvas.width;
@@ -73,7 +73,7 @@
 	          //有两个高度需要区分，一个是html页面的实际高度，和生成pdf的页面高度(841.89)
 	          //当内容未超过pdf一页显示的范围，无需分页
 	          if (leftHeight < pageHeight) {
-	          pdf.addImage(pageData, 'JPEG', 0, 0, imgWidth, imgHeight );
+	              pdf.addImage(pageData, 'JPEG', 0, 0, imgWidth, imgHeight );
 	          } else {
 	              while(leftHeight > 0) {
 	                  pdf.addImage(pageData, 'JPEG', 0, position, imgWidth, imgHeight)
@@ -97,7 +97,7 @@
 <body>
     <div class="content" id="container" style="background-color:#fff;">
         <!-- 第一页 -->
-        <div class="page">
+        <div class="page" id="page">
             <center class="title"><?php echo $order_type_text[$info['order_type']];?>广告验收报告</center>
             <p class="page-p"><span style="font-weight: bolder;">甲方（委托方）：<?php echo $info['customer_name'];?></span></p>
             <p class="page-p"><span style="font-weight: bolder">乙方（承办方）：</span><span style="border-bottom: 1px solid black;">贵州大视传媒有限公司</span></p>
@@ -166,7 +166,7 @@
         </div>
         
         <div class="noprint btn-print2"><button type="button" onclick="document.getElementById('pic-panel').style.display='none';javascript: window.print();document.getElementById('pic-panel').style.display='block';">打印文字报告</button></div>
-        <div class="noprint btn-print"><button id="pdf-btn" type="button" onclick="">下载图片报告</button></div>
+        <div class="noprint btn-print"><button type="button" onclick="document.getElementById('page').style.display='none';javascript: window.print();document.getElementById('container').style.display='block';">打印图片报告</button></div>
     </div>
 </body>
 </html>
