@@ -46,23 +46,22 @@ class Admingroup extends MY_Controller{
      * 1034487709@qq.com
      */
     public function add(){
+        $da = $this->data;
         if(IS_POST)
         {
             $data['name'] =  $this->input->post("name",true);
             $data['describe'] =  $this->input->post("describe",true);
             $result_id =  $this->Madmins_group->create($data);
             if($result_id){
+                $this->write_log($da['userInfo']['id'],1,"添加角色：".$data['name']);
                 $this->success("","/admingroup");
             }else{
                 $this->error("添加失败,请重新添加");
             }
         }
 
-
-        $data = $this->data;
-
-        $data['title'] = array("角色管理","添加角色");
-        $this->load->view("group/add",$data);
+        $da['title'] = array("角色管理","添加角色");
+        $this->load->view("group/add",$da);
     }
 
     /**
@@ -91,17 +90,19 @@ class Admingroup extends MY_Controller{
      * 1034487709@qq.com
      */
     public function edit($id = 0){
-      
+        $data = $this->data;
         if(IS_POST){
-              $_POST['id'] = $id ;
-             $res = $this->Madmins_group->replace_into($_POST);
+            $_POST['id'] = $id ;
+            $old = $this->Madmins_group->get_one('name',['id' => $id]);
+            $res = $this->Madmins_group->replace_into($_POST);
+            $new = $this->Madmins_group->get_one('name',['id' => $id]);
             if($res){
+                $this->write_log($data['userInfo']['id'],2,"编辑角色：".$old['name'] ."，修改为：" .$new['name']);
                 $this->success("","/admingroup");
             }else{
                 $this->error("编辑失败,请重新编辑");
             }
         }
-        $data = $this->data;
 
         $data['info'] = $this->Madmins_group->get_one("*",array("id"=>$id));
         $data['title'] = array("管理角色","编辑".$data['info']['name'] );
@@ -113,8 +114,8 @@ class Admingroup extends MY_Controller{
      * 删除角色
      * 1034487709@qq.com
      */
-    public  function del($id = 0){
-
+    public function del($id = 0){
+        $data = $this->data;
         #不能删除管理员
         $admin_count = $this->Madmins->get_admin_count($id);
         if($admin_count)
@@ -125,6 +126,8 @@ class Admingroup extends MY_Controller{
         #标记删除
         $res = $this->Madmins_group->update_info(array('is_del'=>2),array('id'=>$id));
         if($res){
+            $tmp = $this->Madmins_group->get_one('name',array('id'=>$id));
+            $this->write_log($data['userInfo']['id'],3,"删除角色：".$tmp['name']);
             $this->success("","/admingroup");
         }else{
             $this->error("删除失败");
