@@ -111,7 +111,7 @@
             </table>
             <?php $num = 1;?>
             <?php foreach($points as $key => $value):?>
-            <?php  if($key < 25): ?>
+            <?php  //if($key < 25): ?>
             <table class="detail-info-print">
                 <tbody>
                     <tr>
@@ -121,7 +121,7 @@
                     </tr>
                 </tbody>
             </table>
-            <?php endif;?>
+            <?php //endif;?>
             <?php endforeach;?>
 
             <!-- 第一页的点位条数不足17条时，备注和签名放在本页打印 -->
@@ -146,7 +146,7 @@
 		</table>
  		<?php $num = 1;?>
      	<?php foreach($points as $key => $value):?>
-   		<?php  if($key < 25): ?>
+   		<?php  //if($key < 25): ?>
        	<table class="detail-info-print">
            	<tbody>
                	<tr>
@@ -161,7 +161,7 @@
            		</tr>
         	</tbody>
         </table>
-        <?php endif;?>
+        <?php //endif;?>
         <?php endforeach;?>
         </div>
         
