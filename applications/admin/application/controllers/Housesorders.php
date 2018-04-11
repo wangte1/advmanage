@@ -566,6 +566,7 @@ class Housesorders extends MY_Controller{
      */
     public function confirmation($id) {
         $data = $this->data;
+        $data['id'] = $id;
         $data['info'] = $this->Mhouses_orders->get_one("*", array('id' => $id));
 
         $images = $this->Mhouses_order_inspect_images->get_lists("*", array('order_id' => $id, 'type' => 1));
@@ -588,6 +589,39 @@ class Housesorders extends MY_Controller{
 		$data['done_inspect_images'] = array_column($data['inspect_images'], 'front_img', 'point_id');
 		$data['points_lists'] = array_chunk($data['points'], 100);
         $this->load->view('housesorders/confirmation/light', $data);
+    }
+    
+    /**
+     * 生成确认函
+     */
+    public function confirmations() {
+        $data = $this->data;
+        $data['id'] = $id = $this->input->get('id');
+        $page = (int) $this->input->get('page');
+        if(!$page) $page = 1;
+        $data['page'] = $page;
+        $data['info'] = $this->Mhouses_orders->get_one("*", array('id' => $id));
+        
+        $images = $this->Mhouses_order_inspect_images->get_lists("*", array('order_id' => $id, 'type' => 1));
+        if (!$images) {
+            $this->success("请先上传验收图片！");
+        }
+        
+        //甲方-委托方（客户名称）
+        $data['info']['customer_name'] = $this->Mhouses_customers->get_one('name', array('id' => $data['info']['customer_id']))['name'];
+        
+        //上画完成时间
+        $data['complete_date'] = date('Y年m月d日', strtotime($data['info']['draw_finish_time']));
+        
+        /********验收图片**********/
+        $data['inspect_images'] = $this->Mhouses_order_inspect_images->get_inspect_img(array('A.order_id' => $id, 'A.type' => 1));
+        
+        //获取点位列表
+        $where['in'] = array('A.id' => explode(',', $data['info']['point_ids']));
+        $data['points'] = $this->Mhouses_points->get_points_lists($where);
+        $data['done_inspect_images'] = array_column($data['inspect_images'], 'front_img', 'point_id');
+        $data['points_lists'] = array_chunk($data['points'], 100);
+        $this->load->view('housesorders/confirmation/imgpdf', $data);
     }
 
 

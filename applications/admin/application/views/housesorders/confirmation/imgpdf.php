@@ -5,7 +5,8 @@
     <title>灯箱广告验收报告</title>
     <meta name="keywords" content="">
     <meta name="description" content="">
-
+	<!-- 加载公用css -->
+	<?php $this->load->view('common/header');?>
     <style type="text/css"> 
         html, body {width: 100%; height: 90%; margin: 0; padding: 0; font-family: "Microsoft YaHei","Helvetica Neue","Helvetica","Arial",sans-serif;background: "#fff"}
         .content {width: 1000px; margin: 0 auto; padding: 10px;}
@@ -42,6 +43,8 @@
             .page-h{height: 1250px}
             .first-h,.last-h{height: 1200px}
         }
+        .detail-info,.detail-info-print{width:100%;}
+        .mypage{cursor: pointer;}
     </style>
     
     <script src="<?php echo css_js_url('jquery-2.0.3.min.js','admin');?>"></script> 
@@ -50,9 +53,9 @@
 	<script> 
 	  
 	$(function(){ 
-		var count = parseInt('<?php echo ceil(count($points)/100);?>');
-        $("#pdf-btn").click(function(){
-            	window.open("/housesorders/confirmations?id=<?php echo $id;?>");return;
+
+        $("#pdf-out").click(function(){
+            	var id = '<?php echo $page;?>';
                 html2canvas($('#pic-panel'), { 
                     onrendered: function(canvas) {
                     	var imgData = canvas.toDataURL('image/jpeg');
@@ -68,7 +71,7 @@
                             }
                             doc.addImage(imgData, 'jpeg', 0, 0, this.width * 0.225, this.height * 0.225);
                             //根据下载保存成不同的文件名
-                            doc.save('report_pdf_.pdf');
+                            doc.save('<?php echo $info["customer_name"];?>-<?php echo $order_type_text[$info["order_type"]];?>广告验收报告-'+id+'.pdf');
                         }
                       },
                       background: "#fff",
@@ -83,45 +86,18 @@
 </head>
 <body>
     <div class="content" id="container" style="background-color:#fff;">
-        <!-- 第一页 -->
-        <div class="page" id="page">
-            <center class="title"><?php echo $order_type_text[$info['order_type']];?>广告验收报告</center>
-            <p class="page-p"><span style="font-weight: bolder;">甲方（委托方）：<?php echo $info['customer_name'];?></span></p>
-            <p class="page-p"><span style="font-weight: bolder">乙方（承办方）：</span><span style="border-bottom: 1px solid black;">贵州大视传媒有限公司</span></p>
-            <p class="page-p">广告牌上画发布地点、数量及规格：</p>
-            <table class="detail-info">
-                <thead>
-                    <th width="20%">编号</th>
-                    <th width="40%">点位地址</th>
-                    <th width="40%">广告规格</th>
-                </thead>
-            </table>
-            <?php $num = 1;?>
-            <?php foreach($points as $key => $value):?>
-            <?php  //if($key < 25): ?>
-            <table class="detail-info-print">
-                <tbody>
-                    <tr>
-                        <td width="20%"><?php echo $num ++;?></td>
-                        <td width="40%"><?php echo $value['houses_name'].$value['houses_area_name'].$value['ban'].$value['unit'].$value['floor'].'楼'?></td>
-                        <td width="40%"><?php echo $value['size'];?></td>
-                    </tr>
-                </tbody>
-            </table>
-            <?php //endif;?>
-            <?php endforeach;?>
-
-            <!-- 第一页的点位条数不足17条时，备注和签名放在本页打印 -->
-            <?php if(count($points) > 0 && count($points) <= 17):?>
-            <p class="page-p" style="line-height: 40px">备注：本次甲方共选<?php echo count($points);?>套<?php echo $order_type_text[$info['order_type']];?>广告，其中<?php //echo $str;?>。我司按照双方签订的户外广告发布合同要求于<?php echo date('Y年m月d日', strtotime($info['make_complete_time']));?>开始制作、安装广告画面，于<?php echo $complete_date;?>按时按量完成<?php echo count($points);?>套<?php echo $order_type_text[$info['order_type']];?>广告的发布，投放时间为<?php echo date('Y.m.d', strtotime($info['release_start_time']));?>-<?php echo date('Y.m.d', strtotime($info['release_end_time']));?>，现将验收照片发给甲方确认。</p>
-            <p class="mid-p"></p>
-            <p class="page-p"><span style="font-weight:bolder">甲方（盖章）：</span><span style="font-weight:bolder;margin-left:400px">乙方（盖章）：</span></p>
-            <p class="page-p"><span style="font-weight:bolder">确认人（签字）：</span><span style="font-weight:bolder;margin-left:376px">确认人（签字）：</span></p>
-            <p class="page-p"><span style="font-weight:bolder">日期：</span><span style="font-weight:bolder;margin-left:496px">日期：</span></p>
-            <?php endif;?>
-        </div>
-
+        <nav aria-label="Page navigation">
+          <ul class="pagination">
+            <?php $num = ceil(count($points_lists));?>
+            <?php for ($i=1; $i<=$num; $i++):?>
+            <li <?php if($i==$page){echo 'class="active"';}?>><a href="/housesorders/confirmations?id=<?php echo $id;?>&page=<?php echo $i?>" class="mypage" data="<?php echo $i;?>">第<?php echo $i;?>份</a></li>
+            <?php endfor;?>
+          </ul>
+        </nav>
+        <button id="pdf-out" data="<?php echo $page?>" type="button" >导出第<?php echo $page;?>份图片报告</button>
         <!-- 验收图片 -->
+        <?php foreach ($points_lists as $k => $v):?>
+        <?php if($k == ($page-1)):?>
         <div id="pic-panel" style="background-color:#fff;">
 		<table class="detail-info">
 			<thead>
@@ -131,8 +107,8 @@
                	<th width="50%">广告图</th>
 			</thead>
 		</table>
- 		<?php $num = 1;?>
-     	<?php foreach($points as $key => $value):?>
+ 		<?php $num = ($k*100)+1;?>
+     	<?php foreach($v as $key => $value):?>
        	<table class="detail-info-print">
            	<tbody>
                	<tr>
@@ -149,8 +125,8 @@
         </table>
         <?php endforeach;?>
         </div>
-        <div class="noprint btn-print2"><button type="button" onclick="document.getElementById('pic-panel').style.display='none';javascript: window.print();document.getElementById('pic-panel').style.display='block';">打印文字报告</button></div>
-        <div class="noprint btn-print"><button id="pdf-btn" type="button" >导出图片报告</button></div>
+        <?php endif;?>
+        <?php endforeach;?>
     </div>
 </body>
 </html>
