@@ -382,7 +382,7 @@
                                                 <tbody id="selected_points">
                                                     <?php if(isset($selected_points)):?>
                                                         <?php foreach($selected_points as $value):?>
-                                                        <tr point-id="<?php echo $value['id'];?>">
+                                                        <tr class="point" id="point_<?php echo $value['id'];?>"  point-id="<?php echo $value['id'];?>">
                                                             <td width="10%"><?php echo $value['code'];?></td>
                                                             <td width="10%"><?php echo $value['houses_name'];?></td>
                                                             <td width="10%"><?php echo $value['houses_area_name'];?></td>
@@ -683,7 +683,7 @@ function load_houses(num1, num2) {
 				if(i == 1500) {
 					break;
 				}
-				pointStr += "<tr point-id='"+(data.points_lists)[i]['id']+"' grade='"+(data.points_lists)[i]['grade']+"' area_grade='"+(data.points_lists)[i]['area_grade']+"'><td width='10%'>"+(data.points_lists)[i]['code']+"</td>";
+				pointStr += "<tr class='point' id='point_"+(data.points_lists)[i]['id']+"'  point-id='"+(data.points_lists)[i]['id']+"' grade='"+(data.points_lists)[i]['grade']+"' area_grade='"+(data.points_lists)[i]['area_grade']+"'><td width='10%'>"+(data.points_lists)[i]['code']+"</td>";
 				pointStr += "<td width='10%'>"+(data.points_lists)[i]['houses_name']+"</td>";
 				pointStr += "<td width='10%'>"+(data.points_lists)[i]['houses_area_name']+"</td>";
 				pointStr += "<td width='10%'>"+(data.points_lists)[i]['ban']+"</td>";
@@ -696,9 +696,8 @@ function load_houses(num1, num2) {
 				}else {
 					pointStr += "<td width='10%'>地下电梯前室</td>";
 				}
-				//pointStr += "<td width='10%'>"+(data.points_lists)[i]['size']+"</td>";
+				
 				pointStr += "<td width='10%'>"+(data.points_lists)[i]['houses_grade']+"</td>";
-				//pointStr += "<td width='10%'>"+(data.points_lists)[i]['area_grade_name']+"</td>";
 				pointStr += "<td width='10%'>"+(data.points_lists)[i]['ad_num']+"</td>";
 				var $class;
 				switch ((data.points_lists)[i]['point_status']) {
@@ -710,7 +709,7 @@ function load_houses(num1, num2) {
                     break;
         		}
 				pointStr += "<td width='10%'><span class='badge "+$class+"'>"+(data.points_lists)[i]['point_status_txt']+"</span></td>";
-				pointStr += "<td width='10%'><button class='btn btn-xs btn-info do-sel tr' type='button'>选择点位<i class='icon-arrow-right icon-on-right'></button></td></tr>";
+				pointStr += "<td width='10%'><button data-id='"+(data.points_lists)[i]['id']+"' class='btn btn-xs btn-info do-sel tr' type='button'>选择点位<i class='icon-arrow-right icon-on-right'></button></td></tr>";
 			}
 		}else{
 			layer.alert('暂无空闲点位');
@@ -746,21 +745,17 @@ $(function(){
 	
 	//选择点位
     $('#points_lists').on('click', '.do-sel', function(){
+        var id = $(this).data('id');
+        //查找是否已经存在
+        if($('#selected_points').find('#point_'+id).length>0){layer.msg('请勿重复选择');return;}
         $(this).parent().parent().appendTo($("#selected_points"));
         $("#selected_points_num").html(Number($("#selected_points_num").text()) + 1);  
-
        	var numObj = $(this).parent().parent().find('td:eq(3)');
         var inputVal = numObj.children().val();
         numObj.text(inputVal);
-        //$("input[name='point_ids']").after('<input type="hidden" name="make_num['+$(this).parent().parent().attr('point-id')+']" value="'+inputVal+'">');
-        
         $("#selected_points button").html('移除点位<i class="fa fa-remove" aria-hidden="true"></i>');
         var point_ids = $("input[name='point_ids']").val() ? $("input[name='point_ids']").val() + ',' + $(this).parent().parent().attr('point-id') :  $(this).parent().parent().attr('point-id');
-
-
-        
         $("input[name='point_ids']").val(point_ids);
-
         count_percent();
     });
 
@@ -768,13 +763,7 @@ $(function(){
     $('#selected_points').on('click', '.do-sel', function(){
         $(this).parent().parent().appendTo($("#points_lists"));
         $("#selected_points_num").html(Number($("#selected_points_num").html()) - 1);
-
-        
-        //$('input[name="make_num['+$(this).parent().parent().attr('point-id')+']"]').remove();
-       
-
-        $("#points_lists button").html('选择点位<i class="icon-arrow-right icon-on-right"></i>');
-
+		$("#points_lists button").html('选择点位<i class="icon-arrow-right icon-on-right"></i>');
         var point_ids = [];
         var _self = $(this);
         $("#selected_points tr").each(function(){
@@ -782,7 +771,6 @@ $(function(){
         });
         var ids = point_ids.length >= 1 ? point_ids.join(',') : '';
         $("input[name='point_ids']").val(ids);
-
         count_percent();
     });
 
@@ -809,9 +797,6 @@ $(function(){
         $("#selected_points tr").each(function(){
             $(this).appendTo($("#points_lists"));
             $("#selected_points_num").html('0');
-
-            //$('input[name="make_num['+$(this).attr('point-id')+']"]').remove();
-
             $("input[name='point_ids']").val('');
             $("#points_lists button").html('选择点位<i class="icon-arrow-right icon-on-right"></i>');
         });
