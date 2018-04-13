@@ -347,7 +347,7 @@
                                                 <tbody id="selected_points">
                                                     <?php if(isset($selected_points)):?>
                                                         <?php foreach($selected_points as $value):?>
-                                                        <tr point-id="<?php echo $value['id'];?>">
+                                                        <tr class="point" id="point_<?php echo $value['id'];?>" point-id="<?php echo $value['id'];?>">
                                                             <td width="10%"><?php echo $value['code'];?></td>
                                                             <td width="10%"><?php echo $value['houses_name'];?></td>
                                                             <td width="10%"><?php echo $value['houses_area_name'];?></td>
@@ -433,7 +433,7 @@ $(function(){
 				$("#all_points_num").text(data.count);
 				var tmpList = data.points_lists
 				for(var i = 0; i < data.points_lists.length; i++) {
-					pointStr += "<tr point-id='"+tmpList[i]['id']+"'><td width='10%'>"+tmpList[i]['code']+"</td>";
+					pointStr += "<tr class='point' id='point_"+tmpList[i]['id']+"' point-id='"+tmpList[i]['id']+"'><td width='10%'>"+tmpList[i]['code']+"</td>";
 					pointStr += "<td width='10%'>"+tmpList[i]['houses_name']+"</td>";
 					pointStr += "<td width='10%'>"+tmpList[i]['area_name']+"</td>";
 					pointStr += "<td width='10%'>"+tmpList[i]['ban']+"</td>";
@@ -455,7 +455,7 @@ $(function(){
                             break;
                 	}
 					pointStr += "<td width='10%'><span class='badge "+$class+"'>"+tmpList[i]['point_status_txt']+"</span></td>";
-					pointStr += "<td width='10%'><button class='btn btn-xs btn-info do-sel' type='button'>选择点位<i class='icon-arrow-right icon-on-right'></button></td></tr>";
+					pointStr += "<td width='10%'><button data-id='"+tmpList[i]['id']+"' class='btn btn-xs btn-info do-sel' type='button'>选择点位<i class='icon-arrow-right icon-on-right'></button></td></tr>";
 				}
 				$('#area').html();
 				for(var j = 0; j < data.area_list.length; j++) {
@@ -471,6 +471,9 @@ $(function(){
 
 	//选择点位
     $('#points_lists').on('click', '.do-sel', function(){
+    	var id = $(this).data('id');
+        //查找是否已经存在
+        if($('#selected_points').find('#point_'+id).length>0){layer.msg('请勿重复选择');return;}
         $(this).parent().parent().appendTo($("#selected_points"));
         $("#selected_points_num").html(Number($("#selected_points_num").text()) + 1);  
 
@@ -489,6 +492,9 @@ $(function(){
 
   	//移除点位
     $('#selected_points').on('click', '.do-sel', function(){
+    	var id = $(this).data('id');
+        //查找是否已经存在
+        if($('#selected_points').find('#point_'+id).length>0){layer.msg('请勿重复选择');return;}
         $(this).parent().parent().appendTo($("#points_lists"));
         $("#selected_points_num").html(Number($("#selected_points_num").html()) - 1);
 
