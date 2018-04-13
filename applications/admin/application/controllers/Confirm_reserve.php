@@ -225,7 +225,7 @@ class Confirm_reserve extends MY_Controller{
                 $data['list'][$k]['area_name'] = '';
                 $data['list'][$k]['select_num'] = 0;
                 foreach ($area_list as $key => $val){
-                    if($v['houses_id'] == $val['houses_id']){
+                    if($v['houses_id'] == $val['houses_id'] && $val['id'] == $v['area_id']){
                         $data['list'][$k]['area_name'] = $val['name'];
                     }
                 }
