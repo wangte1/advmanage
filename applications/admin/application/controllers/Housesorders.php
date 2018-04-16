@@ -857,19 +857,18 @@ class Housesorders extends MY_Controller{
             	 $update_order['assign_status'] = 1;
             }
             //同时更新对应的订单
-            $result = $this->Mhouses_orders->update_info($update_order,array("id"=>$id));
+            $result = $this->Mhouses_orders->update_info($update_order, array("id"=>$id));
             
             if($status == 8){
                 if($result){
                     //如果订单已经下画则释放所有点位
                     $tmp_list = $this->Mhouses_orders->get_one('point_ids, customer_id', ["id"=>$id]);
                     $point_ids_arr = explode(',', $tmp_list['point_ids']);
-                    
+                    //释放锁定的客户和占用数
+                    $_result = $this->release($id, $tmp_list['customer_id']);
                     $where_point['in']['id'] = $point_ids_arr;
-                    $where_point['ad_use_num >='] = 1;
+                    $where_point['field']['`ad_num` >'] = '`ad_use_num` + `lock_num`';
                     $update_data['point_status'] = 1;
-                    $update_data['decr'] = ['ad_use_num' => 1];//释放点位占用数量
-                    $update_data['delstr']['`customer_id`'] = ','.$tmp_list['customer_id'];
                     $this->Mhouses_points->update_info($update_data, $where_point);
 
                     //更新该订单下所有换画订单的状态为已下画
@@ -881,7 +880,57 @@ class Housesorders extends MY_Controller{
                 }
             }
 
-             $this->return_success();
+            $this->return_success();
+        }
+    }
+    
+    public function release($id, $customer_id){
+        //如果订单已经下画则释放所有点位
+        $tmp_list = $this->Mhouses_orders->get_one('point_ids, customer_id', ["id"=>$id]);
+        $point_ids_arr = explode(',', $tmp_list['point_ids']);
+        $list = $this->Mhouses_points->get_lists('id,customer_id', ['in' => ['id' => $point_ids_arr]]);
+        if($list){
+            $new = [];
+            //提取订单所有点位点位占用的客户
+            foreach ($list as $k => $v){
+                $tmp = explode(',', $v['customer_id']);
+                if(is_array($tmp)){
+                    foreach ($tmp as $key => $val){
+                        if($val) $new[$v['id']][] = $val;
+                    }
+                }else{
+                    $new[$v['id']][] = $tmp;
+                }
+            }
+            //操作点位,去除指定占用的客户
+            foreach ($new as $k => &$v){
+                foreach ($v as $key => $val){
+                    if($val == $customer_id) unset($v[$key]);
+                }
+            }
+            //准备更新的数据
+            foreach ($new as $k => &$v){
+                $tmp = '';
+                foreach ($v as $key => $val){
+                    if($val){
+                        if($key == 0){
+                            $tmp.= $val;
+                        }else{
+                            $tmp.= ','.$val;
+                        }
+                    }
+                }
+                $v = $tmp;
+            }
+            $sql = "update t_houses_points SET `ad_use_num` = `ad_use_num` -1, customer_id = CASE id";
+            foreach ($new as $k => $v){
+                $sql.= " WHEN $k THEN '$v'";
+            }
+            $sql.= ' END where id in (';
+            $sql.= implode(',', $point_ids_arr);
+            $sql.= ')';
+            $this->db->query($sql);
+            return $this->db->count_all_results();
         }
     }
 
