@@ -85,9 +85,23 @@ class Login extends CI_Controller {
                        $this->return_json(array("code"=>0,"msg"=>"登录成功"));
 
                     }else{
+                        $this->Mlogin_log->create([
+                            'admin_id'		=>isset($user_info['id']) ? $user_info['id'] : 0,
+                            'login_time'	=>date('Y-m-d H:i:s'),
+                            'login_ip'		=>get_client_ip(),
+                            'login_name'	=>$name,
+                            'login_status'  =>2,
+                        ]);
                         $this->return_json(array("code"=>3,"msg"=>"密码错误请重新输入"));
                     }
                 }else{
+                    $this->Mlogin_log->create([
+                        'admin_id'		=>isset($user_info['id']) ? $user_info['id'] : 0,
+                        'login_time'	=>date('Y-m-d H:i:s'),
+                        'login_ip'		=>get_client_ip(),
+                        'login_name'	=>$name,
+                        'login_status'  =>3,
+                    ]);
                     $this->return_json(array("code"=>2,"msg"=>"用户名错误"));
                 }
 

@@ -162,7 +162,19 @@
                                             <td><?php echo $val['login_time'];?></td>
                                             <td><?php echo $val['login_ip'];?></td>
                                             <td class="hidden-480">
-                                                <?php if($val['admin_id']){echo "成功";}else{echo "失败";}?>
+                                               <?php 
+                                                    switch ($val['login_status']){
+                                                        case 1:
+                                                            echo '成功';
+                                                            break;
+                                                        case 2:
+                                                            echo '失败，密码错误';
+                                                            break;
+                                                        case 3:
+                                                            echo '失败，用户名不存在';
+                                                            break;
+                                                    }
+                                                ?>
                                             </td>
 
                                         </tr>
