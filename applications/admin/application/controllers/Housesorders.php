@@ -766,13 +766,13 @@ class Housesorders extends MY_Controller{
     	$where['in']['A.id'] = explode(',', $order_list['point_ids']);
     	$where['A.houses_id'] = $houses_id;
     	$data['list'] = $this->Mhouses_points->get_points_lists($where, [],$size,($page-1)*$size);
-    	$data_count = $this->Mhouses_points->get_count($where);
+    	$data_count = $this->Mhouses_points->get_points_lists($where);
     	$data['page'] = $page;
-    	$data['data_count'] = $data_count;
+    	$data['data_count'] = count($data_count);
     	
     	//获取分页
     	$pageconfig['base_url'] = "/housesorders/points_detail/{$order_id}/{$houses_id}";
-    	$pageconfig['total_rows'] = $data_count;
+    	$pageconfig['total_rows'] = $data['data_count'];
     	$this->pagination->initialize($pageconfig);
     	$data['pagestr'] = $this->pagination->create_links(); // 分页信息
     	
