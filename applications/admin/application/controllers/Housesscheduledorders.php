@@ -233,7 +233,7 @@ class Housesscheduledorders extends MY_Controller{
             if(!empty($point_ids_old)){
                 //取消的点位锁定数-1
                 $update_data['decr'] = ['lock_num' => 1];
-                $this->Mhouses_points->update_info($update_data, array('in' => array('id' => $point_ids_old)));
+                $this->Mhouses_points->update_info($update_data, ['in' => array('id' => $point_ids_old), 'lock_num >' => 0]);
                 //重置这些点位的状态
                 $_where['field']['`ad_num`>'] = '`lock_num`+`ad_use_num`';
                 $_where['in'] = ['id' => $point_ids_old];
