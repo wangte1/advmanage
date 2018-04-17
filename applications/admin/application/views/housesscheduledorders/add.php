@@ -492,9 +492,7 @@ $(function(){
 
   	//移除点位
     $('#selected_points').on('click', '.do-sel', function(){
-    	var id = $(this).data('id');
-        //查找是否已经存在
-        if($('#selected_points').find('#point_'+id).length>0){layer.msg('请勿重复选择');return;}
+    	
         $(this).parent().parent().appendTo($("#points_lists"));
         $("#selected_points_num").html(Number($("#selected_points_num").html()) - 1);
 
