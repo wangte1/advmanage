@@ -399,6 +399,7 @@
 <script src="<?php echo css_js_url('select2.min.js','admin');?>"></script>
 <!-- <script src="<?php echo css_js_url('order.js','admin');?>"></script> -->
 <script type="text/javascript">
+var p_area_id = 0;
 $(function(){
 	
 	var order_type = '<?php echo $order_type;?>';
@@ -417,9 +418,16 @@ $(function(){
         $(this).prev().focus();
     });
 	
-	$('#houses_id,#area_id,#ban,#unit,#floor,#addr').change(function(){
+    $('#area_id').on('click', function(){
+    	p_area_id = $(this).val();
+    });
+	
+	$('body').on('change', '#houses_id,#area_id,#ban,#unit,#floor,#addr', function(){
 		var houses_id = $('#houses_id').val();
 		var area_id = $('#area_id').val();
+		if(area_id == ''){
+			area_id = p_area_id;
+		}
 		var ban = $('#ban').val();
 		var unit = $('#unit').val();
 		var floor = $('#floor').val();
