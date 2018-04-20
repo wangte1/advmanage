@@ -22,6 +22,13 @@
 </style>
 
 <div class="main-container" id="main-container">
+<div class="row">
+	<ul class="list-inline col-md-12">
+		<?php foreach ($user_list as $k => $v):?>
+      	<li><?php echo $v?> : <span id="user_<?php echo $k;?>">0</span></li>
+      	<?php endforeach;?>
+    </ul>
+</div>
 <form class="form-horizontal" role="form" method="post">
 	<input type="hidden" name="order_id" value="<?php echo $order_id;?>">
 	<div id="table-panel">
@@ -48,7 +55,7 @@
 					<td><?php echo $v['ad_area'];?></td>
 					<td><?php echo $v['houses_name'];?><input type="hidden" name="houses_id[]" value="<?php echo $v['houses_id'];?>"></td>
 
-					<td><span class="m-count"><?php echo $v['count'];?></span><input type="hidden" name="points_count[]" value="<?php echo $v['count'];?>"></td>
+					<td><span class="m-count" user="0" num="0"><?php echo $v['count'];?></span><input type="hidden" name="points_count[]" value="<?php echo $v['count'];?>"></td>
 					<td>
 						<span id="count_<?php echo $v['houses_id'];?>" class="sel_count">0</span>
 						<input id="area_id_<?php echo $v['houses_id'];?>" name="area_id[]" type="hidden">
@@ -128,6 +135,7 @@ $(function(){
 	});
 
 	$('.charge-sel').change(function(){
+		doCheckNumber();
 		<?php if($assign_type == 2) {?>
 			$(this).parent('td').prev().prev().find('input[name="area_id[]"]').val('');
 			$(this).parent('td').prev().prev().find('input[name="ban[]"]').val('');
@@ -158,6 +166,46 @@ $(function(){
 		<?php }?>
 
 	});
+	
+	//统计工程人员的点位数
+	function doCheckNumber(){
+		$('select[name="charge_user[]"]').each(function(){
+			if($(this).val() != ""){
+				var id = $(this).val();
+				var old = parseInt($('#user_'+id).text());
+				if($(this).parent('td').prev().prev().find('.m-count').attr('num') == 0){
+    				$(this).parent('td').prev().prev().find('.m-count').attr('num', 1);
+    				$(this).parent('td').prev().prev().find('.m-count').attr('user', id);
+    				var allnum = parseInt($(this).parent('td').prev().prev().find('.m-count').text());
+    				$('#user_'+id).text(allnum+old);
+    				checkBan()
+				}
+			}
+		});
+	}
+
+	//删除的操作
+	$('body').on('click', '.select2-search-choice-close', function(){
+		var _p = $(this).parent().parent().parent().prev().prev().find('.m-count');
+		var id = _p.attr('user');
+		var all = parseInt($('#user_'+id).text());
+		var thisnum = parseInt(_p.text());
+		console.log(all, thisnum);
+		_p.attr('user', 0);
+		_p.attr('num', 0);
+		$('#user_'+id).text(all-thisnum);
+		checkBan()
+	});
+	//检测是否进行楼栋的分配
+	function checkBan(){
+		$('.sel_count').bind('DOMNodeInserted', function(){
+			if($(this).text() == 0) return;
+			console.log($(this).parent('td').prev().find('m-count').text());return;
+			if($(this).text() != $(this).parent('td').prev().find('m-count').text()){
+				console.log('OK');
+			}
+		});
+	}
 	
 	$('.sub-button').click(function(){
 
