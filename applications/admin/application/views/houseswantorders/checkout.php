@@ -635,7 +635,6 @@ function load_houses(num1, num2) {
 	};
 	
 	$.post('/houseswantorders/get_points', postData, function(data){
-		console.log(data);
 		if(data.flag == true && data.count > 0) {
 			//楼盘
 			if(num1 != 2) {
