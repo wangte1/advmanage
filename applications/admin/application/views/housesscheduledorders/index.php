@@ -167,7 +167,13 @@
                                                 	<?php endforeach;?>
                                                 	<?php endif;?>
                                                 </td>
-                                                <td><?php echo $value['point_ids'] ? count(explode(',', $value['point_ids'])) : 0;?>个点位</td>
+                                                <td><?php
+                                                    $count = 0;
+                                                    if($value['point_ids']){
+                                                        $count = count(array_unique(explode(',', $value['point_ids'])));
+                                                    }
+                                                    echo $count;
+                                                    ?>个点位</td>
                                                 <td>
                                                     <?php echo $value['lock_start_time'].'至'.$value['lock_end_time'];?>
                                                 </td>
