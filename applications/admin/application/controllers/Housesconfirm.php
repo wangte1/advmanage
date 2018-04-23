@@ -329,12 +329,17 @@ class Housesconfirm extends MY_Controller{
         $order = $tmp_moudle->get_one("*",array("id" => $order_id));
         $where_point['in']['A.id'] = $point_ids_arr = explode(',', $order['point_ids']);
         $where_point['A.houses_id'] = $houses_id;
-        if($ban) {
-            $where_point['A.ban'] = $ban;
+        $all = (int) $this->input->get('all');
+        //如果是全部则忽略以下条件
+        if($all == 0){
+            if($ban) {
+                $where_point['A.ban'] = $ban;
+            }
+            if($area_id){
+                $where_point['A.area_id'] = $area_id;
+            }
         }
-        if($area_id){
-            $where_point['A.area_id'] = $area_id;
-        }
+        
         
         //获取该订单下面的所有楼盘
         $list = $this->Mhouses_points->get_points_lists($where_point);

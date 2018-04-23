@@ -416,7 +416,7 @@
  			var assign_type = '<?php echo $assign_type;?>';
 			var num = $(this).attr('num');
 
-			location.href='/housesconfirm/task_exports?order_id='+order_id+'&assign_id='+id+'&houses_id='+houses_id+'&area_id='+area_id+'&ban='+ban+'&assign_type='+assign_type+'&num='+num //iframe的url
+			location.href='/housesconfirm/task_exports?order_id='+order_id+'&assign_id='+id+'&houses_id='+houses_id+'&area_id='+area_id+'&ban='+ban+'&assign_type='+assign_type+'&all=1' //iframe的url
 			return;
 			
 		});
