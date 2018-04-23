@@ -202,7 +202,7 @@ class Housesscheduledorders extends MY_Controller{
             $point_ids = $post_data['point_ids'];
             if(empty($point_ids)) $this->error("请至少选择一个点位！");
             $point_ids = explode(',', $point_ids);
-            $point_ids_old= explode(',', $post_data['point_ids_old']);
+            $point_ids_old= array_unique(explode(',', $post_data['point_ids_old']));
             
             $add = [];
             //判断没有新曾的点位
