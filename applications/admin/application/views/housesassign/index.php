@@ -153,8 +153,7 @@
 			                                            <?php foreach ($list as $key => $value) : ?>
 			                                            <tr>
 			                                                <td class="phone-hide">
-			                                                    <a href="/housesassign/order_detail/<?php echo $value['id'];?>/<?php echo $assign_type;?>/<?php echo $value['assign_status'];?>"><?php echo $value['order_code'];?><?php echo $value['assign_status'];?></a>
-			                                                	<!--<?php echo $value['order_code'];?>-->
+			                                                    <a href="/housesassign/order_detail/<?php echo $value['id'];?>/<?php echo $assign_type;?>/<?php echo $value['assign_status'];?>"><?php echo $value['order_code'];?><?php if($value['pid'] != 0){echo ' (组长派单)';}?></a>
 			                                                </td>
 			                                                <td><?php echo $order_type_text[$value['order_type']];?></td>
 			                                                <td><?php echo $value['point_ids'] ? count(array_unique(explode(',', $value['point_ids']))) : 0;?>个点位</td>
@@ -224,7 +223,7 @@
 			                                                            <i class="icon-eye-open bigger-130"></i>
 			                                                        </a>
 			                                                    	<?php if($value['assign_status'] == 1) {?>
-				                                                        <a class="green tooltip-info m-assign" data-id="<?php echo $value['id'];?>" assign_type="<?php echo $value['assign_type'];?>" data-rel="tooltip" data-placement="top" title="" data-original-title="派单">
+				                                                        <a class="green tooltip-info m-assign" data-pid="<?php echo $value['pid']?>" data-id="<?php echo $value['id'];?>" assign_type="<?php echo $value['assign_type'];?>" data-rel="tooltip" data-placement="top" title="" data-original-title="派单">
 				                                                            <i class="icon-hand-right bigger-130"></i>
 				                                                        </a> 
 			                                                        <?php }else if($value['assign_status'] == 2) {?>
@@ -326,13 +325,19 @@
 		$('.m-assign').click(function(){
 			var order_id = $(this).attr('data-id');
 			var assign_type = $(this).attr('assign_type');
+			var pid = $(this).attr('data-pid');
+			url = 'housesassign/assign?order_id='+order_id+'&assign_type='+assign_type; //iframe的url
+			if(pid == "0"){
+				url = 'housesassign/new_assign?order_id='+order_id+'&assign_type='+assign_type; //iframe的url
+			}
+			
 			layer.open({
 				  type: 2,
 				  title: '派单',
 				  shadeClose: true,
 				  shade: 0.6,
 				  area: ['70%', '72%'],
-				  content: 'housesassign/assign?order_id='+order_id+'&assign_type='+assign_type //iframe的url
+				  content: url
 				}); 
 		});
 

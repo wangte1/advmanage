@@ -30,7 +30,6 @@
 					<th>序号</th>
 					<th>楼盘</th>
 					<th>组团</th>
-					<th>楼栋</th>
 					<th>点位数量</th>
 					<th>负责人</th>
 					<th>说明</th>
@@ -51,7 +50,6 @@
 							<?php if($v1['id'] == $v['area_id']) {echo $v1['name'];}?>
 						<?php }?>
 					</td>
-					<td><?php echo $v['ban'];?></td>
 					<td><?php echo $v['count'];?></td>
 					<td>
 						<select class="select2 charge-sel" name="charge_user[]">
