@@ -303,7 +303,9 @@ class Housesassign extends MY_Controller{
     		$points_counts = $this->input->post('points_count');
     		$charge_users = $this->input->post('charge_user');
     		$remark = $this->input->post('remark');
-
+            //获取订单的父id
+    		$orderInfo = $this->Mhouses_orders->get_one('pid', ['id' => $order_id]);
+    		
     		$assign_type = $this->input->get('assign_type');
     		
     		$add_data = [];
@@ -320,7 +322,7 @@ class Housesassign extends MY_Controller{
     				foreach($tmp1 as $k1 => $v1) {
 
     						$tmp_arr[$j]['type'] = $assign_type;
-    						$tmp_arr[$j]['order_id'] = $order_id;
+    						$tmp_arr[$j]['order_id'] = $orderInfo['pid'];
     						$tmp_arr[$j]['houses_id'] = $v;
     						$tmp_arr[$j]['area_id'] = $tmp5[$k1];
     						$tmp_arr[$j]['ban'] = $tmp3[$k1];
@@ -338,17 +340,17 @@ class Housesassign extends MY_Controller{
     				}
     			}else {
     				//向工程人员广播
-    				$msg = "你有新的派单需要确认，请到派单确认界面确认！";
-    				$this->send(['uid' => $charge_users[$k], 'message' => $msg]);
+//     				$msg = "你有新的派单需要确认，请到派单确认界面确认！";
+//     				$this->send(['uid' => $charge_users[$k], 'message' => $msg]);
     				
-	    			$res_send = $this->sendMsg($charge_users[$k]);
+// 	    			$res_send = $this->sendMsg($charge_users[$k]);
 	 
-	    			if($res_send['code'] == 0) {
-	    				$this->write_log($charge_users[$k],2,"发送短信失败".date("Y-m-d H:i:s"));	//发送短信失败记录
-	    			}
+// 	    			if($res_send['code'] == 0) {
+// 	    				$this->write_log($charge_users[$k],2,"发送短信失败".date("Y-m-d H:i:s"));	//发送短信失败记录
+// 	    			}
 
     				$add_data[$i]['type'] = $assign_type;
-    				$add_data[$i]['order_id'] = $order_id;
+    				$add_data[$i]['order_id'] = $orderInfo['pid'];
     				$add_data[$i]['houses_id'] = $v;
     				$add_data[$i]['area_id'] = 0;
     				$add_data[$i]['ban'] = '';
@@ -369,7 +371,6 @@ class Housesassign extends MY_Controller{
     		if(count($tmp_arr) > 0) {
     			$add_data = array_merge_recursive($add_data,$tmp_arr);
     		}
-    		
     		$res = $this->Mhouses_assign->create_batch($add_data);
     		
     		if($res) {
@@ -486,14 +487,18 @@ class Housesassign extends MY_Controller{
     		$tmp_moudle = $this->Mhouses_orders;
     	}
 
-    	$order_list = $tmp_moudle->get_one("id,point_ids",array("id" => $data['order_id']));
+    	$order_list = $tmp_moudle->get_one("id,pid,point_ids",array("id" => $data['order_id']));
     
     	if(isset($order_list['point_ids'])) {
     		$point_ids_arr = explode(',', $order_list['point_ids']);
     		$where['in']['id'] = $point_ids_arr;
     	}
-
-    	$list = $this->Mhouses_assign->get_lists('id,houses_id, area_id, ban, points_count,status,charge_user,assign_user,assign_time,status,remark', ['order_id' => $order_id, 'type' => $assign_type]);  //点位分组
+        if($order_list['pid']){
+            $list = $this->Mhouses_assign->get_lists('id,houses_id, area_id, ban, points_count,status,charge_user,assign_user,assign_time,status,remark', ['order_id' => $order_list['pid'], 'type' => $assign_type]);  //点位分组
+        }else{
+            $list = $this->Mhouses_assign->get_lists('id,houses_id, area_id, ban, points_count,status,charge_user,assign_user,assign_time,status,remark', ['order_id' => $order_id, 'type' => $assign_type]);  //点位分组
+        }
+    	
     
     	if($list) {
     		$houses_ids = array_column($list, 'houses_id');
@@ -557,7 +562,6 @@ class Housesassign extends MY_Controller{
     	}else {
     		$data['info'] = $this->Mhouses_orders->get_one('*',array('id' => $id));
     	}
-    	
         if($this->input->get('houses_id')) {
         	$data['houses_id'] = $this->input->get('houses_id');
         }
@@ -570,7 +574,6 @@ class Housesassign extends MY_Controller{
         
         //投放点位
         $data['info']['selected_points'] = $this->Mhouses_points->get_points_lists(array('in' => array('A.id' => explode(',', $data['info']['point_ids']))), [], 0,0,  $group_by = array('houses_id'));
-        
         //广告画面
         $data['info']['adv_img'] = $data['info']['adv_img'] ? explode(',', $data['info']['adv_img']) : array();
         

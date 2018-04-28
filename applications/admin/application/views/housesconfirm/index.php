@@ -257,7 +257,7 @@
 			                                                   	
 			                                                    <td nowrap>
 			                                                        <div class="">
-			                                                            <a class="green tooltip-info" href="/housesconfirm/order_detail/<?php echo $val['order_id'];?>/<?php echo $assign_type;?>?houses_id=<?php echo $val['houses_id'];?>&ban=<?php echo $val['ban'];?>"  data-rel="tooltip" data-placement="top" title="" data-original-title="详情">
+			                                                            <a class="green tooltip-info" href="/housesconfirm/order_detail/<?php echo $val['order_id'];?>/<?php echo $assign_type;?>?houses_id=<?php echo $val['houses_id'];?>&ban=<?php if(!empty($val['ban'])){echo $val['ban'];}else{echo '';};?>"  data-rel="tooltip" data-placement="top" title="" data-original-title="详情">
 				                                                            <i class="icon-eye-open bigger-130"></i>
 				                                                        </a> 
 				                                                        <?php if($val['status'] == 2) {?>
