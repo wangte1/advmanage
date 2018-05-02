@@ -270,9 +270,27 @@ class Housesscheduledorders extends MY_Controller{
             //获取所有业务员
             $data['yewu'] = $this->Madmins->get_lists('id, fullname', array('group_id' => 2,'is_del' => 1));
             //已选择点位列表
-            $where['in']['A.id'] = explode(',', $data['info']['point_ids']);
-            $data['selected_points'] = $this->Mhouses_points->get_points_lists($where);
-
+            $tmp_point_ids = explode(',', $data['info']['point_ids']);
+            //如果数据超过1000条，则分批查询
+            if(count($tmp_point_ids) > 1000){
+                $data['selected_points'] = [];
+                $arr = array_chunk($tmp_point_ids, 1000);
+                $tmp = [];
+                foreach ($arr as $k => $v){
+                    $where['in']['A.id'] = $v;
+                    $tmp[] = $this->Mhouses_points->get_points_lists($where);
+                }
+                foreach ($tmp as $k => $v){
+                    foreach ($v as $key => $val){
+                        $data['selected_points'][] = $val;
+                    }
+                }
+                unset($tmp);
+            }else{
+                $where['in']['A.id'] = explode(',', $data['info']['point_ids']);
+                $data['selected_points'] = $this->Mhouses_points->get_points_lists($where);
+            }
+            
             $this->load->view("housesscheduledorders/add", $data);
         }
     }
