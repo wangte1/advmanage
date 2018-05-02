@@ -401,7 +401,7 @@
 <script type="text/javascript">
 var p_area_id = 0;
 $(function(){
-	
+	layer.msg('数据加载完毕!');
 	var order_type = '<?php echo $order_type;?>';
 	var put_trade = '<?php echo $put_trade;?>';
 	
@@ -423,6 +423,7 @@ $(function(){
     });
 	
 	$('body').on('change', '#houses_id,#area_id,#ban,#unit,#floor,#addr', function(){
+		var index = layer.load(0, {shade: true});
 		var houses_id = $('#houses_id').val();
 		var area_id = $('#area_id').val();
 		if(area_id == ''){
@@ -475,6 +476,7 @@ $(function(){
 			$("#points_lists").html(pointStr);
 			$("#area_id").html(areaStr);
 		});
+		layer.close(index);
 	});
 
 	//选择点位

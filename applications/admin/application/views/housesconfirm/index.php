@@ -282,7 +282,7 @@
 					                                                        </a>  
 				                                                        <?php }?>
 				                                                        
-				                                                        	<a class="green tooltip-info out" data-id="<?php echo $val['id'];?>" order-id="<?php echo $val['order_id'];?>" houses-id="<?php echo $val['houses_id'];?>" area_id="<?php echo $val['area_id']?>" ban="<?php echo $val['ban'];?>" num="<?php echo $val['points_count'];?>" data-rel="tooltip" data-placement="top" title="" data-original-title="导出点位">
+				                                                        	<a class="green tooltip-info out" data-id="<?php echo $val['id'];?>" order-id="<?php echo $val['order_id'];?>" houses-id="<?php echo $val['houses_id'];?>" charge_user="<?php echo $val['charge_user']?>" area_id="<?php echo $val['area_id']?>" ban="<?php echo $val['ban'];?>" num="<?php echo $val['points_count'];?>" data-rel="tooltip" data-placement="top" title="" data-original-title="导出点位">
 					                                                            <i class="ace-icon glyphicon glyphicon-print bigger-130"></i>
 					                                                        </a>
 			                                                        </div>
@@ -412,11 +412,12 @@
 			var order_id = $(this).attr('order-id');
 			var houses_id = $(this).attr('houses-id');
 			var ban = $(this).attr('ban');
+			var charge_user= $(this).attr('charge_user');
 			var area_id = $(this).attr('area_id');
  			var assign_type = '<?php echo $assign_type;?>';
 			var num = $(this).attr('num');
 
-			location.href='/housesconfirm/task_exports?order_id='+order_id+'&assign_id='+id+'&houses_id='+houses_id+'&area_id='+area_id+'&ban='+ban+'&assign_type='+assign_type+'&all=1' //iframe的url
+			location.href='/housesconfirm/user_all_task_export?order_id='+order_id+'&assign_id='+id+'&houses_id='+houses_id+'&area_id='+area_id+'&ban='+ban+'&assign_type='+assign_type+'&charge_user='+charge_user //iframe的url
 			return;
 			
 		});

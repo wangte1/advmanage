@@ -395,6 +395,113 @@ class Housesconfirm extends MY_Controller{
 
     }
     
+    private function get_export_list($order_id, $houses_id, $area_id, $ban, $assign_type){
+        $list = [];
+        if($assign_type == 3) {
+            $tmp_moudle = $this->Mhouses_changepicorders;
+        }else {
+            $tmp_moudle = $this->Mhouses_orders;
+        }
+        $order = $tmp_moudle->get_one("*",array("id" => $order_id));
+        $where_point['in']['A.id'] = $point_ids_arr = explode(',', $order['point_ids']);
+        $where_point['A.houses_id'] = $houses_id;
+        if($ban) {
+            $where_point['A.ban'] = $ban;
+        }
+        if($area_id){
+            $where_point['A.area_id'] = $area_id;
+        }
+        //获取该订单下面的所有楼盘
+        $list = $this->Mhouses_points->get_points_lists($where_point);
+        return $list;
+    }
+    
+    /**
+     * 导出工单
+     */
+    public function  user_all_task_export(){
+        $data = $this->data;
+        $assign_id = $this->input->get('assign_id');
+        $order_id = $this->input->get('order_id');
+        $houses_id = $this->input->get('houses_id');
+        $charge_user = $this->input->get('charge_user');
+        $area_id = $this->input->get('area_id');
+        $ban = $this->input->get('ban');
+        $assign_type = $this->input->get('assign_type');
+        if($assign_type == 3) {
+            $tmp_moudle = $this->Mhouses_changepicorders;
+        }else {
+            $tmp_moudle = $this->Mhouses_orders;
+        }
+        $order = $tmp_moudle->get_one("*",array("id" => $order_id));
+        //获取该用户本次的所有任务列表
+        $assign_lists = $this->Mhouses_assign->get_lists('*', ['order_id' => $order_id, 'charge_user' => $charge_user, 'type' => $assign_type]);
+        $list = $tmp = [];
+        foreach ($assign_lists as $k => $v){
+            $list[] = $this->get_export_list($v['order_id'], $v['houses_id'], $v['area_id'], $v['ban'], $v['assign_type']);
+        }
+        foreach ($list as $k => $v){
+            foreach ($v as $key => $val){
+                $tmp[] = $val;
+            }
+        }
+        $list = $tmp;
+        //获取订单客户名称
+        $customer = $this->Mhouses_customers->get_one('name', ['id' => $order['customer_id']]);
+        $customerName = $customer['name'];
+        //查询当前工程人员名字
+        $user = $this->Madmins->get_one('fullname', ['id' => $charge_user]);
+        if($list){
+            //加载phpexcel
+            $this->load->library("PHPExcel");
+            //设置表头
+            $table_header =  array(
+                '点位编号'=>"code",
+                '楼盘'=>"houses_name",
+                '组团'=>"houses_area_name",
+                '楼栋'=>"ban",
+                '单元'=>"unit",
+                '楼层'=>"floor",
+                '点位位置'=>"addr"
+            );
+            
+            $i = 0;
+            foreach($table_header as  $k=>$v){
+                $cell = PHPExcel_Cell::stringFromColumnIndex($i).'1';
+                $this->phpexcel->setActiveSheetIndex(0)->setCellValue($cell, $k);
+                $i++;
+            }
+            
+            
+            $h = 2;
+            foreach($list as $key=>$val){
+                $j = 0;
+                foreach($table_header as $k => $v){
+                    $cell = PHPExcel_Cell::stringFromColumnIndex($j++).$h;
+                    $value = '';
+                    if($v == 'addr') {
+                        if(isset($data['point_addr'][$val[$v]]))
+                            $value = $data['point_addr'][$val[$v]];
+                    }else {
+                        $value = $val[$v];
+                    }
+                    $this->phpexcel->getActiveSheet(0)->setCellValue($cell, $value);
+                }
+                $h++;
+            }
+            
+            $this->phpexcel->setActiveSheetIndex(0);
+            // 输出
+            header('Content-Type: application/vnd.ms-excel');
+            header('Content-Disposition: attachment;filename='.$user["fullname"].' -【'.$customerName.'】的点位列表-合计'.count($list).'个.xls');
+            header('Cache-Control: max-age=0');
+            
+            $objWriter = PHPExcel_IOFactory::createWriter($this->phpexcel, 'Excel5');
+            $objWriter->save('php://output');
+        }
+        
+    }
+    
     
     /*
      * 查看验收图片详情
