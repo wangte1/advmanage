@@ -117,6 +117,8 @@ class Housesassign extends MY_Controller{
             $remark = $this->input->post('remark');
             
             $assign_type = $this->input->get('assign_type');
+            //获取订单的父id
+            $orderInfo = $this->Mhouses_orders->get_one('pid', ['id' => $order_id]);
             
             $add_data = [];
             $tmp_arr = [];
@@ -130,7 +132,6 @@ class Housesassign extends MY_Controller{
                     $tmp4 = explode(',', $post_data['ban_count'][$k]);
                     $tmp5 = explode(',', $post_data['area_id'][$k]);
                     foreach($tmp1 as $k1 => $v1) {
-                        
                         $tmp_arr[$j]['type'] = $assign_type;
                         $tmp_arr[$j]['order_id'] = $order_id;
                         $tmp_arr[$j]['houses_id'] = $v;
@@ -143,9 +144,6 @@ class Housesassign extends MY_Controller{
                         if(isset($tmp2[$k1])) {
                             $tmp_arr[$j]['remark'] = $tmp2[$k1];
                         }
-                        
-                        
-                        $tmp_arr[$j]['type'] = $this->input->get('assign_type');
                         $j++;
                     }
                 }else {
