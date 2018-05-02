@@ -54,18 +54,17 @@ class Housesassign extends MY_Controller{
         if ($this->input->get('order_type')) $where['A.order_type'] = $this->input->get('order_type');
         if ($this->input->get('customer_id')) $where['A.customer_id'] = $this->input->get('customer_id');
         if ($this->input->get('assign_status')) $where['A.assign_status'] = $this->input->get('assign_status');
-        
-
         $assign_type = $data['assign_type'] = $this->input->get('assign_type') ? : 1;
-
-        
         if ($data['assign_type'] == 2 || $data['assign_type'] == 1) {	//上画和下画派单
         	$where['A.order_status>='] = 3;
-
         	$where['A.assign_type'] = $data['assign_type'];
         	$tmp_moudle = $this->Mhouses_orders;
-        }else {			//换画派单
+        }else {			
+            //换画派单
         	$tmp_moudle = $this->Mhouses_changepicorders;
+        }
+        if($data['userInfo']['group_id'] == C('group.gc')){
+            $where['A.group_id'] = $data['userInfo']['id'];
         }
 
         $data['order_code'] = $this->input->get('order_code');
@@ -115,11 +114,7 @@ class Housesassign extends MY_Controller{
             $points_counts = $this->input->post('points_count');
             $charge_users = $this->input->post('charge_user');
             $remark = $this->input->post('remark');
-            
             $assign_type = $this->input->get('assign_type');
-            //获取订单的父id
-            $orderInfo = $this->Mhouses_orders->get_one('pid', ['id' => $order_id]);
-            
             $add_data = [];
             $tmp_arr = [];
             $i = $j = 0;
@@ -320,6 +315,7 @@ class Housesassign extends MY_Controller{
 
     						$tmp_arr[$j]['type'] = $assign_type;
     						$tmp_arr[$j]['order_id'] = $orderInfo['pid'];
+    						$tmp_arr[$j]['true_order_id'] = $order_id;
     						$tmp_arr[$j]['houses_id'] = $v;
     						$tmp_arr[$j]['area_id'] = $tmp5[$k1];
     						if(empty($tmp3[$k1])){
@@ -352,6 +348,7 @@ class Housesassign extends MY_Controller{
 
     				$add_data[$i]['type'] = $assign_type;
     				$add_data[$i]['order_id'] = $orderInfo['pid'];
+    				$add_data[$i]['true_order_id'] = $order_id;
     				$add_data[$i]['houses_id'] = $v;
     				$add_data[$i]['area_id'] = 0;
     				$add_data[$i]['ban'] = '';
