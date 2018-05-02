@@ -200,8 +200,11 @@ class Housesscheduledorders extends MY_Controller{
             
             //获取已被取消的点位
             $point_ids = $post_data['point_ids'];
+            
             if(empty($point_ids)) $this->error("请至少选择一个点位！");
             $point_ids = explode(',', $point_ids);
+            //去重
+            $point_ids = array_unique($point_ids);
             $point_ids_old= array_unique(explode(',', $post_data['point_ids_old']));
             
             $add = [];
