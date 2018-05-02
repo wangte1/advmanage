@@ -438,7 +438,7 @@ class Housesconfirm extends MY_Controller{
         $assign_lists = $this->Mhouses_assign->get_lists('*', ['order_id' => $order_id, 'charge_user' => $charge_user, 'type' => $assign_type]);
         $list = $tmp = [];
         foreach ($assign_lists as $k => $v){
-            $list[] = $this->get_export_list($v['order_id'], $v['houses_id'], $v['area_id'], $v['ban'], $v['assign_type']);
+            $list[] = $this->get_export_list($v['order_id'], $v['houses_id'], $v['area_id'], $v['ban'], $v['type']);
         }
         foreach ($list as $k => $v){
             foreach ($v as $key => $val){

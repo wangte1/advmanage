@@ -200,7 +200,6 @@ class Housesassign extends MY_Controller{
                 $insert_data[$k]['point_ids'] = implode(',', $v['point_ids']);
                 $insert_data[$k]['group_id'] = $v['id'];
             }
-            
             //批量插入
             $res = $this->Mhouses_orders->create_batch($insert_data);
             if(!$res) $this->error('分配失败');
@@ -323,7 +322,11 @@ class Housesassign extends MY_Controller{
     						$tmp_arr[$j]['order_id'] = $orderInfo['pid'];
     						$tmp_arr[$j]['houses_id'] = $v;
     						$tmp_arr[$j]['area_id'] = $tmp5[$k1];
-    						$tmp_arr[$j]['ban'] = $tmp3[$k1];
+    						if(empty($tmp3[$k1])){
+    						    $tmp_arr[$j]['ban'] = '';
+    						}else{
+    						    $tmp_arr[$j]['ban'] = $tmp3[$k1];
+    						}
     						$tmp_arr[$j]['points_count'] = $tmp4[$k1];
     						$tmp_arr[$j]['charge_user'] = $v1;
     						$tmp_arr[$j]['assign_user'] = $data['userInfo']['id'];
@@ -369,6 +372,7 @@ class Housesassign extends MY_Controller{
     		if(count($tmp_arr) > 0) {
     			$add_data = array_merge_recursive($add_data,$tmp_arr);
     		}
+
     		$res = $this->Mhouses_assign->create_batch($add_data);
     		
     		if($res) {
@@ -734,7 +738,7 @@ class Housesassign extends MY_Controller{
     	}
     	
     	if ($this->input->get('houses_id')) $where['houses_id'] = $data['houses_id'] =  $this->input->get('houses_id');
-    	$data['list'] = $this->Mhouses_points->get_lists('houses_id,area_id, count(0) as count', $where, [] , 0, 0, ['houses_id','area_id']);  //工程人员信息
+    	$data['list'] = $this->Mhouses_points->get_lists('houses_id,area_id,ban, count(0) as count', $where, [] , 0, 0, ['houses_id','area_id', 'ban']);  //工程人员信息
     	$data_count = $this->Mhouses_points->count($where);
     	$data['page'] = $page;
     	$data['data_count'] = $data_count;
