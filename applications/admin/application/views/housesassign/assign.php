@@ -116,14 +116,14 @@ $(function(){
 
 		var charge_id_str = $('#charge_'+houses_id).val();
 		var remark_str = $('#remark_'+houses_id).val();
-
+		var assign_type = '<?php echo $assign_type;?>';
 		layer.open({
 			  type: 2,
 			  title: '按组团派单',
 			  shadeClose: true,
 			  shade: 0.6,
 			  area: ['90%', '90%'],
-			  content: '/housesassign/show_ban?order_id='+order_id+'&houses_id='+houses_id+'&charge_id_str='+charge_id_str+'$remark_str='+remark_str //iframe的url
+			  content: '/housesassign/show_ban?order_id='+order_id+'&houses_id='+houses_id+'&charge_id_str='+charge_id_str+'remark_str='+remark_str+'&assign_type='+assign_type //iframe的url
 		}); 
 	});
 

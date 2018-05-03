@@ -154,8 +154,6 @@ class Housesassign extends MY_Controller{
                     if(isset($remark[$k])) {
                         $add_data[$i]['remark'] = $remark[$k];
                     }
-                    
-                    
                     $add_data[$i]['type'] = $this->input->get('assign_type');
                 }
                 $i++;
@@ -176,8 +174,15 @@ class Housesassign extends MY_Controller{
                     }
                 }
             }
+            if($assign_type == 3) {	
+                //换画
+                $tmp_moudle = $this->Mhouses_changepicorders;
+            }else {	
+                //1上画，2下画
+                $tmp_moudle = $this->Mhouses_orders;
+            }
             //匹配各个组长应分配的点位
-            $orderInfo = $this->Mhouses_orders->get_one('*', ['id' => $order_id]);
+            $orderInfo = $tmp_moudle->get_one('*', ['id' => $order_id]);
             $point_ids = array_unique(explode(',', $orderInfo['point_ids']));
             $point_lists = $this->Mhouses_points->get_lists('*', ['in' => ['id' => $point_ids]]);
             foreach ($group_data as $k => $v){
@@ -196,21 +201,16 @@ class Housesassign extends MY_Controller{
                 $insert_data[$k]['group_id'] = $v['id'];
             }
             //批量插入
-            $res = $this->Mhouses_orders->create_batch($insert_data);
+            $res = $tmp_moudle->create_batch($insert_data);
             if(!$res) $this->error('分配失败');
-            $this->Mhouses_orders->update_info(['assign_status' => 2], ['id' => $order_id]);
+            $tmp_moudle->update_info(['assign_status' => 2], ['id' => $order_id]);
             echo "<script>alert('派单成功！');parent.location.reload();location.href='/housesassign/detail?order_id=".$order_id."&assign_type=".$assign_type."'</script>";
         }
         
-        //从换画订单获取点位信息
-        if($this->input->get('assign_type') == 3) {
-            $tmp_order = $this->Mhouses_changepicorders->get_one('id,point_ids', ['id'=>$data['order_id']]);
-            $where['in']['id'] = explode(',', $tmp_order['point_ids']);
-        }else {
-            $tmp_order = $this->Mhouses_orders->get_one('id,point_ids', ['id'=>$data['order_id']]);
-            $where['in']['id'] = explode(',', $tmp_order['point_ids']);
-        }
-        
+        //从订单获取点位信息
+        $tmp_order = $tmp_moudle->get_one('id,point_ids', ['id'=>$data['order_id']]);
+        $where['in']['id'] = explode(',', $tmp_order['point_ids']);
+
         $group_by = ['houses_id'];
         $list = $this->Mhouses_points->get_lists('houses_id,count(0) as count', $where, [],  0,0,  $group_by);  //点位分组
         
@@ -287,7 +287,14 @@ class Housesassign extends MY_Controller{
     	
     	$where['is_del'] = 0;
     	if ($this->input->get('order_id')) $data['order_id'] =  $this->input->get('order_id');
-    	
+    	$assign_type = $this->input->get('assign_type');
+    	if($assign_type == 3) {
+    	    //换画
+    	    $tmp_moudle = $this->Mhouses_changepicorders;
+    	}else {
+    	    //1上画，2下画
+    	    $tmp_moudle = $this->Mhouses_orders;
+    	}
     	if(IS_POST){
     		$post_data = $this->input->post();
     		$order_id = $this->input->post('order_id');
@@ -295,16 +302,13 @@ class Housesassign extends MY_Controller{
     		$points_counts = $this->input->post('points_count');
     		$charge_users = $this->input->post('charge_user');
     		$remark = $this->input->post('remark');
+    		
             //获取订单的父id
-    		$orderInfo = $this->Mhouses_orders->get_one('pid', ['id' => $order_id]);
-    		
-    		$assign_type = $this->input->get('assign_type');
-    		
+    		$orderInfo = $tmp_moudle->get_one('pid', ['id' => $order_id]);
     		$add_data = [];
     		$tmp_arr = [];
     		$i = $j = 0;
     		foreach ($houses_ids as $k => $v) {
-    			
     			if($charge_users[$k] == '') {	//通过楼栋派单
     				$tmp1 = array_filter(explode(',', $post_data['ban_charge'][$k]));
     				$tmp2 = explode(',', $post_data['ban_remark'][$k]);
@@ -312,7 +316,6 @@ class Housesassign extends MY_Controller{
     				$tmp4 = explode(',', $post_data['ban_count'][$k]);
     				$tmp5 = explode(',', $post_data['area_id'][$k]);
     				foreach($tmp1 as $k1 => $v1) {
-
     						$tmp_arr[$j]['type'] = $assign_type;
     						$tmp_arr[$j]['order_id'] = $orderInfo['pid'];
     						$tmp_arr[$j]['true_order_id'] = $order_id;
@@ -330,8 +333,6 @@ class Housesassign extends MY_Controller{
     						if(isset($tmp2[$k1])) {
     							$tmp_arr[$j]['remark'] = $tmp2[$k1];
     						}
-    						
-    						
     						$tmp_arr[$j]['type'] = $this->input->get('assign_type');
     						$j++;
     				}
@@ -374,12 +375,7 @@ class Housesassign extends MY_Controller{
     		
     		if($res) {
     			$update_data['assign_status'] = 2;
-    			if($assign_type == 3) {
-    				$res1 = $this->Mhouses_changepicorders->update_info($update_data,array("id" => $order_id));
-    			}else {
-    				$res1 = $this->Mhouses_orders->update_info($update_data,array("id" => $order_id));
-    			}
-    				
+    			$res1 = $tmp_moudle->update_info($update_data,array("id" => $order_id));
     			if($res1) {
 					echo "<script>alert('派单成功！');parent.location.reload();location.href='/housesassign/detail?order_id=".$order_id."&assign_type=".$assign_type."'</script>";
     			}
@@ -423,7 +419,7 @@ class Housesassign extends MY_Controller{
     	}
     	
     	$data['list'] = $list;
-    	$orderInfo = $this->Mhouses_orders->get_one('group_id', ['id' => $this->input->get('order_id')]);
+    	$orderInfo = $tmp_moudle->get_one('group_id', ['id' => $this->input->get('order_id')]);
     	$where = [];
     	//只查询改组的工程人员
     	$where['group_id'] = 4;	//工程人员角色
@@ -756,7 +752,7 @@ class Housesassign extends MY_Controller{
     	$pageconfig['total_rows'] = $data_count;
     	$this->pagination->initialize($pageconfig);
     	$data['pagestr'] = $this->pagination->create_links(); // 分页信息
-    	$orderInfo = $this->Mhouses_orders->get_one('group_id', ['id' => $this->input->get('order_id')]);
+    	$orderInfo = $tmp_moudle->get_one('group_id', ['id' => $this->input->get('order_id')]);
     	$where = [];
     	$where['group_id'] = 4;	//工程人员角色
     	$where['pid'] = $orderInfo['group_id'];
