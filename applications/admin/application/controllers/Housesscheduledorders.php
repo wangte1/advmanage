@@ -219,7 +219,7 @@ class Housesscheduledorders extends MY_Controller{
                 $update_data['incr'] = ['lock_num' => 1];
                 $this->Mhouses_points->update_info($update_data, array('in' => array('id' => $add)));
                 //重置这些点位的状态
-                $_where['field']['`ad_num`='] = '`lock_num`+`ad_use_num`';
+                $_where['field']['`ad_num`<='] = '`lock_num`+`ad_use_num`';
                 $_where['in'] = ['id' => $add];
                 $this->Mhouses_points->update_info(['point_status' => 3], $_where);
                 unset($update_data, $_where);
