@@ -267,11 +267,8 @@ class Housesassign extends MY_Controller{
                     }
                     
                 }
-                
                 $data['assign_list'] = $tmp_upload_arr;
             }
-            
-            
         }
         
         $data['assign_type'] = $this->input->get('assign_type');
@@ -337,16 +334,6 @@ class Housesassign extends MY_Controller{
     						$j++;
     				}
     			}else {
-    				//向工程人员广播
-//     				$msg = "你有新的派单需要确认，请到派单确认界面确认！";
-//     				$this->send(['uid' => $charge_users[$k], 'message' => $msg]);
-    				
-// 	    			$res_send = $this->sendMsg($charge_users[$k]);
-	 
-// 	    			if($res_send['code'] == 0) {
-// 	    				$this->write_log($charge_users[$k],2,"发送短信失败".date("Y-m-d H:i:s"));	//发送短信失败记录
-// 	    			}
-
     				$add_data[$i]['type'] = $assign_type;
     				$add_data[$i]['order_id'] = $orderInfo['pid'];
     				$add_data[$i]['true_order_id'] = $order_id;
@@ -360,8 +347,6 @@ class Housesassign extends MY_Controller{
     				if(isset($remark[$k])) {
     					$add_data[$i]['remark'] = $remark[$k];
     				}
-    				 
-    				 
     				$add_data[$i]['type'] = $this->input->get('assign_type');
     			}
     			$i++;
@@ -374,6 +359,14 @@ class Housesassign extends MY_Controller{
     		$res = $this->Mhouses_assign->create_batch($add_data);
     		
     		if($res) {
+    		    //提取所有的工程人员,并发送短信
+    		    $all = array_unique(array_column($add_data, 'charge_user'));
+    		    foreach ($all as $k => $v){
+    		        $res_send = $this->sendMsg($v);
+	    			if($res_send['code'] == 0) {
+	    				$this->write_log($v, 2, "发送短信失败".date("Y-m-d H:i:s"));	//发送短信失败记录
+	    			}
+    		    }
     			$update_data['assign_status'] = 2;
     			$res1 = $tmp_moudle->update_info($update_data,array("id" => $order_id));
     			if($res1) {
