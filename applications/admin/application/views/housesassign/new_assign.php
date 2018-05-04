@@ -38,7 +38,6 @@
 						<th width="15%">下画负责人</th>
 					<?php }?>
 					<th>说明</th>
-					<th>操作</th>
 				</tr>
 			</thead>
 			<tbody>
@@ -83,11 +82,6 @@
 						</select>
 					</td>
 					<td><textarea name="remark[]" rows="1"></textarea></td>
-					<td>
-						<a class="green tooltip-info m-detail" data-id="<?php echo $v['houses_id'];?>"  data-rel="tooltip" data-placement="top" title="" data-original-title="详情">
-                        	<i class="icon-eye-open bigger-130"></i>
-                       	</a>
-					</td>
 				</tr>
 				<?php }?>
 			</tbody>
@@ -95,7 +89,7 @@
 		<div style="height: 50px;"></div>
 	</div>
 	<center>
-		<button style="position: fixed;" class="sub-button" type="button">保存并通知</button>
+		<button style="position: fixed;" class="sub-button" type="button">确认分配</button>
 	</center>
 </form>
 </div>
@@ -116,14 +110,14 @@ $(function(){
 
 		var charge_id_str = $('#charge_'+houses_id).val();
 		var remark_str = $('#remark_'+houses_id).val();
-		var assign_type = '<?php echo $assign_type;?>';
+
 		layer.open({
 			  type: 2,
-			  title: '按组团楼栋派单',
+			  title: '按楼栋派单',
 			  shadeClose: true,
 			  shade: 0.6,
 			  area: ['90%', '90%'],
-			  content: '/housesassign/show_ban?order_id='+order_id+'&houses_id='+houses_id+'&charge_id_str='+charge_id_str+'remark_str='+remark_str+'&assign_type='+assign_type //iframe的url
+			  content: '/housesassign/show_ban?order_id='+order_id+'&houses_id='+houses_id+'&charge_id_str='+charge_id_str+'$remark_str='+remark_str //iframe的url
 		}); 
 	});
 

@@ -51,10 +51,10 @@
 							<?php if($v1['id'] == $v['area_id']) {echo $v1['name'];}?>
 						<?php }?>
 					</td>
-					<td><?php echo $v['ban'];?></td>
+					<td><?php echo $v['ban']?></td>
 					<td><?php echo $v['count'];?></td>
 					<td>
-						<select class="select2 charge-sel" name="charge_user[]">
+						<select class="charge-sel" name="charge_user[]" data-area_id="<?php echo $v['area_id']?>">
 							<option value=""></option>
 							<?php foreach($user_list as $k1 => $v1) {?>
 								<option value="<?php echo $v1['id'];?>"  <?php if(isset($charge_id_arr[$k]) && $charge_id_arr[$k] == $v1['id']) {?>selected="selected"<?php }?>><?php echo $v1['fullname'];?></option>
@@ -84,19 +84,34 @@
 $('[data-rel=popover]').popover({html:true});
 $(".select2").css('width','150px').select2({allowClear:true});
 $(function(){
+	
 	$('#table-panel').height($(window).height()-50);
-
-
 	var order_id = '<?php echo $order_id;?>';
 
-	$('.charge-sel, .remark').change(function(){
+	$('.remark').change(function(){
+		doselect();
+	});
 
+	$('.charge-sel').change(function(){
+		//获取组团id
+		var area_id = $(this).attr('data-area_id');
+		//获取用户值
+		var user_id = $(this).val();
+		var _this = $(this);
+		$('.charge-sel').each(function(){
+			if($(this).attr('data-area_id') == area_id && $(this).val() == ""){
+				$(this).find('option[value="'+user_id+'"]').attr('selected', true);
+			}
+		});
+		doselect();
+	});
+
+	function doselect(){
 		var area_id_str = '';
 		var ban_str = '';
 		var charge_str = '';
 		var remark_str = '';
 		var ban_count = '';
-
 		var i = 0;
 		
 		$('.charge-sel').each(function(){
@@ -124,9 +139,7 @@ $(function(){
 		window.parent.$('#charge_<?php echo $houses_id;?>').val(charge_str);
 		window.parent.$('#remark_<?php echo $houses_id;?>').val(remark_str);
 		window.parent.$('#ban_count_<?php echo $houses_id;?>').val(ban_count);
-
-
-	});
+	}
 });
 
 </script>

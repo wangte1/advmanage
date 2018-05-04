@@ -149,24 +149,37 @@ class Housesconfirm extends MY_Controller{
      * 确认派单
      */
     public function do_confirm() {
-    	
+        $data = $this->data;
     	$where['is_del'] = 0;
     	if ($this->input->post('id')) {
 
     		$assign_type = $this->input->post('assign_type');
-    		$where['id'] = $this->input->post('id');
+    		if($assign_type == 3) {
+    		    //换画
+    		    $tmp_moudle = $this->Mhouses_changepicorders;
+    		}else {
+    		    //1上画，2下画
+    		    $tmp_moudle = $this->Mhouses_orders;
+    		}
+    		$where['id'] = $id = $this->input->post('id');
     		$update_data['status'] = 3;	//已确认派单
     		$res1 = $this->Mhouses_assign->update_info($update_data, $where);
 
-    		
     		if($res1) {
+    		    //获取该派单的真实子订单
+    		    $trueOrder = $this->Mhouses_assign->get_one('true_order_id', ['id' => $where['id']]);
+    		    if($trueOrder['true_order_id']){
+    		        $count = $this->Mhouses_assign->count(['true_order_id'=> $trueOrder['true_order_id'], 'type' => $assign_type, 'status' => 2]);
+    		        //如果组长派单的工单全部确认，则更新该派单为已确认
+    		        if($count == 0){
+    		            $tmp_moudle->update_info(['assign_status' => 3], ['id'=> $trueOrder['true_order_id']]);
+    		        }
+    		    }
     			if($this->input->post('order_id')) {
     				$where['status'] = 2;
 
     				$data_count = $this->Mhouses_assign->count($where);
     				if($data_count == 0 && ($assign_type == 1 || $assign_type == 3)) {
-
-    					
     					if($this->input->post('assign_type') == 3) {	//换画派单
     						$where  = $update_data = [];
     						$where['id'] = $this->input->post('order_id');
@@ -438,7 +451,7 @@ class Housesconfirm extends MY_Controller{
         $assign_lists = $this->Mhouses_assign->get_lists('*', ['order_id' => $order_id, 'charge_user' => $charge_user, 'type' => $assign_type]);
         $list = $tmp = [];
         foreach ($assign_lists as $k => $v){
-            $list[] = $this->get_export_list($v['order_id'], $v['houses_id'], $v['area_id'], $v['ban'], $v['assign_type']);
+            $list[] = $this->get_export_list($v['order_id'], $v['houses_id'], $v['area_id'], $v['ban'], $v['type']);
         }
         foreach ($list as $k => $v){
             foreach ($v as $key => $val){

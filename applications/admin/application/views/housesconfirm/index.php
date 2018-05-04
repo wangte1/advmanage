@@ -130,11 +130,11 @@
 											<li <?php if($assign_type == 1){?>class="active"<?php }?>>
 												<a href="#panel-1" data-toggle="tab">上画派单&nbsp;<span class="badge badge-important"><?php echo $no_confirm_count1[0]['count'];?></span></a>
 											</li>
-											<li <?php if($assign_type == 3){?>class="active"<?php }?>>
-												<a href="#panel-3" data-toggle="tab">换画派单&nbsp;<span class="badge badge-important"><?php echo $no_confirm_count3[0]['count'];?></span></a>
-											</li>
 											<li <?php if($assign_type == 2){?>class="active"<?php }?>>
 												<a href="#panel-2" data-toggle="tab">下画派单&nbsp;<span class="badge badge-important"><?php echo $no_confirm_count2[0]['count'];?></span></a>
+											</li>
+											<li <?php if($assign_type == 3){?>class="active"<?php }?>>
+												<a href="#panel-3" data-toggle="tab">换画派单&nbsp;<span class="badge badge-important"><?php echo $no_confirm_count3[0]['count'];?></span></a>
 											</li>
 										</ul>
 										<div class="tab-content table-responsive">
@@ -257,7 +257,7 @@
 			                                                   	
 			                                                    <td nowrap>
 			                                                        <div class="">
-			                                                            <a class="green tooltip-info" href="/housesconfirm/order_detail/<?php echo $val['order_id'];?>/<?php echo $assign_type;?>?houses_id=<?php echo $val['houses_id'];?>&ban=<?php echo $val['ban'];?>"  data-rel="tooltip" data-placement="top" title="" data-original-title="详情">
+			                                                            <a class="green tooltip-info" href="/housesconfirm/order_detail/<?php echo $val['order_id'];?>/<?php echo $assign_type;?>?houses_id=<?php echo $val['houses_id'];?>&ban=<?php if(!empty($val['ban'])){echo $val['ban'];}else{echo '';};?>"  data-rel="tooltip" data-placement="top" title="" data-original-title="详情">
 				                                                            <i class="icon-eye-open bigger-130"></i>
 				                                                        </a> 
 				                                                        <?php if($val['status'] == 2) {?>

@@ -44,6 +44,7 @@ class Houseschangepicorders extends MY_Controller{
         $page = $this->input->get_post('per_page') ? : '1';
 
         $where =  array();
+        $where['A.pid'] = 0;
         if ($this->input->get('order_code')) $where['A.order_code'] = $this->input->get('order_code');
         if ($this->input->get('order_type')) $where['B.order_type'] = $this->input->get('order_type');
         if ($this->input->get('customer_id')) $where['B.customer_id'] = $this->input->get('customer_id');

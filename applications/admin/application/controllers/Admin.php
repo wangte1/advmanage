@@ -139,8 +139,7 @@ class Admin extends MY_Controller{
     {
 
         if(IS_POST){
-
-
+            
             $_POST['id'] = $id;
             //获取原来的group_id
             $old_group_id = $this->Madmins->get_one("group_id,password",array('id'=>$id));
@@ -176,8 +175,8 @@ class Admin extends MY_Controller{
                 }
 
             }
-
-            $res = $this->Madmins->replace_into($_POST);
+            unset($_POST['id']);
+            $res = $this->Madmins->update_info($_POST, ['id' => $id]);
             if($res){
                 $this->success("修改成功","/admin");
             }else{
@@ -194,6 +193,7 @@ class Admin extends MY_Controller{
         //管理员信息
         $data['info'] = $this->Madmins->get_one("*",array("id"=>$id));
 
+        $data['pid_list'] = $this->Madmins->get_lists('id,pid,group_id,fullname', ['is_del' => 1]);
 
         $this->load->view("admin/edit",$data);
     }

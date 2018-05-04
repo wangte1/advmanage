@@ -80,7 +80,7 @@ class Housesorders extends MY_Controller{
         $data['order_status'] = $this->input->get('order_status');
 
         //$data['project'] = array_column($this->Mcustomer_project->get_lists('id, project_name', array('is_del' => 0)), 'project_name', 'id');
-
+        $where['`A.pid`'] = 0;
         $data['list'] = $this->Mhouses_orders->get_order_lists($where, ['A.id' => 'desc'], ($page-1)*$pageconfig['per_page'], $pageconfig['per_page']);
         $data_count = $this->Mhouses_orders->get_order_count($where);
         $data['data_count'] = $data_count;

@@ -58,6 +58,21 @@
 									</span>
                                 </div>
                             </div>
+                            
+                            <div class="form-group">
+                                <label class="col-sm-1 control-label no-padding-right" for="form-field-1"> 上级： </label>
+
+                                <div class="col-sm-9">
+                                    <select class="col-xs-5" name="pid" id="form-field-select-1">
+                                    	<option>请选择</option>
+                                        <?php foreach($pid_list as $key=>$val){ ?>
+                                        	<?php if($val['group_id'] == C('group.gc')):?>
+                                            <option <?php if($val['id']==$info['pid']){ echo "selected";}?>  value="<?php echo $val['id'];?>"><?php echo $val['fullname'];?></option>
+                                        	<?php endif;?>
+                                        <?php } ?>
+                                    </select>
+                                </div>
+                            </div>
 
                             <div class="form-group">
                                 <label class="col-sm-1 control-label no-padding-right" for="form-field-1"> 登录名： </label>

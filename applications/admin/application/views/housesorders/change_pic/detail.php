@@ -423,7 +423,7 @@
 																<a class="green tooltip-info m-detail" data-id="<?php echo $v['houses_id'];?>"  data-rel="tooltip" data-placement="top" title="" data-original-title="点位详情">
 										                        	<i class="icon-eye-open bigger-130"></i>
 										                        </a>
-										                        <a class="green tooltip-info m-upload" data-id="<?php echo $v['id'];?>" order-id = "<?php echo $v['order_id'];?>" houses-id = "<?php echo $v['houses_id'];?>"  data-rel="tooltip" data-placement="top" title="" data-original-title="查看验收图片">
+										                        <a class="green tooltip-info m-upload" data-id="<?php echo $v['id'];?>" order-id = "<?php echo $v['order_id'];?>" houses-id = "<?php echo $v['houses_id'];?>" area_id="<?php echo $v['area_id'];?>" ban = "<?php echo $v['ban'];?>" data-rel="tooltip" data-placement="top" title="" data-original-title="查看验收图片">
 										                        	<i class="fa fa-picture-o bigger-130"></i>
 										                        </a>
 										                        
@@ -677,6 +677,8 @@
 		var id = $(this).attr('data-id');
 		var order_id = $(this).attr('order-id');
 		var houses_id = $(this).attr('houses-id');
+		var area_id = $(this).attr('area_id');
+		var ban = $(this).attr('ban');
 		var assign_type = 3;
 
 		layer.open({
@@ -685,7 +687,7 @@
 			  shadeClose: true,
 			  shade: 0.6,
 			  area: ['80%', '80%'],
-			  content: '/housesorders/check_upload_img?order_id='+order_id+'&assign_id='+id+'&houses_id='+houses_id+'&assign_type='+assign_type //iframe的url
+			  content: '/housesorders/check_upload_img?order_id='+order_id+'&assign_id='+id+'&houses_id='+houses_id+'&area_id='+area_id+'&ban='+ban //iframe的url
 			}); 
 	});
 
