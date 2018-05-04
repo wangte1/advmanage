@@ -227,9 +227,11 @@
 				                                                            <i class="icon-hand-right bigger-130"></i>
 				                                                        </a> 
 			                                                        <?php }else if($value['assign_status'] == 2) {?>
+			                                                        	<?php if($value['pid'] == 0){?>
 			                                                        	<a class="green tooltip-info m-edit" data-id="<?php echo $value['id'];?>" assign_type="<?php echo $value['assign_type'];?>"  data-rel="tooltip" data-placement="top" title="" data-original-title="改派">
 			                                                                <i class="icon-pencil bigger-130"></i>
 			                                                            </a>
+			                                                            <?php }?>
 			                                                        <?php }?>
 			                                                    </div>
 			                                                </td>

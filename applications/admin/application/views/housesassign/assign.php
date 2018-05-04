@@ -119,7 +119,7 @@ $(function(){
 		var assign_type = '<?php echo $assign_type;?>';
 		layer.open({
 			  type: 2,
-			  title: '按组团派单',
+			  title: '按组团楼栋派单',
 			  shadeClose: true,
 			  shade: 0.6,
 			  area: ['90%', '90%'],
