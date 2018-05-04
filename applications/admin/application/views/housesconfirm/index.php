@@ -130,11 +130,11 @@
 											<li <?php if($assign_type == 1){?>class="active"<?php }?>>
 												<a href="#panel-1" data-toggle="tab">上画派单&nbsp;<span class="badge badge-important"><?php echo $no_confirm_count1[0]['count'];?></span></a>
 											</li>
-											<li <?php if($assign_type == 3){?>class="active"<?php }?>>
-												<a href="#panel-3" data-toggle="tab">换画派单&nbsp;<span class="badge badge-important"><?php echo $no_confirm_count3[0]['count'];?></span></a>
-											</li>
 											<li <?php if($assign_type == 2){?>class="active"<?php }?>>
 												<a href="#panel-2" data-toggle="tab">下画派单&nbsp;<span class="badge badge-important"><?php echo $no_confirm_count2[0]['count'];?></span></a>
+											</li>
+											<li <?php if($assign_type == 3){?>class="active"<?php }?>>
+												<a href="#panel-3" data-toggle="tab">换画派单&nbsp;<span class="badge badge-important"><?php echo $no_confirm_count3[0]['count'];?></span></a>
 											</li>
 										</ul>
 										<div class="tab-content table-responsive">

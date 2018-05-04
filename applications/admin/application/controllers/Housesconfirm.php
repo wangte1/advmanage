@@ -154,6 +154,13 @@ class Housesconfirm extends MY_Controller{
     	if ($this->input->post('id')) {
 
     		$assign_type = $this->input->post('assign_type');
+    		if($assign_type == 3) {
+    		    //换画
+    		    $tmp_moudle = $this->Mhouses_changepicorders;
+    		}else {
+    		    //1上画，2下画
+    		    $tmp_moudle = $this->Mhouses_orders;
+    		}
     		$where['id'] = $id = $this->input->post('id');
     		$update_data['status'] = 3;	//已确认派单
     		$res1 = $this->Mhouses_assign->update_info($update_data, $where);
@@ -165,7 +172,7 @@ class Housesconfirm extends MY_Controller{
     		        $count = $this->Mhouses_assign->count(['true_order_id'=> $trueOrder['true_order_id'], 'type' => $assign_type, 'status' => 2]);
     		        //如果组长派单的工单全部确认，则更新该派单为已确认
     		        if($count == 0){
-    		            $this->Mhouses_orders->update_info(['assign_status' => 3], ['id'=> $trueOrder['true_order_id']]);
+    		            $tmp_moudle->update_info(['assign_status' => 3], ['id'=> $trueOrder['true_order_id']]);
     		        }
     		    }
     			if($this->input->post('order_id')) {
