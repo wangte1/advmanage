@@ -158,7 +158,7 @@
                                                     <td><?php echo $val['position'];?></td>
                                                     <td><?php echo $val['households'];?></td>
                                                     <td><?php echo $val['floor_num'];?></td>
-                                                    <td><?php echo $val['occ_rate'];?></td>
+                                                    <td><?php echo $val['occ_rate'] * 100 . '%';?></td>
                                                     <td><?php echo $val['unit_rate'];?></td>
 													<td>
 														<?php if(isset($val['put_trade']) && !empty($val['put_trade'])) {
