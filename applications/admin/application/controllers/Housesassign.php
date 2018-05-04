@@ -106,7 +106,14 @@ class Housesassign extends MY_Controller{
         
         $where['is_del'] = 0;
         if ($this->input->get('order_id')) $data['order_id'] =  $this->input->get('order_id');
-        
+        $assign_type = $this->input->get('assign_type');
+        if($assign_type == 3) {
+            //换画
+            $tmp_moudle = $this->Mhouses_changepicorders;
+        }else {
+            //1上画，2下画
+            $tmp_moudle = $this->Mhouses_orders;
+        }
         if(IS_POST){
             $post_data = $this->input->post();
             $order_id = $this->input->post('order_id');
@@ -114,7 +121,7 @@ class Housesassign extends MY_Controller{
             $points_counts = $this->input->post('points_count');
             $charge_users = $this->input->post('charge_user');
             $remark = $this->input->post('remark');
-            $assign_type = $this->input->get('assign_type');
+            
             $add_data = [];
             $tmp_arr = [];
             $i = $j = 0;
@@ -174,13 +181,7 @@ class Housesassign extends MY_Controller{
                     }
                 }
             }
-            if($assign_type == 3) {	
-                //换画
-                $tmp_moudle = $this->Mhouses_changepicorders;
-            }else {	
-                //1上画，2下画
-                $tmp_moudle = $this->Mhouses_orders;
-            }
+            
             //匹配各个组长应分配的点位
             $orderInfo = $tmp_moudle->get_one('*', ['id' => $order_id]);
             $point_ids = array_unique(explode(',', $orderInfo['point_ids']));
