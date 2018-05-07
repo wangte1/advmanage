@@ -52,7 +52,7 @@ class Uploadadpic extends MY_Controller{
 
         $where =  array();
         
-        //$where['A.is_del'] = 0;
+        $where['A.pid'] = 0;
         if ($this->input->get('order_code')) $where['A.order_code'] = $this->input->get('order_code');
         if ($this->input->get('order_type')) $where['A.order_type'] = $this->input->get('order_type');
         if ($this->input->get('customer_id')) $where['A.customer_id'] = $this->input->get('customer_id');
