@@ -38,6 +38,7 @@
 						<th width="15%">下画负责人</th>
 					<?php }?>
 					<th>说明</th>
+					<th>操作</th>
 				</tr>
 			</thead>
 			<tbody>
@@ -82,6 +83,11 @@
 						</select>
 					</td>
 					<td><textarea name="remark[]" rows="1"></textarea></td>
+					<td>
+						<a class="green tooltip-info m-detail" data-id="<?php echo $v['houses_id'];?>"  data-rel="tooltip" data-placement="top" title="" data-original-title="详情">
+                        	<i class="icon-eye-open bigger-130"></i>
+                       	</a>
+					</td>
 				</tr>
 				<?php }?>
 			</tbody>

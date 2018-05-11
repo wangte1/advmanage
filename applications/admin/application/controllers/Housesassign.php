@@ -169,17 +169,13 @@ class Housesassign extends MY_Controller{
             if(count($tmp_arr) > 0) {
                 $add_data = array_merge_recursive($add_data,$tmp_arr);
             }
-            //获取工程组长各自分配好的楼栋；
+            //获取工程组长各自分配好的点位；
             $group_data = [];
             $group = array_unique(array_column($add_data, 'charge_user'));
+            //初始化组长数据
             foreach ($group as $k => $v){
                 $group_data[$k]['id'] = $v;
                 $group_data[$k]['houses_ids'] = '';
-                foreach ($add_data as $key => $val){
-                    if($val['charge_user'] == $v){
-                        $group_data[$k]['houses_ids'][] = $val['houses_id'];
-                    }
-                }
             }
             
             //匹配各个组长应分配的点位
@@ -187,10 +183,17 @@ class Housesassign extends MY_Controller{
             $point_ids = array_unique(explode(',', $orderInfo['point_ids']));
             $point_lists = $this->Mhouses_points->get_lists('*', ['in' => ['id' => $point_ids]]);
             foreach ($group_data as $k => $v){
-                foreach ($point_lists as $key => $val){
-                    if(in_array($val['houses_id'], $v['houses_ids'])) $group_data[$k]['point_ids'][] = $val['id'];
+                foreach ($add_data as $key => $val){
+                    if($val['charge_user'] == $v['id']){
+                        foreach ($point_lists as $keys => $vals){
+                            if($vals['houses_id'] == $val['houses_id'] && $vals['area_id'] == $val['area_id'] && $vals['ban'] == $val['ban']){
+                                $group_data[$k]['point_ids'][] = $vals['id'];
+                            }
+                        }
+                    }
                 }
             }
+            
             //将订单拆分，由工程组长负责
             $insert_data = [];
             unset($orderInfo['id']);
@@ -749,10 +752,16 @@ class Housesassign extends MY_Controller{
     	$orderInfo = $tmp_moudle->get_one('group_id', ['id' => $this->input->get('order_id')]);
     	$where = [];
     	$where['group_id'] = 4;	//工程人员角色
+    	if($orderInfo['group_id'] == 0){
+    	    $where['group_id'] = C('group.gc');	//工程人员角色
+    	}
+    	
     	$where['pid'] = $orderInfo['group_id'];
     	$data['user_list'] = $this->Madmins->get_lists('id,name,fullname', $where);  //工程人员信息
-    	$group = $this->Madmins->get_one('id,name,fullname', ['id' => $orderInfo['group_id']]);
-    	$data['user_list'][] = $group;
+    	if($orderInfo['group_id'] != 0){
+        	$group = $this->Madmins->get_one('id,name,fullname', ['id' => $orderInfo['group_id']]);
+        	$data['user_list'][] = $group;
+    	}
     	
     	$this->load->view('housesassign/show_ban', $data);
     }
