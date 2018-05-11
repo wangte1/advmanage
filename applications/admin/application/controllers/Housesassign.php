@@ -186,6 +186,13 @@ class Housesassign extends MY_Controller{
                 foreach ($add_data as $key => $val){
                     if($val['charge_user'] == $v['id']){
                         foreach ($point_lists as $keys => $vals){
+                            //如果一个人负责了一个楼盘
+                            if($val['area_id'] == "" && $val['ban'] ==""){
+                                if($vals['houses_id'] == $val['houses_id']){
+                                    $group_data[$k]['point_ids'][] = $vals['id'];
+                                }
+                            }
+                            //多人负责
                             if($vals['houses_id'] == $val['houses_id'] && $vals['area_id'] == $val['area_id'] && $vals['ban'] == $val['ban']){
                                 $group_data[$k]['point_ids'][] = $vals['id'];
                             }
