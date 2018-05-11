@@ -80,7 +80,7 @@ class Housesassign extends MY_Controller{
         $data['page'] = $page;
 
         //获取分页
-        $pageconfig['base_url'] = "/housesorders";
+        $pageconfig['base_url'] = "/housesassign";
         $pageconfig['total_rows'] = $data_count;
         $this->pagination->initialize($pageconfig);
         $data['pagestr'] = $this->pagination->create_links(); // 分页信息
