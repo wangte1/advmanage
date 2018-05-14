@@ -163,7 +163,7 @@ class Houseswantorders extends MY_Controller{
     		$id = $this->Mhouses_scheduled_orders->create($post_data);
     		if ($id) {
     			//意向订单
-    			$update_data['status'] = 2;
+    			$update_data['status'] = 3;
     			$this->Mhouses_want_orders->update_info($update_data, ['id' => $id]);
     			
     			//decr
