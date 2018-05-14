@@ -128,6 +128,18 @@ class Houseswantorders extends MY_Controller{
     	$this->load->view("houseswantorders/detail", $data);
     }
     
+    /**
+     * 业务主管审核
+     */
+    public function check(){
+        $data = $this->data;
+        $id = $this->input->post('id');
+        $status = $this->input->post('status');
+        $res = $this->Mhouses_want_orders->update_info(['status' => $status], ['id' => $id]);
+        if(!$res) $this->return_json(['msg' => '提交失败']);
+        $this->return_json(['msg' => '操作成功']);
+    }
+    
     
     /**
      * 意向订单转预定订单

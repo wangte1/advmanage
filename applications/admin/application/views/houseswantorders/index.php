@@ -169,7 +169,7 @@
                                             		</td>
                                             		<td><?php echo $order_type_text[$value['order_type']];?></td>
                                             		<td><?php echo $value['begin_year']."-".$value['end_year'];?></td>
-                                            		<td><?php if(isset($put_trade[$value['put_trade']])) echo $put_trade[$value['put_trade']];?></td>
+                                            		<td><?php if(isset($value['put_trade'])) echo C('housespoint.put_trade')[$value['put_trade']];?></td>
                                             		<td><?php echo $value['points_count'];?></td>
                                             		<td>
                                             			<?php 
@@ -205,11 +205,15 @@
                                                         <?php }?>
                                                         
                                                         <?php if($value['status'] == 1) {?>
+	                                                        <a class="grey tooltip-info check"  data-id="<?php echo $value['id'];?>" data-customer="2" data-rel="tooltip" data-placement="top" data-original-title="审核">
+	                                                            <i class="ace-icon glyphicon glyphicon-check bigger-130" aria-hidden="true"></i>
+	                                                        </a>
+                                                        <?php }?>
+                                                        <?php if($value['status'] == 2) {?>
 	                                                        <a class="grey tooltip-info checkout" href="/houseswantorders/checkout/<?php echo $value['id'];?>" data-id="129" data-customer="2" data-rel="tooltip" data-placement="top" data-original-title="转预定订单">
 	                                                            <i class="ace-icon fa fa-random bigger-130" aria-hidden="true"></i>
 	                                                        </a>
                                                         <?php }?>
-                                                        
                                             		</td>
                                             	</tr>
                                             <?php endforeach; ?>
@@ -241,6 +245,29 @@
     	province: '<?php if($province){ echo $province;}else {?>贵州省<?php }?>',
     	city: '<?php if($city){ echo $city;}else {?>贵阳市<?php }?>',
     	district: '<?php if($area){ echo $area;}else {?>—— 区 ——<?php }?>'
+    });
+	//业务主管审核
+    $('.check').on('click', function(){
+    	var id = $(this).attr('data-id');
+    	layer.confirm('您的审核意见是？', {
+		 	btn: ['通过','不通过'] //按钮
+		}, function(){
+			$.post('/houseswantorders/check', {'id':id, 'status':2}, function(data){
+				if(data) {
+					layer.alert(data.msg, function(){
+						location.reload();
+					});
+				}
+			});
+		},function(){
+			$.post('/houseswantorders/check', {'id':id, 'status':4}, function(data){
+				if(data) {
+					layer.alert(data.msg, function(){
+						location.reload();
+					});
+				}
+			});
+		});
     });
 
 	function cancle(obj) {
