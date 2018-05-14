@@ -144,7 +144,7 @@
 			                                            <tr>
 			                                                <th class="phone-hide">序号</th>
 			                                                <th class="phone-hide">订单编号</th>
-			                                                <th nowrap>行政区域</th>
+			                                                <th class="phone-hide">行政区域</th>
 			                                                <th nowrap>楼盘名称</th>
 			                                                <th nowrap>组团</th>
 			                                                <th nowrap>楼栋</th>
@@ -171,7 +171,7 @@
 			                                                    <td class="phone-hide">
 			                                                    	<?php echo $val['order_code'];?>
 			                                                    </td>
-			                                                    <td>
+			                                                    <td class="phone-hide">
 			                                                    	<?php echo $val['province']."-".$val['city']."-".$val['area'];?>
 			                                                    </td>
 			                                                    <td>
@@ -252,7 +252,7 @@
 			                                                   		<?php if($val['confirm_remark']) {?>
 			                                                   		<br>
 			                                                   		说明:<?php echo $val['confirm_remark'];?>
-			                                                   	<?php }?>
+			                                                   		<?php }?>
 			                                                   	</td>
 			                                                   	
 			                                                    <td nowrap>
@@ -277,6 +277,7 @@
 				                                                        	<a class="green tooltip-info m-upload" data-id="<?php echo $val['id'];?>" order-id="<?php echo $val['order_id'];?>" houses-id="<?php echo $val['houses_id'];?>" area_id="<?php echo $val['area_id']?>" ban="<?php echo $val['ban'];?>" num="<?php echo $val['points_count'];?>" data-rel="tooltip" data-placement="top" title="" data-original-title="验收图片">
 					                                                            <i class="fa fa-picture-o bigger-130"></i>
 					                                                        </a>
+					                                                        <br/>
 					                                                        <a class="green tooltip-info m-submit" data-id="<?php echo $val['id'];?>" order-id="<?php echo $val['order_id'];?>"  data-rel="tooltip" data-placement="top" title="" data-original-title="提交<?php if($assign_type == 2) {?>下画<?php }else {?>上画<?php }?>">
 					                                                            <i class="fa fa-send-o bigger-130"></i>
 					                                                        </a>  
