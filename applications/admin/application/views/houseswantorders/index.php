@@ -180,6 +180,12 @@
 	                                                            case '2':
 	                                                                $class = 'badge-success';
 	                                                                break;
+	                                                            case '3':
+	                                                                $class = 'badge-success';
+	                                                                break;
+	                                                            case '4':
+	                                                                $class = 'badge-danger';
+	                                                                break;
 	                                                        }
 	                                                    ?>
 	                                                    <span class="badge <?php echo $class; ?>">
