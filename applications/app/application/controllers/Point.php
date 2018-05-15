@@ -78,6 +78,6 @@ class Point extends MY_Controller {
                 }
             }
         }
-        $this->return_json(['code' => 1, 'data' => json_encode($list), 'page' => $page]);
+        $this->return_json(['code' => 1, 'data' => $list, 'page' => $page]);
     }
 }
