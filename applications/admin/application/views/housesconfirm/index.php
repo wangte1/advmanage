@@ -261,7 +261,7 @@
 				                                                            <i class="icon-eye-open bigger-130"></i>
 				                                                        </a> 
 				                                                        <?php if($val['status'] == 2) {?>
-					                                                        <a class="green tooltip-info m-confirm" data-id="<?php echo $val['id'];?>" order-id="<?php echo $val['order_id'];?>"  data-rel="tooltip" data-placement="top" title="" data-original-title="确认">
+					                                                        <a class="green tooltip-info m-confirm" data-id="<?php echo $val['id'];?>" order-id="<?php echo $val['order_id'];?>"  order-charge_user="<?php echo $val['charge_user'];?>"   data-rel="tooltip" data-placement="top" title="" data-original-title="确认">
 					                                                            <i class="icon-check bigger-130"></i>
 					                                                        </a> 
 				                                                        <?php }?>
@@ -376,11 +376,11 @@
 			var id = $(this).attr('data-id');
 			var order_id = $(this).attr('order-id');
 			var assign_type = '<?php echo $assign_type;?>';
-			
+			var charge_user = $(this).attr('order-charge_user');
 			layer.confirm('确认该派单？', {
 				  btn: ['确定','取消'] //按钮
 				}, function(){
-				 	$.post('/housesconfirm/do_confirm', {id:id, order_id:order_id, assign_type:assign_type}, function(data){
+				 	$.post('/housesconfirm/do_confirm', {id:id, order_id:order_id, assign_type:assign_type, charge_user:charge_user}, function(data){
 						if(data.code == 1) {
 							layer.alert(data.msg,function(){
 								location.reload();

@@ -161,7 +161,10 @@ class Housesconfirm extends MY_Controller{
     		    //1上画，2下画
     		    $tmp_moudle = $this->Mhouses_orders;
     		}
-    		$where['id'] = $id = $this->input->post('id');
+    		//一键确认本次客户的订单
+    		$where['status'] = 2;
+    		$where['order_id'] = $this->input->post('order_id');
+    		$where['charge_user'] = $this->input->post('charge_user');
     		$update_data['status'] = 3;	//已确认派单
     		$res1 = $this->Mhouses_assign->update_info($update_data, $where);
 
