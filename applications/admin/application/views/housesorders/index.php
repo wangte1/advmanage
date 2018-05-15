@@ -33,9 +33,9 @@
             </div>
 
             <div class="page-content">
-                <!-- <div class="page-header">
-                    <a href="/housesorders/order_type" class="btn btn-sm btn-primary"><i class="fa fa-plus-square" aria-hidden="true"></i> 新建订单</a>
-                </div>  -->
+                <div class="page-header">
+                    <a href="/housesorders/order_type" class="btn btn-sm btn-primary"><i class="fa fa-plus-square" aria-hidden="true"></i> 新建自有画面订单</a>
+                </div>
 
                 <div class="row">
                     <div class="col-xs-12">

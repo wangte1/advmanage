@@ -25,7 +25,7 @@ class Houseswantorders extends MY_Controller{
         $this->data['code'] = 'horders_manage';
         $this->data['active'] = 'houseswantorders_list';
         
-        $this->data['customers'] = $this->Mhouses_customers->get_lists("id, name", array('is_del' => 0));  //客户
+        $this->data['customers'] = $this->Mhouses_customers->get_lists("id, name", array('is_del' => 0, 'is_self' => 0));  //客户
         $this->data['make_company'] = $this->Mmake_company->get_lists('id, company_name, business_scope', array('is_del' => 0));  //制作公司
         $this->data['order_type_text'] = C('order.houses_order_type'); //订单类型
         $this->data['point_addr'] = C('housespoint.point_addr');	//点位位置

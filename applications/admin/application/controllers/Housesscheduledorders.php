@@ -27,7 +27,7 @@ class Housesscheduledorders extends MY_Controller{
         $this->data['code'] = 'horders_manage';
         $this->data['active'] = 'housesscheduledorders_list';
         
-        $this->data['customers'] = $this->Mhouses_customers->get_lists("id, name", array('is_del' => 0));  //客户
+        $this->data['customers'] = $this->Mhouses_customers->get_lists("id, name", array('is_del' => 0, 'is_self' => 0));  //客户
         $this->data['make_company'] = $this->Mmake_company->get_lists('id, company_name, business_scope', array('is_del' => 0));  //制作公司
         $this->data['order_type_text'] = C('order.houses_order_type'); //订单类型
         $this->data['salesman'] = $this->Madmins->get_lists('id, fullname as name, tel', array('is_del' => 1));  //业务员
