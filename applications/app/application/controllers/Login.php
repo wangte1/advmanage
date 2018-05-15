@@ -50,7 +50,7 @@ class Login extends MY_Controller {
                        ));
                         
                        $token = $this->setToken($user_info['id']);
-                       $this->return_json(array("code" => 1, "msg"=>"登录成功", 'token' => $token, 'data' => json_encode($user_info)));
+                       $this->return_json(array("code" => 1, "msg"=>"登录成功", 'token' => $token, 'data' => $user_info));
                     }else{
                         $this->return_json(array("code" => 0, "msg" => "密码错误请重新输入"));
                     }
