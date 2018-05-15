@@ -153,6 +153,7 @@
                                                 <th width="7%">下单日期</th>
                                                 <th>订单状态</th>
                                                 <th>创建人</th>
+                                                <th>自有订单</th>
                                                 <th width="10%">操作</th>
                                             </tr>
                                         </thead>
@@ -257,6 +258,9 @@
                                                     <?php endif;?>
                                                 </td>
                                                 <td><?php echo $admins[$value['creator']];?></td>
+                                                <td>
+                                                	<?php if($value['is_self']){echo '是';}else{echo "否";}?>
+                                                </td>
                                                 <td>
                                                     <div class="visible-md visible-lg hidden-sm hidden-xs action-buttons">
                                                         <a class="green tooltip-info" href="/housesorders/detail/<?php echo $value['id'];?>"  data-rel="tooltip" data-placement="top" title="" data-original-title="详情">

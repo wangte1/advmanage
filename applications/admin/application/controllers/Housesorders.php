@@ -35,7 +35,6 @@ class Housesorders extends MY_Controller{
         $this->data['customers'] = $this->Mhouses_customers->get_lists("id, name", array('is_del' => 0, 'is_self' => 1));  //客户
         $this->data['make_company'] = $this->Mmake_company->get_lists('id, company_name, business_scope', array('is_del' => 0));  //制作公司
         $this->data['order_type_text'] = C('housesorder.houses_order_type'); //订单类型
-        //$this->data['salesman'] = $this->Msalesman->get_lists('id, name, sex, phone_number', array('is_del' => 0));  //业务员
         $this->data['salesman'] = $this->Madmins->get_lists('id, fullname as name, tel', array('is_del' => 1));  //业务员
         $this->data['houses_assign_status'] = C('housesorder.houses_assign_status'); //派单状态
         $this->data['point_addr'] = C('housespoint.point_addr');	//点位位置
@@ -157,57 +156,22 @@ class Housesorders extends MY_Controller{
      */
     public function add($order_type, $put_trade=0) {
         $data = $this->data;
-        
         if (IS_POST) {
             $post_data = $this->input->post();
             $post_data['order_code'] = date('YmdHis').$post_data['customer_id']; //订单编号：年月日时分秒+客户id
-            
-            if (isset($post_data['make_complete_time'])) {
-                $post_data['make_complete_time'] = $post_data['make_complete_time'].' '.$post_data['hour'].':'.$post_data['minute'].':'.$post_data['second'];
-            }
-
             $post_data['creator'] =  $data['userInfo']['id'];
             $post_data['create_time'] =  date('Y-m-d H:i:s');
             unset($post_data['houses_id'], $post_data['area_id'],$post_data['ban'],$post_data['unit'],$post_data['floor'],$post_data['addr'], $post_data['hour'], $post_data['minute'], $post_data['second']);
+            $post_data['order_status'] = 3;//直接设置订单为待派单
             $id = $this->Mhouses_orders->create($post_data);
             if ($id) {
-                    //如果选择的点位包含预定点位，则把对应的预定订单释放掉
-                    $where['is_del'] = 0;
-                    $where['lock_customer_id'] = $post_data['customer_id'];
-                    $where['order_type'] = $order_type;
-                    $where['order_status!='] = C('scheduledorder.order_status.code.done_release');
-                    $info = $this->Mhouses_scheduled_orders->get_one("*", $where);
-                    if ($info && count(array_intersect(explode(',', $post_data['point_ids']), explode(',', $info['point_ids']))) > 0) {
-                        //释放该预定订单的所有点位
-                        //$update_data['lock_customer_id'] = $update_data['lock_start_time'] = $update_data['lock_end_time'] = $update_data['expire_time'] = '';
-                    	$update_data['lock_customer_id'] = 0;
-                    	$update_data['is_lock'] = 0;
-                        $this->Mhouses_points->update_info($update_data, array('in' => array('id' => explode(',', $info['point_ids']))));
-
-                        //更新该订单的状态为“已释放”
-                        $this->Mhouses_scheduled_orders->update_info(array('order_status' => C('scheduledorder.order_status.code.done_release')), array('id' => $info['id']));
-                    }
-
-
-                    //下单成功把选择的点位置为占用状态(只针对公交灯箱和户外高杆)
-                    $update_data['order_id'] = $id;
-                    $update_data['customer_id'] = $post_data['customer_id'];
-//                     $update_data['lock_start_time'] = '';
-//                     $update_data['lock_end_time'] = '';
-//                     $update_data['expire_time'] = '';
-                    $update_data['point_status'] = 3;
-                    $this->Mhouses_points->update_info($update_data, array('in' => array('id' => explode(',', $post_data['point_ids']))));
-
-//                 } 
-
-                $this->write_log($data['userInfo']['id'], 1, "社区资源管理新增".$data['order_type_text'][$post_data['order_type']]."订单,订单id【".$id."】");
                 $this->success("添加成功！","/housesorders");
-            } else {
-                $this->success("添加失败！","/housesorders");
+            }else {
+                $this->success("操作失败！","/housesorders");
             }
         } else {
             $data['order_type'] = $order_type;
-            $tmpPoints = $this->Mhouses_points->get_lists("id, houses_id, area_id", ['type_id' => $order_type, 'is_del' => 0]);
+            $tmpPoints = $this->Mhouses_points->get_lists("id, houses_id, area_id", ['type_id' => $order_type, 'is_del' => 0, 'point_status' => 1]);
             
          	if(count($tmpPoints) > 0) {
          		$housesid = array_column($tmpPoints, 'houses_id');
@@ -227,7 +191,6 @@ class Housesorders extends MY_Controller{
          		
          		$data['put_trade'] = $put_trade;
          		$data['housesList'] = $houses_list;
-         		//end
          	}
          	
          	//获取楼栋单元楼层列表
@@ -243,13 +206,6 @@ class Housesorders extends MY_Controller{
     public function get_points() {
 
     	$where['is_del'] = 0;
-    	$where['is_lock'] = 0;
-//     	if($this->input->post('point_status') == 1) {
-//     		$where['point_status'] = $this->input->post('point_status');
-//     	}else if($this->input->post('point_status') == 2) {
-//     		$where['is_lock'] = $this->input->post('is_lock');
-//     		$where['lock_customer_id'] = $this->input->post('customer_id');
-//     	}
     	$where['point_status'] = 1;
     	if($this->input->post('order_type')) $where['type_id'] = $this->input->post('order_type');
     	if($this->input->post('houses_id')) $where['houses_id'] = $this->input->post('houses_id');
@@ -257,12 +213,7 @@ class Housesorders extends MY_Controller{
     	if(!empty($this->input->post('unit'))) $where['unit'] = $this->input->post('unit');
     	if(!empty($this->input->post('floor'))) $where['floor'] = $this->input->post('floor');
     	if(!empty($this->input->post('addr'))) $where['addr'] = $this->input->post('addr');
-    	if($this->input->post('is_lock')) {
-    		$where['is_lock'] = $this->input->post('is_lock');
-    		if($this->input->post('customer_id')) {
-    			$where['lock_customer_id'] = $this->input->post('customer_id');
-    		}
-    	}
+    	
     	
     	$points_lists = $this->Mhouses_points->get_lists("id,code,houses_id,area_id,ban,unit,floor,addr,type_id,point_status", $where);
     	$areaList = [];
