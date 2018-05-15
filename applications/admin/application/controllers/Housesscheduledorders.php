@@ -355,7 +355,31 @@ class Housesscheduledorders extends MY_Controller{
         $this->success('续期成功！', '/housesscheduledorders');
     }
     
+    /**
+     * 媒介主管审批
+     */
+    public function mmcheck(){
+        $id = $this->input->post('id');
+        $status = $this->input->post('status');
+        $info = $this->Mhouses_scheduled_orders->get_one('is_confirm', ['id' => $id]);
+        if(!$info['is_confirm']) $this->return_json(['msg' => '客户未确认，您不能审核']);
+        $res  = $this->Mhouses_scheduled_orders->update_info(['mm_agree' => $status], ['id' => $id]);
+        if(!$res) $this->return_json(['msg' => '提交失败']);
+        $this->return_json(['msg' => '操作成功']);
+    }
     
+    /**
+     * 业务主管审批
+     */
+    public function bmcheck(){
+        $id = $this->input->post('id');
+        $status = $this->input->post('status');
+        $info = $this->Mhouses_scheduled_orders->get_one('is_confirm', ['id' => $id]);
+        if(!$info['is_confirm']) $this->return_json(['msg' => '客户未确认，您不能审核']);
+        $res  = $this->Mhouses_scheduled_orders->update_info(['bm_agree' => $status], ['id' => $id]);
+        if(!$res) $this->return_json(['msg' => '提交失败']);
+        $this->return_json(['msg' => '操作成功']);
+    }
     
     
     /**
@@ -523,10 +547,8 @@ class Housesscheduledorders extends MY_Controller{
         $ban = (int) $this->input->post('ban');
         
         //根据订单id获取用户已确认的点位
-        $orderInfo = $this->Mhouses_scheduled_orders->get_one('point_ids,confirm_point_ids,is_confirm', ['id' => $order_id]);
-        if($orderInfo['is_confirm'] == 1){
-            $this->return_json(['code' => 0, 'msg' => '您不能修改已确认的订单！']);
-        }
+        $orderInfo = $this->Mhouses_scheduled_orders->get_one('point_ids,confirm_point_ids,is_confirm,order_status', ['id' => $order_id]);
+        if($orderInfo['order_status'] == 5) $this->return_json(['code' => 0, 'msg' => '已转订单，不支持该操作']);
         $point_ids = explode(',', $orderInfo['point_ids']);
         $confirm_point_ids = $orderInfo['confirm_point_ids'];
         
@@ -569,8 +591,13 @@ class Housesscheduledorders extends MY_Controller{
                 $confirm_point_ids = implode(',', $confirm_point_ids);
             }
         }
-        
-        $res = $this->Mhouses_scheduled_orders->update_info(['confirm_point_ids' => $confirm_point_ids], ['id' => $order_id]);
+        $arr = [
+            'confirm_point_ids' => $confirm_point_ids,
+            'bm_agree' => 0,
+            'mm_agree' => 0,
+            'is_confirm' => 0
+        ];
+        $res = $this->Mhouses_scheduled_orders->update_info($arr, ['id' => $order_id]);
         if(!$res){
             $this->return_json(['code' => 0, 'msg' => '操作失败']);
         }
@@ -585,16 +612,19 @@ class Housesscheduledorders extends MY_Controller{
         $order_id = (int) $this->input->post('order_id');
       
         //根据订单id获取用户已确认的点位
-        $orderInfo = $this->Mhouses_scheduled_orders->get_one('point_ids,confirm_point_ids,is_confirm', ['id' => $order_id]);
-        if($orderInfo['is_confirm'] == 1){
-            $this->return_json(['code' => 0, 'msg' => '您不能修改已确认的订单！']);
-        }
+        $orderInfo = $this->Mhouses_scheduled_orders->get_one('point_ids,confirm_point_ids,is_confirm,order_status', ['id' => $order_id]);
+        if($orderInfo['order_status'] == 5) $this->return_json(['code' => 0, 'msg' => '已转订单，不支持该操作']);
         $confirm_point_ids = '';
         if($status){
             $confirm_point_ids = $orderInfo['point_ids'];
         }
-        $res = $this->Mhouses_scheduled_orders->update_info(['confirm_point_ids' => $confirm_point_ids], ['id' => $order_id]);
-        
+        $arr = [
+            'confirm_point_ids' => $confirm_point_ids,
+            'bm_agree' => 0,
+            'mm_agree' => 0,
+            'is_confirm' => 0
+        ];
+        $res = $this->Mhouses_scheduled_orders->update_info($arr, ['id' => $order_id]);
         if(!$res){
             $this->return_json(['code' => 0, 'msg' => '操作失败']);
         }
@@ -611,10 +641,9 @@ class Housesscheduledorders extends MY_Controller{
         $houses_id = (int) $this->input->post('houses_id');
         
         //根据订单id获取用户已确认的点位
-        $orderInfo = $this->Mhouses_scheduled_orders->get_one('point_ids,confirm_point_ids,is_confirm', ['id' => $order_id]);
-        if($orderInfo['is_confirm'] == 1){
-            $this->return_json(['code' => 0, 'msg' => '您不能修改已确认的订单！']);
-        }
+        $orderInfo = $this->Mhouses_scheduled_orders->get_one('point_ids,confirm_point_ids,is_confirm,order_status', ['id' => $order_id]);
+        
+        if($orderInfo['order_status'] == 5) $this->return_json(['code' => 0, 'msg' => '已转订单，不支持该操作']);
         $point_ids = explode(',', $orderInfo['point_ids']);
         $confirm_point_ids = $orderInfo['confirm_point_ids'];
         
@@ -655,9 +684,13 @@ class Housesscheduledorders extends MY_Controller{
                 $confirm_point_ids = implode(',', $confirm_point_ids);
             }
         }
-
-        $res = $this->Mhouses_scheduled_orders->update_info(['confirm_point_ids' => $confirm_point_ids], ['id' => $order_id]);
-        
+        $arr = [
+            'confirm_point_ids' => $confirm_point_ids,
+            'bm_agree' => 0,
+            'mm_agree' => 0,
+            'is_confirm' => 0
+        ];
+        $res = $this->Mhouses_scheduled_orders->update_info($arr, ['id' => $order_id]);
         if(!$res){
             $this->return_json(['code' => 0, 'msg' => '操作失败']);
         }
@@ -674,10 +707,8 @@ class Housesscheduledorders extends MY_Controller{
         $houses_id = (int) $this->input->post('houses_id');
         
         //根据订单id获取用户已确认的点位
-        $orderInfo = $this->Mhouses_scheduled_orders->get_one('point_ids,confirm_point_ids,is_confirm', ['id' => $order_id]);
-        if($orderInfo['is_confirm'] == 1){
-            $this->return_json(['code' => 0, 'msg' => '您不能修改已确认的订单！']);
-        }
+        $orderInfo = $this->Mhouses_scheduled_orders->get_one('point_ids,confirm_point_ids,is_confirm,order_status', ['id' => $order_id]);
+        if($orderInfo['order_status'] == 5) $this->return_json(['code' => 0, 'msg' => '已转订单，不支持该操作']);
         $point_ids = explode(',', $orderInfo['point_ids']);
         $confirm_point_ids = $orderInfo['confirm_point_ids'];
         
@@ -721,7 +752,13 @@ class Housesscheduledorders extends MY_Controller{
             }
         }
         
-        $res = $this->Mhouses_scheduled_orders->update_info(['confirm_point_ids' => $confirm_point_ids], ['id' => $order_id]);
+        $arr = [
+            'confirm_point_ids' => $confirm_point_ids,
+            'bm_agree' => 0,
+            'mm_agree' => 0,
+            'is_confirm' => 0
+        ];
+        $res = $this->Mhouses_scheduled_orders->update_info($arr, ['id' => $order_id]);
         if(!$res){
             $this->return_json(['code' => 0, 'msg' => '操作失败']);
         }

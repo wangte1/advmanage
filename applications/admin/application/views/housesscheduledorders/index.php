@@ -150,6 +150,8 @@
                                                 <th>订单创建日期</th>
                                                 <th>状态</th>
                                                 <th>客户确认状态</th>
+                                                <th>业务主管审核</th>
+                                                <th>媒介主管审核</th>
                                                 <th>操作</th>
                                             </tr>
                                         </thead>
@@ -226,6 +228,50 @@
                                                     </span>
                                                 </td>
                                                 <td>
+                                                	<?php
+                                                	    $txt = "";
+                                                        switch ($value['bm_agree']) {
+                                                            case '0':
+                                                                $txt = "审核中";
+                                                                $class = 'badge-grey';
+                                                                break;
+                                                            case '1':
+                                                                $txt = "审核通过";
+                                                                $class = 'badge-success';
+                                                                break;
+                                                            case '2':
+                                                                $txt = "审核不通过";
+                                                                $class = 'badge-warning';
+                                                                break;
+                                                        }
+                                                    ?>
+                                                    <span class="badge <?php echo $class; ?>">
+                                                        <?php echo $txt;?>
+                                                    </span>
+                                                </td>
+                                                <td>
+                                                	<?php
+                                                	    $txt = "";
+                                                        switch ($value['mm_agree']) {
+                                                            case '0':
+                                                                $txt = "审核中";
+                                                                $class = 'badge-grey';
+                                                                break;
+                                                            case '1':
+                                                                $txt = "审核通过";
+                                                                $class = 'badge-success';
+                                                                break;
+                                                            case '2':
+                                                                $txt = "审核不通过";
+                                                                $class = 'badge-warning';
+                                                                break;
+                                                        }
+                                                    ?>
+                                                    <span class="badge <?php echo $class; ?>">
+                                                        <?php echo $txt;?>
+                                                    </span>
+                                                </td>
+                                                <td>
                                                     <div class="action-buttons">
                                                         <a class="green tooltip-info" href="/housesscheduledorders/detail/<?php echo $value['id'];?>"  data-rel="tooltip" data-placement="top" data-original-title="详情">
                                                             <i class="icon-eye-open bigger-130"></i>
@@ -257,10 +303,24 @@
                                                         <?php endif;?>
                                                         
                                                         <?php if($value['is_confirm'] == 1 && $value['order_status'] != 5) {?>
+                                                        	 <?php if($value['bm_agree'] == 1 && $value['mm_agree'] == 1):?>
                                                         	 <a class="grey tooltip-info checkout" href="javascript:;" data-id="<?php echo $value['id'];?>" data-customer="<?php echo $value['lock_customer_id']?>"  data-rel="tooltip" data-placement="top" data-original-title="转订单">
 	                                                            <i class="ace-icon fa fa-random bigger-130" aria-hidden="true"></i>
 	                                                        </a>
+                                                        	<?php endif;?>
                                                         <?php }?>
+                                                        
+                                                        <?php if($value['bm_agree'] != 1):?>
+                                                        <a class="grey tooltip-info bmcheck"  data-id="<?php echo $value['id'];?>"  data-rel="tooltip" data-placement="top" data-original-title="业务主管审核">
+	                                                        <i class="ace-icon glyphicon glyphicon-check bigger-130" aria-hidden="true"></i>
+	                                                    </a>
+	                                                    <?php endif;?>
+	                                                    <?php if($value['mm_agree'] != 1):?>
+	                                                    <a class="grey tooltip-info mmcheck"  data-id="<?php echo $value['id'];?>"  data-rel="tooltip" data-placement="top" data-original-title="媒介主管审核">
+	                                                        <i class="ace-icon glyphicon glyphicon-check bigger-130" aria-hidden="true"></i>
+	                                                    </a>
+                                                        <?php endif;?>
+                                                        
                                                     </div>
                                                 </td>
                                             </tr>
@@ -349,6 +409,54 @@
     $('.checkout').click(function(){
         var id = $(this).attr('data-id');
 		location.href = "/housesscheduledorders/checkout/"+id;
+    });
+
+    $('.bmcheck').on('click', function(){
+    	var id = $(this).attr('data-id');
+    	layer.confirm('确认审批通过所选的点位吗？', {
+		 	btn: ['通过','不通过'],
+		 	title: "业务主管审批",
+		}, function(){
+			$.post('/housesscheduledorders/bmcheck', {id:id, status:1}, function(data){
+				if(data) {
+					layer.alert(data.msg, function(){
+						location.reload();
+					});
+				}
+			});
+		},function(){
+			$.post('/housesscheduledorders/bmcheck', {id:id, status:2}, function(data){
+				if(data) {
+					layer.alert(data.msg, function(){
+						location.reload();
+					});
+				}
+			});
+		});
+    });
+
+    $('.mmcheck').on('click', function(){
+    	var id = $(this).attr('data-id');
+    	layer.confirm('确认审批通过客户签字照片吗？', {
+		 	btn: ['通过','不通过'],
+		 	title: "业务主管审批",
+		}, function(){
+			$.post('/housesscheduledorders/mmcheck', {id:id, status:1}, function(data){
+				if(data) {
+					layer.alert(data.msg, function(){
+						location.reload();
+					});
+				}
+			});
+		},function(){
+			$.post('/housesscheduledorders/mmcheck', {id:id, status:2}, function(data){
+				if(data) {
+					layer.alert(data.msg, function(){
+						location.reload();
+					});
+				}
+			});
+		});
     });
 </script>
 

@@ -136,7 +136,11 @@
                                             <div class="col-sm-5">
                                             	<div class="row-fluid">
                                                     <ul class="ace-thumbnails" id="uploader_cover_img" data='0'>
-                                                        
+                                                        <?php if(isset($orderInfo['confirm_img']) && !empty($orderInfo['confirm_img'])):?>
+                                                        <?php foreach (explode(';', $orderInfo['confirm_img']) as $k => $v):?>
+                                                        <li id="uploader_cover_img_<?php echo $k?>" style="float: left;width: 150px;height: 150px;clear:none; border: 1px solid #f18a1b"><a class="close" href="javascript:;"></a><a href="javascript:;" class="up-img"><img style="position: absolute;top: 0;" src="<?php echo $v;?>"></a><input type="hidden" name="confirm_img[]" value="<?php echo $v;?>"></li>
+                                                    	<?php endforeach;?>
+                                                        <?php endif;?>
                                                     </ul>
                                                 </div>
                                             </div>
