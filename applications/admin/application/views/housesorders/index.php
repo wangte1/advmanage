@@ -271,15 +271,9 @@
                                                             <i class="icon-trash bigger-130"></i>
                                                         </a> 
                                                         
-                                                        <?php if($value['order_status'] == 1): ?>
+                                                        <?php if($value['is_self'] == 1): ?>
                                                             <a class="green tooltip-info" href="/housesorders/edit/<?php echo $value['id'];?>"  data-rel="tooltip" data-placement="top" title="" data-original-title="修改">
                                                                 <i class="icon-pencil bigger-130"></i>
-                                                            </a>
-                                                            <!-- <a class="green tooltip-info" href="/housesorders/upload_adv_img/<?php echo $value['id'];?>"  data-rel="tooltip" data-placement="top" title="" data-original-title="广告画面">
-                                                                <i class="fa fa-file-image-o bigger-130"></i>
-                                                            </a> -->
-                                                            <a class="green tooltip-info" href="/housesorders/contact_list/<?php echo $value['id'];?>" target="_blank" data-rel="tooltip" data-placement="top" title="" data-original-title="生成联系单">
-                                                                <i class="fa fa-building-o bigger-130"></i>
                                                             </a>
                                                         <?php endif;?>
                                                         <?php if($value['order_status'] == 6 || $value['order_status'] == 7):?>

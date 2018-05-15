@@ -279,29 +279,10 @@ class Housesorders extends MY_Controller{
         $data = $this->data;
         if (IS_POST) {
             $post_data = $this->input->post();
-
-            if (isset($post_data['make_complete_time'])) {
-                $post_data['make_complete_time'] = $post_data['make_complete_time'].' '.$post_data['hour'].':'.$post_data['minute'].':'.$post_data['second'];
-            }
-
             $post_data['update_user'] = $data['userInfo']['id'];
             $post_data['update_time'] = date('Y-m-d H:i:s');
 
-            if ($post_data['order_type'] == 1 || $post_data['order_type'] == 2) {
-                //先把之前所有已选择的点位的状态置为空闲，再把重新选择的点位状态置为占用（只针对公交灯箱和户外高杆）
-                $this->Mhouses_points->update_info(array('customer_id' => 0, 'order_id' => 0, 'point_status' => 1), array('in' => array('id' => explode(',', $post_data['point_ids_old']))));
-                
-                $update_data['order_id'] = $id;
-                $update_data['customer_id'] = $post_data['customer_id'];
-//                 $update_data['lock_start_time'] = '';
-//                 $update_data['lock_end_time'] = '';
-//                 $update_data['expire_time'] = '';
-                $update_data['point_status'] = 3;
-                $this->Mhouses_points->update_info($update_data, array('in' => array('id' => explode(',', $post_data['point_ids']))));
-
-            }
-
-            unset($post_data['houses_id'], $post_data['area_id'],$post_data['ban'],$post_data['unit'],$post_data['floor'],$post_data['addr'], $post_data['hour'], $post_data['minute'], $post_data['second']);
+            unset($post_data['id'], $post_data['houses_id'], $post_data['area_id'],$post_data['ban'],$post_data['unit'],$post_data['floor'],$post_data['addr'], $post_data['hour'], $post_data['minute'], $post_data['second']);
             unset($post_data['point_ids_old']);
             $result = $this->Mhouses_orders->update_info($post_data, array('id' => $id));
             if ($result) {
