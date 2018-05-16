@@ -75,7 +75,9 @@
                                                 <select id="customer_id" name="customer_id" class="select2" required>
                                                     <option value="">请选择客户</option>
                                                     <?php foreach($customers as $val):?>
+                                                    <?php if($val['is_self'] == 1):?>
                                                     <option value="<?php echo $val['id'];?>" <?php if(isset($info['customer_id']) && $val['id'] == $info['customer_id']){ echo "selected"; }?>><?php echo $val['name'];?></option>
+                                                    <?php endif;?>
                                                     <?php endforeach;?>
                                                 </select>
                                                 
