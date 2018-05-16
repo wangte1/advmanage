@@ -64,7 +64,7 @@ class Task extends MY_Controller {
         if(!$list){
             $this->return_json(['code' => 0, 'data' => [], 'page' => $page, 'msg' => '没有更多数据']);
         }
-        $this->return_json(['code' => 1, 'data' => json_encode($list), 'page' => $page, 'msg' => 'ok']);
+        $this->return_json(['code' => 1, 'data' => $list, 'page' => $page, 'msg' => 'ok']);
     }
     
     /**
@@ -74,7 +74,7 @@ class Task extends MY_Controller {
     	$assignId = (int) $this->input->get_post('assignId');
     	$where['A.id'] = $assignId;
     	$list = $this->Mhouses_assign->get_join_lists($where);
-    	$this->return_json(['code' => 1, 'data' => json_encode($list)]);
+    	$this->return_json(['code' => 1, 'data' => $list]);
     }
     
     /**
@@ -140,7 +140,7 @@ class Task extends MY_Controller {
     		$list[] = $val;
     	}
     	
-    	$this->return_json(['code' => 1, 'data' => json_encode($list), 'page' => $page]);
+    	$this->return_json(['code' => 1, 'data' => $list, 'page' => $page]);
     }
     
     /**
@@ -170,7 +170,7 @@ class Task extends MY_Controller {
     		$points['image'] = $tmpImg['front_img'];
     	}
     	
-    	$this->return_json(['code' => 1, 'data' => json_encode($points)]);
+    	$this->return_json(['code' => 1, 'data' => $points]);
     }
     
     /**
