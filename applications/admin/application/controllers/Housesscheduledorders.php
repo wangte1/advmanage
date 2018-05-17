@@ -1093,6 +1093,38 @@ class Housesscheduledorders extends MY_Controller{
                 $_where['field']['`ad_num`'] = '`ad_use_num` + `lock_num`';
                 $this->Mhouses_points->update_info(['point_status' => 3], $_where);
                 
+                
+                //判断是否有自有画面的点位，如果有，则将自有订单的点位去除，并更新self_lock = 0
+                $selfOrderList =  $this->Mhouses_orders->get_lists('id, point_ids', ['is_self' => 1, 'order_status <' => 8]);
+                
+                if($selfOrderList){
+                    //转订单的点位
+                    $ids = explode(',', $post_data['point_ids']);
+                    foreach ($selfOrderList as $k => $v){
+                        if(!empty($v['point_ids'])){
+                            $out = [];
+                            //自有订单的点位
+                            $tmp = explode(',', $v['point_ids']);
+                            foreach ($tmp as $k1 => $v1){
+                                if(in_array($v1, $ids)){
+                                    $out[] = $v1;
+                                    unset($tmp[$k1]);
+                                }
+                            }
+                            //释放自有点位
+                            if(count($out) > 0){
+                                $this->Mhouses_points->update_info(['self_lock' => 0], ['in' => ['id' => $out]]);
+                                //更新本次的自有订单点位订单
+                                if(count($tmp) > 0){
+                                    $this->Mhouses_orders->update_info(['point_ids' => implode(',', $tmp)], ['id' => $v['id']]);
+                                }else{
+                                    $this->Mhouses_orders->update_info(['point_ids' => ''], ['id' => $v['id']]);
+                                }
+                            }
+                        }
+                    }
+                }
+                
                 $this->write_log($data['userInfo']['id'], 1, "社区资源管理转预定订单".$data['order_type_text'][$post_data['order_type']]."为订单,订单id【".$id."】");
                 $this->success("预定订单转订单成功！","/confirm_reserve");
             } else {

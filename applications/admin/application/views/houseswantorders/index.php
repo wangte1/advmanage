@@ -169,7 +169,7 @@
                                             		</td>
                                             		<td><?php echo $order_type_text[$value['order_type']];?></td>
                                             		<td><?php echo $value['begin_year']."-".$value['end_year'];?></td>
-                                            		<td><?php if(isset($value['put_trade'])) echo C('housespoint.put_trade')[$value['put_trade']];?></td>
+                                            		<td><?php if(isset($value['put_trade']) && $value['put_trade'] > 0) echo C('housespoint.put_trade')[$value['put_trade']];?></td>
                                             		<td><?php echo $value['points_count'];?></td>
                                             		<td>
                                             			<?php 
