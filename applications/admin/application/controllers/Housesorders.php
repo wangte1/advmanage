@@ -32,10 +32,9 @@ class Housesorders extends MY_Controller{
         $this->data['code'] = 'horders_manage';
         $this->data['active'] = 'houses_orders_list';
 
-        $this->data['customers'] = $this->Mhouses_customers->get_lists("id, name", array('is_del' => 0));  //客户
+        $this->data['customers'] = $this->Mhouses_customers->get_lists("id, name, is_self", array('is_del' => 0));  //客户
         $this->data['make_company'] = $this->Mmake_company->get_lists('id, company_name, business_scope', array('is_del' => 0));  //制作公司
         $this->data['order_type_text'] = C('housesorder.houses_order_type'); //订单类型
-        //$this->data['salesman'] = $this->Msalesman->get_lists('id, name, sex, phone_number', array('is_del' => 0));  //业务员
         $this->data['salesman'] = $this->Madmins->get_lists('id, fullname as name, tel', array('is_del' => 1));  //业务员
         $this->data['houses_assign_status'] = C('housesorder.houses_assign_status'); //派单状态
         $this->data['point_addr'] = C('housespoint.point_addr');	//点位位置
@@ -157,57 +156,39 @@ class Housesorders extends MY_Controller{
      */
     public function add($order_type, $put_trade=0) {
         $data = $this->data;
-        
         if (IS_POST) {
             $post_data = $this->input->post();
+            if(empty($post_data['point_ids'])){$this->error("请至少选择一个点位");}
+            $newids = explode(',', $post_data['point_ids']);
+            $newids = array_unique($newids);
+            $post_data['point_ids'] = implode(',', $newids);
             $post_data['order_code'] = date('YmdHis').$post_data['customer_id']; //订单编号：年月日时分秒+客户id
-            
-            if (isset($post_data['make_complete_time'])) {
-                $post_data['make_complete_time'] = $post_data['make_complete_time'].' '.$post_data['hour'].':'.$post_data['minute'].':'.$post_data['second'];
-            }
-
             $post_data['creator'] =  $data['userInfo']['id'];
             $post_data['create_time'] =  date('Y-m-d H:i:s');
             unset($post_data['houses_id'], $post_data['area_id'],$post_data['ban'],$post_data['unit'],$post_data['floor'],$post_data['addr'], $post_data['hour'], $post_data['minute'], $post_data['second']);
+            
+            $post_data['order_status'] = 1;
+            $post_data['is_self'] = 1; //自有画面订单
             $id = $this->Mhouses_orders->create($post_data);
             if ($id) {
-                    //如果选择的点位包含预定点位，则把对应的预定订单释放掉
-                    $where['is_del'] = 0;
-                    $where['lock_customer_id'] = $post_data['customer_id'];
-                    $where['order_type'] = $order_type;
-                    $where['order_status!='] = C('scheduledorder.order_status.code.done_release');
-                    $info = $this->Mhouses_scheduled_orders->get_one("*", $where);
-                    if ($info && count(array_intersect(explode(',', $post_data['point_ids']), explode(',', $info['point_ids']))) > 0) {
-                        //释放该预定订单的所有点位
-                        //$update_data['lock_customer_id'] = $update_data['lock_start_time'] = $update_data['lock_end_time'] = $update_data['expire_time'] = '';
-                    	$update_data['lock_customer_id'] = 0;
-                    	$update_data['is_lock'] = 0;
-                        $this->Mhouses_points->update_info($update_data, array('in' => array('id' => explode(',', $info['point_ids']))));
-
-                        //更新该订单的状态为“已释放”
-                        $this->Mhouses_scheduled_orders->update_info(array('order_status' => C('scheduledorder.order_status.code.done_release')), array('id' => $info['id']));
+                //更新点位为自有画面占用
+                $size = 2000;
+                if(count($newids) > $size){
+                    $arr = array_chunk($newids, $size);
+                    foreach ($arr as $k => $v){
+                        $this->Mhouses_points->update_info(['self_lock' => 1], ['in' => ['id' => $v]]);
                     }
-
-
-                    //下单成功把选择的点位置为占用状态(只针对公交灯箱和户外高杆)
-                    $update_data['order_id'] = $id;
-                    $update_data['customer_id'] = $post_data['customer_id'];
-//                     $update_data['lock_start_time'] = '';
-//                     $update_data['lock_end_time'] = '';
-//                     $update_data['expire_time'] = '';
-                    $update_data['point_status'] = 3;
-                    $this->Mhouses_points->update_info($update_data, array('in' => array('id' => explode(',', $post_data['point_ids']))));
-
-//                 } 
-
-                $this->write_log($data['userInfo']['id'], 1, "社区资源管理新增".$data['order_type_text'][$post_data['order_type']]."订单,订单id【".$id."】");
+                }else{
+                    $this->Mhouses_points->update_info(['self_lock' => 1], ['in' => ['id' => $newids]]);
+                }
+                
                 $this->success("添加成功！","/housesorders");
-            } else {
-                $this->success("添加失败！","/housesorders");
+            }else {
+                $this->success("操作失败！","/housesorders");
             }
         } else {
             $data['order_type'] = $order_type;
-            $tmpPoints = $this->Mhouses_points->get_lists("id, houses_id, area_id", ['type_id' => $order_type, 'is_del' => 0]);
+            $tmpPoints = $this->Mhouses_points->get_lists("id, houses_id, area_id", ['type_id' => $order_type, 'is_del' => 0, 'point_status' => 1]);
             
          	if(count($tmpPoints) > 0) {
          		$housesid = array_column($tmpPoints, 'houses_id');
@@ -227,7 +208,6 @@ class Housesorders extends MY_Controller{
          		
          		$data['put_trade'] = $put_trade;
          		$data['housesList'] = $houses_list;
-         		//end
          	}
          	
          	//获取楼栋单元楼层列表
@@ -243,26 +223,15 @@ class Housesorders extends MY_Controller{
     public function get_points() {
 
     	$where['is_del'] = 0;
-    	$where['is_lock'] = 0;
-//     	if($this->input->post('point_status') == 1) {
-//     		$where['point_status'] = $this->input->post('point_status');
-//     	}else if($this->input->post('point_status') == 2) {
-//     		$where['is_lock'] = $this->input->post('is_lock');
-//     		$where['lock_customer_id'] = $this->input->post('customer_id');
-//     	}
     	$where['point_status'] = 1;
+    	$where['self_lock'] = 0;
     	if($this->input->post('order_type')) $where['type_id'] = $this->input->post('order_type');
     	if($this->input->post('houses_id')) $where['houses_id'] = $this->input->post('houses_id');
     	if(!empty($this->input->post('ban'))) $where['ban'] = $this->input->post('ban');
     	if(!empty($this->input->post('unit'))) $where['unit'] = $this->input->post('unit');
     	if(!empty($this->input->post('floor'))) $where['floor'] = $this->input->post('floor');
     	if(!empty($this->input->post('addr'))) $where['addr'] = $this->input->post('addr');
-    	if($this->input->post('is_lock')) {
-    		$where['is_lock'] = $this->input->post('is_lock');
-    		if($this->input->post('customer_id')) {
-    			$where['lock_customer_id'] = $this->input->post('customer_id');
-    		}
-    	}
+    	
     	
     	$points_lists = $this->Mhouses_points->get_lists("id,code,houses_id,area_id,ban,unit,floor,addr,type_id,point_status", $where);
     	$areaList = [];
@@ -328,32 +297,41 @@ class Housesorders extends MY_Controller{
         $data = $this->data;
         if (IS_POST) {
             $post_data = $this->input->post();
-
-            if (isset($post_data['make_complete_time'])) {
-                $post_data['make_complete_time'] = $post_data['make_complete_time'].' '.$post_data['hour'].':'.$post_data['minute'].':'.$post_data['second'];
-            }
-
             $post_data['update_user'] = $data['userInfo']['id'];
             $post_data['update_time'] = date('Y-m-d H:i:s');
-
-            if ($post_data['order_type'] == 1 || $post_data['order_type'] == 2) {
-                //先把之前所有已选择的点位的状态置为空闲，再把重新选择的点位状态置为占用（只针对公交灯箱和户外高杆）
-                $this->Mhouses_points->update_info(array('customer_id' => 0, 'order_id' => 0, 'point_status' => 1), array('in' => array('id' => explode(',', $post_data['point_ids_old']))));
-                
-                $update_data['order_id'] = $id;
-                $update_data['customer_id'] = $post_data['customer_id'];
-//                 $update_data['lock_start_time'] = '';
-//                 $update_data['lock_end_time'] = '';
-//                 $update_data['expire_time'] = '';
-                $update_data['point_status'] = 3;
-                $this->Mhouses_points->update_info($update_data, array('in' => array('id' => explode(',', $post_data['point_ids']))));
-
-            }
-
-            unset($post_data['houses_id'], $post_data['area_id'],$post_data['ban'],$post_data['unit'],$post_data['floor'],$post_data['addr'], $post_data['hour'], $post_data['minute'], $post_data['second']);
+            
+            $point_ids = $post_data['point_ids'];
+            if(empty($point_ids)) $this->error("请至少选择一个点位！");
+            $point_ids = explode(',', $point_ids);
+            $post_data['point_ids'] = implode(',', array_unique($point_ids));
+            
+            $point_ids_old=  array_unique(explode(',', $post_data['point_ids_old']));
+            unset($post_data['id'], $post_data['houses_id'], $post_data['area_id'],$post_data['ban'],$post_data['unit'],$post_data['floor'],$post_data['addr'], $post_data['hour'], $post_data['minute'], $post_data['second']);
             unset($post_data['point_ids_old']);
+
             $result = $this->Mhouses_orders->update_info($post_data, array('id' => $id));
             if ($result) {
+                //释放旧数据
+                $size = 2000;
+                if(count($point_ids_old) > $size){
+                    $arr = array_chunk($point_ids_old, $size);
+                    foreach ($arr as $k => $v){
+                        $this->Mhouses_points->update_info(['self_lock' => 0], ['in' => ['id' => $v]]);
+                    }
+                }else{
+                    $this->Mhouses_points->update_info(['self_lock' => 0], ['in' => ['id' => $point_ids_old]]);
+                }
+                //更新点位为自有画面占用
+                if(count($point_ids) > $size){
+                    $arr = array_chunk($point_ids, $size);
+                    foreach ($arr as $k => $v){
+                        $this->Mhouses_points->update_info(['self_lock' => 1], ['in' => ['id' => $v]]);
+                    }
+                }else{
+                    $this->Mhouses_points->update_info(['self_lock' => 1], ['in' => ['id' => $point_ids]]);
+                }
+                
+                
                 $this->write_log($data['userInfo']['id'], 2, "社区编辑".$data['order_type_text'][$post_data['order_type']]."订单,订单id【".$id."】");
                 $this->success("修改成功！","/housesorders");
             } else {
@@ -369,9 +347,8 @@ class Housesorders extends MY_Controller{
             
             if(count($tmpPoints) > 0) {
             	$housesid = array_column($tmpPoints, 'houses_id');
-            	$whereh['in']['id'] = $housesid;
+            	$whereh['in']['id'] = array_unique($housesid);
             	$data['housesList'] = $this->Mhouses->get_lists("id, name", $whereh);
-            
             }
             
 
@@ -886,51 +863,64 @@ class Housesorders extends MY_Controller{
     
     public function release($id, $customer_id){
         //如果订单已经下画则释放所有点位
-        $tmp_list = $this->Mhouses_orders->get_one('point_ids, customer_id', ["id"=>$id]);
+        $tmp_list = $this->Mhouses_orders->get_one('point_ids, customer_id, is_self', ["id"=>$id]);
         $point_ids_arr = explode(',', $tmp_list['point_ids']);
-        $list = $this->Mhouses_points->get_lists('id,customer_id', ['in' => ['id' => $point_ids_arr]]);
-        if($list){
-            $new = [];
-            //提取订单所有点位点位占用的客户
-            foreach ($list as $k => $v){
-                $tmp = explode(',', $v['customer_id']);
-                if(is_array($tmp)){
-                    foreach ($tmp as $key => $val){
-                        if($val) $new[$v['id']][] = $val;
+        if($tmp_list['is_self'] ==1){
+            $size = 2000;
+            if(count($point_ids_arr) > $size){
+                $arr = array_chunk($point_ids_arr, $size);
+                foreach ($arr as $k => $v){
+                    $this->Mhouses_points->update_info(['self_lock' => 0], ['in' => ['id' => $v]]);
+                }
+            }else{
+                $this->Mhouses_points->update_info(['self_lock' => 0], ['in' => ['id' => $point_ids_arr]]);
+            }
+            return true;
+        }else{
+            $list = $this->Mhouses_points->get_lists('id,customer_id', ['in' => ['id' => $point_ids_arr]]);
+            if($list){
+                $new = [];
+                //提取订单所有点位点位占用的客户
+                foreach ($list as $k => $v){
+                    $tmp = explode(',', $v['customer_id']);
+                    if(is_array($tmp)){
+                        foreach ($tmp as $key => $val){
+                            if($val) $new[$v['id']][] = $val;
+                        }
+                    }else{
+                        $new[$v['id']][] = $tmp;
                     }
-                }else{
-                    $new[$v['id']][] = $tmp;
                 }
-            }
-            //操作点位,去除指定占用的客户
-            foreach ($new as $k => &$v){
-                foreach ($v as $key => $val){
-                    if($val == $customer_id) unset($v[$key]);
+                //操作点位,去除指定占用的客户
+                foreach ($new as $k => &$v){
+                    foreach ($v as $key => $val){
+                        if($val == $customer_id) unset($v[$key]);
+                    }
                 }
-            }
-            //准备更新的数据
-            foreach ($new as $k => &$v){
-                $tmp = '';
-                foreach ($v as $key => $val){
-                    if($val){
-                        if($key == 0){
-                            $tmp.= $val;
-                        }else{
-                            $tmp.= ','.$val;
+                //准备更新的数据
+                foreach ($new as $k => &$v){
+                    $tmp = '';
+                    foreach ($v as $key => $val){
+                        if($val){
+                            if($key == 0){
+                                $tmp.= $val;
+                            }else{
+                                $tmp.= ','.$val;
+                            }
                         }
                     }
+                    $v = $tmp;
                 }
-                $v = $tmp;
+                $sql = "update t_houses_points SET `ad_use_num` = `ad_use_num` -1, customer_id = CASE id";
+                foreach ($new as $k => $v){
+                    $sql.= " WHEN $k THEN '$v'";
+                }
+                $sql.= ' END where id in (';
+                $sql.= implode(',', $point_ids_arr);
+                $sql.= ')';
+                $this->db->query($sql);
+                return $this->db->count_all_results();
             }
-            $sql = "update t_houses_points SET `ad_use_num` = `ad_use_num` -1, customer_id = CASE id";
-            foreach ($new as $k => $v){
-                $sql.= " WHEN $k THEN '$v'";
-            }
-            $sql.= ' END where id in (';
-            $sql.= implode(',', $point_ids_arr);
-            $sql.= ')';
-            $this->db->query($sql);
-            return $this->db->count_all_results();
         }
     }
 

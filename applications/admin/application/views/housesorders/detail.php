@@ -107,7 +107,7 @@
                                                     <div class="profile-info-name"> 业务员 </div>
 
                                                     <div class="profile-info-value">
-                                                        <span class="editable editable-click"><?php echo $info['salesman']['fullname'];?></span>
+                                                        <span class="editable editable-click"><?php if(isset($info['salesman']) && isset($info['salesman']['fullname'])){echo $info['salesman']['fullname'];}else{echo "&nbsp;";}?></span>
                                                     </div>
                                                 </div>
 
@@ -115,7 +115,7 @@
                                                     <div class="profile-info-name"> 业务员手机号 </div>
 
                                                     <div class="profile-info-value">
-                                                        <span class="editable editable-click"><?php echo $info['salesman']['tel'];?></span>
+                                                        <span class="editable editable-click"><?php if(isset($info['salesman']) && isset($info['salesman']['tel'])){ echo $info['salesman']['tel'];}else{echo "&nbsp;";}?></span>
                                                     </div>
                                                 </div>
 

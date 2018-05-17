@@ -33,9 +33,9 @@
             </div>
 
             <div class="page-content">
-                <!-- <div class="page-header">
-                    <a href="/housesorders/order_type" class="btn btn-sm btn-primary"><i class="fa fa-plus-square" aria-hidden="true"></i> 新建订单</a>
-                </div>  -->
+                <div class="page-header">
+                    <a href="/housesorders/order_type" class="btn btn-sm btn-primary"><i class="fa fa-plus-square" aria-hidden="true"></i> 新建自有画面订单</a>
+                </div>
 
                 <div class="row">
                     <div class="col-xs-12">
@@ -153,6 +153,7 @@
                                                 <th width="7%">下单日期</th>
                                                 <th>订单状态</th>
                                                 <th>创建人</th>
+                                                <th>自有订单</th>
                                                 <th width="10%">操作</th>
                                             </tr>
                                         </thead>
@@ -258,6 +259,9 @@
                                                 </td>
                                                 <td><?php echo $admins[$value['creator']];?></td>
                                                 <td>
+                                                	<?php if($value['is_self']){echo '是';}else{echo "否";}?>
+                                                </td>
+                                                <td>
                                                     <div class="visible-md visible-lg hidden-sm hidden-xs action-buttons">
                                                         <a class="green tooltip-info" href="/housesorders/detail/<?php echo $value['id'];?>"  data-rel="tooltip" data-placement="top" title="" data-original-title="详情">
                                                             <i class="icon-eye-open bigger-130"></i>
@@ -267,15 +271,9 @@
                                                             <i class="icon-trash bigger-130"></i>
                                                         </a> 
                                                         
-                                                        <?php if($value['order_status'] == 1): ?>
+                                                        <?php if($value['is_self'] == 1 && $value['order_status'] <= 3): ?>
                                                             <a class="green tooltip-info" href="/housesorders/edit/<?php echo $value['id'];?>"  data-rel="tooltip" data-placement="top" title="" data-original-title="修改">
                                                                 <i class="icon-pencil bigger-130"></i>
-                                                            </a>
-                                                            <!-- <a class="green tooltip-info" href="/housesorders/upload_adv_img/<?php echo $value['id'];?>"  data-rel="tooltip" data-placement="top" title="" data-original-title="广告画面">
-                                                                <i class="fa fa-file-image-o bigger-130"></i>
-                                                            </a> -->
-                                                            <a class="green tooltip-info" href="/housesorders/contact_list/<?php echo $value['id'];?>" target="_blank" data-rel="tooltip" data-placement="top" title="" data-original-title="生成联系单">
-                                                                <i class="fa fa-building-o bigger-130"></i>
                                                             </a>
                                                         <?php endif;?>
                                                         <?php if($value['order_status'] == 6 || $value['order_status'] == 7):?>
