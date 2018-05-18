@@ -343,6 +343,8 @@ class Housespoints extends MY_Controller{
      * 1034487709@qq.com
      */
     public function out_excel(){
+        ini_set('memory_limit', '250M');
+        set_time_limit(0);
     	if ($this->input->get('type_id')) $where['A.type_id'] = $this->input->get('type_id');
         if ($this->input->get('province')) $where['B.province'] = $this->input->get('province');
         if ($this->input->get('city')) $where['B.city'] = $this->input->get('city');

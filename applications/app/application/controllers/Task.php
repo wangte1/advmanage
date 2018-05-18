@@ -181,10 +181,10 @@ class Task extends MY_Controller {
     	$file_dir = $this->input->get('dir') == 'image' ? 'image/' : 'files/';
     	$config = array(
     			'upload_path'   => '../../admin/uploads/'.$file_dir,
-    			'allowed_types' => 'gif|jpg|jpeg|png|bmp|swf|flv|doc|docx|xls|xlsx|ppt',
-    			// 'max_size'     => 1024*5,
-    			// 'max_width'    => 2000,
-    			// 'max_height'   => 2000,
+    			'allowed_types' => 'gif|jpg|jpeg|png',
+    			'max_size'     => 1024*3,
+    			'max_width'    => 2000,
+    			'max_height'   => 2000,
     			'encrypt_name' => TRUE,
     			'remove_spaces'=> TRUE,
     			'use_time_dir'  => TRUE,      //是否按上传时间分目录存放
