@@ -28,7 +28,7 @@ class Housescustomers extends MY_Controller{
         $page =  intval($this->input->get("per_page",true)) ?  : 1;
         $size = $this->pageconfig['per_page'];
         $where['is_del'] = 0;
-        $url = "/customers/index?ser=1";
+        $url = "/housescustomers/index?ser=1";
 
         $data['name'] = trim($this->input->get('name'));
         if ($this->input->get('name')) {
