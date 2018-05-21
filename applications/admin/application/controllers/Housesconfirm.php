@@ -16,7 +16,7 @@ class Housesconfirm extends MY_Controller{
         	'Model_admins' => 'Madmins',
         	'Model_houses_customers' => 'Mhouses_customers',
         	'Model_houses_points' => 'Mhouses_points',
-        	
+            'Model_houses_work_order' => 'Mhouses_work_order',
         	'Model_salesman' => 'Msalesman',
         	'Model_make_company' => 'Mmake_company',
         	'Model_houses_order_inspect_images' => 'Mhouses_order_inspect_images',
@@ -43,44 +43,45 @@ class Housesconfirm extends MY_Controller{
         $this->load->library('pagination');
         $page = intval($this->input->get("per_page",true)) ?  : 1;
         $size = $pageconfig['per_page'];
-		
         $where = [];
         if($data['userInfo']['group_id'] != 1 && $data['userInfo']['group_id'] != 5) {
-        	$where['A.charge_user'] = $data['userInfo']['id'];
+        	$where['assign_user'] = $data['userInfo']['id'];
         }
+        $data['assign_type'] = $assign_type = $this->input->get('assign_type') ? : 1;
         
-        if ($this->input->get('province')) $where['like']['B.province'] = $this->input->get('province');
-        if ($this->input->get('city')) $where['like']['B.city'] = $this->input->get('city');
-        if ($this->input->get('area')) $where['like']['B.area'] = $this->input->get('area');
-        if ($this->input->get('houses_name')) $where['like']['B.name'] = $this->input->get('houses_name');
-        if ($this->input->get('customer_name')) $where['like']['D.name'] = $this->input->get('customer_name');
-        if ($this->input->get('charge_name')) $where['like']['E.fullname'] = $this->input->get('charge_name');
-        if ($this->input->get('status')) $where['A.status'] = $this->input->get('status');
-        
-        $assign_type = $this->input->get('assign_type') ? : 1;
-        
-        //未确认派单的数量
-        $data['no_confirm_count1'] = $this->Mhouses_assign->join_count(array_merge(['A.status'=> 2,'A.type'=> 1], $where));
-        $data['no_confirm_count2'] = $this->Mhouses_assign->join_count(array_merge(['A.status'=> 2,'A.type'=> 2],$where));
-        $data['no_confirm_count3'] = $this->Mhouses_assign->join_count(array_merge(['A.status'=> 2,'A.type'=> 3],$where));
-        
-        $data['province'] = $this->input->get('province');
-        $data['city'] = $this->input->get('city');
-        $data['area'] = $this->input->get('area');
-        $data['houses_name'] = $this->input->get('houses_name');
-        $data['customer_name'] = $this->input->get('customer_name');
-        $data['charge_name'] = $this->input->get('charge_name');
-        $data['status'] = $this->input->get('status');
-        $data['assign_type'] = $this->input->get('assign_type') ? : 1;
-        
+        $where['type'] = $assign_type;
+        $where['is_del'] = 0;
 
-        $where['A.type'] = $assign_type;
-        $where['A.is_del'] = 0;
         
-        $data['list'] = $this->Mhouses_assign->get_join_lists($where,['A.id'=>'desc'],$size,($page-1)*$size);
+        $data['customer_list'] = $customer_list = $this->Mhouses_customers->get_lists('id, name', ['is_del' => 0, 'is_self' => 0]);
+
+        $data['list'] = $list = $this->Mhouses_work_order->get_lists("*", $where,['create_time'=>'desc'], $size, ($page-1)*$size);
+        if($data['list']){
+            //查询这些工单的订单信息
+            $order_ids= array_unique(array_column($data['list'], 'order_id'));
+            $order_list = $this->Mhouses_orders->get_lists('id, order_code, order_type, customer_id', ['in' => ['id' => $order_ids]]);
+            
+            foreach ($list as $k => $v){
+                foreach ($order_list as $key => $val){
+                    if($val['id'] == $v['order_id']){
+                        $data['list'][$k]['order_code'] = $val['order_code'];
+                        $data['list'][$k]['customer_id'] = $val['customer_id'];
+                        $data['list'][$k]['customer_name'] = "";
+                        $data['list'][$k]['order_type'] = $val['order_type'];
+                    }
+                }
+            }
+            $list = $data['list'];
+            foreach ($list as $k => $v){
+                foreach ($customer_list as $key => $val){
+                    if($v['customer_id'] == $val['id']){
+                        $data['list'][$k]['customer_name'] = $val['name'];
+                    }
+                }
+            }
+        }
+        $data_count = $this->Mhouses_work_order->count($where);
         
-        $data_count = $this->Mhouses_assign->join_count($where);
-        $data_count = $data_count[0]['count'];
         $data['data_count'] = $data_count;
         $data['page'] = $page;
         

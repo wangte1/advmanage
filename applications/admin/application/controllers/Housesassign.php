@@ -20,7 +20,8 @@ class Housesassign extends MY_Controller{
         	'Model_houses_points' => 'Mhouses_points',
         	'Model_houses_assign' => 'Mhouses_assign',
         	'Model_houses_assign_down' => 'Mhouses_assign_down',
-        		
+            'Model_houses_work_order' => 'Mhouses_work_order',
+        	'Model_houses_work_order_detail' => 'Mhouses_work_order_detail',
         	'Model_salesman' => 'Msalesman',
         	'Model_make_company' => 'Mmake_company',
         	'Model_houses_order_inspect_images' => 'Mhouses_order_inspect_images',
@@ -364,25 +365,78 @@ class Housesassign extends MY_Controller{
     		}
     		
     		if(count($tmp_arr) > 0) {
-    			$add_data = array_merge_recursive($add_data,$tmp_arr);
+    		    $add_data = array_merge_recursive($add_data,$tmp_arr);
+    		}
+    		
+    		
+    		$group_data = [];
+    		$group = array_unique(array_column($add_data, 'charge_user'));
+    		//初始化组员数据
+    		foreach ($group as $k => $v){
+    		    $group_data[$k]['id'] = $v;
+    		    $group_data[$k]['houses_ids'] = '';
+    		}
+    		
+    		//匹配各个工程人员应分配的点位
+    		$orderInfo = $tmp_moudle->get_one('*', ['id' => $order_id]);
+    		$point_ids = array_unique(explode(',', $orderInfo['point_ids']));
+    		$point_lists = $this->Mhouses_points->get_lists('*', ['in' => ['id' => $point_ids]]);
+    		foreach ($group_data as $k => $v){
+    		    foreach ($add_data as $key => $val){
+    		        if($val['charge_user'] == $v['id']){
+    		            foreach ($point_lists as $keys => $vals){
+    		                //如果一个人负责了一个楼盘
+    		                if($val['area_id'] == "" && $val['ban'] ==""){
+    		                    if($vals['houses_id'] == $val['houses_id']){
+    		                        $group_data[$k]['point_ids'][] = $vals['id'];
+    		                    }
+    		                }
+    		                //多人负责
+    		                if($vals['houses_id'] == $val['houses_id'] && $vals['area_id'] == $val['area_id'] && $vals['ban'] == $val['ban']){
+    		                    $group_data[$k]['point_ids'][] = $vals['id'];
+    		                }
+    		            }
+    		        }
+    		    }
     		}
 
-    		$res = $this->Mhouses_assign->create_batch($add_data);
-    		
-    		if($res) {
-    		    //提取所有的工程人员,并发送短信
-    		    $all = array_unique(array_column($add_data, 'charge_user'));
-    		    foreach ($all as $k => $v){
-    		        $res_send = $this->sendMsg($v);
-	    			if($res_send['code'] == 0) {
-	    				$this->write_log($v, 2, "发送短信失败".date("Y-m-d H:i:s"));	//发送短信失败记录
-	    			}
+    		foreach ($group_data as $k => $v){
+    		    //工单数据
+    		    $insert_data = [];
+    		    $insert_data['order_id'] = $order_id;
+    		    $insert_data['type'] = $orderInfo['order_type'];
+    		    $insert_data['assign_user'] = $v['id'];
+    		    $insert_data['charge_user'] = $orderInfo['group_id'];
+    		    $insert_data['create_time'] = date("Y-m-d H:i:s");
+    		    $insert_data['total'] = count($v['point_ids']);
+    		    //创建工程人员派单
+    		    $_res = $this->Mhouses_work_order->create($insert_data);
+    		    if($_res){
+    		        //创建工单详情数据
+    		        $insert_data_detail = [];
+    		        foreach ($v['point_ids'] as $key => $val){
+    		            $insert_data_detail[$key]['pid'] = $_res;
+    		            $insert_data_detail[$key]['point_id'] = $val;
+    		        }
+    		        $res = $this->Mhouses_work_order_detail->create_batch($insert_data_detail);
+    		    }else{
+    		        $insert_data['point_ids'] = implode(',', $v['point_ids']);
+    		        $this->write_log($v['id'], 1, json_encode($insert_data));	//创建工人人员派单失败
     		    }
-    			$update_data['assign_status'] = 2;
-    			$res1 = $tmp_moudle->update_info($update_data,array("id" => $order_id));
-    			if($res1) {
-					echo "<script>alert('派单成功！');parent.location.reload();location.href='/housesassign/detail?order_id=".$order_id."&assign_type=".$assign_type."'</script>";
-    			}
+    		}
+    		
+    		//提取所有的工程人员,并发送短信
+    		$all = array_unique(array_column($add_data, 'charge_user'));
+    		foreach ($all as $k => $v){
+    		    $res_send = 1;//$this->sendMsg($v);
+    		    if($res_send['code'] == 0) {
+    		        $this->write_log($v, 2, "发送短信失败".date("Y-m-d H:i:s"));	//发送短信失败记录
+    		    }
+    		}
+    		$update_data['assign_status'] = 2;
+    		$res1 = $tmp_moudle->update_info($update_data,array("id" => $order_id));
+    		if($res1) {
+    		    echo "<script>alert('派单成功！');parent.location.reload();location.href='/housesassign/detail?order_id=".$order_id."&assign_type=".$assign_type."'</script>";
     		}
     		
     		

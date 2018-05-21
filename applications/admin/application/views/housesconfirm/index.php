@@ -48,39 +48,19 @@
                                 <div class="widget-main">
                                     <form class="form-horizontal" role="form">
                                     	<input type="hidden" name="assign_type" id="assign_type" value="<?php echo $assign_type;?>">
-                                       	<div class="form-group">
-                                           
-                                            <div class="col-sm-6">
-                                                <label class="col-sm-3 control-label no-padding-right" for="form-field-1"> 所属地区</label>
-                                                <div class="col-sm-9">
-				                                    <div id="distpicker1">
-													  <select name="province"></select>
-													  <select name="city"></select>
-													  <select name="area"></select>
-													</div>
-				                                </div>
-                                            </div>
-                                            
-                                             <div class="col-sm-6">
-                                                <label class="col-sm-3 control-label no-padding-right" for="form-field-1"> 楼盘名称</label>
-                                                <div class="col-sm-9">
-                                                    <input type="text" name="houses_name" value="<?php echo $houses_name;?>"  class="col-xs-10 col-sm-12" />
-                                                </div>
-                                            </div>
-                                        </div>
                                         
                                         <div class="form-group">
                                             <div class="col-sm-6 col-xs-12">
                                                 <label class="col-sm-3 control-label no-padding-right" for="form-field-1"> 客户名称</label>
                                                 <div class="col-sm-9">
-                                                    <input type="text" name="customer_name" value="<?php echo $customer_name;?>"  class="col-xs-10 col-sm-12" />
+                                                    <input type="text" name="customer_name" value="<?php if(isset($customer_name)){echo $customer_name;}?>"  class="col-xs-10 col-sm-12" />
                                                 </div>
                                             </div>
                                             
                                             <div class="col-sm-6 col-xs-12">
                                                 <label class="col-sm-3 control-label no-padding-right" for="form-field-1"> 负责人</label>
                                                 <div class="col-sm-9">
-                                                    <input type="text" name="charge_name" value="<?php echo $charge_name;?>"  class="col-xs-10 col-sm-12" />
+                                                    <input type="text" name="charge_name" value="<?php if(isset($charge_name)){echo $charge_name;}?>"  class="col-xs-10 col-sm-12" />
                                                 </div>
                                             </div>
                                             
@@ -128,13 +108,13 @@
                                  	<div class="tabbable" id="tabs-260319">
 										<ul class="nav nav-tabs">
 											<li <?php if($assign_type == 1){?>class="active"<?php }?>>
-												<a href="#panel-1" data-toggle="tab">上画派单&nbsp;<span class="badge badge-important"><?php echo $no_confirm_count1[0]['count'];?></span></a>
+												<a href="#panel-1" data-toggle="tab">上画派单&nbsp;<span class="badge badge-important">0</span></a>
 											</li>
 											<li <?php if($assign_type == 2){?>class="active"<?php }?>>
-												<a href="#panel-2" data-toggle="tab">下画派单&nbsp;<span class="badge badge-important"><?php echo $no_confirm_count2[0]['count'];?></span></a>
+												<a href="#panel-2" data-toggle="tab">下画派单&nbsp;<span class="badge badge-important">0</span></a>
 											</li>
 											<li <?php if($assign_type == 3){?>class="active"<?php }?>>
-												<a href="#panel-3" data-toggle="tab">换画派单&nbsp;<span class="badge badge-important"><?php echo $no_confirm_count3[0]['count'];?></span></a>
+												<a href="#panel-3" data-toggle="tab">换画派单&nbsp;<span class="badge badge-important">0</span></a>
 											</li>
 										</ul>
 										<div class="tab-content table-responsive">
@@ -144,20 +124,12 @@
 			                                            <tr>
 			                                                <th class="phone-hide">序号</th>
 			                                                <th class="phone-hide">订单编号</th>
-			                                                <th class="phone-hide">行政区域</th>
-			                                                <th nowrap>楼盘名称</th>
-			                                                <th nowrap>组团</th>
-			                                                <th nowrap>楼栋</th>
 			                                                <th nowrap class="phone-hide">点位类型</th>
 			                                                <th class="phone-hide">客户名称</th>
-			                                                <th>点位数量（个）</th>
-			                                                <th class="phone-hide">投放时间</th>
-			                                                <th class="phone-hide">派单人</th>
-			                                                <th class="phone-hide">说明</th>
-			                                                <th class="phone-hide">派单时间</th>
+			                                                <th>总计</th>
+			                                                <th>已完成</th>
 			                                                <th class="phone-hide">负责人</th>
-			                                                <th class="phone-hide">状态</th>
-			                                                <th class="phone-show">状态</th>
+			                                                <th class="phone-hide">派单时间</th>
 			                                                <th nowrap>操作</th>
 			                                            </tr>
 			                                        </thead>
@@ -171,20 +143,7 @@
 			                                                    <td class="phone-hide">
 			                                                    	<?php echo $val['order_code'];?>
 			                                                    </td>
-			                                                    <td class="phone-hide">
-			                                                    	<?php echo $val['province']."-".$val['city']."-".$val['area'];?>
-			                                                    </td>
-			                                                    <td>
-			                                                    	<?php echo $val['houses_name'];?>
-			                                                    </td>
 			                                                    
-			                                                    <td>
-			                                                    	<?php echo $val['area_name'];?>
-			                                                    </td>
-			                                                    
-			                                                    <td>
-			                                                    	<?php echo $val['ban'];?>
-			                                                    </td>
 			                                                   
 			                                                    <td class="phone-hide">
 			                                                    	<?php if(isset($order_type_text[$val['order_type']])) echo $order_type_text[$val['order_type']];?>
@@ -193,71 +152,25 @@
 			                                                    	<?php echo $val['customer_name'];?>
 			                                                    </td>
 																<td>
-																	<?php echo $val['points_count'];?>
+																	<?php echo $val['total'];?>
 																</td>
-																<td class="phone-hide">
-			                                                    	<?php echo $val['release_start_time']."至".$val['release_end_time'];?>
-			                                                    </td>
+																<td>
+																	<?php echo $val['finish'];?>
+																</td>
+																
 			                                                    <td class="phone-hide">
 			                                                    	<?php if(isset($user_list[$val['assign_user']])) echo $user_list[$val['assign_user']];?>
 			                                                    </td>
-			                                                    <td class="phone-hide"><?php echo $val['remark'];?></td>
-			                                                    <td class="phone-hide"><?php echo $val['assign_time'];?></td>
 			                                                    
-			                                                   	<td class="phone-hide">
-			                                                   		<?php echo $val['charge_name'];?>
-			                                                   	</td>
-			                                                   	<td class="phone-hide">
-			                                                   	<?php 
-			                                                        switch ($val['status']) {
-			                                                            case '1':
-			                                                                $class = 'badge-yellow';
-			                                                                break;
-			                                                            case '2':
-			                                                                $class = 'badge-pink';
-			                                                                break;
-			                                                            case '3':
-			                                                                $class = 'badge-success';
-			                                                                break;
-			                                                            case '4':
-			                                                                $class = 'badge-warning';
-			                                                                break;
-			                                                            case '5':
-			                                                                $class = 'badge-danger';
-			                                                                break;
-			                                                            case '6':
-			                                                                $class = 'badge-info';
-			                                                                break;
-			                                                            case '7':
-			                                                                $class = 'badge-purple';
-			                                                                break;
-			                                                            case '8':
-			                                                                $class = 'badge-grey';
-			                                                                break;
-			                                                            case '9':
-			                                                               	$class = 'badge-grey';
-			                                                                break;
-			                                                        }
-			                                                    ?>
-			                                                    <span class="badge <?php echo $class; ?>">
-			                                                        <?php echo $houses_assign_status[$val['status']];?>
-			                                                    </span>
-			                                                   	<?php if($val['confirm_remark']) {?>
-			                                                   		<br>
-			                                                   		说明:<?php echo $val['confirm_remark'];?>
-			                                                   	<?php }?>
-			                                                   	</td>
+			                                                    <td class="phone-hide"><?php echo $val['create_time'];?></td>
+			                                                    
 			                                                   	<td class="phone-show">
 			                                                   		<?php echo $houses_assign_status[$val['status']];?>
-			                                                   		<?php if($val['confirm_remark']) {?>
-			                                                   		<br>
-			                                                   		说明:<?php echo $val['confirm_remark'];?>
-			                                                   		<?php }?>
 			                                                   	</td>
 			                                                   	
 			                                                    <td nowrap>
 			                                                        <div class="">
-			                                                            <a class="green tooltip-info" href="/housesconfirm/order_detail/<?php echo $val['order_id'];?>/<?php echo $assign_type;?>?houses_id=<?php echo $val['houses_id'];?>&ban=<?php if(!empty($val['ban'])){echo $val['ban'];}else{echo '';};?>"  data-rel="tooltip" data-placement="top" title="" data-original-title="详情">
+			                                                            <a class="green tooltip-info" href="/housesconfirm/order_detail/<?php echo $val['id']?>"  data-rel="tooltip" data-placement="top" title="" data-original-title="详情">
 				                                                            <i class="icon-eye-open bigger-130"></i>
 				                                                        </a> 
 				                                                        <?php if($val['status'] == 2) {?>
@@ -283,7 +196,7 @@
 					                                                        </a>  
 				                                                        <?php }?>
 				                                                        
-				                                                        	<a class="green tooltip-info out" data-id="<?php echo $val['id'];?>" order-id="<?php echo $val['order_id'];?>" houses-id="<?php echo $val['houses_id'];?>" charge_user="<?php echo $val['charge_user']?>" area_id="<?php echo $val['area_id']?>" ban="<?php echo $val['ban'];?>" num="<?php echo $val['points_count'];?>" data-rel="tooltip" data-placement="top" title="" data-original-title="导出点位">
+				                                                        	<a class="green tooltip-info out" data-id="<?php echo $val['id'];?>" order-id="<?php echo $val['order_id'];?>" charge_user="<?php echo $val['charge_user']?>"  data-rel="tooltip" data-placement="top" title="" data-original-title="导出点位">
 					                                                            <i class="ace-icon glyphicon glyphicon-print bigger-130"></i>
 					                                                        </a>
 			                                                        </div>
