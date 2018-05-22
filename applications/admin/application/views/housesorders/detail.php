@@ -604,76 +604,36 @@
                                         	<table class="table table-striped table-bordered">
                                                 <thead>
                                                     <tr>
-                                                        <th class="center">行政区域</th>
-                                                        <th class="center">楼盘名称</th>
-                                                        <th class="center">楼栋</th>
-                                                        <th class="center">点位数量（个）</th>
                                                         <th class="center">上画负责人</th>
+                                                        <th class="center">总共个数</th>
+                                                        <th class="center">完成个数</th>
                                                         <th class="center">状态</th>
-                                                        <th class="center">操作</th>
+                                                        <th class="center">验收结果</th>
                                                     </tr>
                                                 </thead>
                                                 <tbody>
                                                 	<?php foreach($info['assign_list'] as $k => $v) {?>
                                             			<tr>
-                                            				<td class="center"><?php echo $v['province']."-".$v['city']."-".$v['area'];?></td>
-                                            				<td class="center"><?php echo $v['houses_name'];?></td>
-                                            				<td class="center"><?php echo $v['ban'];?></td>
+                                            				
                                             				<td class="center">
-                                            					<?php echo $v['points_count'];?>
+                                            					<?php foreach ($user_list as $key => $val):?>
+                                            						<?php if($v['charge_user'] == $key):?>
+                                            						<?php echo $val;?>
+                                            						<?php endif;?>
+                                            					<?php endforeach;?>
                                             				</td>
-                                            				<td class="center"><?php echo $v['charge_name'];?></td>
                                             				<td class="center">
-                                            					<?php 
-		                                                        switch ($v['status']) {
-		                                                            case '1':
-		                                                                $class = 'badge-yellow';
-		                                                                break;
-		                                                            case '2':
-		                                                                $class = 'badge-pink';
-		                                                                break;
-		                                                            case '3':
-		                                                                $class = 'badge-success';
-		                                                                break;
-		                                                            case '4':
-		                                                                $class = 'badge-warning';
-		                                                                break;
-		                                                            case '5':
-		                                                                $class = 'badge-danger';
-		                                                                break;
-		                                                            case '6':
-		                                                                $class = 'badge-info';
-		                                                                break;
-		                                                            case '7':
-		                                                                $class = 'badge-purple';
-		                                                                break;
-		                                                            case '8':
-		                                                                $class = 'badge-grey';
-		                                                                break;
-			                                                        }
-			                                                    ?>
-			                                                    <span class="badge <?php echo $class; ?>">
-			                                                        <?php echo $houses_assign_status[$v['status']];?>
-			                                                    </span>
-			                                                    <?php if($v['confirm_remark']) {?>
-			                                                   		<br>
-			                                                   		说明:<?php echo $v['confirm_remark'];?>
-			                                                   	<?php }?>
+                                            					<?php echo $v['total'];?>
+                                            				</td>
+                                            				<td class="center">
+                                            					<?php echo $v['finish'];?>
+                                            				</td>
+                                            				<td class="center">
+                                            					<?php if($v['status'] == 1){echo "已确认";}else{echo "未确认";}?>
                                             				</td>
                                             				
                                             				<td class="center">
-																<a class="green tooltip-info m-detail" data-id="<?php echo $v['houses_id'];?>" ban="<?php echo $v['ban'];?>"  data-rel="tooltip" data-placement="top" title="" data-original-title="点位详情">
-										                        	<i class="icon-eye-open bigger-130"></i>
-										                        </a>
-										                        <a class="green tooltip-info m-upload" data-id="<?php echo $v['id'];?>" order-id = "<?php echo $v['order_id'];?>" houses-id = "<?php echo $v['houses_id'];?>" area_id="<?php echo $v['area_id'];?>" ban = "<?php echo $v['ban'];?>" data-rel="tooltip" data-placement="top" title="" data-original-title="查看验收图片">
-										                        	<i class="fa fa-picture-o bigger-130"></i>
-										                        </a>
-										                        
-										                       	<?php if($v['status'] == 4) {?>
-										                       		<a class="green tooltip-info m-confirm" data-id="<?php echo $v['id'];?>" order-id = "<?php echo $v['order_id'];?>" assign_type="1"  data-rel="tooltip" data-placement="top" title="" data-original-title="上画审核">
-											                        	<i class="icon-check bigger-130"></i>
-											                        </a>
-										                       	<?php }?>
+																<?php if($v['total'] == $v['finish']){echo "系统验收通过";}else{echo "未全部通过验收";}?>
 															</td>
                                             			</tr>
                                             		<?php }?>
@@ -698,11 +658,9 @@
                                         	<table class="table table-striped table-bordered">
                                                 <thead>
                                                     <tr>
-                                                        <th class="center">行政区域</th>
-                                                        <th class="center">楼盘名称</th>
-                                                        <th class="center">楼栋</th>
-                                                        <th class="center">点位数量（个）</th>
-                                                        <th class="center">下画负责人</th>
+                                                        <th class="center">上画负责人</th>
+                                                        <th class="center">总共个数</th>
+                                                        <th class="center">完成个数</th>
                                                         <th class="center">状态</th>
                                                         <th class="center">操作</th>
                                                     </tr>
@@ -710,65 +668,26 @@
                                                 <tbody>
                                                 	<?php foreach($info['assign_down_list'] as $k => $v) {?>
                                             			<tr>
-                                            				<td class="center"><?php echo $v['province']."-".$v['city']."-".$v['area'];?></td>
-                                            				<td class="center"><?php echo $v['houses_name'];?></td>
-                                            				<td class="center"><?php echo $v['ban'];?></td>
+                                            				
                                             				<td class="center">
-                                            					<?php echo $v['points_count'];?>
+                                            					<?php foreach ($user_list as $key => $val):?>
+                                            						<?php if($v['charge_user'] == $key):?>
+                                            						<?php echo $val;?>
+                                            						<?php endif;?>
+                                            					<?php endforeach;?>
                                             				</td>
-                                            				<td class="center"><?php echo $v['charge_name'];?></td>
                                             				<td class="center">
-                                            					<?php 
-		                                                        switch ($v['status']) {
-		                                                            case '1':
-		                                                                $class = 'badge-yellow';
-		                                                                break;
-		                                                            case '2':
-		                                                                $class = 'badge-pink';
-		                                                                break;
-		                                                            case '3':
-		                                                                $class = 'badge-success';
-		                                                                break;
-		                                                            case '4':
-		                                                                $class = 'badge-warning';
-		                                                                break;
-		                                                            case '5':
-		                                                                $class = 'badge-danger';
-		                                                                break;
-		                                                            case '6':
-		                                                                $class = 'badge-info';
-		                                                                break;
-		                                                            case '7':
-		                                                                $class = 'badge-purple';
-		                                                                break;
-		                                                            case '8':
-		                                                                $class = 'badge-grey';
-		                                                                break;
-			                                                        }
-			                                                    ?>
-			                                                    <span class="badge <?php echo $class; ?>">
-			                                                        <?php echo $houses_assign_status[$v['status']];?>
-			                                                    </span>
-			                                                    <?php if($v['confirm_remark']) {?>
-			                                                   		<br>
-			                                                   		说明:<?php echo $v['confirm_remark'];?>
-			                                                   	<?php }?>
+                                            					<?php echo $v['total'];?>
+                                            				</td>
+                                            				<td class="center">
+                                            					<?php echo $v['finish'];?>
+                                            				</td>
+                                            				<td class="center">
+                                            					<?php if($v['status'] == 1){echo "已确认";}else{echo "未确认";}?>
                                             				</td>
                                             				
                                             				<td class="center">
-
-																<a class="green tooltip-info m-detail" data-id="<?php echo $v['houses_id'];?>" ban="<?php echo $v['ban'];?>"  data-rel="tooltip" data-placement="top" title="" data-original-title="点位详情">
-										                        	<i class="icon-eye-open bigger-130"></i>
-										                        </a>
-										                        <a class="green tooltip-info m-upload" data-id="<?php echo $v['id'];?>" order-id = "<?php echo $v['order_id'];?>" houses-id = "<?php echo $v['houses_id'];?>" area_id="<?php echo $v['area_id'];?>"  ban = "<?php echo $v['ban'];?>"  data-rel="tooltip" data-placement="top" title="" data-original-title="查看验收图片">
-										                        	<i class="fa fa-picture-o bigger-130"></i>
-										                        </a>
-										                        
-										                       	<?php if($v['status'] == 7) {?>
-										                       		<a class="green tooltip-info m-confirm" data-id="<?php echo $v['id'];?>" order-id = "<?php echo $v['order_id'];?>" houses-id = "<?php echo $v['houses_id'];?>" area_id="<?php echo $v['area_id'];?>" ban = "<?php echo $v['ban'];?>" assign_type="2"  data-rel="tooltip" data-placement="top" title="" data-original-title="下画审核">
-											                        	<i class="icon-check bigger-130"></i>
-											                        </a>
-										                       	<?php }?>
+																<?php if($v['total'] == $v['finish']){echo "系统验收通过";}else{echo "未全部通过验收";}?>
 															</td>
                                             			</tr>
                                             		<?php }?>

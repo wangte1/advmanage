@@ -18,6 +18,8 @@ class Housesorders extends MY_Controller{
         	'Model_salesman' => 'Msalesman',
         	'Model_make_company' => 'Mmake_company',
         	'Model_admins' => 'Madmins',
+            'Model_houses_work_order' => 'Mhouses_work_order',
+            'Model_houses_work_order_detail' => 'Mhouses_work_order_detail',
         	'Model_houses_order_inspect_images' => 'Mhouses_order_inspect_images',
         	'Model_houses_status_operate_time' => 'Mhouses_status_operate_time',
         	'Model_houses_change_points_record' => 'Mhouses_change_points_record',
@@ -695,15 +697,18 @@ class Housesorders extends MY_Controller{
             $add_points= $this->Mhouses_points->get_lists('code', array('in' => array('id' => explode(',', $value['add_points']))));
             $data['info']['change_points_record'][$key]['add_points'] = implode(',', array_column($add_points, 'code'));
         }
-        
+        //查询该订单的子订单
+        $sonOrder = $this->Mhouses_orders->get_lists('id', ['pid' => $id]);
+        if($sonOrder) $sonids = array_column($sonOrder, 'id');
         //上画派单列表
-
-        $data['info']['assign_list'] = $this->Mhouses_assign->get_join_lists(['A.order_id' => $id, 'A.type' => 1]);
-        
+        $data['info']['assign_list'] = [];
         //下画派单列表
-        $data['info']['assign_down_list'] = $this->Mhouses_assign->get_join_lists(['A.order_id' => $id, 'A.type' => 2]);
+        $data['info']['assign_down_list'] = [];
+        if(isset($sonids)){
+            $data['info']['assign_list'] = $this->Mhouses_work_order->get_lists("*", ['in' => ['order_id' => $sonids], 'type' => 1]);
+            $data['info']['assign_down_list'] = $this->Mhouses_work_order->get_lists("*", ['in' => ['order_id' => $sonids], 'type' => 2]);
+        }
 
-        
         //制作公司
         if(!empty($data['info']['make_company_id'])) {
         	$data['info']['make_company'] = $this->Mmake_company->get_one('company_name', array('id' => $data['info']['make_company_id']))['company_name'];
@@ -724,6 +729,12 @@ class Housesorders extends MY_Controller{
             }
             array_multisort($dos, SORT_ASC, $data['info']['inspect_img']); 
         }
+        
+        $where = ['is_del' => 1];
+        $where['in'] = ['group_id' => [4,6]];
+        $tmp_user = $this->Madmins->get_lists('id,fullname', $where);
+        $data['user_list'] = array_column($tmp_user, 'fullname', 'id');
+        
         $this->load->view('housesorders/detail', $data);
     }
     

@@ -23,7 +23,7 @@
                     </li>
                     
                     <li>
-                        <span>上传验收图片</span>
+                        <span>验收图片</span>
                     </li>
 
                 </ul>
@@ -66,30 +66,21 @@
                                             <td  style="text-align: center;vertical-align: middle;"><?php echo $value['floor'];?></td>
                                             
                                             <td style="text-align: center;vertical-align: middle;"><?php if(isset($point_addr[$value['addr']])) echo $point_addr[$value['addr']];?></td>
-                                            <td class="">
-                                                <div id="uploader-demo">
-												    <div id="filePicker-<?php echo $key;?>" style="padding: 1px;" class="filePicker" onclick="uploader_id = <?php echo $key;?>;">上传</div>
-												</div>
-                                                
-                                                <ul style="margin:0;padding:0;text-align:left;" class="ace-thumbnails" media-id="<?php echo $value['id'];?>" id="uploader_front_img<?php echo $key;?>">
-                                                    <?php if(isset($value['image']) && count($value['image']) > 0): ?>
-                                                        <?php foreach($value['image'] as $val):?>
-                                                        <li>
-                                                            <a href="<?php echo $val['front_img'];?>" title="Photo Title" data-rel="colorbox" class="cboxElement">
-                                                                <img class="phone-hide" style="width: 215px; height: 150px" src="<?php echo $val['front_img'];?>">
-                                                                <img class="phone-show" style="width: 100px; height: 80px" src="<?php echo $val['front_img'];?>">
-                                                            </a>
-                                                            <div class="tools">
-                                                                <a href="javascript:;">
-                                                                    <i class="icon-remove red"></i>
-                                                                </a>
-                                                            </div>
-                                                            <input type="hidden" name="<?php echo $value['id'];?>[front_img][]" value="<?php echo $val['front_img'];?>"/>
-                                                        </li>
-                                                        <?php endforeach;?>
-                                                    <?php endif;?>
-                                                   
-                                                </ul>
+                                            <td class="center">
+                                                <?php 
+                                                	switch ($value['status']){
+                                                	    case 0 :
+                                                	        $msg = "未上传未审核";
+                                                	        break;
+                                                	    case 1 :
+                                                	        $msg = "审核通过";
+                                                	        break;
+                                                	    case 2 :
+                                                	        $msg = "审核不通过";
+                                                	        break;
+                                                	}
+                                                	echo $msg;
+                                            	?>
                                             </td>
                                         </tr>
                                         <?php endforeach;?>
@@ -101,17 +92,6 @@
                             </div>
                         </div>
 						
-                        <div class="col-xs-12" style="position: fixed; bottom: 0; margin-top:20px;">
-                            <div class="clearfix form-actions" style="padding: 0; margin-bottom: 0">
-                                <div class="col-md-offset-5 col-md-7">
-                                    <button class="btn btn-info" type="submit" id="subbtn">
-                                        <i class="icon-ok bigger-110"></i>
-                                        保存
-                                    </button>
-                                    <font style="color:red;">注：只能保存当前分页的上传</font>
-                                </div>
-                            </div>
-                        </div>
                     </form>
 
                 </div>
@@ -250,12 +230,7 @@
 </script>
 <script type="text/javascript">
 	$('.btn-export').on('click', function(){
-		var url  = '/housesconfirm/task_exports?assign_id=<?php echo $assign_id;?>';
-			url += '&order_id=<?php echo $order_id;?>';
-			url += '&houses_id=<?php echo $houses_id;?>';
-			url += '&area_id=<?php echo $area_id;?>';
-			url += '&ban=<?php echo $ban;?>';
-			url += '&assign_type=<?php echo $assign_type;?>';
+		var url  = '/housesconfirm/user_all_task_export?id='+<?php echo $id;?>;
 		window.location.href = url;
 	});
 </script>
