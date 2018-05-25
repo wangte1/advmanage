@@ -48,7 +48,7 @@ class Housesconfirm extends MY_Controller{
         $charge_user = (int) $this->input->get('charge_user');
         if(!$charge_user){
             if($data['userInfo']['group_id'] != 1 && $data['userInfo']['group_id'] != 5) {
-                $where['assign_user'] = $data['userInfo']['id'];
+                $where['charge_user'] = $data['userInfo']['id'];
             }
         }else{
             $data['charge_user'] = $where['charge_user'] = $charge_user;
