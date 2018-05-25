@@ -122,11 +122,12 @@
 			                                                <th class="phone-hide">序号</th>
 			                                                <th class="phone-hide">订单编号</th>
 			                                                <th nowrap class="phone-hide">点位类型</th>
-			                                                <th class="phone-hide">客户名称</th>
+			                                                <th>客户名称</th>
 			                                                <th>总计</th>
 			                                                <th>已完成</th>
-			                                                <th class="phone-hide">负责人</th>
+			                                                <th>负责人</th>
 			                                                <th class="phone-hide">派单时间</th>
+			                                                <th>状态</th>
 			                                                <th nowrap>操作</th>
 			                                            </tr>
 			                                        </thead>
@@ -145,7 +146,7 @@
 			                                                    <td class="phone-hide">
 			                                                    	<?php if(isset($order_type_text[$val['order_type']])) echo $order_type_text[$val['order_type']];?>
 			                                                    </td>
-			                                                     <td class="phone-hide">
+			                                                     <td>
 			                                                    	<?php echo $val['customer_name'];?>
 			                                                    </td>
 																<td>
@@ -155,13 +156,13 @@
 																	<?php echo $val['finish'];?>
 																</td>
 																
-			                                                    <td class="phone-hide">
+			                                                    <td>
 			                                                    	<?php if(isset($user_list[$val['charge_user']])) echo $user_list[$val['charge_user']];?>
 			                                                    </td>
 			                                                    
 			                                                    <td class="phone-hide"><?php echo $val['create_time'];?></td>
 			                                                    
-			                                                   	<td class="phone-show">
+			                                                   	<td>
 			                                                   		<?php if($val['status'] == 0){echo "未确认";}else{echo "已确认";}?>
 			                                                   	</td>
 			                                                   	
