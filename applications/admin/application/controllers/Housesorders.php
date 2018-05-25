@@ -291,6 +291,179 @@ class Housesorders extends MY_Controller{
     	
     	$this->return_json(array('flag' => true, 'points_lists' => $points_lists, 'count' => count($points_lists), 'area_lists' => $areaList));
     }
+    
+    /**
+     * 编辑客户订单
+     * @param number $id
+     */
+    public function edit_customer_order($id=0){
+        $data = $this->data;
+        $data['info'] = $this->Mhouses_orders->get_one("*", array('id' => $id, 'is_self' => 0));
+        if(IS_POST){
+            $post_data = $this->input->post();
+            $customer_id = $post_data['customer_id'];
+            $post_data['update_user'] = $data['userInfo']['id'];
+            $post_data['update_time'] = date('Y-m-d H:i:s');
+            $id = $post_data['id'];
+            unset($post_data['id'], $post_data['ban'], $post_data['unit'],$post_data['area_id'],$post_data['floor'], $post_data['addr']);
+            
+            //定义已新增和被删除
+            $add = $del = [];
+            
+            $point_ids = $post_data['point_ids'];
+            if(empty($point_ids)) $this->error("请至少选择一个点位！");
+            $point_ids = explode(',', $point_ids);
+            //去重
+            $point_ids = array_unique($point_ids);
+            $point_ids_old = array_unique(explode(',', $post_data['point_ids_old']));
+            
+            //如果新点位不在旧点位数组里，则表示是新点位
+            foreach ($point_ids as $k => $v){
+                if(!in_array($v, $point_ids_old)){
+                    array_push($add, $v);
+                }
+            }
+            //找出旧数组的对新数组的差集，去除新增的点位，剩下的为删除的点位
+            $diff = array_diff($point_ids_old, $point_ids);
+            if(count($diff)){
+                foreach ($diff as $k => $v){
+                    if(!in_array($v, $add)){
+                        array_push($del, $v);
+                    }
+                }
+            }
+            //释放删除的点位
+            if(count($del)){
+                $point_ids_arr = $del;
+                $list = $this->Mhouses_points->get_lists('id,customer_id', ['in' => ['id' => $point_ids_arr]]);
+                if($list){
+                    $new = [];
+                    //提取所有点位点位占用的客户
+                    foreach ($list as $k => $v){
+                        $tmp = explode(',', $v['customer_id']);
+                        if(is_array($tmp)){
+                            foreach ($tmp as $key => $val){
+                                $new[$v['id']][] = 0;
+                                if($val){
+                                    $new[$v['id']][] = $val;
+                                }
+                            }
+                        }else{
+                            $new[$v['id']][] = (int) $tmp;
+                        }
+                    }
+                    //操作点位,去除指定占用的客户
+                    foreach ($new as $k => &$v){
+                        foreach ($v as $key => $val){
+                            if($val == $customer_id) unset($v[$key]);
+                        }
+                    }
+                    //准备更新的数据
+                    foreach ($new as $k => &$v){
+                        $tmp = '';
+                        foreach ($v as $key => $val){
+                            if($val){
+                                if($key == 0){
+                                    $tmp.= $val;
+                                }else{
+                                    $tmp.= ','.$val;
+                                }
+                            }
+                        }
+                        $v = $tmp;
+                    }
+                    $sql = "update t_houses_points SET `ad_use_num` = `ad_use_num` -1, customer_id = CASE id";
+                    foreach ($new as $k => $v){
+                        $sql.= " WHEN $k THEN '$v'";
+                    }
+                    $sql.= ' END where id in (';
+                    $sql.= implode(',', $point_ids_arr);
+                    $sql.= ')';
+                    $this->db->query($sql);
+                    //更新点位状态
+                    $where_point['in']['id'] = $point_ids_arr;
+                    $where_point['field']['`ad_num` >'] = '`ad_use_num` + `lock_num`';
+                    $update_data['point_status'] = 1;
+                    $this->Mhouses_points->update_info($update_data, $where_point);
+                    
+                }
+            }
+
+            //占用已选的点位
+            if(count($add)){
+                //下单成功把选择的点增加占用客户，和增加上画次数
+                $update_data['joint']['`customer_id`'] = ','.$post_data['customer_id'];
+                //增加投放总量，一天为一次
+                $update_data['incr']['used_num'] = ceil( ( strtotime($post_data['release_end_time']) - strtotime($post_data['release_start_time'])) / (24*3600) );
+                //增加点位可使用量1次，表示该点位少一次可放。
+                $update_data['incr']['`ad_use_num`'] = 1;
+                $this->Mhouses_points->update_info($update_data, array('in' => array('id' => $add)));
+
+                $_where = [];
+                $_where['in'] = array('id' => $add);
+                //字段的比较where['field']
+                $_where['field']['`ad_num`<='] = '`ad_use_num` + `lock_num`';
+                $this->Mhouses_points->update_info(['point_status' => 3], $_where);
+                
+            }
+            unset($post_data['point_ids_old']);
+            $this->Mhouses_orders->update_info($post_data, ['id' => $id]);
+            
+            //记录换点
+            $ch_up = [
+                'order_id' => $id,
+                'remove_points' => implode(',', $del),
+                'add_points' => implode(',', $add),
+                'operate_time' => date('Y-m-d H:i:s'),
+                'change_user' => $data['userInfo']['id']
+            ];
+            $this->Mhouses_change_points_record->create($ch_up);
+
+            $this->success("修改成功！","/housesorders");
+        }else{
+            
+            //获取楼栋单元楼层列表
+            $data['BUFL'] = $this->get_ban_unit_floor_list();
+            
+            $data['customer'] = $this->Mhouses_customers->get_one('id, name', array('id' => $data['info']['customer_id']) );
+            
+            $data['order_type'] = $data['info']['order_type'];
+            $data['put_trade'] = $data['info']['put_trade'];
+            
+            //禁投放行业 begin
+            if($data['put_trade'] != 0) {
+                $data['housesList'] = $this->Mhouses->get_lists("id, name", ['put_trade<>' => $data['put_trade'],'is_del' => 0]);
+            }else {
+                $data['housesList'] = $this->Mhouses->get_lists("id, name", ['is_del' => 0]);
+            }
+            //end
+            //获取所有业务员
+            $data['yewu'] = $this->Madmins->get_lists('id, fullname', array('group_id' => 2,'is_del' => 1));
+            //已选择点位列表
+            $tmp_point_ids = explode(',', $data['info']['point_ids']);
+            //如果数据超过1000条，则分批查询
+            if(count($tmp_point_ids) > 1000){
+                $data['selected_points'] = [];
+                $arr = array_chunk($tmp_point_ids, 1000);
+                $tmp = [];
+                foreach ($arr as $k => $v){
+                    $where['in']['A.id'] = $v;
+                    $tmp[] = $this->Mhouses_points->get_points_lists($where);
+                }
+                foreach ($tmp as $k => $v){
+                    foreach ($v as $key => $val){
+                        $data['selected_points'][] = $val;
+                    }
+                }
+                unset($tmp);
+            }else{
+                $where['in']['A.id'] = explode(',', $data['info']['point_ids']);
+                $data['selected_points'] = $this->Mhouses_points->get_points_lists($where);
+            }
+            $this->load->view('housesorders/customer_order/add', $data);
+        }
+
+    }
 
     /* 
      * 编辑订单
@@ -357,10 +530,7 @@ class Housesorders extends MY_Controller{
             //已选择点位列表
             $where['in']['A.id'] = explode(',', $data['info']['point_ids']);
             $data['selected_points'] = $this->Mhouses_points->get_points_lists($where);
-            
 
-           
-            
             $this->load->view("housesorders/add", $data);
             
         }
@@ -429,9 +599,6 @@ class Housesorders extends MY_Controller{
 
             $update_data['order_id'] = $id; 
             $update_data['customer_id'] = $post_data['customer_id'];
-//             $update_data['lock_start_time'] = '';
-//             $update_data['lock_end_time'] = '';
-//             $update_data['expire_time'] = '';
             $update_data['point_status'] = 3;
             $this->Mhouses_points->update_info($update_data, array('in' => array('id' => explode(',', $post_data['point_ids']))));
 
@@ -896,7 +1063,8 @@ class Housesorders extends MY_Controller{
                     $tmp = explode(',', $v['customer_id']);
                     if(is_array($tmp)){
                         foreach ($tmp as $key => $val){
-                            if($val) $new[$v['id']][] = $val;
+                            $new[$v['id']][] = 0;
+                            if($val){$new[$v['id']][] = $val;}
                         }
                     }else{
                         $new[$v['id']][] = $tmp;
