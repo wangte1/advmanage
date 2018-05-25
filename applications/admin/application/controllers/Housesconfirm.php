@@ -208,6 +208,8 @@ class Housesconfirm extends MY_Controller{
     		            $fup = ['assign_status' => 3];
     		            if($assign_type != 2){
     		                $fup['order_status'] = 4;
+    		            }else{
+    		                $fup['order_status'] = 7;
     		            }
     		            $res = $tmp_moudle->update_info($fup, ['id' => $fatherOrder['pid']]);
     		            if($res) $this->write_log($data['userInfo']['id'], 2, "更新派单状态为已确认失败：".$fatherOrder['pid']);

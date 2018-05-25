@@ -405,7 +405,7 @@ class Housesassign extends MY_Controller{
     		    $insert_data = [];
     		    $insert_data['order_id'] = $order_id;
     		    $insert_data['customer_id'] = $orderInfo['customer_id'];
-    		    $insert_data['type'] = $orderInfo['order_type'];
+    		    $insert_data['type'] = $orderInfo['assign_type'];
     		    $insert_data['assign_user'] = $orderInfo['group_id'];
     		    $insert_data['charge_user'] = $v['id'];
     		    $insert_data['create_time'] = date("Y-m-d H:i:s");
