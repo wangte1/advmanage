@@ -572,7 +572,7 @@
                                                         <th class="center">换点日期</th>
                                                         <th class="center">换下点位</th>
                                                         <th class="center">换上点位</th>
-                                                        <th class="center">换点之前验收函</th>
+                                                        <!--  th class="center">换点之前验收函</th-->
                                                     </tr>
                                                 </thead>
                                                 <tbody>
@@ -581,9 +581,9 @@
                                                         <td class="center"><?php echo $value['operate_time'];?></td>
                                                         <td class="center"><?php echo $value['remove_points'];?></td>
                                                         <td class="center"><?php echo $value['add_points'];?></td>
-                                                        <td class="center">
+                                                        <!--td class="center">
                                                             <a href="/orders/last_confirmation/<?php echo $value['id'];?>" target="_blank">查看</a>
-                                                        </td>
+                                                        </td-->
                                                     </tr>
                                                     <?php endforeach;?>
                                                 </tbody>

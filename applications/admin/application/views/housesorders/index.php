@@ -162,22 +162,11 @@
                                             <tr>
                                                 <td>
                                                     <a href="/housesorders/detail/<?php echo $value['id'];?>"><?php echo $value['order_code'];?></a>
-                                                    <!--<?php if($value['order_status'] == 7):?>
-                                                    <a class="green tooltip-info" href="/changepicorders/add/<?php echo $value['order_type'];?>/<?php echo $value['order_code'];?>"  data-rel="tooltip" data-placement="top" data-original-title="新建换画">
-                                                        <i class="fa fa-plus-square bigger-130" aria-hidden="true"></i>
-                                                    </a>
-                                                    <?php endif;?>-->
                                                 </td>
                                                 <td><?php echo $order_type_text[$value['order_type']];?></td>
                                                 <td><?php echo $value['point_ids'] ? count(explode(',', $value['point_ids'])) : 0;?>个点位</td>
                                                 <td>
                                                     <span class="span-price<?php echo $value['id'];?>"><?php echo $value['total_price'];?></span>
-                                                    <!--<?php if($value['order_status'] < 8):?>
-                                                    <input type="text" name="total_price<?php echo $value['id'];?>" style="width:100px; display: none" value="<?php echo $value['total_price'];?>" />
-                                                    <a class="green tooltip-info edit-price" href="javascript:;" data-price="<?php echo $value['total_price'];?>" data-id="<?php echo $value['id'];?>" data-rel="tooltip" data-placement="top" data-original-title="修改总价">
-                                                        <i class="icon-pencil bigger-130"></i>
-                                                    </a>
-                                                    <?php endif;?>-->
                                                 </td>
                                                 <td>
                                                 	<?php foreach ($customers as $k => $v) {?>
@@ -192,11 +181,8 @@
                                                             $release_end_time =  strtotime($value['release_end_time']);
                                                             $today_time = strtotime(date("Y-m-d"));
                                                             $between_time =  60*60*24*7;
-                                                    //if(($value['order_status'] == 7 && ($release_end_time - $today_time) >= 0 && ($release_end_time - $today_time) <= $between_time)
-                                                    //   || ($value['order_status'] == 7 && ($release_end_time < $today_time))){
                                                     ?>
                                                     <span class="label label-sm label-primary arrowed arrowed-right expire-time" data-id="<?php echo $value['id'];?>"  data-order="<?php echo $value['order_code'];?>" style="cursor: pointer" title="续期">续期</span>
-                                                    <?php //}?>
                                                 </td>
                                                 <td><?php echo $value['create_time'];?></td>
                                                 <td>
@@ -271,10 +257,16 @@
                                                             <i class="icon-trash bigger-130"></i>
                                                         </a> 
                                                         
-                                                        <?php if($value['is_self'] == 1 && $value['order_status'] <= 3): ?>
+                                                        <?php if($value['order_status'] <= 3): ?>
+                                                            <?php if($value['is_self'] == 1):?>
                                                             <a class="green tooltip-info" href="/housesorders/edit/<?php echo $value['id'];?>"  data-rel="tooltip" data-placement="top" title="" data-original-title="修改">
                                                                 <i class="icon-pencil bigger-130"></i>
                                                             </a>
+                                                            <?php else:?>
+                                                            <a class="green tooltip-info" href="/housesorders/edit_customer_order/<?php echo $value['id'];?>"  data-rel="tooltip" data-placement="top" title="" data-original-title="修改">
+                                                                <i class="icon-pencil bigger-130"></i>
+                                                            </a>
+                                                            <?php endif;?>
                                                         <?php endif;?>
                                                         <?php if($value['order_status'] == 6 || $value['order_status'] == 7):?>
                                                         <!--a class="green tooltip-info" href="/housesorders/check_upload_img?ordedr_id=<?php echo $value['id'];?>"  data-rel="tooltip" data-placement="top" title="" data-original-title="验收图片">
