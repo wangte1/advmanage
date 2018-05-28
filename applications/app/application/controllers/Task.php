@@ -15,9 +15,13 @@ class Task extends MY_Controller {
         
         $this->load->model([
             'Model_token' => 'Mtoken',
+            'Model_admins' => 'Madmins',
             'Model_houses_points' => 'Mhouses_points',
             'Model_houses_area' => 'Mhouses_area',
             'Model_houses' => 'Mhouses',
+            'Model_houses_customers' => 'Mhouses_customers',
+            'Model_houses_work_order' => 'Mhouses_work_order',
+            'Model_houses_work_order_detail' => 'Mhouses_work_order_detail',
         	'Model_houses_assign' => 'Mhouses_assign',
         	'Model_houses_orders' => 'Mhouses_orders',
         	'Model_houses_order_inspect_images' => 'Mhouses_order_inspect_images',
@@ -29,42 +33,55 @@ class Task extends MY_Controller {
      */
     public function index(){
         $data = $this->data;
+        $where = [];
+        $token = decrypt($this->token);
         $pageconfig = C('page.page_lists');
         $this->load->library('pagination');
-        $page = (int) $this->input->get_post('page') ? : '1';
+        $page = intval($this->input->get_post("per_page",true)) ?  : 1;
         $size = (int) $this->input->get_post('size');
-        $type = (int) $this->input->get_post('type');
-        $status = (int) $this->input->get_post('status');
-        $area = trim($this->input->get_post('area'));
-        $where = ['A.is_del' => 0];
-        if(!$size) $size = $pageconfig['per_page'];
-        if($status == 4) {
-        	$where['A.status'] = $status;
-        }else {
-        	$where['A.status<>'] = 4;
-        }
-        //工单类型，1上画，2下画，3换画
-        if($type){
-            $where['A.type'] = $type;
-        }
+        if(!$size){$size = $pageconfig['per_page'];}
+        $data['assign_type'] = $assign_type = $this->input->get('assign_type') ? : 1;
+        $where['type'] = $assign_type;
         
-        $token = decrypt($this->input->get_post('token'));
-        //临时关闭，调试完成后开启
-        //$where['A.charge_user'] = $token['user_id'];
+        //$where['charge_user'] = $token['user_id']; //临时关闭
+        $data['customer_list'] = $customer_list = $this->Mhouses_customers->get_lists('id, name', ['is_del' => 0]);        
         
-        if(!empty($area)) {
-        	$where_area['like']['area'] = $area;
-        	$tmpHousesArr = $this->Mhouses->get_lists('id',$where_area);
-        	if(count($tmpHousesArr) > 0) {
-        		$where['in']['A.houses_id'] = array_column($tmpHousesArr, 'id');
-        	}
-        }
+        $where['is_del'] = 0;
         
-        $list = $this->Mhouses_assign->get_join_lists($where, ['A.id'=>'desc'], $size, ($page-1)*$size);
-        if(!$list){
-            $this->return_json(['code' => 0, 'data' => [], 'page' => $page, 'msg' => '没有更多数据']);
+        $data['list'] = $list = $this->Mhouses_work_order->get_lists("*", $where, ['create_time'=>'desc'], $size, ($page-1)*$size);
+        if($data['list']){
+            //查询这些工单的订单信息
+            $order_ids= array_unique(array_column($data['list'], 'order_id'));
+            $order_list = $this->Mhouses_orders->get_lists('id, order_code, order_type, customer_id', ['in' => ['id' => $order_ids]]);
+            
+            foreach ($list as $k => $v){
+                foreach ($order_list as $key => $val){
+                    if($val['id'] == $v['order_id']){
+                        $data['list'][$k]['order_code'] = $val['order_code'];
+                        $data['list'][$k]['customer_name'] = "";
+                        $data['list'][$k]['order_type'] = $val['order_type'];
+                    }
+                }
+            }
+            $list = $data['list'];
+            foreach ($list as $k => $v){
+                foreach ($customer_list as $key => $val){
+                    if($v['customer_id'] == $val['id']){
+                        $data['list'][$k]['customer_name'] = $val['name'];
+                    }
+                }
+            }
         }
-        $this->return_json(['code' => 1, 'data' => $list, 'page' => $page, 'msg' => 'ok']);
+        $where = [];
+        $where = ['is_del' => 1];
+        $where['in'] = ['group_id' => [4,6]];
+        $tmp_user = $this->Madmins->get_lists('id,fullname', $where);
+        foreach ($data['list'] as $k => &$v){
+            foreach ($tmp_user as $key => $val){
+                if($v['charge_user'] == $val['id']) $data['list'][$k]['fullname'] = $val['fullname'];break;
+            }
+        }
+        $this->return_json(['code' => 1, 'data' => $data['list'], 'page' => $page, 'msg' => 'ok']);
     }
     
     /**

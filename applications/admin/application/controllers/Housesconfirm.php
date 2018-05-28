@@ -56,7 +56,7 @@ class Housesconfirm extends MY_Controller{
         
         $data['assign_type'] = $assign_type = $this->input->get('assign_type') ? : 1;
         
-        $data['customer_list'] = $customer_list = $this->Mhouses_customers->get_lists('id, name', ['is_del' => 0, 'is_self' => 0]);
+        $data['customer_list'] = $customer_list = $this->Mhouses_customers->get_lists('id, name', ['is_del' => 0]);
         
         $customer_name = trim($this->input->get('customer_name'));
         
