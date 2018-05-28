@@ -37,9 +37,9 @@ class Task extends MY_Controller {
         $token = decrypt($this->token);
         $pageconfig = C('page.page_lists');
         $this->load->library('pagination');
-        $page = intval($this->input->get_post("per_page",true)) ?  : 1;
+        $page = intval($this->input->get_post("page",true)) ?  : 1;
         $size = (int) $this->input->get_post('size');
-        if(!$size){$size = $pageconfig['per_page'];}
+        if(!$size){$size = $pageconfig['page'];}
         $data['assign_type'] = $assign_type = $this->input->get('assign_type') ? : 1;
         $where['type'] = $assign_type;
         
@@ -78,7 +78,7 @@ class Task extends MY_Controller {
         $tmp_user = $this->Madmins->get_lists('id,fullname', $where);
         foreach ($data['list'] as $k => &$v){
             foreach ($tmp_user as $key => $val){
-                if($v['charge_user'] == $val['id']) $data['list'][$k]['fullname'] = $val['fullname'];break;
+                if($v['charge_user'] == $val['id']) $data['list'][$k]['fullname'] = $val['fullname'];
             }
         }
         $this->return_json(['code' => 1, 'data' => $data['list'], 'page' => $page, 'msg' => 'ok']);
@@ -114,50 +114,22 @@ class Task extends MY_Controller {
      */
     public function get_point_list() {
     	
-    	$pageconfig = C('page.page_lists');
-    	$this->load->library('pagination');
-    	$page = (int) $this->input->get_post('page') ? : '1';
-    	$size = (int) $this->input->get_post('size');
+        $data = $this->data;
+        $id = $this->input->get_post('id');
+        $pageconfig = C('page.page_lists');
+        $this->load->library('pagination');
+        $page = intval($this->input->get_post("page",true)) ?  : 1;
+        $size = (int) $this->input->get_post('size');
+        if(!$size){$size = $pageconfig['page'];}
+        //获取这个工单的点位列表
+        $workOrderPoint = $this->Mhouses_work_order_detail->get_lists('point_id', ['pid' => $id], [], $size, ($page-1)*$size);
+        $where_p['in']['A.id'] = array_column($workOrderPoint, 'point_id');
+        //投放点位
+        $selected_points = $this->Mhouses_points->get_points_lists($where_p);
+        $code = 0;
+        if(count($selected_points)) $code = 1;
     	
-    	if(!$size) $size = $pageconfig['per_page'];
-    	
-    	$assignId = (int) $this->input->get_post('assignId');
-    	$where['id'] = $assignId;
-    	$assign_list = $this->Mhouses_assign->get_one('id, order_id, houses_id, ban', $where);
-    	$order_list = $this->Mhouses_orders->get_one('id, point_ids', ['id' => $assign_list['order_id']]);
-    	
-    	$where_point['in']['A.id'] = explode(',', $order_list['point_ids']);
-    	$where_point['A.houses_id'] = $assign_list['houses_id'];
-    	if($assign_list['ban']) {
-    		$where_point['A.ban'] = $assign_list['ban'];
-    	}
-    	$points = $this->Mhouses_points->get_points_lists($where_point,[],$size,($page-1)*$size);
-    	
-    	//根据点位id获取对应的图片
-    	$data['images'] = "";
-    	if(count($points) > 0) {
-    		$where['in'] = array("point_id"=>array_column($points,"id"));
-    		$where['order_id'] = $assign_list['order_id'];
-    		$where['assign_id'] = $assignId;
-    		$where['assign_type'] = 1;	//暂时只取上画
-    		$where['type'] = 1;
-    		$data['images'] = $this->Mhouses_order_inspect_images->get_lists("*",$where);
-    	}
-    	
-    	$list = array();
-    	foreach ($points as $key => $val) {
-    		$val['image'] = array();
-    		if($data['images']){
-    			foreach($data['images'] as $k=>$v){
-    				if($val['id'] == $v['point_id']){
-    					$val['image'][] = $v;
-    				}
-    			}
-    		}
-    		$list[] = $val;
-    	}
-    	
-    	$this->return_json(['code' => 1, 'data' => $list, 'page' => $page]);
+        $this->return_json(['code' => 1, 'data' => $selected_points, 'page' => $page]);
     }
     
     /**
