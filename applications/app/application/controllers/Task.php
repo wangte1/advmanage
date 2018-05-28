@@ -131,7 +131,9 @@ class Task extends MY_Controller {
     	foreach ($workOrderPoint as $k => &$v){
     	    foreach ($selected_points as $key => $val){
     	        if($val['id'] == $v['point_id']){
-    	            $v['point_detail'] = $val;
+    	            foreach ($val as $key1 => $val1){
+    	                $v[$key1] = $val1;
+    	            }
     	        }
     	    }
     	}
