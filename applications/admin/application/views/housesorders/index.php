@@ -1,4 +1,3 @@
-<!-- 加载公用css -->
 <?php $this->load->view('common/header');?>
 
 <!-- 头部 -->
@@ -257,7 +256,7 @@
                                                             <i class="icon-trash bigger-130"></i>
                                                         </a> 
                                                         
-                                                        <?php if($value['order_status'] <= 6): ?>
+                                                        <?php if($value['order_status'] <= 7): ?>
                                                             <?php if($value['is_self'] == 1):?>
                                                             <a class="green tooltip-info" href="/housesorders/edit/<?php echo $value['id'];?>"  data-rel="tooltip" data-placement="top" title="" data-original-title="修改">
                                                                 <i class="icon-pencil bigger-130"></i>
