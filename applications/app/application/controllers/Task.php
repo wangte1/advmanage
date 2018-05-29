@@ -1,7 +1,6 @@
 <?php if ( ! defined('BASEPATH')) exit('No direct script access allowed');
 /*
- * @author yangxiong
- * 867332352@qq.com
+ * @author yonghua
  */
 class Task extends MY_Controller {
     
@@ -98,15 +97,57 @@ class Task extends MY_Controller {
      * 确认任务
      */
     public function confirm() {
-    	$assignId = (int) $this->input->get_post('assignId');
+    	$data = $this->data;
     	$token = decrypt($this->token);
-    	//临时关闭，
-    	//$res = $this->Mhouses_assign->update_info(['status' => 3], ['id' => $assignId, 'charge_user' => $token['user_id']]);
-    	$res = $this->Mhouses_assign->update_info(['status' => 3], ['id' => $assignId]);
-    	if(!$res){
-    		$this->return_json(['code' => 1, 'msg' => '确认成功!']);
+    	$id = (int) $this->input->get_post('id');
+    	//获取任务详细
+    	$info = $this->Mhouses_work_order->get_one('*', ['id' => $id, 'status' => 0]);
+    	if(!$info)  $this->return_json(['code' => 0, 'msg' => "任务不存在或已确认"]);
+    	$where['is_del'] = 0;
+    	//统计父级订单
+    	$assign_type = $info['type'];
+    	$order_id = $info['order_id'];
+    	if($assign_type == 3) {
+    	    //换画
+    	    $tmp_moudle = $this->Mhouses_changepicorders;
+    	}else {
+    	    //1上画，2下画
+    	    $tmp_moudle = $this->Mhouses_orders;
     	}
-    	$this->return_json(['code' => 0, 'msg' => '确认失败，请联系管理员!']);
+    	
+	    //更新工单为已确认
+	    $up['status'] = 1;
+	    $res = $this->Mhouses_work_order->update_info($up, ['id' => $id]);
+	    
+	    if($res) {
+	        //统计这个子订单是否全部已经确认
+	        $count = $this->Mhouses_work_order->count(['status' => 0, 'type' => $assign_type, 'order_id' => $order_id]);
+	        if($count == 0){
+	            
+	            $res = $tmp_moudle->update_info(['assign_status' => 3], ['id' => $order_id]);
+	            if($res) $this->write_log($token['user_id'], 2, "更新派单状态为已确认失败：".$order_id);
+	            
+	            $fatherOrder = $tmp_moudle->get_one('pid', ['id' => $order_id]);
+	            if($fatherOrder['pid']){
+	                //下画则更新为7
+	                $fup = ['assign_status' => 3];
+	                if($assign_type != 2){
+	                    $fup['order_status'] = 4;
+	                }else{
+	                    $fup['order_status'] = 7;
+	                }
+	                
+	                $res = $tmp_moudle->update_info($fup, ['id' => $fatherOrder['pid']]);
+	                if($res) $this->write_log($token['user_id'], 2, "更新派单状态为已确认失败：".$fatherOrder['pid']);
+	            }
+	        }
+	        
+	        $this->return_json(['code' => 1, 'msg' => "确认派单成功！"]);
+	        $this->write_log($token['user_id'], 1, "确认派单：".$this->input->post('id'));
+	    }
+	    
+	    $this->return_json(['code' => 0, 'msg' => "确认派单失败，请重试或联系管理员！"]);
+    	
     }
     
     /**
@@ -138,6 +179,7 @@ class Task extends MY_Controller {
     	    }
     	}
     	unset($selected_points);
+    	if(!$workOrderPoint) $this->return_json(['code' => 0, 'data' => [], 'page' => $page]);
     	$this->return_json(['code' => 1, 'data' => $workOrderPoint, 'page' => $page]);
     }
     
