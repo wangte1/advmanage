@@ -218,9 +218,9 @@ class Task extends MY_Controller {
      */
     public function upload(){
     	
-    	$file_dir = $this->input->get('dir') == 'image' ? 'image/' : 'files/';
+    	$file_dir = 'image/';
     	$config = array(
-    			'upload_path'   => '../../admin/uploads/'.$file_dir,
+    	    'upload_path'   => '../../admin/uploads/'.$file_dir.date('Ymd').'/',
     			'allowed_types' => 'gif|jpg|jpeg|png',
     			'max_size'     => 1024*3,
     			'max_width'    => 2000,
@@ -234,13 +234,10 @@ class Task extends MY_Controller {
     	
     	if ( ! $this->upload->do_upload('file')){
     		$error = $this->upload->display_errors();
-    		$this->return_json(array('error' => 1, 'message' => '上传错误！'.$error));
+    		$this->return_json(array('code' => 0, 'message' => '上传错误！'.$error));
     	} else {
     		$data = $this->upload->data();
-    		$imgsrc =  '../../admin/uploads/'.$file_dir.$data['file_name'];
-    		$imgdst =  '../../admin/uploads/'.$file_dir.$data['file_name'];
-    		$this->image_png_size_add($imgsrc, $imgdst);
-    		$this->return_json(array('error' => 0, 'url' => '/uploads/'.$file_dir.$data['file_name']));
+    		$this->return_json(array('code' => 1, 'url' => '/uploads/'.$file_dir.date('Ymd').'/'.$data['file_name']));
     	}
     }
     
