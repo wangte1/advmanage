@@ -248,35 +248,79 @@ class Task extends MY_Controller {
      * 保存上传的图片信息
      */
     public function upload_save() {
-    	$assignId = (int) $this->input->get_post('assignId');
-    	$assignType = (int) $this->input->get_post('assignType');
-    	$pointId = (int) $this->input->get_post('pointId');
-    	$imgUrl = $this->input->get_post('imgUrl');
-    	
-    	$tmpList = $this->Mhouses_assign->get_one('order_id', ['id' => $assignId]);
-    	
-    	$where = array('order_id' => $tmpList['order_id'], 'assign_id' => $assign_id, 'point_id' => $pointId, 'type' => 1, 'assign_type' => $assignType);
-    	$img = $this->Mhouses_order_inspect_images->get_one('*', $where);
-    	
-    	//如果是修改验收图片，则先删除该订单下所有验收图片，再重新添加
-    	if ($img) {
-    		$this->Mhouses_order_inspect_images->delete($where);
+    	$id = (int) $this->input->post('id');
+    	$img_url = $this->input->post('img_url');
+    	$info = $this->Mhouses_work_order_detail->get_one('pid,order_id,type', ['id' => $id, 'status' => 0]);
+    	if($info){
+    	    $up = [
+    	        'status' => 1,
+    	        'no_img' => $img_url
+    	    ];
+    	    $res = $this->Mhouses_work_order_detail->update_info($up, ['id' => $id, 'status' => 0]);
+    	    if(!$res){
+    	        $this->return_json(['code' => 0, 'msg' => '操作失败']);
+    	    }
+    	    $this->Mhouses_work_order->update_info(['incr' => ['finish' => 1]], ['id' => $info['pid']]);
+    	    $this->checkDoAllHasFinish($info['order_id'], $info['type']);
+    	    $this->return_json(['code' => 1, 'msg' => '操作成功']);
     	}
-    	
-    	$token = decrypt($this->input->get_post('token'));
-    	
-    	$insert_data['order_id'] = $tmpList['order_id'];
-    	$insert_data['assign_id'] = $assignId;
-    	$insert_data['assign_type'] = $assignType;
-    	$insert_data['point_id'] = $pointId;
-    	$insert_data['front_img'] = $imgUrl;
-    	$insert_data['back_img'] = '';
-    	$insert_data['type'] = 1;
-    	$insert_data['create_user'] = $insert_data['update_user'] = $token['user_id'];
-    	$insert_data['create_time'] = $insert_data['update_time'] = date('Y-m-d H:i:s');
-    	$this->Mhouses_order_inspect_images->create($insert_data);
-   
-    	$this->return_json(['code' => 1, 'msg' => '图片上传成功！']);
+    	$this->return_json(['code' => 0, 'msg' => '已审核或点位不存在']);
+    }
+    
+    /**
+     * 更新父订单与子订单的订单状态
+     * @param number $order_id
+     * @param number $type
+     */
+    private function checkDoAllHasFinish($order_id= 0, $type = 0){
+        //根据当前的orderid找到父orderid
+        if($type == 3) {
+            $tmp_moudle = $this->Mhouses_changepicorders;
+        }else {
+            $tmp_moudle = $this->Mhouses_orders;
+        }
+        $fatherOrder = $tmp_moudle->get_one('pid,order_status', ['id' => $order_id]);
+        if($fatherOrder){
+            //统计所有子订单id
+            $sonList = $tmp_moudle->get_one('id', ['pid' => $fatherOrder['pid']]);
+            if($sonList){
+                //提取ids
+                $ids = array_column($sonList, 'id');
+                $count = $this->Mhouses_work_order_detail->count(['in' => ['pid' => $ids], 'status' => 0]);
+                if(!$count){
+                    //表示全部都已经完成上传，需要更订单状态
+                    $order_status = $fatherOrder['order_status'];
+                    //如果是下画则派单更新订单为已下画,改为7
+                    $up['order_status'] = 7;
+                    //如果是上画则更新订单为投放中
+                    if($order_status == 4) $up['order_status'] = 6;
+                    //更新父订单
+                    $tmp_moudle->update_info($up, ['id' => $fatherOrder['pid']]);
+                    //更新子订单
+                    $tmp_moudle->update_info($up, ['in' => ['id' => $ids] ]);
+                }
+            }
+        }
+    }
+    
+    /**
+     * 保存上传的全景、远景图片信息
+     */
+    public function upload_save2() {
+        $id = (int) $this->input->post('id');
+        $img_url = $this->input->post('img_url2');
+        $info = $this->Mhouses_work_order_detail->get_one('pid', ['id' => $id]);
+        if($info){
+            $up = [
+                'pano_img' => $img_url
+            ];
+            $res = $this->Mhouses_work_order_detail->update_info($up, ['id' => $id]);
+            if(!$res){
+                $this->return_json(['code' => 0, 'msg' => '操作失败']);
+            }
+            $this->return_json(['code' => 1, 'msg' => '操作成功']);
+        }
+        $this->return_json(['code' => 0, 'msg' => '点位不存在']);
     }
     
     
