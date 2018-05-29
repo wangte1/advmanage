@@ -164,6 +164,7 @@ class Task extends MY_Controller {
         if(!$size){$size = $pageconfig['page'];}
         //获取这个工单的点位列表
         $workOrderPoint = $this->Mhouses_work_order_detail->get_lists('pid,point_id,status,no_img,pano_img', ['pid' => $id], [], $size, ($page-1)*$size);
+        if(!$workOrderPoint) $this->return_json(['code' => 0, 'data' => [], 'page' => $page]);
         $where_p['in']['A.id'] = array_column($workOrderPoint, 'point_id');
         //投放点位
         $selected_points = $this->Mhouses_points->get_points_lists($where_p);
@@ -179,7 +180,6 @@ class Task extends MY_Controller {
     	    }
     	}
     	unset($selected_points);
-    	if(!$workOrderPoint) $this->return_json(['code' => 0, 'data' => [], 'page' => $page]);
     	$this->return_json(['code' => 1, 'data' => $workOrderPoint, 'page' => $page]);
     }
     
