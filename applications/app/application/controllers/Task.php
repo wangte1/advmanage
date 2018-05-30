@@ -163,7 +163,7 @@ class Task extends MY_Controller {
         $size = (int) $this->input->get_post('size');
         if(!$size){$size = $pageconfig['page'];}
         //获取这个工单的点位列表
-        $workOrderPoint = $this->Mhouses_work_order_detail->get_lists('pid,point_id,status,no_img,pano_img', ['pid' => $id], [], $size, ($page-1)*$size);
+        $workOrderPoint = $this->Mhouses_work_order_detail->get_lists('id,pid,point_id,status,no_img,pano_img', ['pid' => $id], [], $size, ($page-1)*$size);
         if(!$workOrderPoint) $this->return_json(['code' => 0, 'data' => [], 'page' => $page]);
         $where_p['in']['A.id'] = array_column($workOrderPoint, 'point_id');
         //投放点位
@@ -174,7 +174,9 @@ class Task extends MY_Controller {
     	    foreach ($selected_points as $key => $val){
     	        if($val['id'] == $v['point_id']){
     	            foreach ($val as $key1 => $val1){
-    	                $v[$key1] = $val1;
+    	                if($key1 != 'id'){
+    	                   $v[$key1] = $val1;
+    	                }
     	            }
     	        }
     	    }
@@ -220,7 +222,7 @@ class Task extends MY_Controller {
     	
     	$file_dir = 'image/';
     	$config = array(
-    	    'upload_path'   => '../../admin/uploads/'.$file_dir.date('Ymd').'/',
+    	    'upload_path'   => '../../admin/uploads/'.$file_dir,
     			'allowed_types' => 'gif|jpg|jpeg|png',
     			'max_size'     => 1024*3,
     			'max_width'    => 2000,
@@ -237,7 +239,7 @@ class Task extends MY_Controller {
     		$this->return_json(array('code' => 0, 'message' => '上传错误！'.$error));
     	} else {
     		$data = $this->upload->data();
-    		$this->return_json(array('code' => 1, 'url' => '/uploads/'.$file_dir.date('Ymd').'/'.$data['file_name']));
+    		$this->return_json(array('code' => 1, 'url' => '/uploads/'.$file_dir.$data['file_name']));
     	}
     }
     
@@ -247,7 +249,7 @@ class Task extends MY_Controller {
     public function upload_save() {
     	$id = (int) $this->input->post('id');
     	$img_url = $this->input->post('img_url');
-    	$info = $this->Mhouses_work_order_detail->get_one('pid,order_id,type', ['id' => $id, 'status' => 0]);
+    	$info = $this->Mhouses_work_order_detail->get_one('pid', ['id' => $id, 'status' => 0]);
     	if($info){
     	    $up = [
     	        'status' => 1,
@@ -258,7 +260,8 @@ class Task extends MY_Controller {
     	        $this->return_json(['code' => 0, 'msg' => '操作失败']);
     	    }
     	    $this->Mhouses_work_order->update_info(['incr' => ['finish' => 1]], ['id' => $info['pid']]);
-    	    $this->checkDoAllHasFinish($info['order_id'], $info['type']);
+    	    $pinfo = $this->Mhouses_work_order->get_one('order_id,type', $info['pid']);
+    	    $this->checkDoAllHasFinish($pinfo['order_id'], $pinfo['type']);
     	    $this->return_json(['code' => 1, 'msg' => '操作成功']);
     	}
     	$this->return_json(['code' => 0, 'msg' => '已审核或点位不存在']);
