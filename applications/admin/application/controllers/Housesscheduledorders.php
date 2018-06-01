@@ -198,53 +198,60 @@ class Housesscheduledorders extends MY_Controller{
             if (isset($post_data['addr'])) unset($post_data['addr']);
             unset($post_data['id'], $post_data['ban'], $post_data['unit'], $post_data['floor']);
             
-            //获取已被取消的点位
-            $point_ids = $post_data['point_ids'];
+            //定义已新增和被删除
+            $add = $del = [];
             
+            $point_ids = $post_data['point_ids'];
             if(empty($point_ids)) $this->error("请至少选择一个点位！");
             $point_ids = explode(',', $point_ids);
             //去重
             $point_ids = array_unique($point_ids);
-            $point_ids_old= array_unique(explode(',', $post_data['point_ids_old']));
+            $point_ids_old = array_unique(explode(',', $post_data['point_ids_old']));
             
-            $add = [];
-            //判断没有新曾的点位
+            //如果新点位不在旧点位数组里，则表示是新点位
             foreach ($point_ids as $k => $v){
                 if(!in_array($v, $point_ids_old)){
                     array_push($add, $v);
                 }
             }
+            //找出旧数组的对新数组的差集，去除新增的点位，剩下的为删除的点位
+            $diff = array_diff($point_ids_old, $point_ids);
+            if(count($diff)){
+                foreach ($diff as $k => $v){
+                    if(!in_array($v, $add)){
+                        array_push($del, $v);
+                    }
+                }
+            }
+
             if(!empty($add)){
-                //点位锁定数+1
+                //点位锁定数+1,锁表，
                 $update_data['incr'] = ['lock_num' => 1];
                 $this->Mhouses_points->update_info($update_data, array('in' => array('id' => $add)));
+                $this->write_log($data['userInfo']['id'], 1, "{$id}：锁定数+1：".$this->db->last_query());
                 //重置这些点位的状态
                 $_where['field']['`ad_num`<='] = '`lock_num`+`ad_use_num`';
                 $_where['in'] = ['id' => $add];
                 $this->Mhouses_points->update_info(['point_status' => 3], $_where);
+                $this->write_log($data['userInfo']['id'], 2, "{$id}：更新增加点位状态：".$this->db->last_query());
                 unset($update_data, $_where);
             }
             
-            foreach ($point_ids as $k => $v){
-                foreach ($point_ids_old as $key => $val){
-                    if($v == $val){
-                        unset($point_ids_old[$key]);
-                    }
-                }
-            }
-            
-            if(!empty($point_ids_old)){
-                //取消的点位锁定数-1
+            if(!empty($del)){
+                //取消的点位锁定数-1 锁表
                 $update_data['decr'] = ['lock_num' => 1];
-                $this->Mhouses_points->update_info($update_data, ['in' => array('id' => $point_ids_old), 'lock_num >' => 0]);
+                $this->Mhouses_points->update_info($update_data, ['in' => array('id' => $del), '`lock_num` >' => 0]);
+                $this->write_log($data['userInfo']['id'], 2, "{$id}：锁定数-1：".$this->db->last_query());
                 //重置这些点位的状态
                 $_where['field']['`ad_num`>'] = '`lock_num`+`ad_use_num`';
-                $_where['in'] = ['id' => $point_ids_old];
+                $_where['in'] = ['id' => $del];
                 $this->Mhouses_points->update_info(['point_status' => 1], $_where);
+                $this->write_log($data['userInfo']['id'], 2, "{$id}：更新减少点位状态：".$this->db->last_query());
             }
             unset($post_data['point_ids_old']);
             unset($post_data['area_id']);
-            
+            //重置
+            $post_data['point_ids'] = implode(',', $point_ids);
             $result = $this->Mhouses_scheduled_orders->update_info($post_data, array('id' => $id));
             
             if ($result) {
