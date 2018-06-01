@@ -1084,7 +1084,7 @@ class Housesscheduledorders extends MY_Controller{
                 $info = $this->Mhouses_scheduled_orders->get_one("*", $where);
                 //释放该预定订单锁定的所有点位
                 $oldpointids = explode(',', $info['point_ids']);
-                $size = 200;
+                $size = 2000;
                 if(count($oldpointids) > $size){
                     $arr  = array_chunk($oldpointids, $size);
                     foreach ($arr as $k => $v){
