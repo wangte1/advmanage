@@ -194,8 +194,8 @@ class Confirm_reserve extends MY_Controller{
     public function houses_detail(){
         $data = $this->data;
         $point_where = [];//点位查询条件
-        if($this->input->get('area_id')) $point_where['area_id'] = $data['area_id'] = $area_id = $this->input->get('area_id');
-        if($this->input->get('ban')) $point_where['ban'] = $data['ban'] = $ban = $this->input->get('ban');
+        if($this->input->get('area_id')){$point_where['area_id'] = $data['area_id'] = $area_id = $this->input->get('area_id');}
+        if($this->input->get('ban')){$point_where['ban'] = $data['ban'] = $ban = $this->input->get('ban');}
         
         $houses_id = $point_where['houses_id'] = $data['houses_id'] = (int) $this->input->get('houses_id');
         $order_id = $data['order_id'] =  (int) $this->input->get('order_id');
@@ -215,7 +215,7 @@ class Confirm_reserve extends MY_Controller{
             $data['confirm_point_ids'] = [];
         }
         $point_where['in']= ['id' => $point_ids];
-        $point_list = $this->Mhouses_points->get_lists('houses_id,area_id,ban,count(`ban`) as num', $point_where, ['ban' => 'asc'], 0, 0, 'ban');
+        $point_list = $this->Mhouses_points->get_lists('houses_id,area_id,ban,count(`area_id`),count(`ban`) as num', $point_where, ['area_id' => 'asc','ban' => 'asc'], 0, 0, ['area_id','ban']);
         $data['list'] = $point_list;
         //获取所有组团名称
         $area_ids = array_unique(array_column($point_list, 'area_id'));
@@ -240,10 +240,10 @@ class Confirm_reserve extends MY_Controller{
         //查询点位，统计
         if(count($confirm_point_ids)){
             $point_where['in'] = ['id' => $confirm_point_ids];
-            $point_lists = $this->Mhouses_points->get_lists('ban', $point_where);
+            $point_lists = $this->Mhouses_points->get_lists('ban,area_id', $point_where);
             foreach ($data['list'] as $k => $v){
                 foreach ($point_lists as $key => $val){
-                    if($v['ban'] == $val['ban']){
+                    if($v['ban'] == $val['ban'] && $v['area_id'] == $val['area_id']){
                         $data['list'][$k]['select_num'] +=1;
                     }
                 }

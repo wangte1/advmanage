@@ -1083,8 +1083,19 @@ class Housesscheduledorders extends MY_Controller{
                 $where['id'] = $id;
                 $info = $this->Mhouses_scheduled_orders->get_one("*", $where);
                 //释放该预定订单锁定的所有点位
-                $update_data['decr'] = ['lock_num' => 1]; //释放点位锁定数
-                $this->Mhouses_points->update_info($update_data, array('`lock_num` >' => 0, 'in' => array('id' => explode(',', $info['point_ids']))));
+                $oldpointids = explode(',', $info['point_ids']);
+                $size = 200;
+                if(count($oldpointids) > $size){
+                    $arr  = array_chunk($oldpointids, $size);
+                    foreach ($arr as $k => $v){
+                        $update_data['decr'] = ['lock_num' => 1]; //释放点位锁定数
+                        $this->Mhouses_points->update_info($update_data, array('`lock_num` >' => 0, 'in' => array('id' => $v)));
+                    }
+                }else{
+                    $update_data['decr'] = ['lock_num' => 1]; //释放点位锁定数
+                    $this->Mhouses_points->update_info($update_data, array('`lock_num` >' => 0, 'in' => array('id' => $oldpointids)));
+                }
+                
                 unset($update_data['decr']);
                 //字段的比较where['field'],将所有预定的点位释放掉
                 $__where['field']['`ad_num`>'] = '`ad_use_num` + `lock_num`';
