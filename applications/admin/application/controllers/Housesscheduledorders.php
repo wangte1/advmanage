@@ -225,7 +225,7 @@ class Housesscheduledorders extends MY_Controller{
             }
 
             if(!empty($add)){
-                //点位锁定数+1,锁表，
+                //点位锁定数+1,
                 $update_data['incr'] = ['lock_num' => 1];
                 $this->Mhouses_points->update_info($update_data, array('in' => array('id' => $add)));
                 $this->write_log($data['userInfo']['id'], 1, "{$id}：锁定数+1：".$this->db->last_query());
@@ -238,7 +238,7 @@ class Housesscheduledorders extends MY_Controller{
             }
             
             if(!empty($del)){
-                //取消的点位锁定数-1 锁表
+                //取消的点位锁定数-1 
                 $update_data['decr'] = ['lock_num' => 1];
                 $this->Mhouses_points->update_info($update_data, ['in' => array('id' => $del), '`lock_num` >' => 0]);
                 $this->write_log($data['userInfo']['id'], 2, "{$id}：锁定数-1：".$this->db->last_query());
@@ -885,6 +885,7 @@ class Housesscheduledorders extends MY_Controller{
         $customers = $this->Mhouses_customers->get_one("name", array('id' => $scheduledorder['lock_customer_id'], 'is_del' => 0)); //客户
         
         $list = $this->Mhouses_points->get_points_lists($where);
+        
         foreach ($list as $k => $v){
             if($v['addr'] == 1){
                 $list[$k]['addr'] = '门禁';
@@ -1060,37 +1061,43 @@ class Housesscheduledorders extends MY_Controller{
         
         if(IS_POST) {
             $post_data = $this->input->post();
-            
             $order_type = $post_data['order_type'];
             $post_data['order_code'] = date('YmdHis').$post_data['customer_id']; //订单编号：年月日时分秒+客户id
             
             if (isset($post_data['make_complete_time'])) {
                 $post_data['make_complete_time'] = $post_data['make_complete_time'].' '.$post_data['hour'].':'.$post_data['minute'].':'.$post_data['second'];
             }
-            
+            if($post_data['point_ids']){
+                $post_data['point_ids'] = explode(',', $post_data['point_ids']);
+                $post_data['point_ids'] = array_unique($post_data['point_ids']);
+                $post_data['point_ids'] = implode(',', $post_data['point_ids']);
+            }
             $post_data['creator'] =  $data['userInfo']['id'];
             $post_data['create_time'] =  date('Y-m-d H:i:s');
             unset($post_data['houses_id'], $post_data['area_id'],$post_data['ban'],$post_data['unit'],$post_data['floor'],$post_data['addr'], $post_data['hour'], $post_data['minute'], $post_data['second']);
             unset($post_data['point_ids_old']);
+
             $order_id = $this->Mhouses_orders->create($post_data);
             if ($order_id) {
-                //如果选择的点位包含预定点位，则把对应的预定订单释放掉
+                
                 $where['id'] = $id;
                 $info = $this->Mhouses_scheduled_orders->get_one("*", $where);
-                if ($info && count(array_intersect(explode(',', $post_data['point_ids']), explode(',', $info['point_ids']))) > 0) {
-                    //释放该预定订单的所有点位
-                    $update_data['decr'] = ['lock_num' => 1];//释放点位锁定数
-                    $this->Mhouses_points->update_info($update_data, array('in' => array('id' => explode(',', $info['point_ids']))));
-                    unset($update_data['decr']);
-                    //更新该订单的状态为“已释放”
-                    $this->Mhouses_scheduled_orders->update_info(array('order_status' => 5), array('id' => $info['id']));
-                }
+                //释放该预定订单锁定的所有点位
+                $update_data['decr'] = ['lock_num' => 1]; //释放点位锁定数
+                $this->Mhouses_points->update_info($update_data, array('`lock_num` >' => 0, 'in' => array('id' => explode(',', $info['point_ids']))));
+                unset($update_data['decr']);
+                //字段的比较where['field'],将所有预定的点位释放掉
+                $__where['field']['`ad_num`>'] = '`ad_use_num` + `lock_num`';
+                $this->Mhouses_points->update_info(['point_status' => 1], $__where);
+                
+                //更新该订单的状态为“已转订单”
+                $this->Mhouses_scheduled_orders->update_info(array('order_status' => 5), array('id' => $info['id']));
                 
                 //下单成功把选择的点增加占用客户，和增加上画次数
                 $update_data['joint']['`customer_id`'] = ','.$post_data['customer_id'];
                 //增加投放总量，一天为一次
                 $update_data['incr']['used_num'] = ceil( ( strtotime($post_data['release_end_time']) - strtotime($post_data['release_start_time'])) / (24*3600) );
-                //增加点位可使用量1次，表示该点位少一次可放。
+                //增加点位可使用量+1次，表示该点位少一次可放。
                 $update_data['incr']['`ad_use_num`'] = 1;
                 $this->Mhouses_points->update_info($update_data, array('in' => array('id' => explode(',', $post_data['point_ids']))));
 
@@ -1098,7 +1105,7 @@ class Housesscheduledorders extends MY_Controller{
                 $_where = [];
                 $_where['in'] = array('id' => explode(',', $post_data['point_ids']));
                 //字段的比较where['field']
-                $_where['field']['`ad_num`'] = '`ad_use_num` + `lock_num`';
+                $_where['field']['`ad_num`<='] = '`ad_use_num` + `lock_num`';
                 $this->Mhouses_points->update_info(['point_status' => 3], $_where);
                 
                 
