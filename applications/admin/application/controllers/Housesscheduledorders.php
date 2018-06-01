@@ -782,6 +782,7 @@ class Housesscheduledorders extends MY_Controller{
         $lock_start_time = $this->input->post('lock_start_time');
         
         $where['is_del'] = 0;
+        $where['`lock_num` >='] = 0; //防止出现多次选择
         $where['point_status'] = 1;
         $fields = 'id,code,houses_id,area_id,ban,unit,floor,addr,type_id,ad_num, ad_use_num, point_status';
         $points_lists = $this->Mhouses_points->get_usable_point($fields, $where, $lock_start_time);

@@ -39,7 +39,7 @@ class Task extends MY_Controller {
         $page = intval($this->input->get_post("page",true)) ?  : 1;
         $size = (int) $this->input->get_post('size');
         if(!$size){$size = $pageconfig['page'];}
-        $data['assign_type'] = $assign_type = $this->input->get('assign_type') ? : 1;
+        $data['assign_type'] = $assign_type = $this->input->get_post('assign_type') ? : 1;
         $where['type'] = $assign_type;
         
         //$where['charge_user'] = $token['user_id']; //临时关闭
@@ -48,6 +48,7 @@ class Task extends MY_Controller {
         $where['is_del'] = 0;
         
         $data['list'] = $list = $this->Mhouses_work_order->get_lists("*", $where, ['create_time'=>'desc'], $size, ($page-1)*$size);
+        
         if($data['list']){
             //查询这些工单的订单信息
             $order_ids= array_unique(array_column($data['list'], 'order_id'));
@@ -70,17 +71,20 @@ class Task extends MY_Controller {
                     }
                 }
             }
-        }
-        $where = [];
-        $where = ['is_del' => 1];
-        $where['in'] = ['group_id' => [4,6]];
-        $tmp_user = $this->Madmins->get_lists('id,fullname', $where);
-        foreach ($data['list'] as $k => &$v){
-            foreach ($tmp_user as $key => $val){
-                if($v['charge_user'] == $val['id']) $data['list'][$k]['fullname'] = $val['fullname'];
+            
+            $where = [];
+            $where = ['is_del' => 1];
+            $where['in'] = ['group_id' => [4,6]];
+            $tmp_user = $this->Madmins->get_lists('id,fullname', $where);
+            foreach ($data['list'] as $k => &$v){
+                $data['list'][$k]['fullname'] = "";
+                foreach ($tmp_user as $key => $val){
+                    if($v['charge_user'] == $val['id']) $data['list'][$k]['fullname'] = $val['fullname'];
+                }
             }
+            $this->return_json(['code' => 1, 'data' => $data['list'], 'page' => $page, 'msg' => 'ok']);
         }
-        $this->return_json(['code' => 1, 'data' => $data['list'], 'page' => $page, 'msg' => 'ok']);
+        $this->return_json(['code' => 0, 'data' => [], 'page' => $page, 'msg' => 'no data']);
     }
     
     /**
