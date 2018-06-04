@@ -437,10 +437,18 @@ class Housesconfirm extends MY_Controller{
                     '楼层'=>"floor",
                     '点位位置'=>"addr"
                 );
+                //设置表格标题格式 客户-点位数-上画人
+                $num = count($table_header) -1;
+                //合并单元格
+                $this->phpexcel->getActiveSheet(0)->mergeCells('A1:'.chr(ord('A1')+$num).'1');
+                $cell = PHPExcel_Cell::stringFromColumnIndex(0).'1';
+                $val = '【客户：'.$customer["name"].'】-【负责人：'.$user["fullname"].'】-【点位数：'.count($list).'】个';
+                $this->phpexcel->setActiveSheetIndex(0)->setCellValue($cell, $val);
+                
                 
                 $i = 0;
                 foreach($table_header as  $k=>$v){
-                    $cell = PHPExcel_Cell::stringFromColumnIndex($i).'1';
+                    $cell = PHPExcel_Cell::stringFromColumnIndex($i).'2';
                     $this->phpexcel->setActiveSheetIndex(0)->setCellValue($cell, $k);
                     $i++;
                 }
