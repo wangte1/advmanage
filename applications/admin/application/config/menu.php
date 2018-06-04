@@ -140,6 +140,11 @@ $config = array(
     				'name'=> '组团管理',
     				'active'=> 'houses_area_lists'
     			),
+    		    array(
+    		        'url'=>'/housesapp',
+    		        'name'=> 'app管理',
+    		        'active'=> 'houses_app_lists'
+    		    )
     		)
     	),
     	
