@@ -413,8 +413,10 @@ class Housesconfirm extends MY_Controller{
     public function  user_all_task_export(){
         $data = $this->data;
         $pid = $this->input->get('id');
+        $type = $this->input->get('type');
         //获取所有的工单点位
         $point_list = $this->Mhouses_work_order_detail->get_lists("point_id",array("pid" => $pid));
+        //获取订单类型
         if($point_list){
             //提取点位id
             $point_ids = array_column($point_list, 'point_id');
@@ -439,10 +441,21 @@ class Housesconfirm extends MY_Controller{
                 );
                 //设置表格标题格式 客户-点位数-上画人
                 $num = count($table_header) -1;
+                $typeTXT = '';
+                switch ($type) {
+                    case 1 :
+                        $typeTXT = '上画';
+                        break;
+                    case 2 :
+                        $typeTXT = '下画';
+                        break;
+                    default:
+                        $typeTXT = '换画';
+                }
                 //合并单元格
                 $this->phpexcel->getActiveSheet(0)->mergeCells('A1:'.chr(ord('A1')+$num).'1');
                 $cell = PHPExcel_Cell::stringFromColumnIndex(0).'1';
-                $val = '【客户：'.$customer["name"].'】-【负责人：'.$user["fullname"].'】-【点位数：'.count($list).'】个';
+                $val = $typeTXT.'派单--【客户：'.$customer["name"].'】-【负责人：'.$user["fullname"].'】-【点位数：'.count($list).'】个';
                 $this->phpexcel->setActiveSheetIndex(0)->setCellValue($cell, $val);
                 
                 

@@ -304,7 +304,8 @@
 		//导出
 		$('.out').click(function(){
 			var id = $(this).attr('data-id');
-			location.href='/housesconfirm/user_all_task_export?id='+id;
+			var type = '<?php echo $assign_type;?>';
+			location.href='/housesconfirm/user_all_task_export?id='+id+'&type='+type;
 			return;
 			
 		});

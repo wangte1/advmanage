@@ -1053,6 +1053,49 @@ class Housesscheduledorders extends MY_Controller{
         return ['code' => 0, 'msg' => $error];
     }
     
+    /**
+     * 撤销预订单
+     */
+    public function out(){
+        $data = $this->data;
+        $id = intval($this->input->post('id'));
+        $info = $this->Mhouses_scheduled_orders->get_one("*", array('id' => $id, 'is_del' => 0));
+        if(!$info) $this->return_json(['code' => 0, 'msg' => '订单不存在']);
+        if($info['order_status'] != 1) $this->return_json(['code' => 0, 'msg' => '锁定中的订单才能撤销']);
+        //解析点位
+        $point_ids = array_unique(explode(',', $info['point_ids']));
+        $size = 2000;
+        $update = [
+            'decr' => ['lock_num' => 1]
+        ];
+        if(count($point_ids) > $size){
+            $arr = array_chunk($point_ids, $size);
+            foreach ($arr as $k => $v){
+                $this->Mhouses_points->update_info($update, array('`lock_num` >' => 0, 'in' => array('id' => $v)));
+                $this->write_log($data['userInfo']['id'] , 1, "id：{$id}-更新点位锁定数".$this->db->last_query());
+                //更新点位状态
+                $__where['field']['`ad_num`>'] = '`ad_use_num` + `lock_num`';
+                $__where['in'] = ['id' => $v];
+                $this->Mhouses_points->update_info(['point_status' => 1], $__where);
+                $this->write_log($data['userInfo']['id'] , 1, "id：{$id}-更新点位状态".$this->db->last_query());
+            }
+        }else{
+            $this->Mhouses_points->update_info($update, array('`lock_num` >' => 0, 'in' => array('id' => $point_ids)));
+            $this->write_log($data['userInfo']['id'] , 1, "id：{$id}-更新点位锁定数".$this->db->last_query());
+            //更新点位状态
+            $__where['field']['`ad_num`>'] = '`ad_use_num` + `lock_num`';
+            $__where['in'] = ['id' => $point_ids];
+            $this->Mhouses_points->update_info(['point_status' => 1], $__where);
+            $this->write_log($data['userInfo']['id'] , 1, "id：{$id}-更新点位状态".$this->db->last_query());
+        }
+        
+        //删除订单
+        $this->Mhouses_scheduled_orders->update_info(['is_del' => 1], ['id' => $id]);
+        $this->write_log($data['userInfo']['id'] , 1, "释放预订单{$id}");
+        $this->return_json(['code' => 1, 'msg' => '操作成功']);
+    }
+    
+    
     /*
      * 预定订单转订单
      */

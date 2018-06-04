@@ -328,7 +328,11 @@
 	                                                        <i class="ace-icon glyphicon glyphicon-check bigger-130" aria-hidden="true"></i>
 	                                                    </a>
                                                         <?php endif;?>
-                                                        
+                                                        <?php if($value['order_status'] == 1):?>
+                                                    	<a class="grey tooltip-info out"  data-id="<?php echo $value['id'];?>"  data-rel="tooltip" data-placement="top" data-original-title="撤销释放">
+                                                        	<i class="ace-icon glyphicon glyphicon-remove bigger-130" aria-hidden="true"></i>
+                                                    	</a>
+                                                        <?php endif;?>
                                                     </div>
                                                 </td>
                                             </tr>
@@ -464,6 +468,24 @@
 					});
 				}
 			});
+		});
+    });
+
+    $('.out').on('click', function(){
+    	var id = $(this).attr('data-id');
+    	layer.confirm('确认要撤销该订单，释放点位吗？', {
+		 	btn: ['确认','再想想'],
+		 	title: "系统提示",
+		}, function(){
+			$.post('/housesscheduledorders/out', {id:id}, function(data){
+				if(data) {
+					layer.alert(data.msg, function(){
+						location.reload();
+					});
+				}
+			});
+		},function(){
+			layer.close();
 		});
     });
 </script>
