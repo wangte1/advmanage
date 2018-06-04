@@ -316,12 +316,14 @@ class Task extends MY_Controller {
         $info = $this->Mhouses_work_order_detail->get_one('pid', ['id' => $id]);
         if($info){
             $up = [
+                'pano_status' => 1,
                 'pano_img' => $img_url
             ];
             $res = $this->Mhouses_work_order_detail->update_info($up, ['id' => $id]);
             if(!$res){
                 $this->return_json(['code' => 0, 'msg' => '操作失败']);
             }
+            $this->Mhouses_work_order->update_info(['incr' => ['pano_num' => 1]], ['id' => $info['pid']]);
             $this->return_json(['code' => 1, 'msg' => '操作成功']);
         }
         $this->return_json(['code' => 0, 'msg' => '点位不存在']);

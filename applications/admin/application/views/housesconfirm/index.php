@@ -125,6 +125,7 @@
 			                                                <th>客户名称</th>
 			                                                <th>总计</th>
 			                                                <th>已完成</th>
+			                                                <th>远景图上传</th>
 			                                                <th>负责人</th>
 			                                                <th class="phone-hide">派单时间</th>
 			                                                <th>状态</th>
@@ -155,7 +156,9 @@
 																<td>
 																	<?php echo $val['finish'];?>
 																</td>
-																
+																<td>
+																	<?php echo $val['pano_num'];?>
+																</td>
 			                                                    <td>
 			                                                    	<?php if(isset($user_list[$val['charge_user']])) echo $user_list[$val['charge_user']];?>
 			                                                    </td>
