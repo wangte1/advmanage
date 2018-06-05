@@ -14,7 +14,7 @@ class Model_houses_points extends MY_Model {
     /*
      * 获取投放点位列表
      */
-    public function get_points_lists($where = array(), $order_by = array(), $pagesize = 0,$offset = 0,  $group_by = array()){
+    public function get_points_lists($where = array(), $order_by = array('houses_id' => 'desc', 'area_id' => 'desc', 'ban' => 'desc'), $pagesize = 0,$offset = 0,  $group_by = array()){
     	
     	//分组时候的统计
     	$tmp_count = '';
