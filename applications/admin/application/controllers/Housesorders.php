@@ -1433,21 +1433,19 @@ class Housesorders extends MY_Controller{
         $customers = array_column($this->Mhouses_customers->get_lists("id,name", array('is_del' => 0)), 'name', 'id'); //客户列表
 
         $list = $this->Mhouses_points->get_points_lists($where);
-
+        foreach ($list as $k => $v){
+            if($v['addr'] == 1){
+                $list[$k]['addr'] = '门禁';
+            }else{
+                $list[$k]['addr'] = '电梯前室';
+            }
+        }
         $h = 2;
         foreach($list as $key=>$val){
             $j = 0;
             foreach($table_header as $k => $v){
                 $cell = PHPExcel_Cell::stringFromColumnIndex($j++).$h;
-				
-                $value = '';
-                if($v == 'addr') {
-                	if(isset($data['point_addr'][$val[$v]]))
-                		$value = $data['point_addr'][$val[$v]];
-                }else {
-                	$value = $val[$v];
-                }
-                
+                $value = $val[$v];
                 $this->phpexcel->getActiveSheet(0)->setCellValue($cell, $value);
             }
             $h++;
