@@ -110,7 +110,7 @@ class Housesconfirm extends MY_Controller{
         $data['data_count'] = $data_count;
         $data['page'] = $page;
         
-        $where = ['is_del' => 1];
+        $where = [];
         $where['in'] = ['group_id' => [4,6]];
         $tmp_user = $this->Madmins->get_lists('id,fullname', $where);
         $data['user_list'] = array_column($tmp_user, 'fullname', 'id');
