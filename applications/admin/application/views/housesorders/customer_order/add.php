@@ -436,8 +436,9 @@ $(function(){
 		var floor = $('#floor').val();
 		var addr = $('#addr').val();
 		var lock_start_time = $('#lock_start_time').val();
-		var postData = {order_type:order_type, put_trade:put_trade, houses_id:houses_id, area_id:area_id, ban:ban, unit:unit, floor:floor, lock_start_time:lock_start_time,addr:addr};
-		$.post('/housesscheduledorders/get_points', postData, function(data){
+		var order_id = "<?php echo $info['id']?>";
+		var postData = {order_id:order_id,order_type:order_type, put_trade:put_trade, houses_id:houses_id, area_id:area_id, ban:ban, unit:unit, floor:floor, lock_start_time:lock_start_time,addr:addr};
+		$.post('/housesorders/get_points', postData, function(data){
 			var pointStr =  '';
 			var areaStr = '<option value="">请选择组团</option>'; 
 			if(data.flag == true && data.count > 0) {
@@ -455,7 +456,7 @@ $(function(){
 					}else{
 						pointStr += "<td width='10%'>电梯前室</td>";
 					}
-					var num = parseInt(tmpList[i]['ad_num'] - tmpList[i]['ad_use_num']); 
+					var num = parseInt(tmpList[i]['ad_num'] - tmpList[i]['ad_use_num'] - tmpList[i]['lock_num']); 
 					pointStr += "<td width='10%'>"+ num +"</td>";
 					switch (tmpList[i]['point_status']) {
                         case '1':

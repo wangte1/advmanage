@@ -223,41 +223,43 @@ class Housesorders extends MY_Controller{
      * 根据条件获取点位的列表和数量
      */
     public function get_points() {
-
-    	$where['is_del'] = 0;
-    	$where['point_status'] = 1;
-    	$where['self_lock'] = 0;
-    	if($this->input->post('order_type')) $where['type_id'] = $this->input->post('order_type');
-    	if($this->input->post('houses_id')) $where['houses_id'] = $this->input->post('houses_id');
-    	if(!empty($this->input->post('ban'))) $where['ban'] = $this->input->post('ban');
-    	if(!empty($this->input->post('unit'))) $where['unit'] = $this->input->post('unit');
-    	if(!empty($this->input->post('floor'))) $where['floor'] = $this->input->post('floor');
-    	if(!empty($this->input->post('addr'))) $where['addr'] = $this->input->post('addr');
-    	
-    	
-    	$points_lists = $this->Mhouses_points->get_lists("id,code,houses_id,area_id,ban,unit,floor,addr,type_id,point_status", $where);
-    	$areaList = [];
-    	if(count($points_lists) > 0) {
-    		$housesid = array_column($points_lists, 'houses_id');
-    		$area_id = array_column($points_lists, 'area_id');
-    		$type_id = array_column($points_lists, 'type_id');
-    		
-    		if(!empty($this->input->post('put_trade'))) {
-    			$housesList = $this->Mhouses->get_lists("id, name,", ['in' => ['id' => $housesid], 'put_trade<>' => $this->input->post('put_trade')]);
-    		}else {
-    			$housesList = $this->Mhouses->get_lists("id, name,", ['in' => ['id' => $housesid]]);
-    		}
-
-    		$wherea['in']['id'] = $area_id;
-    		$areaList = $this->Mhouses_area->get_lists("id, name", $wherea);
-    		
-    		$wheref['in']['type'] = $type_id;
-    		$formatList = $this->Mhouses_points_format->get_lists("type,size", $wheref);
-    		
-    		foreach ($points_lists as $k => &$v) {
-    		    //设置状态
-    		    $v['point_status_txt'] = C('public.points_status')[$v['point_status']];
-    		 	$mark = false;
+        
+        if($this->input->post('order_type')) $where['type_id'] = $this->input->post('order_type');
+        if(!empty($this->input->post('houses_id'))) {$houses_id = $where['houses_id'] = $this->input->post('houses_id');}
+        if(!empty($this->input->post('area_id'))) {$where['area_id'] = $this->input->post('area_id');}
+        if(!empty($this->input->post('ban'))) $where['ban'] = $this->input->post('ban');
+        if(!empty($this->input->post('unit'))) $where['unit'] = $this->input->post('unit');
+        if(!empty($this->input->post('floor'))) $where['floor'] = $this->input->post('floor');
+        if(!empty($this->input->post('addr'))) $where['addr'] = $this->input->post('addr');
+        $lock_start_time = $this->input->post('lock_start_time');
+        
+        $order_id = $this->input->post('order_id');
+        $type = $this->input->post('order_type');
+        
+        $where['is_del'] = 0;
+        $where['`lock_num` >='] = 0; //防止出现多次选择
+        $where['point_status'] = 1;
+        $fields = 'id,code,houses_id,area_id,ban,unit,floor,addr,type_id,ad_num, ad_use_num, lock_num,point_status';
+        $points_lists = $this->Mhouses_points->get_usable_point($fields, $where, $order_id, $type);
+        if(count($points_lists) > 0) {
+            $housesid = array_unique(array_column($points_lists, 'houses_id'));
+            $area_id = array_unique(array_column($points_lists, 'area_id'));
+            
+            if(!empty($this->input->post('put_trade'))) {
+            	$housesList = $this->Mhouses->get_lists("id, name,", ['in' => ['id' => $housesid], 'put_trade<>' => $this->input->post('put_trade')]);
+            }else {
+            	$housesList = $this->Mhouses->get_lists("id, name,", ['in' => ['id' => $housesid]]);
+            }
+            
+            $wherea['in']['id'] = $area_id;
+            $areaList = $this->Mhouses_area->get_lists("id, name", $wherea);
+            //获取规格列表
+            $size_list = $this->Mhouses_points_format->get_lists('id,type,size', ['is_del' => 0]);
+            foreach ($points_lists as $k => &$v) {
+                //设置状态
+                $v['point_status_txt'] = C('public.points_status')[$v['point_status']];
+                
+                $mark = false;
                 foreach($housesList as $k1 => $v1) {
                     if($v['houses_id'] == $v1['id']) {
                         $v['houses_name'] = $v1['name'];
@@ -270,26 +272,31 @@ class Housesorders extends MY_Controller{
                 	unset($points_lists[$k]);
                 	continue;
                 }
-    			
-    			foreach($areaList as $k2 => $v2) {
-    				if($v['area_id'] == $v2['id']) {
-    					$v['area_name'] = $v2['name'];
-    					break;
-    				}
-    			}
-    			
-    			foreach($formatList as $k3 => $v3) {
-    				if($v['type_id'] == $v3['type']) {
-    					$v['size'] = $v3['size'];
-    					break;
-    				}
-    			}
-    			
-    			
-    		}
-    	}
-    	
-    	$this->return_json(array('flag' => true, 'points_lists' => $points_lists, 'count' => count($points_lists), 'area_lists' => $areaList));
+                
+                foreach($areaList as $k2 => $v2) {
+                    if($v['area_id'] == $v2['id']) {
+                        $v['area_name'] = $v2['name'];
+                        break;
+                    }
+                }
+                
+                $v['size'] = '';
+                if($size_list){
+                    foreach ($size_list as $key => $val){
+                        if($val['type'] == $v['type_id']){
+                            $v['size'] = $val['size'];break;
+                        }
+                    }
+                }
+            }
+            
+        }
+        $areaList = [];
+        if($houses_id){
+            $areaList = $this->Mhouses_area->get_lists('id, name', ['houses_id' => $houses_id]);
+        }
+        //获取去重的组团区域
+        $this->return_json(array('flag' => true, 'points_lists' => $points_lists, 'count' => count($points_lists), 'area_list' => $areaList));
     }
     
     /**
