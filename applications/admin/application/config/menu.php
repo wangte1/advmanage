@@ -113,6 +113,12 @@ $config = array(
     		'code' => 'community_manage',
     		'icon' => 'icon-group  menu-i',
     		'list' => array(
+    		    array(
+    		        'url'=>'/housesstatus',
+    		        'name'=> '点位状态',
+    		        'active'=> 'houses_status_list'
+    		    ),
+    		    
     			array(
     				'url'=>'/housespoints',
     				'name'=> '点位管理',

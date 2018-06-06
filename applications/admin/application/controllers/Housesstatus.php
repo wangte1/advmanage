@@ -1,20 +1,20 @@
 <?php
 /**
- * 客户管理控制器
+ * 点位状态管理控制器
  * 867332352@qq.com
  */
 defined('BASEPATH') or exit('No direct script access allowed');
-class Housesapp extends MY_Controller{
+class Housesstatus extends MY_Controller{
 
     public function __construct(){
         parent::__construct();
         $this->load->model([
-            'Model_houses_app' => 'Mhouses_app',
+            'Model_houses_points' => 'Mhouses_points',
          ]);
         $this->pageconfig = C('page.page_lists');
         $this->load->library('pagination');
         $this->data['code'] = 'community_manage';
-        $this->data['active'] = 'houses_app_lists';
+        $this->data['active'] = 'houses_status_list';
     }
 
     /*
@@ -23,28 +23,36 @@ class Housesapp extends MY_Controller{
     */
     public function index(){
         $data = $this->data;
-        $data['title'] = array("app管理","版本列表");
+        $data['title'] = array("点位状态","饼形图");
+        $data['count1'] = (int) $this->Mhouses_points->count(['point_status' => 1, 'is_del' =>0]);
+        $data['count3'] = (int) $this->Mhouses_points->count(['point_status' => 3, 'is_del' =>0]);
+        $data['count4'] = (int) $this->Mhouses_points->count(['point_status' => 4, 'is_del' =>0]);
+        $data['sum'] = $data['count1'] + $data['count3'] + $data['count4'];
+        //数量÷总数×100=百分比
+        $data['count1'] = $data['count1'] / $data['sum'] * 100;
+        $data['count3'] = $data['count3'] / $data['sum'] * 100;
+        $data['count4'] = $data['count4'] / $data['sum'] * 100;
 
-        $page =  intval($this->input->get("per_page", true)) ?  : 1;
-        $size = $this->pageconfig['per_page'];
-        $where['is_del'] = 0;
+//         $page =  intval($this->input->get("per_page", true)) ?  : 1;
+//         $size = $this->pageconfig['per_page'];
+//         $where['is_del'] = 0;
         
-        $data['list'] = $this->Mhouses_app->get_lists('*',$where, array("id"=>"desc"), $size, ($page-1)*$size);
-        $data_count = $this->Mhouses_app->count($where);
+//         $data['list'] = $this->Mhouses_app->get_lists('*',$where, array("id"=>"desc"), $size, ($page-1)*$size);
+//         $data_count = $this->Mhouses_app->count($where);
 
-        //获取分页
-        $data['pagestr'] = "";
-        if(! empty($data['list'])){
-            $this->pageconfig['base_url'] = '/housesapp/index';
-            $this->pageconfig['total_rows'] = $data_count;
-            $this->pagination->initialize($this->pageconfig);
-            $data['pagestr'] = $this->pagination->create_links(); // 分页信息
-        }
-        $data['page'] = $page;
-        $data['data_count'] = $data_count;
+//         //获取分页
+//         $data['pagestr'] = "";
+//         if(! empty($data['list'])){
+//             $this->pageconfig['base_url'] = '/housesapp/index';
+//             $this->pageconfig['total_rows'] = $data_count;
+//             $this->pagination->initialize($this->pageconfig);
+//             $data['pagestr'] = $this->pagination->create_links(); // 分页信息
+//         }
+//         $data['page'] = $page;
+//         $data['data_count'] = $data_count;
 
 
-        $this->load->view("housesapp/index",$data);
+        $this->load->view("housesstatus/index",$data);
     }
 
     /*
