@@ -1070,12 +1070,17 @@ class Housesorders extends MY_Controller{
                         $new[$v['id']][] = $tmp;
                     }
                 }
+                
                 //操作点位,去除指定占用的客户
                 foreach ($new as $k => &$v){
                     foreach ($v as $key => $val){
-                        if($val == $customer_id) unset($v[$key]);
+                        if($val == $customer_id){
+                            unset($new[$k][$key]);
+                            break;//避免去掉所有的同一客户
+                        }
                     }
                 }
+                
                 //准备更新的数据
                 foreach ($new as $k => &$v){
                     $tmp = '';
