@@ -58,7 +58,7 @@
         </div>
     </div>
 </div>
-<script src="http://adv.dev.wesogou.com/static/common/js/highcharts.js"></script>
+<script src="<?php echo css_js_url('highcharts.js','common')?>"></script>
 <script>
 		    var chart = Highcharts.chart('container', {
 		    title: {
