@@ -277,6 +277,7 @@ class Housesconfirm extends MY_Controller{
     	}
 
     	$workDetailList = $this->Mhouses_work_order_detail->get_lists("*", ['pid' => $id], [], $size, ($page-1)*$size);
+        
         //提取点位
         $point_ids = array_column($workDetailList, 'point_id');
     	
@@ -291,7 +292,7 @@ class Housesconfirm extends MY_Controller{
                 }
             }
         }
-        $data['data_count'] = $this->Mhouses_points->count(['in' => ['id' => $point_ids]]);
+        $data['data_count'] = $this->Mhouses_work_order_detail->count(['pid' => $id]);
     	//获取分页
     	$pageconfig['base_url'] = "/housesconfirm/check_upload_img";
     	$pageconfig['total_rows'] = $data['data_count'];
