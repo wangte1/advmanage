@@ -230,7 +230,7 @@
 </script>
 <script type="text/javascript">
 	$('.btn-export').on('click', function(){
-		var url  = '/housesconfirm/user_all_task_export?id='+<?php echo $id;?>;
+		var url  = '/housesconfirm/user_all_task_export?id='+<?php echo $id;?>+"&type="+<?php echo $type;?>;
 		window.location.href = url;
 	});
 </script>

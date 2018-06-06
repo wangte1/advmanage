@@ -238,7 +238,7 @@ class Housesconfirm extends MY_Controller{
     	$this->load->library('pagination');
     	$page =  intval($this->input->get("per_page",true)) ?  : 1;
     	$size = $pageconfig['per_page'];
-    	
+    	$data['type'] = $id = $this->input->get('type');
     	$data['id'] = $id = $this->input->get('id');
 
     	if(IS_POST){

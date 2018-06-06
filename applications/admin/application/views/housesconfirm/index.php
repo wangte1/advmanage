@@ -296,7 +296,8 @@
 		//上传验收图片
 		$('.m-upload').click(function(){
 			var id = $(this).attr('data-id');
-			location.href='/housesconfirm/check_upload_img?id='+id
+			var type = '<?php echo $assign_type;?>';
+			location.href='/housesconfirm/check_upload_img?id='+id+'&type='+type
 			return;
 			
 		});
