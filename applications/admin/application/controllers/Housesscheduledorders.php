@@ -794,7 +794,7 @@ class Housesscheduledorders extends MY_Controller{
         $where['is_del'] = 0;
         $where['`lock_num` >='] = 0; //防止出现多次选择
         $where['point_status'] = 1;
-        $fields = 'id,code,houses_id,area_id,ban,unit,floor,addr,type_id,ad_num, ad_use_num, point_status';
+        $fields = 'id,code,houses_id,area_id,ban,unit,floor,addr,type_id,ad_num, ad_use_num, lock_num,point_status';
         $points_lists = $this->Mhouses_points->get_usable_point($fields, $where, $order_id, $type);
         if(count($points_lists) > 0) {
             $housesid = array_unique(array_column($points_lists, 'houses_id'));
