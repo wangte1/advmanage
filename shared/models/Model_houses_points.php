@@ -380,6 +380,7 @@ class Model_houses_points extends MY_Model {
         
         $list = $this->get_lists($fields, $where);
         if($list){
+            if(!$type) return $list;
             if($type == 1) return $list; //如果是不是广告机
             //获取order_id所包含的ids,过滤
             $info = $this->Mhouses_scheduled_orders->get_one('point_ids', ['id' => $order_id]);
