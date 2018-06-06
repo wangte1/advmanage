@@ -714,25 +714,38 @@ class Housesorders extends MY_Controller{
         $data = $this->data;
         $data['id'] = $id;
         $data['info'] = $this->Mhouses_orders->get_one("*", array('id' => $id));
-
-        $images = $this->Mhouses_order_inspect_images->get_lists("*", array('order_id' => $id, 'type' => 1));
-        if (!$images) {
-            $this->success("请先上传验收图片！");
+        
+        //查询子订单id
+        $sonOrder = $this->Mhouses_orders->get_lists("id", array('pid' => $id));
+        if($sonOrder){
+            $order_ids = array_column($sonOrder, 'id');
+            $workerOrder = $this->Mhouses_work_order->get_lists("id", ['in' => ['order_id' => $order_ids], 'type' => 1]);
+            //提取所有子详情
+            $pids = array_column($workerOrder, 'id');
+            if($pids){
+                $imglist = $this->Mhouses_work_order_detail->get_lists('point_id, pano_img', ['in' => ['pid' => $pids]]);
+            }
         }
 
-        //甲方-委托方（客户名称）
-        $data['info']['customer_name'] = $this->Mhouses_customers->get_one('name', array('id' => $data['info']['customer_id']))['name'];
-            
         //上画完成时间
         $data['complete_date'] = date('Y年m月d日', strtotime($data['info']['draw_finish_time']));
-
-        /********验收图片**********/
-        $data['inspect_images'] = $this->Mhouses_order_inspect_images->get_inspect_img(array('A.order_id' => $id, 'A.type' => 1));
+        //甲方-委托方（客户名称）
+        $data['info']['customer_name'] = $this->Mhouses_customers->get_one('name', array('id' => $data['info']['customer_id']))['name'];
         
         //获取点位列表
         $where['in'] = array('A.id' => explode(',', $data['info']['point_ids']));
-        $data['points'] = $this->Mhouses_points->get_points_lists($where);
-		$data['done_inspect_images'] = array_column($data['inspect_images'], 'front_img', 'point_id');
+        $data['points'] = $pointList = $this->Mhouses_points->get_points_lists($where);
+		
+        foreach ($pointList as $k => $v){
+            $data['points'][$k]['img'] = '';
+            if(isset($imglist)){
+                foreach ($imglist as $key => $val){
+                    if($v['id'] == $val['point_id']){
+                        $data['points'][$k]['img'] = $val['pano_img'];
+                    }
+                }
+            }
+		}
 		$data['points_lists'] = array_chunk($data['points'], 100);
         $this->load->view('housesorders/confirmation/light', $data);
     }
@@ -748,9 +761,16 @@ class Housesorders extends MY_Controller{
         $data['page'] = $page;
         $data['info'] = $this->Mhouses_orders->get_one("*", array('id' => $id));
         
-        $images = $this->Mhouses_order_inspect_images->get_lists("*", array('order_id' => $id, 'type' => 1));
-        if (!$images) {
-            $this->success("请先上传验收图片！");
+        //查询子订单id
+        $sonOrder = $this->Mhouses_orders->get_lists("id", array('pid' => $id));
+        if($sonOrder){
+            $order_ids = array_column($sonOrder, 'id');
+            $workerOrder = $this->Mhouses_work_order->get_lists("id", ['in' => ['order_id' => $order_ids], 'type' => 1]);
+            //提取所有子详情
+            $pids = array_column($workerOrder, 'id');
+            if($pids){
+                $imglist = $this->Mhouses_work_order_detail->get_lists('point_id, pano_img', ['in' => ['pid' => $pids]]);
+            }
         }
         
         //甲方-委托方（客户名称）
@@ -764,8 +784,17 @@ class Housesorders extends MY_Controller{
         
         //获取点位列表
         $where['in'] = array('A.id' => explode(',', $data['info']['point_ids']));
-        $data['points'] = $this->Mhouses_points->get_points_lists($where);
-        $data['done_inspect_images'] = array_column($data['inspect_images'], 'front_img', 'point_id');
+        $data['points'] = $pointList = $this->Mhouses_points->get_points_lists($where);
+        foreach ($pointList as $k => $v){
+            $data['points'][$k]['img'] = '';
+            if(isset($imglist)){
+                foreach ($imglist as $key => $val){
+                    if($v['id'] == $val['point_id']){
+                        $data['points'][$k]['img'] = $val['pano_img'];
+                    }
+                }
+            }
+        }
         $data['points_lists'] = array_chunk($data['points'], 100);
         $this->load->view('housesorders/confirmation/imgpdf', $data);
     }

@@ -139,8 +139,8 @@
             		<td width="10%"><?php echo $num ++;?></td>
             		<td width="10%"><?php  echo $value['code'];?></td>
            			<td width="30%"><?php echo $value['houses_name'].$value['houses_area_name'].$value['ban'].$value['unit'].$value['floor']?></td>
-         			<?php if(isset($done_inspect_images[$value['id']])):?>
-         			<td width="50%"><img style="width:450px;height:300px;" src="<?php echo $done_inspect_images[$value['id']];?>"></td>
+         			<?php if(!empty($value['img'])):?>
+         			<td width="50%"><img style="width:450px;height:300px;" src="<?php echo $value['img'];?>"></td>
            			<?php else:?>
            			<td width="50%"></td>
            			<?php endif;?>
