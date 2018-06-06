@@ -423,6 +423,7 @@ $(function(){
     });
 	
 	$('body').on('change', '#houses_id,#area_id,#ban,#unit,#floor,#addr', function(){
+		var order_id = "<?php echo $info['id']?>";
 		var index = layer.load(0, {shade: true});
 		var houses_id = $('#houses_id').val();
 		var area_id = $('#area_id').val();
@@ -434,8 +435,9 @@ $(function(){
 		var floor = $('#floor').val();
 		var addr = $('#addr').val();
 		var lock_start_time = $('#lock_start_time').val();
-		var postData = {order_type:order_type, put_trade:put_trade, houses_id:houses_id, area_id:area_id, ban:ban, unit:unit, floor:floor, lock_start_time:lock_start_time,addr:addr};
+		var postData = {order_id:order_id,order_type:order_type, put_trade:put_trade, houses_id:houses_id, area_id:area_id, ban:ban, unit:unit, floor:floor, lock_start_time:lock_start_time,addr:addr};
 		$.post('/housesscheduledorders/get_points', postData, function(data){
+			console.log(data);
 			var pointStr =  '';
 			var areaStr = '<option value="">请选择组团</option>'; 
 			if(data.flag == true && data.count > 0) {
@@ -571,16 +573,7 @@ $(function(){
     });
 
     function alert(msg){
-    	var d = dialog({
-            title: '提示信息',
-            content: msg,
-            okValue: '确定',
-            ok: function () {
-
-            }
-        });
-        d.width(320);
-        d.showModal();
+        layer.alert(msg);
     }
 })
 

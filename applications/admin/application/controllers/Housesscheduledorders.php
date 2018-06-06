@@ -778,7 +778,7 @@ class Housesscheduledorders extends MY_Controller{
      * 根据条件获取点位的列表和数量
      */
     public function get_points() {
-
+        
         if($this->input->post('order_type')) $where['type_id'] = $this->input->post('order_type');
         if(!empty($this->input->post('houses_id'))) {$houses_id = $where['houses_id'] = $this->input->post('houses_id');}
         if(!empty($this->input->post('area_id'))) {$where['area_id'] = $this->input->post('area_id');}
@@ -788,11 +788,14 @@ class Housesscheduledorders extends MY_Controller{
         if(!empty($this->input->post('addr'))) $where['addr'] = $this->input->post('addr');
         $lock_start_time = $this->input->post('lock_start_time');
         
+        $order_id = $this->input->post('order_id');
+        $type = $this->input->post('order_type');
+        
         $where['is_del'] = 0;
         $where['`lock_num` >='] = 0; //防止出现多次选择
         $where['point_status'] = 1;
         $fields = 'id,code,houses_id,area_id,ban,unit,floor,addr,type_id,ad_num, ad_use_num, point_status';
-        $points_lists = $this->Mhouses_points->get_usable_point($fields, $where, $lock_start_time);
+        $points_lists = $this->Mhouses_points->get_usable_point($fields, $where, $order_id, $type);
         if(count($points_lists) > 0) {
             $housesid = array_unique(array_column($points_lists, 'houses_id'));
             $area_id = array_unique(array_column($points_lists, 'area_id'));

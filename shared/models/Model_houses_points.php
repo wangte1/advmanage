@@ -7,6 +7,7 @@ class Model_houses_points extends MY_Model {
     public function __construct() {
         parent::__construct($this->_table);
         $this->load->model([
+            'Model_houses_scheduled_orders'=>'Mhouses_scheduled_orders',
             'Model_houses_orders' => 'Mhouses_orders'
         ]);
     }
@@ -367,27 +368,34 @@ class Model_houses_points extends MY_Model {
         return $result->result_array();
     }
     
-    public function get_usable_point($fields='*', $where=[], $startTime=''){
+    /**
+     * 预订单编辑，查询可用点位数
+     * @param string $fields
+     * @param array $where
+     * @param number $order_id
+     * @param number $type
+     * @return :|array
+     */
+    public function get_usable_point($fields='*', $where=[], $order_id=0, $type=0){
         
         $list = $this->get_lists($fields, $where);
         if($list){
-            $order_ids = array_column($list, 'order_ids');
-            if(count($order_ids) == 0) return $list;
-            //获取点位对应的所有order_id是否满足新订单
-            $order_ids = array_unique($order_ids);
-            $order_list = $this->Mhouses_orders->get('id, release_end_time, is_del', ['in' => ['id' => $order_ids], 'release_end_time <' => $startTime]);
-            if($order_list){
-                $lists = $list;
-                foreach ($list as $k => $v){
-                    foreach ($order_list as $key => $val){
-                        if($v['order_id'] && $v['order_id'] == $val['id']){
-                            if(strtotime($val['release_end_time']) > strtotime($startTime)){
-                                unset($lists[$k]);
-                            }
+            if($type == 1) return $list; //如果是不是广告机
+            //获取order_id所包含的ids,过滤
+            $info = $this->Mhouses_scheduled_orders->get_one('point_ids', ['id' => $order_id]);
+            if($info){
+                $point_ids = explode(',', $info['point_ids']);
+                if(count($point_ids)){
+                    $point_ids = array_unique($point_ids);
+                    $new = [];
+                    foreach ($list as $k => $v){
+                        //如果此订单已经选过，则不可再选。
+                        if(!in_array($v['id'], $point_ids)){
+                            array_push($new, $v);
                         }
                     }
+                    return $new;
                 }
-                return $lists;
             }
         }
         return [];
