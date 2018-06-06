@@ -33,7 +33,8 @@
                         <div class="row">
                             <div class="col-xs-12">
                                 <div class="table-responsive">
-                                    <div id="container" style="min-width:400px;height:400px"></div>
+                                    <div id="container" style="width:630px;height:400px;float: left;"></div>
+                                    <div id="container1" style="width:500px;height:400px;float: left;"></div>
                                     <div class="row">
                                         <div class="col-sm-6">
                                         </div>
@@ -58,12 +59,10 @@
     </div>
 </div>
 <script src="http://adv.dev.wesogou.com/static/common/js/highcharts.js"></script>
-<script src="https://img.hcharts.cn/highcharts/modules/exporting.js"></script>
-<script src="http://adv.dev.wesogou.com/static/common/js/highcharts-zh_CN.js"></script>
 <script>
 		    var chart = Highcharts.chart('container', {
 		    title: {
-		        text: '点位占用预览'
+		        text: '点位状态预览'
 		    },
 		    tooltip: {
 		        headerFormat: '{series.name}<br>',
@@ -85,19 +84,56 @@
 // 		    1空闲，3占用，4报损
 		    series: [{
 		        type: 'pie',
-		        name: '点位统计状态',
+		        name: '点位状态预览',
 		        data: [
 		            {
-		                name: '空闲',
-		                y: <?php echo $count1;?>,
+		                name: '空闲（<?php echo $count1;?> 个）',
+		                y: <?php echo $count1 / $sum * 100;?>,
 		                sliced: true,  // 默认突出
 		                selected: true // 默认选中 
 		            },
-		            ['占用',    <?php echo $count3?>],
-		            ['报损',    <?php echo $count4?>]
+		            ['占用（<?php echo $count3;?> 个）',    <?php echo $count3 / $sum * 100;?>],
+		            ['报损（<?php echo $count4;?> 个）',    <?php echo $count4 / $sum * 100;?>]
 		        ]
 		    }]
 			});
+			
+		    var chart = Highcharts.chart('container1', {
+			    title: {
+			        text: '广告位类别'
+			    },
+			    tooltip: {
+			        headerFormat: '{series.name}<br>',
+			        pointFormat: '{point.name}: <b>{point.percentage:.1f}%</b>'
+			    },
+			    plotOptions: {
+			        pie: {
+			            allowPointSelect: true,  // 可以被选择
+			            cursor: 'pointer',       // 鼠标样式
+			            dataLabels: {
+			                enabled: true,
+			                format: '<b>{point.name}</b>: {point.percentage:.1f} %',
+			                style: {
+			                    color: (Highcharts.theme && Highcharts.theme.contrastTextColor) || 'black'
+			                }
+			            }
+			        }
+			    },
+//	 		    1空闲，3占用，4报损
+			    series: [{
+			        type: 'pie',
+			        name: '广告位类别',
+			        data: [
+			            {
+			                name: '冷光灯箱（<?php echo $type1;?> 个）',
+			                y: <?php echo $type1 / $typesum * 100;;?>,
+			                sliced: true,  // 默认突出
+			                selected: true // 默认选中 
+			            },
+			            ['广告机（<?php echo $type2;?> 个）',    <?php echo $type2 / $typesum * 100;?>]
+			        ]
+			    }]
+				});
         </script>
 <!-- 加载尾部公用js -->
 <?php $this->load->view("common/footer");?>
