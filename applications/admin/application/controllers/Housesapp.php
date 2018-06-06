@@ -14,7 +14,7 @@ class Housesapp extends MY_Controller{
         $this->pageconfig = C('page.page_lists');
         $this->load->library('pagination');
         $this->data['code'] = 'community_manage';
-        $this->data['active'] = 'houses_app_list';
+        $this->data['active'] = 'houses_app_lists';
     }
 
     /*
