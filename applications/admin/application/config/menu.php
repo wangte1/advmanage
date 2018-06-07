@@ -115,7 +115,7 @@ $config = array(
     		'list' => array(
     		    array(
     		        'url'=>'/housesstatus',
-    		        'name'=> '点位状态',
+    		        'name'=> '资源总览',
     		        'active'=> 'houses_status_list'
     		    ),
     		    
