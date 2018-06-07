@@ -20,6 +20,7 @@ class Task extends MY_Controller {
             'Model_houses' => 'Mhouses',
             'Model_houses_customers' => 'Mhouses_customers',
             'Model_houses_work_order' => 'Mhouses_work_order',
+            'Model_houses_points_format' => 'Mhouses_points_format',
             'Model_houses_work_order_detail' => 'Mhouses_work_order_detail',
         	'Model_houses_assign' => 'Mhouses_assign',
         	'Model_houses_orders' => 'Mhouses_orders',
@@ -374,6 +375,7 @@ class Task extends MY_Controller {
      * 查询点位id附近同等级的空闲点位列表
      */
     public function getSiblingPoint(){
+        
         $pointId = $this->input->get_post('pointId');
         $assignId = $this->input->get_post('assignId'); 
         $type = $this->input->get_post('type');
@@ -396,9 +398,82 @@ class Task extends MY_Controller {
             }
         }
         if(!count($list)){
-            $this->return_json(['code' => 0, 'msg' => '附近暂无空闲，请联系管理员进行操作。']);
+            //此楼盘下暂无可用点位，现在进行区域查点位
+            $housesInfo = $this->Mhouses->get_one('area', ['id' => $info['houses_id']]);
+            if(!$housesInfo) $this->return_json(['code' => 1, 'msg' => '暂无数据']);
+            $housesList = $this->Mhouses->get_lists('id', ['area' => $housesInfo['area']]);
+            if(!$housesList) $this->return_json(['code' => 1, 'msg' => '暂无数据']);
+            $houses_ids = array_column($housesList, 'id');
+
+            $pointList = $this->Mhouses_points->app_get_usable_point(
+                $fields,
+                [
+                    'in' => ['houses_id' => $houses_ids],
+                    'point_status' => 1
+                ],
+                $workeInfo['order_id'],
+                $type
+            );
+            if(!$pointList){
+                $this->return_json(['code' => 0, 'msg' => '本区域暂无空闲点位']);
+            }
+            $list = $pointList;
         }
-        $this->return_json(['code' => 1, 'list' => $list]);
+        $points_lists = $list;
+        //拼接楼盘、组团名字、点位规格
+        if(count($points_lists) > 0) {
+            $housesid = array_unique(array_column($points_lists, 'houses_id'));
+            $area_id = array_unique(array_column($points_lists, 'area_id'));
+            
+            if(!empty($this->input->post('put_trade'))) {
+                $housesList = $this->Mhouses->get_lists("id, name,", ['in' => ['id' => $housesid], 'put_trade<>' => $this->input->post('put_trade')]);
+            }else {
+                $housesList = $this->Mhouses->get_lists("id, name,", ['in' => ['id' => $housesid]]);
+            }
+            
+            $wherea['in']['id'] = $area_id;
+            $areaList = $this->Mhouses_area->get_lists("id, name", $wherea);
+            //获取规格列表
+            $size_list = $this->Mhouses_points_format->get_lists('id,type,size', ['is_del' => 0]);
+            foreach ($points_lists as $k => &$v) {
+                //设置状态
+                $v['point_status_txt'] = C('public.points_status')[$v['point_status']];
+                
+                $mark = false;
+                foreach($housesList as $k1 => $v1) {
+                    if($v['houses_id'] == $v1['id']) {
+                        $v['houses_name'] = $v1['name'];
+                        $mark = true;
+                        break;
+                    }
+                }
+                
+                if($mark == false) {
+                    unset($points_lists[$k]);
+                    continue;
+                }
+                
+                foreach($areaList as $k2 => $v2) {
+                    if($v['area_id'] == $v2['id']) {
+                        $v['area_name'] = $v2['name'];
+                        break;
+                    }
+                }
+                
+                $v['size'] = '';
+                if($size_list){
+                    foreach ($size_list as $key => $val){
+                        if($val['type'] == $v['type_id']){
+                            $v['size'] = $val['size'];break;
+                        }
+                    }
+                }
+            }
+            unset($list);
+            $this->return_json(['code' => 1, 'data' => $points_lists]);
+        }
+        $this->return_json(['code' => 0, 'data' => [], 'msg' => "暂无数据"]);
+        
     }
     
     /**
