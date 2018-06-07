@@ -42,7 +42,7 @@ class Task extends MY_Controller {
         $data['assign_type'] = $assign_type = $this->input->get_post('assign_type') ? : 1;
         $where['type'] = $assign_type;
         
-        //$where['charge_user'] = $token['user_id']; //临时关闭
+        $where['charge_user'] = $token['user_id']; //临时关闭
         $data['customer_list'] = $customer_list = $this->Mhouses_customers->get_lists('id, name', ['is_del' => 0]);        
         
         $where['is_del'] = 0;
