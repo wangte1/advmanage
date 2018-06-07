@@ -370,10 +370,59 @@ class Task extends MY_Controller {
     	}
     }
     
+    /**
+     * 查询点位id附近同等级的空闲点位列表
+     */
+    public function getSiblingPoint(){
+        $pointId = $this->input->get_post('pointId');
+        $assignId = $this->input->get_post('assignId'); 
+        $type = $this->input->get_post('type');
+        //查询点位id附近同等级的空闲点位列表
+        $list = [];
+        //获取点位信息
+        $info = $this->Mhouses_points->get_one('*', ['id' => $pointId]);
+        if(!$info) $this->return_json(['code' => 0, 'msg' => '参数错误']);
+        $workeInfo = $this->Mhouses_work_order->get_one('order_id', ['id' => $assignId]);
+        if(!$workeInfo) $this->return_json(['code' => 0, 'msg' => '参数错误']);
+        if($workeInfo){
+            $fields = 'id,code,houses_id,area_id,ban,unit,floor,addr,type_id,ad_num, ad_use_num, lock_num,point_status';
+            $findby = ['unit','ban','area_id'];
+            foreach ($findby as $k => $v){
+                $res = $this->loop($info, $fields, $v, $workeInfo['order_id'], $type);
+                if($res) {
+                    $list = $res;
+                    break;
+                }
+            }
+        }
+        if(!count($list)){
+            $this->return_json(['code' => 0, 'msg' => '附近暂无空闲，请联系管理员进行操作。']);
+        }
+        $this->return_json(['code' => 1, 'list' => $list]);
+    }
     
-    
-    
-    
-    
-    
+    /**
+     * 逐级查询附近空闲点位
+     * @param string $fields
+     * @param string $findby
+     * @param number $order_id
+     * @param number $type
+     * @return boolean|unknown
+     */
+    private function loop($info, $fields='', $findby='', $order_id=0, $type=0){
+        $pointList = $this->Mhouses_points->app_get_usable_point(
+            $fields, 
+            [
+                'houses_id' => $info['houses_id'], 
+                'point_status' => 1, 
+                $findby => $info[$findby]
+            ], 
+            $order_id, 
+            $type
+        );
+        if(!$pointList){
+            return false;
+        }
+        return $pointList;
+    }
 }

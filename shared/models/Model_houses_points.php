@@ -402,6 +402,78 @@ class Model_houses_points extends MY_Model {
         return [];
     }
     
+    /**
+     * 订单编辑，查询可用点位数
+     * @param string $fields
+     * @param array $where
+     * @param number $order_id
+     * @param number $type
+     * @return :|array
+     */
+    public function get_usable_points($fields='*', $where=[], $order_id=0, $type=0){
+        
+        $list = $this->get_lists($fields, $where);
+        if($list){
+            if(!$type) return $list;
+            if($type == 1) return $list; //如果是不是广告机
+            //获取order_id所包含的ids,过滤
+            $info = $this->Mhouses_orders->get_one('point_ids', ['id' => $order_id]);
+            if($info){
+                $point_ids = explode(',', $info['point_ids']);
+                if(count($point_ids)){
+                    $point_ids = array_unique($point_ids);
+                    $new = [];
+                    foreach ($list as $k => $v){
+                        //如果此订单已经选过，则不可再选。
+                        if(!in_array($v['id'], $point_ids)){
+                            array_push($new, $v);
+                        }
+                    }
+                    return $new;
+                }
+            }
+        }
+        return [];
+    }
+    
+    /**
+     * app 报损查询可用点位数
+     * @param string $fields
+     * @param array $where
+     * @param number $order_id
+     * @param number $type
+     * @return :|array
+     */
+    public function app_get_usable_point($fields='*', $where=[], $order_id=0, $type=0){
+        
+        $list = $this->get_lists($fields, $where);
+        if($list){
+            if(!$type) return $list;
+            if($type == 1) return $list; //如果是不是广告机
+            //获取order_id所包含的ids,过滤
+            $info = $this->Mhouses_orders->get_one('pid,point_ids', ['id' => $order_id]);
+            if($info){
+                if($info['pid']){
+                    $info = $this->Mhouses_orders->get_one('point_ids', ['id' => $info['pid']]);
+                }
+                $point_ids = explode(',', $info['point_ids']);
+                if(count($point_ids)){
+                    $point_ids = array_unique($point_ids);
+                    $new = [];
+                    foreach ($list as $k => $v){
+                        //如果此订单已经选过，则不可再选。
+                        if(!in_array($v['id'], $point_ids)){
+                            array_push($new, $v);
+                        }
+                    }
+                    return $new;
+                }
+            }
+            return $list;
+        }
+        return [];
+    }
+    
 
     
     
