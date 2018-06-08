@@ -51,6 +51,31 @@
                             <div class="widget-body">
                                 <div class="widget-main">
                                     <form class="form-horizontal" role="form">
+                                    	<div class="form-group">
+                                        	<div class="col-sm-4">
+                                                <label class="col-sm-3 control-label no-padding-right" for="form-input-readonly"> 开始时间： </label>
+                                                <div class="col-sm-9">
+                                                    <div class="input-group date datepicker">
+                                                        <input class="form-control date-picker" id="release_start_time" type="text" name="release_start_time" value="<?php if(isset($release_start_time)){ echo $release_start_time;}?>" >
+                                                        <span class="input-group-addon">
+                                                            <i class="icon-calendar bigger-110"></i>
+                                                        </span>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            
+                                            <div class="col-sm-4">
+                                                <label class="col-sm-3 control-label no-padding-right" for="form-input-readonly"> 结束时间： </label>
+                                                <div class="col-sm-9">
+                                                    <div class="input-group date datepicker">
+                                                        <input class="form-control date-picker" id="release_end_time" type="text" name="release_end_time" value="<?php if(isset($release_end_time)){ echo $release_end_time;}?>" >
+                                                        <span class="input-group-addon">
+                                                            <i class="icon-calendar bigger-110"></i>
+                                                        </span>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
                                         <div class="form-group">
                                             <div class="col-sm-4">
                                                 <label class="col-sm-3 control-label no-padding-right" for="form-field-1"> 订单编号 </label>
@@ -116,6 +141,7 @@
                                                 </div>
                                             </div>
                                         </div>
+                                        
                                         <div class="clearfix form-actions">
                                             <div class="col-md-offset-3 col-md-9">
                                                 <button class="btn btn-info" type="submit">

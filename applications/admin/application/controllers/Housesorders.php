@@ -59,10 +59,21 @@ class Housesorders extends MY_Controller{
         if ($this->input->get('order_type')) $where['A.order_type'] = $this->input->get('order_type');
         if ($this->input->get('customer_id')) $where['A.customer_id'] = $this->input->get('customer_id');
         if ($this->input->get('order_status')) $where['A.order_status'] = $this->input->get('order_status');
-
+        
+        $expire_time = $this->input->get("expire_time");
+        $release_start_time = $this->input->get('release_start_time');
+        if($release_start_time && !$expire_time){
+            $data['release_start_time'] = $release_start_time;
+            $where['`A.release_start_time`>='] = $release_start_time;
+        }
+        $release_end_time = $this->input->get('release_end_time');
+        if($release_end_time && !$expire_time){
+            $data['release_end_time'] = $release_end_time;
+            $where['`A.release_end_time`>='] = $release_end_time;
+        }
         //即将到期
         $data['expire_time'] = $this->input->get("expire_time");
-        if($this->input->get("expire_time")) {
+        if($expire_time) {
             $where['A.release_end_time>='] = date("Y-m-d");
             $where['A.release_end_time<='] =  date("Y-m-d",strtotime("+7 day"));
             $where['A.order_status'] =  C('housesorder.houses_order_status.code.in_put');
