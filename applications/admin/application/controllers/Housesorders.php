@@ -62,14 +62,24 @@ class Housesorders extends MY_Controller{
         
         $expire_time = $this->input->get("expire_time");
         $release_start_time = $this->input->get('release_start_time');
+        $release_end_time = $this->input->get('release_end_time');
+        
         if($release_start_time && !$expire_time){
             $data['release_start_time'] = $release_start_time;
-            $where['`A.release_start_time`>='] = $release_start_time;
+            if($release_end_time){
+                $where['`A.release_start_time`>='] = $release_start_time;
+            }else{
+                $where['`A.release_start_time`'] = $release_start_time;
+            }
         }
-        $release_end_time = $this->input->get('release_end_time');
+        
         if($release_end_time && !$expire_time){
             $data['release_end_time'] = $release_end_time;
-            $where['`A.release_end_time`>='] = $release_end_time;
+            if($release_start_time){
+                $where['`A.release_end_time`<='] = $release_end_time;
+            }else{
+                $where['`A.release_end_time`'] = $release_end_time;
+            }
         }
         //即将到期
         $data['expire_time'] = $this->input->get("expire_time");
@@ -91,7 +101,6 @@ class Housesorders extends MY_Controller{
         $data['customer_id'] = $this->input->get('customer_id');
         $data['order_status'] = $this->input->get('order_status');
 
-        //$data['project'] = array_column($this->Mcustomer_project->get_lists('id, project_name', array('is_del' => 0)), 'project_name', 'id');
         $where['`A.pid`'] = 0;
         $data['list'] = $this->Mhouses_orders->get_order_lists($where, ['A.id' => 'desc'], ($page-1)*$pageconfig['per_page'], $pageconfig['per_page']);
         $data_count = $this->Mhouses_orders->get_order_count($where);
@@ -1541,6 +1550,121 @@ class Housesorders extends MY_Controller{
         $array['floor'] = array_unique(array_column($list, 'floor'));
         
         return $array;
+    }
+    
+    public function merge_load(){
+        $ids = $this->input->get('ids');
+        if(!$ids) $this->return_json(['code' => 0, 'msg' => '参数错误']);
+        $ids = explode(',', $ids);
+        //加载phpexcel
+        $this->load->library("PHPExcel");
+        
+        //设置表头
+        $table_header =  array(
+            '点位编号'=>"code",
+            '楼盘'=>"houses_name",
+            '组团'=>"houses_area_name",
+            '楼栋'=>"ban",
+            '单元'=>"unit",
+            '楼层'=>"floor",
+            '点位位置'=>"addr",
+            '规格'=>"size",
+        );
+        
+        $orderList = $this->Mhouses_orders->get_lists('point_ids,customer_id', ['in' => ['id' => $ids]]);
+        if(!$orderList) $this->return_json(['code' => 0, 'msg' => '暂无数据']);
+        $point_ids = [];
+        foreach ($orderList as $k => $v){
+            if($v['point_ids']){
+                $tmp = explode(',', $v['point_ids']);
+                foreach ($tmp as $key => $val){
+                    $point_ids[$k][$key] = $val;
+                }
+            }
+        }
+        $customers_ids = $customers = [];
+        foreach ($orderList as $k => $v){
+            $customers_ids[$k] = $v['customer_id'];
+        }
+        
+        $customersList = $this->Mhouses_customers->get_lists("id,name", ['in' => ['id' => $customers_ids]]); //客户列表
+        foreach ($customers_ids as $k => $v){
+            foreach ($customersList as $key => $val){
+                if($v == $val['id']){
+                    $customers[] = $val['name'];
+                }
+            }
+        }
+        
+        
+        $customersStr = implode('-', array_column($customersList, 'name'));
+        $total =[];
+        foreach ($point_ids as $k => $v){
+            $where['in']['A.id'] = $v;
+            $list = $this->Mhouses_points->get_points_lists($where);
+            foreach ($list as $key => $val){
+                if($val['addr'] == 1){
+                    $list[$k]['addr'] = '门禁';
+                }else{
+                    $list[$k]['addr'] = '电梯前室';
+                }
+            }
+            $total[$k] =$list;
+        }
+
+        foreach ($total as $k => $v){
+            
+            $num = count($table_header) -1;
+            $field = 'A1';
+            $fields = chr(ord($field)+$num).'1';
+            
+            if( $k>0 ){
+                $fields = chr(ord($field)+$num);
+                $tmp = count($total[$k-1])+3;
+                $field = 'A'.$tmp;
+                $fields = $fields.$tmp;
+            }
+            //合并单元格
+            $this->phpexcel->getActiveSheet(0)->mergeCells($field.':'.$fields);
+            $row = 1;
+            if($k>0){
+                //计算当前订单内容起始应该在的行数
+                $row = count($total[$k-1])+2+1;
+            }
+            $cell = PHPExcel_Cell::stringFromColumnIndex(0).$row;
+            $val = '客户:'.$customers[$k];
+            //设置标题
+            $this->phpexcel->setActiveSheetIndex(0)->setCellValue($cell, $val);
+            //填充字段
+            $i = 0;
+            foreach($table_header as  $k1=>$v1){
+                $tmp = $row+1;
+                $cell = PHPExcel_Cell::stringFromColumnIndex($i).$tmp;
+                $this->phpexcel->setActiveSheetIndex(0)->setCellValue($cell, $k1);
+                $i++;
+            }
+            
+            //填充字段内容
+            foreach ($v as $key => $val){
+                $j = 0;
+                $tmp = $row+1+($key+1);
+                foreach($table_header as $k1 => $v1){
+                    $cell = PHPExcel_Cell::stringFromColumnIndex($j++).$tmp;
+                    $value = $val[$v1];
+                    $this->phpexcel->getActiveSheet(0)->setCellValue($cell, $value);
+                }
+            }
+        }
+        
+        
+        $this->phpexcel->setActiveSheetIndex(0);
+        // 输出
+        header('Content-Type: application/vnd.ms-excel');
+        header('Content-Disposition: attachment;filename=投放点位表['.$customersStr.'].xls');
+        header('Cache-Control: max-age=0');
+        
+        $objWriter = PHPExcel_IOFactory::createWriter($this->phpexcel, 'Excel5');
+        $objWriter->save('php://output');
     }
 
 }
