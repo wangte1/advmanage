@@ -362,6 +362,7 @@ class Houses extends MY_Controller{
     			}
     			
     			if($v1 == "grade") {
+    			    $houses_grade = C('public.houses_grade');
     				if(isset($houses_grade[$val['grade']])) {
     					$value = $houses_grade[$val['grade']];
     				}
