@@ -1604,9 +1604,9 @@ class Housesorders extends MY_Controller{
             $list = $this->Mhouses_points->get_points_lists($where);
             foreach ($list as $key => $val){
                 if($val['addr'] == 1){
-                    $list[$k]['addr'] = '门禁';
+                    $list[$key]['addr'] = '门禁';
                 }else{
-                    $list[$k]['addr'] = '电梯前室';
+                    $list[$key]['addr'] = '电梯前室';
                 }
             }
             $total[$k] =$list;
@@ -1632,7 +1632,7 @@ class Housesorders extends MY_Controller{
                 $row = count($total[$k-1])+2+1;
             }
             $cell = PHPExcel_Cell::stringFromColumnIndex(0).$row;
-            $val = '客户:'.$customers[$k];
+            $val = '客户:【'.$customers[$k].'】-点位数:【'.count($v).'】';
             //设置标题
             $this->phpexcel->setActiveSheetIndex(0)->setCellValue($cell, $val);
             //填充字段
