@@ -20,6 +20,7 @@ class Task extends MY_Controller {
             'Model_houses' => 'Mhouses',
             'Model_houses_customers' => 'Mhouses_customers',
             'Model_houses_work_order' => 'Mhouses_work_order',
+            'Model_houses_points_report' => 'Mhouses_points_report',
             'Model_houses_points_format' => 'Mhouses_points_format',
             'Model_houses_work_order_detail' => 'Mhouses_work_order_detail',
         	'Model_houses_assign' => 'Mhouses_assign',
@@ -503,4 +504,39 @@ class Task extends MY_Controller {
         }
         return $pointList;
     }
+    
+    /**
+     * 提交异常，更新点位状态为4（异常状态）
+     */
+    public function report(){
+        $id = $this->input->get_post('id');//工单详情id report
+        $report_img = $this->input->get_post('report_img');
+        if(!$report_img) $this->return_json(['code' => 0, 'msg' => '请拍照上传图片']);
+        $report = $this->input->get_post('report');
+        if(!$report) $this->return_json(['code' => 0, 'msg' => '请选择异常选项']);
+        $report_msg = $this->input->get_post('report_msg');
+        
+        $info = $this->Mhouses_work_order_detail->get_one('*', ['id' => $id]);
+        if(!$info) $this->return_json(['code' => 0, 'msg' => '数据不存在']);
+        $token = decrypt($this->token);
+        $up = [
+            'report_img' => $report_img,
+            'point_id' => $info['point_id'],
+            'report' => $report,
+            'create_id' => $token['user_id'],
+            'report_msg' => $report_msg,
+            'create_time' => strtotime(date('Y-m-d')),
+        ];
+        $res = $this->Mhouses_points_report->cerate($up);
+        if(!$res){
+            $this->return_json(['code' => 0, 'msg' => '操作失败，请重试']);
+        }
+        //更新点位为异常状态
+        $res = $this->Mhouses_points->update_info(['point_status' => 4], ['id' => $info['point_id']]);
+        if(!$res){
+            $this->write_log($token['user_id'], 1, '点位成功报异常，但未能更新点位状态,工单详情id'.$id);
+        }
+        $this->return_json(['code' => 1, 'msg' => '提交成功']);
+    }
+    
 }
