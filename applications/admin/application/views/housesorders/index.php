@@ -174,7 +174,7 @@
                                                 <th width="7%">投放点位</th>
                                                 <th>总价（元）</th>
                                                 <th>客户</th>
-                                                <th width="6%">业务员</th>
+                                                <th>业务员</th>
                                                 <th>手机号</th>
                                                 <th>投放时间</th>
                                                 <th width="7%">下单日期</th>
