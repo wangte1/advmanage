@@ -267,7 +267,7 @@ class Housesarea extends MY_Controller{
     				}
     				
     			}
-    
+    			
     			if($v1 == "count1") {
     				$value = $val['count_1']['count'];
     			}
@@ -292,7 +292,7 @@ class Housesarea extends MY_Controller{
     	$this->phpexcel->setActiveSheetIndex(0);
     	// 输出
     	header('Content-Type: application/vnd.ms-excel');
-    	header('Content-Disposition: attachment;filename=社区点位表.xls');
+    	header('Content-Disposition: attachment;filename=社区组团表.xls');
     	header('Cache-Control: max-age=0');
     
     	$objWriter = PHPExcel_IOFactory::createWriter($this->phpexcel, 'Excel5');
