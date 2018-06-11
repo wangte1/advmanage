@@ -528,7 +528,7 @@ class Task extends MY_Controller {
             'report_msg' => $report_msg,
             'create_time' => strtotime(date('Y-m-d')),
         ];
-        $res = $this->Mhouses_points_report->cerate($up);
+        $res = $this->Mhouses_points_report->create($up);
         if(!$res){
             $this->return_json(['code' => 0, 'msg' => '操作失败，请重试']);
         }
