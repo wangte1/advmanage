@@ -387,9 +387,9 @@ class Task extends MY_Controller {
         $list = [];
         //获取点位信息
         $info = $this->Mhouses_points->get_one('*', ['id' => $pointId]);
-        if(!$info) $this->return_json(['code' => 0, 'msg' => '参数错误']);
+        if(!$info) $this->return_json(['code' => 0, 'msg' => '参数错误1']);
         $workeInfo = $this->Mhouses_work_order->get_one('order_id', ['id' => $assignId]);
-        if(!$workeInfo) $this->return_json(['code' => 0, 'msg' => '参数错误']);
+        if(!$workeInfo) $this->return_json(['code' => 0, 'msg' => '参数错误2']);
         if($workeInfo){
             $fields = 'id,code,houses_id,area_id,ban,unit,floor,addr,type_id,ad_num, ad_use_num, lock_num,point_status';
             $findby = ['unit','ban','area_id'];
@@ -509,6 +509,7 @@ class Task extends MY_Controller {
      * 提交异常，更新点位状态为4（异常状态）
      */
     public function report(){
+        $this->return_json(['code' => 1, 'msg' => '提交成功']);//临时开启
         $token = decrypt($this->token);
         $id = $this->input->get_post('id');//工单详情id report
         $report_img = $this->input->get_post('report_img');
