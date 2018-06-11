@@ -509,8 +509,10 @@ class Task extends MY_Controller {
      * 提交异常，更新点位状态为4（异常状态）
      */
     public function report(){
+        $token = decrypt($this->token);
         $id = $this->input->get_post('id');//工单详情id report
         $report_img = $this->input->get_post('report_img');
+        $this->write_log($token['user_id'], 1, $report_img);
         if(!$report_img) $this->return_json(['code' => 0, 'msg' => '请拍照上传图片']);
         $report = $this->input->get_post('report');
         if(!$report) $this->return_json(['code' => 0, 'msg' => '请选择异常选项']);
@@ -518,7 +520,6 @@ class Task extends MY_Controller {
         
         $info = $this->Mhouses_work_order_detail->get_one('*', ['id' => $id]);
         if(!$info) $this->return_json(['code' => 0, 'msg' => '数据不存在']);
-        $token = decrypt($this->token);
         $up = [
             'report_img' => $report_img,
             'point_id' => $info['point_id'],
@@ -537,6 +538,55 @@ class Task extends MY_Controller {
             $this->write_log($token['user_id'], 1, '点位成功报异常，但未能更新点位状态,工单详情id'.$id);
         }
         $this->return_json(['code' => 1, 'msg' => '提交成功']);
+    }
+    
+    /**
+     * 根据已选择附近的点位，替换当前工单的点位
+     * 并更新订单、子订单对应的点位
+     */
+    public function exchange_point(){
+        $token = decrypt($this->token);
+        $detailId = $this->input->get_post('detailId'); //工单详情记录的id
+        $new_point = $this->input->get_post('new_point');
+        if(!$new_point) $this->return_json(['code' => 0, 'msg' => '请选择一个附近的可用点位']);
+        $info = $this->Mhouses_work_order_detail->get_one('*', ['id' => $detailId]);
+        if(!$info) $this->return_json(['code' => 0, 'msg' => '数据不存在']);
+        $old_point = $info['point_id'];
+        //根据pid查询工单所在的工单
+        $infos = $this->Mhouses_work_order->get_one('*', ['id' => $info['pid']]);
+        if(!$infos) $this->return_json(['code' => 0, 'msg' => '工单不存在']);
+        //查询订单
+        $sonOrder = $this->Mhouses_orders->get_one('id,pid,point_ids', ['id' => $infos['order_id']]);
+        if(!$sonOrder) $this->return_json(['code' => 0, 'msg' => '数据不存在']);
+        //更新订单的点位
+        $point_ids = explode(',', $sonOrder['point_id']);
+        foreach ($point_ids as $k => $v){
+            if($v == $old_point){
+                $point_ids[$k] = $new_point;break;
+            }
+        }
+        $this->Mhouses_orders->update_info(['point_ids' => implode(',', $point_ids)], ['id' => $sonOrder['id']]);
+        $fatherOrder = $this->Mhouses_orders->get_one('id,point_ids', ['id' => $sonOrder['pid']]);
+        if($fatherOrder){
+            $point_ids = explode(',', $fatherOrder['point_id']);
+            foreach ($point_ids as $k => $v){
+                if($v == $old_point){
+                    $point_ids[$k] = $new_point;break;
+                }
+            }
+            $this->Mhouses_orders->update_info(['point_ids' => implode(',', $point_ids)], ['id' => $fatherOrder['id']]);
+        }
+        //更新此订单详情记录的新点位
+        $res = $info = $this->Mhouses_work_order_detail->update_info(['point_id' => $new_point], ['id' => $detailId]);
+        if(!$res){
+            $this->write_log($token['user_id'], 1, '订单的新点位已更新,但工单详情id'.$detailId.'未能更新成新点位'.$new_point);
+        }
+        //更新新点位占用各种状态
+        $this->Mhouses_points->update_info(['incr' => ['ad_use_num' => 1] ], ['id' => $new_point]);
+        $_where['id'] = $new_point;
+        $_where['field']['`ad_num`<='] = '`ad_use_num` + `lock_num`';
+        $this->Mhouses_points->update_info(['point_status' => 3], $_where);
+        $this->return_json(['code' => 1, 'msg' => '操作成功']);
     }
     
 }
