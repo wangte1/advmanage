@@ -1118,6 +1118,9 @@ class Housesscheduledorders extends MY_Controller{
                 $post_data['point_ids'] = array_unique($post_data['point_ids']);
                 $post_data['point_ids'] = implode(',', $post_data['point_ids']);
             }
+            //检查是否包含异常数据的点位
+            $this->checkPointIsCanUse($post_data['point_ids']);
+            //查询提交的点位是可用
             $post_data['creator'] =  $data['userInfo']['id'];
             $post_data['create_time'] =  date('Y-m-d H:i:s');
             unset($post_data['houses_id'], $post_data['area_id'],$post_data['ban'],$post_data['unit'],$post_data['floor'],$post_data['addr'], $post_data['hour'], $post_data['minute'], $post_data['second']);
@@ -1261,5 +1264,32 @@ class Housesscheduledorders extends MY_Controller{
         } catch (Exception $e) {
             echo 'Message could not be sent. Mailer Error: ', $mail->ErrorInfo;
         }
+    }
+    
+    /**
+     * 转订单前检查所选的点位是否可用
+     * @param string $point_ids
+     */
+    public function checkPointIsCanUse($point_ids = ''){
+        $point_ids = explode(',', $point_ids);
+        $pointList = $this->Mhouses_points->get_lists('id,point_status,ad_num,ad_use_num,lock_num', ['in' => ['id' => $point_ids]]);
+        $msg = '';
+        if($pointList){
+            foreach ($pointList as $k => $v){
+                if($v['point_status'] == 1){
+                    $msg = '包含空闲点位，无法转订单，请重新编辑';
+                    break;
+                }
+                if($v['ad_num'] < ($v['ad_use_num'] + $v['lock_num'])){
+                    $msg = '包含异常数据点位，无法转订单，请管理员解决';
+                    break;
+                }
+            }
+        }
+        if(!empty($msg)) $this->backAlert($msg);
+    }
+    
+    private function backAlert($msg = ''){
+        $this->error($msg);
     }
 }

@@ -36,6 +36,13 @@ class Model_houses_points extends MY_Model {
             }
             unset($where['like']);
         }
+        //字段间的比较
+        if(isset($where['field'])){
+            foreach ($where['field'] as $key => $value){
+                $this->db->where("{$key}", $value, FALSE);
+            }
+            unset($where['field']);
+        }
         
         if(isset($where['or_like'])) {
             foreach($where['or_like'] as $k => $v) {
