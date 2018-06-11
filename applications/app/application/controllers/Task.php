@@ -134,7 +134,7 @@ class Task extends MY_Controller {
 	        if($count == 0){
 	            
 	            $res = $tmp_moudle->update_info(['assign_status' => 3], ['id' => $order_id]);
-	            if($res) $this->write_log($token['user_id'], 2, "更新派单状态为已确认失败：".$order_id);
+	            if(!$res) $this->write_log($token['user_id'], 2, "更新派单状态为已确认失败：".$order_id);
 	            
 	            $fatherOrder = $tmp_moudle->get_one('pid', ['id' => $order_id]);
 	            if($fatherOrder['pid']){
@@ -147,7 +147,7 @@ class Task extends MY_Controller {
 	                }
 	                
 	                $res = $tmp_moudle->update_info($fup, ['id' => $fatherOrder['pid']]);
-	                if($res) $this->write_log($token['user_id'], 2, "更新派单状态为已确认失败：".$fatherOrder['pid']);
+	                if(!$res) $this->write_log($token['user_id'], 2, "更新派单状态为已确认失败：".$fatherOrder['pid']);
 	            }
 	        }
 	        
