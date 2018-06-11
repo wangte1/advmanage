@@ -512,7 +512,7 @@ class Task extends MY_Controller {
         $token = decrypt($this->token);
         $id = $this->input->get_post('id');//工单详情id report
         $report_img = $this->input->get_post('report_img');
-        $this->write_log($token['user_id'], 1, $report_img);
+        $this->write_log($token['user_id'], 1, '报损图片url'.$report_img);
         if(!$report_img) $this->return_json(['code' => 0, 'msg' => '请拍照上传图片']);
         $report = $this->input->get_post('report');
         if(!$report) $this->return_json(['code' => 0, 'msg' => '请选择异常选项']);
