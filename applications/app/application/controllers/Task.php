@@ -256,15 +256,16 @@ class Task extends MY_Controller {
      * 保存上传的图片信息
      */
     public function upload_save() {
-    	$id = (int) $this->input->post('id');
-    	$img_url = $this->input->post('img_url');
+    	$id = (int) $this->input->get_post('id');
+    	$img_url = $this->input->get_post('img_url');
+    	$status = $this->input->get_post('status');//临时接收
     	$info = $this->Mhouses_work_order_detail->get_one('pid', ['id' => $id, 'status' => 0]);
     	if($info){
     	    $up = [
-    	        'status' => 1,
+    	        'status' => $status,
     	        'no_img' => $img_url
     	    ];
-    	    $res = $this->Mhouses_work_order_detail->update_info($up, ['id' => $id, 'status' => 0]);
+    	    $res = $this->Mhouses_work_order_detail->update_info($up, ['id' => $id]);
     	    if(!$res){
     	        $this->return_json(['code' => 0, 'msg' => '操作失败']);
     	    }
