@@ -566,6 +566,7 @@ class Task extends MY_Controller {
                 $point_ids[$k] = $new_point;break;
             }
         }
+        $this->return_json(['code' => 1, 'msg' => '操作成功']);//临时开启
         $this->Mhouses_orders->update_info(['point_ids' => implode(',', $point_ids)], ['id' => $sonOrder['id']]);
         $fatherOrder = $this->Mhouses_orders->get_one('id,point_ids', ['id' => $sonOrder['pid']]);
         if($fatherOrder){
