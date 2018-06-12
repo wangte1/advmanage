@@ -107,9 +107,9 @@ class Housespoints extends MY_Controller{
 
         if(IS_POST){
             $post = $this->input->post();
-            $tmpArr = $this->Mhouses_points->get_one("count(0) as count",array("code"=>$post['code']));
-            if($tmpArr['count'] > 0) {
-            	$this->error("点位编号已经存在！");
+            $count = $this->Mhouses_points->count(['code' => $post['code']]);
+            if($count){
+                $this->error("编号已存在，请核实后提交");
             }
             
             $post['creator'] = $data['userInfo']['id'];
@@ -154,6 +154,14 @@ class Housespoints extends MY_Controller{
             if(isset($post['cover_img'])){
             	$post['images'] = implode(';', $post['cover_img']);
             	unset($post['cover_img']);
+            }
+            //判断点位编号是否重复
+            $info = $this->Mhouses_points->get_one('code', ['id' => $id]);
+            if($info['code'] != $post['code']){
+                $count = $this->Mhouses_points->count(['code' => $post['code']]);
+                if($count){
+                    $this->error("编号已存在，请核实后提交");
+                }
             }
 
             $post['update_time'] = date("Y-m-d H:i:s");
