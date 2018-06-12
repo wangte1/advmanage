@@ -44,7 +44,8 @@ class Housesarea extends MY_Controller{
         	$where['grade'] = $this->input->get('grade') ? $this->input->get('grade') : 1;
         }
         
-
+        $data['zhiye_id'] = $zhiye_id = $this->input->get('zhiye_id');
+        if($zhiye_id) $where['zhiye_id'] = $zhiye_id;
         $data['name'] = $this->input->get('name');
         $data['houses_id'] = $this->input->get('houses_id');
         $data['group_id'] = $this->input->get('group_id');

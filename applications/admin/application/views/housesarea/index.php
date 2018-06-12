@@ -82,8 +82,22 @@
                                                     </select>
                                                 </div>
                                             </div>
-                                            
+                                         
+                                        	<div class="col-sm-4">
+                                        	 	<br/>
+                                                <label class="col-sm-3 control-label no-padding-right" for="form-field-1"> 置业类型</label>
+                                                <div class="col-sm-9">
+                                                    <select id="state" name="zhiye_id"  class="select2" data-placeholder="Click to Choose...">
+                                                        <option value="0">全部</option>
+                                                        <?php foreach(C('zhiye') as $key=>$val){ ?>
+                                                            <option value="<?php echo $key;?>" <?php if(isset($zhiye_id) && $zhiye_id == $key){echo 'selected';}?> ><?php echo $val;?></option>
+                                                        <?php } ?>
+                                                    </select>
+                                                </div>
+                                            </div>
+                                        
                                         </div>
+                                        
                                         
                                         
                                         <div class="clearfix form-actions">
