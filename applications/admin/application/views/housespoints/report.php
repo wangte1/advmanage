@@ -53,6 +53,7 @@
 <script type="text/javascript" src="<?php echo css_js_url('admin_upload.js', 'admin');?>"></script>
 <script>
 	$('.btn').on('click', function(){
+		
 		var id = $('#id').val(); 
 		var report_msg = $('#report_msg').val();
 		var report = [];
@@ -87,10 +88,13 @@
 		var post_data = {'id':id, 'report':report, 'report_msg':report_msg, 'report_img':report_img, 'usable':usable};
 		$.post('/housespoints/report_add', post_data, function(data){
 			if(data.code == 1){
-				window.parent.location.reload(); //刷新父页面
-				return;
+				layer.alert(data.msg, function(){
+					window.parent.location.reload(); //刷新父页面
+					return;
+				});
+			}else{
+				layer.msg(data.msg);
 			}
-			layer.msg(data.msg);
 		});
 	});
 </script>
