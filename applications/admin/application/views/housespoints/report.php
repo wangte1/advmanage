@@ -3,12 +3,35 @@
 <!-- 加载尾部公用js -->
 <?php $this->load->view("common/footer");?>
 <style>
-    textarea{margin-top:1%;width:50%;height:100px;}
+    textarea{clear:both;margin-top:1%;margin-bottom:1%;width:50%;height:100px;}
+    label{float:left;margin-right:4%;}
 </style>
 <div style="width: 100%;height:100%;text-align: center;">
 	<div class="form">
     	<input type="hidden" id="id" name="id" value="<?php echo $id?>"/>
-    	<textarea id="destroy" name="destroy" rows="" cols="" placeholder="请输入点位报修的内容"></textarea>
+    	<div style="margin: 0 auto;width: 50%;height: 120px;text-align:center;margin-top:20px;" class="check-area">
+    		<p style="text-align: left;">报损选项：</p>
+    		<?php foreach (C('housespoint.report') as $k => $v):?>
+    		<label>
+                  <input type="checkbox" class="report_option" name="report[]" value="<?php echo $k;?>"> <?php echo $v;?>
+            </label>
+    		<?php endforeach;?>
+            
+    	</div>
+    	<br/>
+    	
+    	<div style="margin: 0 auto;width: 50%;height: 80px;text-align:center;margin-top:20px;" class="check-area">
+    		<p style="text-align: left;">是否可以上画：</p>
+    		<label>
+                  <input type="radio" class="usable" name="usable" value="0"> 不可以
+            </label>
+    		<label>
+                  <input type="radio" class="usable" name="usable" value="1"> 可以
+            </label>
+            
+    	</div>
+    	<textarea id="report_msg" name="report_msg" rows="" cols="" placeholder="请输入其他选项报修的内容"></textarea>
+    	<br/>
     	<div style="margin: 0 auto;width: 50%;height: 100%;">
         	<ul  class="ace-thumbnails" id="uploader_cover_img">
                 <li class="pic pic-add add-pic" style="float: left;width: 220px;height: 150px;clear:none; border: 1px solid #f18a1b">
@@ -17,6 +40,7 @@
             </ul>
         </div>
         <div style="clear: both;"><button style="width: 50%;margin-top:1%;" class="btn btn-info">提交</button></div>
+		<br/>
 	</div>
 </div>
 <script type="text/javascript">
@@ -30,11 +54,38 @@
 <script>
 	$('.btn').on('click', function(){
 		var id = $('#id').val(); 
-		var destroy = $('#destroy').val();
-		var destroy_img = $('input[name="cover_img[]"]').val();
-		if(destroy =="" ){layer.msg('请先填写报损说明');return;}
-		if(destroy_img == "undefined") {destroy_img = ''}
-		$.post('/housespoints/report_add', {'id':id, 'destroy':destroy, 'destroy_img':destroy_img}, function(data){
+		var report_msg = $('#report_msg').val();
+		var report = [];
+		$('.report_option').each(function(){
+			if($(this).prop('checked')){
+				report.push($(this).val());
+			}
+		});
+		if(report.length == 0){
+			layer.alert('请至少选一个选项');return;
+		}
+		var report_img = $('input[name="cover_img[]"]').val();
+		if(report_img == "undefined" || report_img =="") {report_img = ''}
+		for(var i = 0; i < report.length; i++){
+			if(report[i] == 14){
+				if(report_msg == ''){
+					layer.alert('您选择了其他的选项，请填写具体的内容');
+					return;
+				}
+			}
+		}
+		var usable = -1;
+		$('.usable').each(function(){
+			if($(this).prop('checked')){
+				usable = $(this).val();
+			}
+		});
+		if(usable == -1){
+			layer.alert('请选择一个是否可以上画的选项');
+			return;
+		}
+		var post_data = {'id':id, 'report':report, 'report_msg':report_msg, 'report_img':report_img, 'usable':usable};
+		$.post('/housespoints/report_add', post_data, function(data){
 			if(data.code == 1){
 				window.parent.location.reload(); //刷新父页面
 				return;

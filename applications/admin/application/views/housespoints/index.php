@@ -239,7 +239,7 @@
                                                 <th>状态</th>
                                                 <th>占用客户</th>
                                                 <th>备注</th>
-                                                <th>报修</th>
+                                                <th>报损</th>
                                                 <th>操作</th>
                                             </tr>
                                         </thead>
@@ -314,16 +314,20 @@
                                                     	<?php endif;?>
 													</td>
 													<td><?php echo $val['remarks']?></td>
-													<td><?php if($val['point_status'] == 4){echo $val['destroy'];}?></td>
+													<td>
+														<?php if($val['point_status'] == 4):?>
+														<button class="btn-primary see-report">查看</button>
+														<?php endif;?>
+													</td>
                                                     <td>
                                                         <div class="visible-md visible-lg hidden-sm hidden-xs action-buttons">
                                                        		<?php if($val['point_status'] == 4):?>
-                                                        	<a class="green tooltip-info reported" point_id="<?php echo $val['id'];?>" point_code="<?php echo $val['code'];?>" data-rel="tooltip" data-placement="top" data-original-title="修复">
+                                                        	<!--a class="green tooltip-info reported" point_id="<?php echo $val['id'];?>" point_code="<?php echo $val['code'];?>" data-rel="tooltip" data-placement="top" data-original-title="修复">
                                                                 <i class="ace-icon glyphicon glyphicon-refresh bigger-130"></i>
-                                                            </a>
-                                                            <a class="green tooltip-info report_img" img="<?php echo $val['destroy_img'];?>" data-rel="tooltip" data-placement="top" data-original-title="查看报损图片">
+                                                            </a-->
+                                                            <!--a class="green tooltip-info report_img" img="<?php echo $val['destroy_img'];?>" data-rel="tooltip" data-placement="top" data-original-title="查看报损图片">
                                                                 <i class="ace-icon glyphicon glyphicon-picture bigger-130"></i>
-                                                            </a>
+                                                            </a-->
                                                             <?php endif;?>
                                                             <?php if($val['point_status'] != 4):?>
                                                         	<a class="green tooltip-info reportnow" point_id="<?php echo $val['id'];?>" point_code="<?php echo $val['code'];?>" data-rel="tooltip" data-placement="top" data-original-title="报损">
@@ -412,6 +416,10 @@
 				location.href = url;
 			});
 	});
+
+	$('.see-report').on('click', function(){
+		layer.msg('开发中...');
+	});
     
     $('#houses').change(function(){
         $('#area').html();
@@ -485,6 +493,7 @@
     }
     //修复点位
     $('.reported').on('click', function(){
+        return;
 		var id = $(this).attr('point_id');
 		var code = $(this).attr('point_code');
 		layer.confirm(
@@ -527,7 +536,7 @@
 		  title: '编号: '+code+' 点位报修',
 		  shadeClose: true,
 		  shade: 0.8,
-		  area: ['50%', '50%'],
+		  area: ['50%', '70%'],
 		  content: '/housespoints/report?id='+id
 		});
     });

@@ -15,6 +15,7 @@ class Housespoints extends MY_Controller{
         	'Model_area' => 'Marea',
         	'Model_houses_points_format' => 'Mhouses_points_format',
         	'Model_houses_customers' => 'Mhouses_customers',
+            'Model_houses_points_report' => 'Mhouses_points_report'
          ]);
         $this->data['code'] = 'community_manage';
         $this->data['active'] = 'houses_points_list';
@@ -156,7 +157,7 @@ class Housespoints extends MY_Controller{
             	unset($post['cover_img']);
             }
             //判断点位编号是否重复
-            $info = $this->Mhouses_points->get_one('code', ['id' => $id]);
+            $info = $this->Mhouses_points->get_one('code,point_status', ['id' => $id]);
             if($info['code'] != $post['code']){
                 $count = $this->Mhouses_points->count(['code' => $post['code']]);
                 if($count){
@@ -170,12 +171,14 @@ class Housespoints extends MY_Controller{
                 //更新点位状态
                 $_where1['id'] = $id;
                 $_where1['field']['`ad_num`'] = '`ad_use_num` + `lock_num`';
-                $this->Mhouses_points->update_info(['point_status' => 3], $_where1);
-                
+                if($info['point_status'] != 4){
+                    $this->Mhouses_points->update_info(['point_status' => 3], $_where1);
+                }
                 $_where2['id'] = $id;
                 $_where2['field']['`ad_num` >'] = '`ad_use_num` + `lock_num`';
-                $this->Mhouses_points->update_info(['point_status' => 1], $_where2);
-                
+                if($info['point_status'] != 4){
+                    $this->Mhouses_points->update_info(['point_status' => 1], $_where2);
+                }
                 $this->write_log($data['userInfo']['id'],2,"社区编辑点位：".$post['code']);
                 $this->success("编辑成功","/housespoints");
             }else{
@@ -244,14 +247,34 @@ class Housespoints extends MY_Controller{
      * 提交报损
      */
     public function report_add(){
+        $data = $this->data;
         if(IS_POST){
-            $post = $this->input->post();
-            $id = $this->input->post('id');
-            unset($post['id']);
-            $post['point_status'] = 4;
-            if(empty($post['destroy'])) $this->return_json(['code' => 0, 'msg' => '请填写报损说明']);
-            $res = $this->Mhouses_points->update_info($post, ['id' => $id]);
-            if(!$res) $this->return_json(['code' => 0, 'msg' => '操作失败，请重试！']);
+            $point_id = $this->input->post('id');
+            $report_img = $this->input->post('report_img');
+            $report = $this->input->post('report');
+            $report_msg = $this->input->post('report_msg');
+            $usable = $this->input->post('usable');
+            $up = [
+                'report_img' => $report_img,
+                'point_id' => $point_id,
+                'report' => implode(',', $report),
+                'create_id' => $data['userInfo']['id'],
+                'report_msg' => $report_msg,
+                'create_time' => strtotime(date('Y-m-d')),
+            ];
+            $res = $this->Mhouses_points_report->create($up);
+            if(!$res){
+                $this->return_json(['code' => 0, 'msg' => '操作失败，请重试']);
+            }
+            if($usable == 0){
+                $point_up = [
+                    'point_status' => 4,
+                    'update_time' => date('Y-m-d H:i:s'),
+                    'update_user' =>$data['userInfo']['id']
+                ];
+                $res = $this->Mhouses_points->update_info($point_up, ['id' => $point_id]);
+                if(!$res) $this->write_log($data['userInfo']['id'], 2, "已报损，但无法更新点位数据id:".$point_id."数据：".json_encode($point_up));
+            }
             $this->return_json(['code' => 1, 'msg' => '操作成功']);
         }
     }
