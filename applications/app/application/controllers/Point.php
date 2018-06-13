@@ -17,7 +17,8 @@ class Point extends MY_Controller {
             'Model_token' => 'Mtoken',
             'Model_houses_points' => 'Mhouses_points',
             'Model_houses_area' => 'Mhouses_area',
-            'Model_houses' => 'Mhouses'
+            'Model_houses' => 'Mhouses',
+            'Model_houses_tour_points' => 'Mhouses_tour_points'
         ]);
     }
     
@@ -85,6 +86,22 @@ class Point extends MY_Controller {
      * 巡视点位
      */
     public function tourPoint(){
-        
+        $point_id = (int) $this->input->get_post('point_id');
+        $status = (int) $this->input->get_post('status');
+        $principal_id = (int) $this->input->get_post('principal_id');
+        $img_url = trim($this->input->get_post('img_url'));
+        $create_time = date('Y-m-d H:i:s');
+        if(empty($img_url)) $this->return_json(['code' => 0, 'msg' => '请上传图片']);
+        $up = [
+            'point_id' => $point_id,
+            'principal_id' => $principal_id,
+            'img' => $img_url,
+            'status' => $status,
+            'create_time' => $create_time
+        ];
+        $res = $this->Mhouses_tour_points->create($up);
+        if(!$res) $this->return_json(['code' => 0, 'msg' => '提交失败']);
+        $this->Mhouses_points->update_info(['tour_time' => $create_time], ['id' => $point_id]);
+        $this->return_json(['code' => 0, 'msg' => '操作成功']);
     }
 }
