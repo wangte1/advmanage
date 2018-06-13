@@ -58,7 +58,12 @@ class Housesorders extends MY_Controller{
         if ($this->input->get('order_code')) $where['A.order_code'] = $this->input->get('order_code');
         if ($this->input->get('order_type')) $where['A.order_type'] = $this->input->get('order_type');
         if ($this->input->get('customer_id')) $where['A.customer_id'] = $this->input->get('customer_id');
-        if ($this->input->get('order_status')) $where['A.order_status'] = $this->input->get('order_status');
+        if ($this->input->get('order_status')){
+            $data['order_status'] = $this->input->get('order_status');
+            $where['A.order_status'] = $this->input->get('order_status');
+        }else{
+            $where['A.order_status!='] = 8;
+        }
         
         $expire_time = $this->input->get("expire_time");
         $release_start_time = $this->input->get('release_start_time');
@@ -95,14 +100,14 @@ class Housesorders extends MY_Controller{
             $where['A.release_end_time<'] =  date("Y-m-d");
             $where['A.order_status'] =  C('housesorder.houses_order_status.code.in_put');
         }
-
+        
         $data['order_code'] = $this->input->get('order_code');
         $data['order_type'] = $this->input->get('order_type');
         $data['customer_id'] = $this->input->get('customer_id');
-        $data['order_status'] = $this->input->get('order_status');
+        
 
         $where['`A.pid`'] = 0;
-        $data['list'] = $this->Mhouses_orders->get_order_lists($where, ['A.id' => 'desc'], ($page-1)*$pageconfig['per_page'], $pageconfig['per_page']);
+        $data['list'] = $this->Mhouses_orders->get_order_lists($where, ['A.create_time' => 'desc'], ($page-1)*$pageconfig['per_page'], $pageconfig['per_page']);
         $data_count = $this->Mhouses_orders->get_order_count($where);
         $data['data_count'] = $data_count;
         $data['page'] = $page;
