@@ -399,6 +399,15 @@ class Housesassign extends MY_Controller{
     		        }
     		    }
     		}
+    		
+    		//对点位进行排序
+    		foreach ($group_data as $k => $v){
+    		    //查询点位
+    		    $tmp = $this->Mhouses_points->get_lists('id', ['in' => ['id' => $v['point_ids']] ], ['houses_id' => 'desc', 'area_id' => 'desc', 'ban' => 'desc']);
+    		    if($tmp){
+    		        $group_data[$k]['point_ids'] = array_column($tmp, 'id');
+    		    }
+    		}
 
     		foreach ($group_data as $k => $v){
     		    //工单数据
