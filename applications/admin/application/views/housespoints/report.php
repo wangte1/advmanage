@@ -12,8 +12,13 @@
     	<div style="margin: 0 auto;width: 50%;height: 120px;text-align:center;margin-top:20px;" class="check-area">
     		<p style="text-align: left;">报损选项：</p>
     		<?php foreach (C('housespoint.report') as $k => $v):?>
+    		<?php if($k!=14):?>
     		<label>
                   <input type="checkbox" class="report_option" name="report[]" value="<?php echo $k;?>"> <?php echo $v;?>
+            </label>
+            <?php endif;?>
+            <label>
+                  <input type="checkbox" class="report_option" name="report[]" value="14"> <?php echo $v;?>
             </label>
     		<?php endforeach;?>
             
