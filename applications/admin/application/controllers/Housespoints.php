@@ -251,6 +251,7 @@ class Housespoints extends MY_Controller{
         if(IS_POST){
             $point_id = $this->input->post('id');
             $report_img = $this->input->post('report_img');
+            if(!$report_img) $report_img = '';
             $report = $this->input->post('report');
             $report_msg = $this->input->post('report_msg');
             $usable = $this->input->post('usable');
