@@ -329,7 +329,7 @@
                                                                 <i class="ace-icon glyphicon glyphicon-picture bigger-130"></i>
                                                             </a-->
                                                             <?php endif;?>
-                                                            <?php if($val['point_status'] != 4):?>
+                                                            <?php if($val['point_status'] != 4 && $val['can_report']):?>
                                                         	<a class="green tooltip-info reportnow" point_id="<?php echo $val['id'];?>" point_code="<?php echo $val['code'];?>" data-rel="tooltip" data-placement="top" data-original-title="报损">
                                                                 <i class="ace-icon fa fa-gavel bigger-130"></i>
                                                             </a>

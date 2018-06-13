@@ -72,6 +72,25 @@ class Housespoints extends MY_Controller{
         $data['page'] = $page;
         $data['data_count'] = $data_count;
         
+        //提取本次的点位
+        $point_ids = array_column($data['list'], 'id');
+        //查询报修表是否存在改点位的已报损但可以上画的点位
+        $report_list = $this->Mhouses_points_report->get_lists('point_id', ['in' => ['point_id' => $point_ids], 'usable' => 1, 'repair_time' => 0]);
+        if($data['list']){
+            foreach ($data['list'] as $k => $v){
+                $data['list'][$k]['can_report'] = 1;
+            }
+        }
+        if($report_list){
+            foreach ($data['list'] as $k => $v){
+                foreach ($report_list as $key => $val){
+                    if($v['id'] == $val['point_id']){
+                        $data['list'][$k]['can_report'] = 0;
+                    }
+                }
+            }
+        }
+        //var_dump($report_list, $this->db->last_query());exit;
         $data['hlist'] = $this->Mhouses->get_lists('id,name',['is_del'=>0]);
         $data['alist'] = $this->Mhouses_area->get_lists('id,name',['is_del'=>0]);
         $data['tlist'] = $this->Mhouses_points_format->get_lists('id,type',['is_del'=>0]);
@@ -264,6 +283,7 @@ class Housespoints extends MY_Controller{
                 'create_id' => $data['userInfo']['id'],
                 'report_msg' => $report_msg,
                 'create_time' => strtotime(date('Y-m-d')),
+                'usable' => $usable
             ];
             $res = $this->Mhouses_points_report->create($up);
             if(!$res){
