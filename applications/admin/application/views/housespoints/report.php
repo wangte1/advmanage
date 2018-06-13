@@ -9,7 +9,7 @@
 <div style="width: 100%;height:100%;text-align: center;">
 	<div class="form">
     	<input type="hidden" id="id" name="id" value="<?php echo $id?>"/>
-    	<div style="margin: 0 auto;width: 50%;height: 120px;text-align:center;margin-top:20px;" class="check-area">
+    	<div style="margin: 0 auto;width: 50%;height: 220px;text-align:center;margin-top:20px;" class="check-area">
     		<p style="text-align: left;">报损选项：</p>
     		<?php foreach (C('housespoint.report') as $k => $v):?>
     		<?php if($k!=14):?>
