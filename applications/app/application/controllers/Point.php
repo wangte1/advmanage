@@ -80,4 +80,11 @@ class Point extends MY_Controller {
         }
         $this->return_json(['code' => 1, 'data' => $list, 'page' => $page]);
     }
+    
+    /**
+     * 巡视点位
+     */
+    public function tourPoint(){
+        
+    }
 }
