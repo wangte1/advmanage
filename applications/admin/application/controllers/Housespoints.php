@@ -250,6 +250,8 @@ class Housespoints extends MY_Controller{
         $data = $this->data;
         if(IS_POST){
             $point_id = $this->input->post('id');
+            $count = $this->Mhouses_points_report->count(['point_id' => $point_id, 'repair_time' => 0]);
+            if($count) $this->return_json(['code' => 0, 'msg' => '请勿重复提交']);
             $report_img = $this->input->post('report_img');
             if(!$report_img) $report_img = '';
             $report = $this->input->post('report');
