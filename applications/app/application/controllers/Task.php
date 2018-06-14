@@ -318,6 +318,8 @@ class Task extends MY_Controller {
      */
     public function upload_save2() {
         $id = (int) $this->input->get_post('id');
+        $count = $this->Mhouses_work_order_detail->count(['id' => $id, 'pano_status' => 1]);
+        if($count)$this->return_json(['code' => 0, 'msg' => '请勿重复提交']);
         $img_url = $this->input->get_post('img_url2');
         $is_news_hand_img = (int) $this->input->get_post('is_news_hand_img'); //是否报头照
         $info = $this->Mhouses_work_order_detail->get_one('pid', ['id' => $id]);
