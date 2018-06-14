@@ -49,8 +49,7 @@ class Housesassign extends MY_Controller{
         $this->load->library('pagination');
         $page = $this->input->get_post('per_page') ? : '1';
 
-        $where =  array();
-        
+        $where['A.order_status!='] =  8;
         if ($this->input->get('order_code')) $where['A.order_code'] = $this->input->get('order_code');
         if ($this->input->get('order_type')) $where['A.order_type'] = $this->input->get('order_type');
         if ($this->input->get('customer_id')) $where['A.customer_id'] = $this->input->get('customer_id');
@@ -73,9 +72,9 @@ class Housesassign extends MY_Controller{
         $data['customer_id'] = $this->input->get('customer_id');
         $data['assign_status'] = $this->input->get('assign_status');
 
-        $data['list'] = $tmp_moudle->get_order_lists($where, ['id'=>'desc'], $pageconfig['per_page'], ($page-1)*$pageconfig['per_page']);
+        $data['list'] = $tmp_moudle->get_order_lists($where, ['create_time'=>'desc'], $pageconfig['per_page'], ($page-1)*$pageconfig['per_page']);
         //var_dump($data['list']);
-        //echo $this->db->last_query();
+        //echo $this->db->last_query();exit;
         $data_count = $tmp_moudle->get_order_count($where);
         $data['data_count'] = $data_count;
         $data['page'] = $page;

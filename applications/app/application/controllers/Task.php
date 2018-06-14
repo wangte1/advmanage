@@ -317,13 +317,15 @@ class Task extends MY_Controller {
      * 保存上传的全景、远景图片信息
      */
     public function upload_save2() {
-        $id = (int) $this->input->post('id');
-        $img_url = $this->input->post('img_url2');
+        $id = (int) $this->input->get_post('id');
+        $img_url = $this->input->get_post('img_url2');
+        $is_news_hand_img = (int) $this->input->get_post('is_news_hand_img'); //是否报头照
         $info = $this->Mhouses_work_order_detail->get_one('pid', ['id' => $id]);
         if($info){
             $up = [
                 'pano_status' => 1,
-                'pano_img' => $img_url
+                'pano_img' => $img_url,
+                'is_news_hand_img' => $is_news_hand_img
             ];
             $res = $this->Mhouses_work_order_detail->update_info($up, ['id' => $id]);
             if(!$res){
