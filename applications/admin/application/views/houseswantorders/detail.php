@@ -103,7 +103,7 @@
                                                             共<span id="all_points_num">0</span>个点位
                                                         </span>
                                                     </div>
-                                                    <div class="widget-body" style="height:580px">
+                                                    <div class="widget-body" style="height:630px">
                                                         <div class="widget-main">
                                                             <div class="form-group">
                                                             	<div class="row">
