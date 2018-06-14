@@ -201,7 +201,7 @@ class Housesconfirm extends MY_Controller{
     		    $count = $this->Mhouses_work_order->count(['status' => 0, 'type' => $assign_type, 'order_id' => $order_id]);
     		    if($count == 0){
     		        $res = $tmp_moudle->update_info(['assign_status' => 3], ['id' => $order_id]);
-    		        if($res) $this->write_log($data['userInfo']['id'], 2, "更新派单状态为已确认失败：".$order_id);
+    		        if(!$res) $this->write_log($data['userInfo']['id'], 2, "更新派单状态为已确认失败：".$order_id);
     		        $fatherOrder = $tmp_moudle->get_one('pid', ['id' => $order_id]);
     		        if($fatherOrder['pid']){
     		            //下画则更新为7
@@ -212,7 +212,7 @@ class Housesconfirm extends MY_Controller{
     		                $fup['order_status'] = 7;
     		            }
     		            $res = $tmp_moudle->update_info($fup, ['id' => $fatherOrder['pid']]);
-    		            if($res) $this->write_log($data['userInfo']['id'], 2, "更新派单状态为已确认失败：".$fatherOrder['pid']);
+    		            if(!$res) $this->write_log($data['userInfo']['id'], 2, "更新派单状态为已确认失败：".$fatherOrder['pid']);
     		        }
     		    }
     		    
