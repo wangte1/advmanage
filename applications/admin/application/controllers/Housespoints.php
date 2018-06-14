@@ -35,7 +35,7 @@ class Housespoints extends MY_Controller{
         $page =  intval($this->input->get("per_page",true)) ?  : 1;
         $size = $pageconfig['per_page'];
         $where['A.is_del'] = 0;
-        
+        $where['A.id>='] = 1;
         if ($this->input->get('type_id')) $where['A.type_id'] = $this->input->get('type_id');
         if ($this->input->get('province')) $where['B.province'] = $this->input->get('province');
         if ($this->input->get('city')) $where['B.city'] = $this->input->get('city');
