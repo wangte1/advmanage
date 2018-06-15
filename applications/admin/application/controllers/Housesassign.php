@@ -75,13 +75,13 @@ class Housesassign extends MY_Controller{
         $data['list'] = $tmp_moudle->get_order_lists($where, ['A.create_time'=>'desc'], $pageconfig['per_page'], ($page-1)*$pageconfig['per_page']);
         //var_dump($data['list']);
         //echo $this->db->last_query();exit;
-        $data_count = $tmp_moudle->get_order_count($where);
-        $data['data_count'] = $data_count;
+        $data_count = $tmp_moudle->get_order_lists($where);
+        $data['data_count'] = (int) count($data_count);
         $data['page'] = $page;
 
         //获取分页
         $pageconfig['base_url'] = "/housesassign";
-        $pageconfig['total_rows'] = $data_count;
+        $pageconfig['total_rows'] = $data['data_count'];
         $this->pagination->initialize($pageconfig);
         $data['pagestr'] = $this->pagination->create_links(); // 分页信息
 
