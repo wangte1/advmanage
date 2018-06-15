@@ -1272,11 +1272,11 @@ class Housesscheduledorders extends MY_Controller{
      */
     public function checkPointIsCanUse($point_ids = ''){
         $point_ids = explode(',', $point_ids);
-        $pointList = $this->Mhouses_points->get_lists('id,point_status,ad_num,ad_use_num,lock_num', ['in' => ['id' => $point_ids]]);
+        $pointList = $this->Mhouses_points->get_lists('id,point_status,type_id,ad_num,ad_use_num,lock_num', ['in' => ['id' => $point_ids]]);
         $msg = '';
         if($pointList){
             foreach ($pointList as $k => $v){
-                if($v['point_status'] == 1){
+                if($v['point_status'] == 1 && $v['type_id'] == 1){
                     $msg = '包含空闲点位，无法转订单，请重新编辑';
                     break;
                 }
