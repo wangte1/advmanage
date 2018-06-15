@@ -786,7 +786,7 @@ class Housesorders extends MY_Controller{
         //分组统计
         $group = array_unique(array_column($pointList, 'houses_id'));
         $tmp = [];
-        foreach ($group as $k => &$v){
+        foreach ($group as $k => $v){
             $tmp[$k]['houses_id'] = $v;
             $tmp[$k]['num'] = 0;
             $tmp[$k]['houses_name'] = '';
@@ -797,12 +797,12 @@ class Housesorders extends MY_Controller{
 
         foreach ($tmp as $k => $v){
             foreach ($imglist as $k1 => $v1){
-                if($v1['houses_id'] == $v1['houses_id'] && $v1['no_img']){
-                    if($v['no_img'] == ""){
-                        $tmp[$k]['no_img'] = $v1['no_img'];
-                    }
-                }
                 if($v1['houses_id'] == $v1['houses_id']){
+                    if(!empty($v1['no_img'])){
+                        if($v['no_img'] == ""){
+                            $tmp[$k]['no_img'] = $v1['no_img'];
+                        }
+                    }
                     if($v1['pano_img']){
                         if($v['pano_img'] == ""){
                             $tmp[$k]['pano_img'] = $v1['pano_img'];
