@@ -52,7 +52,7 @@
                                             <th class="center" nowrap>单元</th>
                                             <th class="center" nowrap>楼层</th>
                                             <th class="center" nowrap>点位位置</th>
-                                            <th class="center" nowrap>图片</th>
+                                            <th style="width:20%;" class="center" nowrap>图片</th>
                                         </tr>
                                     </thead>
                                     <tbody>
@@ -73,7 +73,11 @@
                                                 	        $msg = "未上传未审核";
                                                 	        break;
                                                 	    case 1 :
-                                                	        $msg = "审核通过";
+                                                	        $msg = "<img style='width:120px;' src='".$value["no_img"]."'/>";
+                                                	        if($value['pano_img']){
+                                                	            $str = "<img style='width:120px;' src='".$value["pano_img"]."'/>";
+                                                	            $msg = $msg.$str;
+                                                	        }
                                                 	        break;
                                                 	    case 2 :
                                                 	        $msg = "审核不通过";
@@ -115,6 +119,12 @@
 
 
 <script>
+
+	$('img').on('click', function(){
+		url = $(this).attr('src');
+		window.open(baseUrl+url,'_blank');
+	});
+	
 	var uploader_id;
 	var uploader = WebUploader.create({
 	

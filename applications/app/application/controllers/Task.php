@@ -511,10 +511,9 @@ class Task extends MY_Controller {
     }
     
     /**
-     * 提交异常，更新点位状态为4（异常状态）
+     * 提交异常，更新点位状态为4（异常状态），能上画，则不跟新为4，而是提交报告
      */
     public function report(){
-        $this->return_json(['code' => 1, 'msg' => '提交成功']);//临时开启
         $token = decrypt($this->token);
         $id = $this->input->get_post('id');//工单详情id report
         $report_img = $this->input->get_post('report_img');
@@ -523,6 +522,7 @@ class Task extends MY_Controller {
         $report = $this->input->get_post('report');
         if(!$report) $this->return_json(['code' => 0, 'msg' => '请选择异常选项']);
         $report_msg = $this->input->get_post('report_msg');
+        $usable = $this->input->get_post('usable');
         
         $info = $this->Mhouses_work_order_detail->get_one('*', ['id' => $id]);
         if(!$info) $this->return_json(['code' => 0, 'msg' => '数据不存在']);
@@ -533,16 +533,21 @@ class Task extends MY_Controller {
             'create_id' => $token['user_id'],
             'report_msg' => $report_msg,
             'create_time' => strtotime(date('Y-m-d')),
+            'usable' => $usable
         ];
         $res = $this->Mhouses_points_report->create($up);
         if(!$res){
             $this->return_json(['code' => 0, 'msg' => '操作失败，请重试']);
         }
-        //更新点位为异常状态
-        $res = $this->Mhouses_points->update_info(['point_status' => 4], ['id' => $info['point_id']]);
-        if(!$res){
-            $this->write_log($token['user_id'], 1, '点位成功报异常，但未能更新点位状态,工单详情id'.$id);
+        //如果不能上画，则更新为4
+        if($usable == 0){
+            //更新点位为异常状态
+            $res = $this->Mhouses_points->update_info(['point_status' => 4], ['id' => $info['point_id']]);
+            if(!$res){
+                $this->write_log($token['user_id'], 1, '点位成功报异常，但未能更新点位状态,工单详情id'.$id);
+            }
         }
+        
         $this->return_json(['code' => 1, 'msg' => '提交成功']);
     }
     
