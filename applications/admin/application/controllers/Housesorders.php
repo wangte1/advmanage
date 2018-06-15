@@ -758,7 +758,6 @@ class Housesorders extends MY_Controller{
                 $imglist = $this->Mhouses_work_order_detail->get_lists('point_id, no_img, pano_img,status,pano_status,is_news_hand_img', ['in' => ['pid' => $pids]]);
             }
         }
-
         //上画完成时间
         $data['complete_date'] = date('Y年m月d日', strtotime($data['info']['draw_finish_time']));
         //甲方-委托方（客户名称）
@@ -797,7 +796,7 @@ class Housesorders extends MY_Controller{
 
         foreach ($tmp as $k => $v){
             foreach ($imglist as $k1 => $v1){
-                if($v1['houses_id'] == $v1['houses_id']){
+                if($v['houses_id'] == $v1['houses_id']){
                     if(!empty($v1['no_img'])){
                         if($v['no_img'] == ""){
                             $tmp[$k]['no_img'] = $v1['no_img'];
