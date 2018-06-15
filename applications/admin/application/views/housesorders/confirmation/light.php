@@ -25,11 +25,19 @@
         .footer {margin-top: 10px; padding: 10px; clear: both; color:#D2D2D2;width: 984px}
         .footer p{height: 10px;}
 
-        .btn-print {width: 100%;margin-top: 50px; text-align: right; position: fixed; bottom: 0;left: 0;}
-        .btn-print2 {width: 100%;margin-top: 50px; text-align: right; position: fixed; bottom: 50px;left: 0;}
+        .btn-print {width: 100%;margin-top: 50px; text-align: right; position: fixed; bottom: 50px;left: 0;}
+        .btn-print2 {width: 100%;margin-top: 50px; text-align: right; position: fixed; bottom: 100px;left: 0;}
         .btn-print button  {border-radius: 3px; width: 100px; height: 30px;}
         .btn-print2 button  {border-radius: 3px; width: 100px; height: 30px;}
-
+        .btn-print3 button  {border-radius: 3px; width: 150px; height: 30px;}
+        .btn-print3{
+	        width: 100%;
+            margin-top: 50px;
+            text-align: right;
+            position: fixed;
+            bottom: 0;
+            left: 0;
+        }
         .hide{display:none}
         @media print { 
             .mid-p {height: 200px;}
@@ -42,6 +50,9 @@
             .page-h{height: 1250px}
             .first-h,.last-h{height: 1200px}
         }
+        img {width:185px;height:300px;}
+        #pic-panel table{width:90%;margin: 0 auto;}
+        .frist{border-top: 1px solid;}
     </style>
     
     <script src="<?php echo css_js_url('jquery-2.0.3.min.js','admin');?>"></script> 
@@ -50,9 +61,10 @@
 	<script> 
 	  
 	$(function(){ 
-		var count = parseInt('<?php echo ceil(count($points)/100);?>');
-        $("#pdf-btn").click(function(){
-            	window.open("/housesorders/confirmations?id=<?php echo $id;?>");return;
+		$("#pdf-btn").click(function(){
+        	window.open("/housesorders/confirmations?id=<?php echo $id;?>");return;
+		});
+        $("#pdf-btn-houses").click(function(){
                 html2canvas($('#pic-panel'), { 
                     onrendered: function(canvas) {
                     	var imgData = canvas.toDataURL('image/jpeg');
@@ -74,7 +86,6 @@
                       background: "#fff",
                       //这里给生成的图片默认背景，不然的话，如果你的html根节点没设置背景的话，会用黑色填充。
                       allowTaint: true //避免一些不识别的图片干扰，默认为false，遇到不识别的图片干扰则会停止处理html2canvas
-                      
                 });
         }); 
 	}); 
@@ -88,23 +99,23 @@
             <center class="title"><?php echo $order_type_text[$info['order_type']];?>广告验收报告</center>
             <p class="page-p"><span style="font-weight: bolder;">甲方（委托方）：<?php echo $info['customer_name'];?></span></p>
             <p class="page-p"><span style="font-weight: bolder">乙方（承办方）：</span><span style="border-bottom: 1px solid black;">贵州大视传媒有限公司</span></p>
-            <p class="page-p">广告牌上画发布地点、数量及规格：</p>
+            <p class="page-p">广告牌上画发布地点、数量：</p>
             <table class="detail-info">
                 <thead>
                     <th width="20%">编号</th>
-                    <th width="40%">点位地址</th>
-                    <th width="40%">广告规格</th>
+                    <th width="40%">楼盘</th>
+                    <th width="40%">数量</th>
                 </thead>
             </table>
             <?php $num = 1;?>
-            <?php foreach($points as $key => $value):?>
+            <?php foreach($group as $key => $value):?>
             <?php  //if($key < 25): ?>
             <table class="detail-info-print">
                 <tbody>
                     <tr>
                         <td width="20%"><?php echo $num ++;?></td>
-                        <td width="40%"><?php echo $value['houses_name'].$value['houses_area_name'].$value['ban'].$value['unit'].$value['floor'].'楼'?></td>
-                        <td width="40%"><?php echo $value['size'];?></td>
+                        <td width="40%"><?php echo $value['houses_name']?></td>
+                        <td width="40%"><?php echo $value['num'];?></td>
                     </tr>
                 </tbody>
             </table>
@@ -122,34 +133,32 @@
         </div>
 
         <!-- 验收图片 -->
-        <div id="pic-panel" style="background-color:#fff;">
-		<table class="detail-info">
-			<thead>
-             	<th width="10%">序号</th>
-             	<th width="10%">点位编号</th>
-               	<th width="30%">点位地址</th>
-               	<th width="50%">广告图</th>
-			</thead>
-		</table>
+        <div id="pic-panel" style="background-color:#fff;padding-top: 50px;padding-bottom: 100px;">
+		
  		<?php $num = 1;?>
-     	<?php foreach($points as $key => $value):?>
-       	<table class="detail-info-print">
+        <?php foreach($group as $key => $value):?>
+       	<table <?php if($key == 0){echo 'style="margin-top:50px;"';}?> class="detail-info-print <?php if($key == 0){echo "frist";}?>">
            	<tbody>
                	<tr>
-            		<td width="10%"><?php echo $num ++;?></td>
-            		<td width="10%"><?php  echo $value['code'];?></td>
-           			<td width="30%"><?php echo $value['houses_name'].$value['houses_area_name'].$value['ban'].$value['unit'].$value['floor']?></td>
-         			<?php if(!empty($value['img'])):?>
-         			<td width="50%"><img style="width:450px;height:300px;" src="<?php echo $value['img'];?>"></td>
-           			<?php else:?>
-           			<td width="50%"></td>
-           			<?php endif;?>
+            		<td width="33%"><?php echo $num;?></td>
+            		<td rows="2"><?php echo $value['houses_name'];?></td>
+           		</tr>
+           		<tr>
+            		<td style="width: 33%;">
+            			<img style="width:60%;" src="<?php echo $value['no_img'];?>">
+            		</td>
+            		<td rows="2" >
+                		<img style="width:30%;" src="<?php echo $value['pano_img'];?>">
+                		<img style="width:30%; margin-left:10px;" src="<?php echo $value['news_img'];?>">
+            		</td>
            		</tr>
         	</tbody>
         </table>
+        <?php $num++;?>
         <?php endforeach;?>
         </div>
         <div class="noprint btn-print2"><button type="button" onclick="document.getElementById('pic-panel').style.display='none';javascript: window.print();document.getElementById('pic-panel').style.display='block';">打印文字报告</button></div>
+        <div class="noprint btn-print3"><button id="pdf-btn-houses" type="button" style="font-size:14px;">按楼盘导出图片报告</button></div>
         <div class="noprint btn-print"><button id="pdf-btn" type="button" >导出图片报告</button></div>
     </div>
 </body>

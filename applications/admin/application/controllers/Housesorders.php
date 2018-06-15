@@ -755,7 +755,7 @@ class Housesorders extends MY_Controller{
             //提取所有子详情
             $pids = array_column($workerOrder, 'id');
             if($pids){
-                $imglist = $this->Mhouses_work_order_detail->get_lists('point_id, pano_img', ['in' => ['pid' => $pids]]);
+                $imglist = $this->Mhouses_work_order_detail->get_lists('point_id, no_img, pano_img,status,pano_status,is_news_hand_img', ['in' => ['pid' => $pids]]);
             }
         }
 
@@ -767,18 +767,68 @@ class Housesorders extends MY_Controller{
         //获取点位列表
         $where['in'] = array('A.id' => explode(',', $data['info']['point_ids']));
         $data['points'] = $pointList = $this->Mhouses_points->get_points_lists($where);
-		
-        foreach ($pointList as $k => $v){
-            $data['points'][$k]['img'] = '';
-            if(isset($imglist)){
-                foreach ($imglist as $key => $val){
-                    if($v['id'] == $val['point_id']){
-                        $data['points'][$k]['img'] = $val['pano_img'];
+        
+        if($imglist){
+            //提取id
+            $pointids = array_column($imglist, 'point_id');
+            $point_List = $this->Mhouses_points->get_lists('id,houses_id', ['in' => ['id' => $pointids]]);
+            if($point_List){
+                foreach ($imglist as $k => $v){
+                    $imglist[$k]['houses_id'] = 0;
+                    foreach ($point_List as $k1 => $v1){
+                        if($v['point_id'] == $v1['id']){
+                            $imglist[$k]['houses_id'] = $v1['houses_id'];
+                        }
                     }
                 }
             }
+        }
+        //分组统计
+        $group = array_unique(array_column($pointList, 'houses_id'));
+        $tmp = [];
+        foreach ($group as $k => &$v){
+            $tmp[$k]['houses_id'] = $v;
+            $tmp[$k]['num'] = 0;
+            $tmp[$k]['houses_name'] = '';
+            $tmp[$k]['no_img'] = '';
+            $tmp[$k]['pano_img'] = '';
+            $tmp[$k]['news_img'] = '';
+        }
+
+        foreach ($tmp as $k => $v){
+            foreach ($imglist as $k1 => $v1){
+                if($v1['houses_id'] == $v1['houses_id'] && $v1['no_img']){
+                    if($v['no_img'] == ""){
+                        $tmp[$k]['no_img'] = $v1['no_img'];
+                    }
+                }
+                if($v1['houses_id'] == $v1['houses_id']){
+                    if($v1['pano_img']){
+                        if($v['pano_img'] == ""){
+                            $tmp[$k]['pano_img'] = $v1['pano_img'];
+                        }
+                    }
+                    if($v1['is_news_hand_img'] == 1){
+                        if($v['news_img'] == ""){
+                            $tmp[$k]['news_img'] = $v1['pano_img'];
+                        }
+                    }
+                }
+            }
+        }
+        
+        foreach ($pointList as $k => $v){
+            foreach ($tmp as $key => $val){
+                if($v['houses_id'] == $val['houses_id']){
+                    $tmp[$key]['num'] += 1;
+                    if(empty($tmp[$key]['houses_name'])){
+                        $tmp[$key]['houses_name'] = $v['houses_name'];
+                    }
+                }
+            }
+            
 		}
-		$data['points_lists'] = array_chunk($data['points'], 100);
+		$data['group'] = $tmp; unset($group);
         $this->load->view('housesorders/confirmation/light', $data);
     }
     

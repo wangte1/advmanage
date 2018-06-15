@@ -302,6 +302,7 @@ class Task extends MY_Controller {
                     $order_status = $fatherOrder['order_status'];
                     //如果是下画则派单更新订单为已下画,改为7
                     $up['order_status'] = 7;
+                    $up['draw_finish_time'] = date('Y-m-d');
                     //如果是上画则更新订单为投放中
                     if($order_status == 4) $up['order_status'] = 6;
                     //更新父订单
