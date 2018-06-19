@@ -37,7 +37,6 @@ class App extends MY_Controller {
         $longitude= $this->input->get_post('longitude');
         $latitude = $this->input->get_post('latitude');
         
-        if(empty($img_url)) $this->return_json(['code' => 0, 'msg' => '请上传图片']);
         $up = [
             'addr' => $addr,
             'user_id' => decrypt($this->token)['user_id'],

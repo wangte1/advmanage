@@ -256,6 +256,11 @@ class Housespoints extends MY_Controller{
         }
     }
     
+    public function partition(){
+        $data = $this->data;
+        $this->load->view("housespoints/partition",$data);
+    }
+    
     /**
      * 点位报修
      */

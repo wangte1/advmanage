@@ -35,6 +35,7 @@
                 <div class="page-header">
                     <a href="/housespoints/add" class="btn btn-sm btn-primary"><i class="fa fa-plus-square" aria-hidden="true"></i> 新增点位</a>
                 	<a href="javascript:;" class="btn btn-sm btn-primary btn-export"><i class="fa fa-download out_excel" aria-hidden="true"></i> 导出</a>
+                	<a href="/housespoints/partition" class="btn btn-sm btn-primary"><i class="ace-icon glyphicon glyphicon-edit" aria-hidden="true"></i> 分配区域</a>
                 </div>
                 <div class="row">
                     <div class="col-xs-12">
