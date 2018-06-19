@@ -45,22 +45,39 @@
                 <div class="row">
                      <div class="table-responsive">
                 <table class="table table-bordered table-hover text-center">
-                    <caption style="border-bottom: 1px solid #ddd;"><span style="font-size:18px">总共为您查询到<b>213</b>条记录，列表如下：</span></caption>
+                    <caption style="border: 1px solid #ddd;"><span style="font-size:18px">楼盘-组团-区域</span></caption>
                     <thead>
                     <tr>
-                        <th>楼盘</th>
-                        <th>组团</th>
-                        <th>区域</th>
+                        <th style="text-align: center;width:20%;">楼盘</th>
+                        <th style="text-align: center;width:20%;">组团</th>
+                        <th style="text-align: center;width:20%;">点位数</th>
+                        <th style="text-align: center;width:20%;">自定义区域</th>
                     </tr>
                     </thead>
                     <tbody>
-
+						<?php if($list):?>
+						<?php foreach ($list as $k => $v):?>
+						<?php $i = 0;?>
+						<?php foreach ($v['area'] as $key => $val):?>
                         <tr>
-                            <td>楼盘</td>
-                            <td>组团</td>
-                            <td>区域</td>
+                        	<?php if($i == 0):?>
+                            <td style="vertical-align: middle;" rowspan="<?php echo count($v['area']);?>"><?php echo $v['houses_name'];?></td>
+                            <?php endif;?>
+                            <td><?php echo $val['area_name']?></td>
+                            <td><?php echo $val['num']?></td>
+                            <td>
+                            	<select name="roleId_<?php echo $v['houses_id']?>_<?php echo $val['area_id']?>">
+                            		<option value="0">请选择</option>
+                            		<?php foreach (C('diy_area') as $k1 => $v1):?>
+                            		<option value="<?php echo $k1?>"><?php echo $v1?></option>
+                            		<?php endforeach;?>
+                            	</select>
+                            </td>
                         </tr>
-                                            
+                        <?php $i++;?>
+                        <?php endforeach;?>
+                        <?php endforeach;?>
+                        <?php endif;?>                  
                      </tbody>
                 </table>
             </div>

@@ -258,6 +258,43 @@ class Housespoints extends MY_Controller{
     
     public function partition(){
         $data = $this->data;
+        //提取楼盘、组团
+        $where = [];
+        $group_by = ['houses_id', 'area_id'];
+        $list = $this->Mhouses_points->get_lists('houses_id, houses_name, area_id, count(id) as num,area_name', $where, ['houses_id' => 'asc'], 0, 0, $group_by);
+        //提取楼盘ids
+        $listData = [];
+        if($list){
+            $houses_ids = array_column($list, 'houses_id');
+            if($houses_ids){
+                $houses_ids = array_unique($houses_ids);
+                foreach ($houses_ids as $k => $v){
+                    $listData[$k]['houses_id'] = $v;
+                    $listData[$k]['houses_name'] = '';
+                    $listData[$k]['area'] = [];
+                }
+            }
+            foreach ($list as $k => $v){
+                foreach ($listData as $key => $val){
+                    if($v['houses_id'] == $val['houses_id']){
+                        //设置楼盘名称
+                        if(empty($val['houses_name'])){
+                            $listData[$k]['houses_name'] = $v['houses_name'];
+                        }
+                        if(!in_array($v['area_id'], $val['area_id'])){
+                            $listData[$key]['area'][$k]['id'] = $v['area_id'];
+                            $listData[$key]['area'][$k]['num'] = $v['num'];
+                            if(empty($v['area_name'])){
+                                $v['area_name'] = '无组团';
+                            }
+                            $listData[$key]['area'][$k]['area_name'] = $v['area_name'];
+                        }
+                    }
+                }
+            }
+        }
+        unset($list);
+        $data['list'] = $listData;
         $this->load->view("housespoints/partition",$data);
     }
     

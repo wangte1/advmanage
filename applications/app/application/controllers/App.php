@@ -47,6 +47,6 @@ class App extends MY_Controller {
         ];
         $res = $this->Mapp_location->create($up);
         if(!$res) $this->return_json(['code' => 0, 'msg' => '提交失败']);
-        $this->return_json(['code' => 0, 'msg' => '操作成功']);
+        $this->return_json(['code' => 1, 'msg' => '操作成功']);
     }
 }
