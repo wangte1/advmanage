@@ -14,7 +14,8 @@ class App extends MY_Controller {
         $this->doCheckToken($this->token);
         
         $this->load->model([
-            'Model_houses_app' => 'Mhouses_app'
+            'Model_houses_app' => 'Mhouses_app',
+            'Model_app_location' => 'Mapp_location'
         ]);
     }
     
@@ -25,5 +26,28 @@ class App extends MY_Controller {
             $this->return_json(['code' => 1, 'url' => $info['url']]);
         }
         $this->return_json(['code' => 0, 'url' => '']);
+    }
+    
+    /**
+     * 更新、提交用户所在位置
+     */
+    public function upUserLocation(){
+        
+        $addr = $this->input->get_post('addr');
+        $longitude= $this->input->get_post('longitude');
+        $latitude = $this->input->get_post('latitude');
+        
+        if(empty($img_url)) $this->return_json(['code' => 0, 'msg' => '请上传图片']);
+        $up = [
+            'addr' => $addr,
+            'user_id' => decrypt($this->token)['user_id'],
+            'longitude' => $longitude,
+            'latitude' => $latitude,
+            'create_time' => time(),
+            'date' => date('Y-m-d'),
+        ];
+        $res = $this->Mapp_location->create($up);
+        if(!$res) $this->return_json(['code' => 0, 'msg' => '提交失败']);
+        $this->return_json(['code' => 0, 'msg' => '操作成功']);
     }
 }
