@@ -15,7 +15,8 @@ class Housespoints extends MY_Controller{
         	'Model_area' => 'Marea',
         	'Model_houses_points_format' => 'Mhouses_points_format',
         	'Model_houses_customers' => 'Mhouses_customers',
-            'Model_houses_points_report' => 'Mhouses_points_report'
+            'Model_houses_points_report' => 'Mhouses_points_report',
+            'Model_houses_diy_area' => 'Mhouses_diy_area'
          ]);
         $this->data['code'] = 'community_manage';
         $this->data['active'] = 'houses_points_list';
@@ -288,15 +289,65 @@ class Housespoints extends MY_Controller{
                                 $v['area_name'] = '无组团';
                             }
                             $listData[$key]['area'][$k]['area_name'] = $v['area_name'];
+                            $listData[$key]['area'][$k]['diy_area_id'] = 0;
                         }
                     }
                 }
             }
         }
         unset($list);
+        
+        //查询已分配的情况
+        $diyList = $this->Mhouses_diy_area->get_lists('*');
+        
+        if($diyList){
+            foreach ($listData as $k => $v){
+                foreach ($diyList as $k0 => $v0){
+                    if($v['houses_id'] == $v0['houses_id']){
+                        foreach ($v['area'] as $k1 => $v1){
+                            if($v1['id'] == $v0['area_id']){
+                                $listData[$k]['area'][$k1]['diy_area_id'] = $v0['diy_area_id'];
+                            }
+                        }
+                    }
+                }
+            }
+        }
         $data['list'] = $listData;
-        $this->load->view("housespoints/partition",$data);
+        $this->load->view("housespoints/partition", $data);
     }
+    
+    /**
+     * 设定自定义区域
+     */    
+    public function set_diy_area(){
+        if(IS_POST){
+            $diy_area_id = $this->input->post('diy_area_id');
+            $houses_id = $this->input->post('houses_id');
+            $area_id = $this->input->post('area_id');
+            $count = $this->Mhouses_diy_area->count(['houses_id' => $houses_id, 'area_id' => $area_id]);
+            if($count){
+                $res = $this->Mhouses_diy_area->update_info(['diy_area_id' => $diy_area_id], ['houses_id' => $houses_id, 'area_id' => $area_id]);
+            }else{
+                $add = [
+                    'houses_id' => $houses_id,
+                    'area_id' => $area_id,
+                    'diy_area_id' => $diy_area_id,
+                ];
+                $res = $this->Mhouses_diy_area->create($add);
+            }
+            if(!$res){
+                $this->return_json(['code' => 0, 'msg' => '操作失败']);
+            }
+            //批量更新点位
+            $res = $this->Mhouses_points->update_info(['diy_area_id' => $diy_area_id], ['houses_id' => $houses_id, 'area_id' => $area_id]);
+            if(!$res){
+                $this->return_json(['code' => 0, 'msg' => '点位更新失败']);
+            }
+            $this->return_json(['code' => 1, 'msg' => '编辑成功']);
+        }
+    }
+    
     
     /**
      * 点位报修

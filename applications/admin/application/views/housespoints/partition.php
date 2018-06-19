@@ -66,12 +66,13 @@
                             <td><?php echo $val['area_name']?></td>
                             <td><?php echo $val['num']?></td>
                             <td>
-                            	<select name="roleId_<?php echo $v['houses_id']?>_<?php echo $val['area_id']?>">
+                            	<select class="diy" data-houses_id="<?php echo $v['houses_id']?>" data-area_id="<?php echo $val['id'];?>" name="roleId_<?php echo $v['houses_id']?>_<?php echo $val['id'];?>">
                             		<option value="0">请选择</option>
                             		<?php foreach (C('diy_area') as $k1 => $v1):?>
-                            		<option value="<?php echo $k1?>"><?php echo $v1?></option>
+                            		<option <?php if($k1 == $val['diy_area_id']){echo 'selected';}?> value="<?php echo $k1?>"><?php echo $v1?></option>
                             		<?php endforeach;?>
                             	</select>
+                            	
                             </td>
                         </tr>
                         <?php $i++;?>
@@ -97,6 +98,15 @@
 
 
 <script src="<?php echo css_js_url('select2.min.js','admin');?>"></script>
-
+<script type="text/javascript">
+	$('body').on('change', '.diy', function(){
+		var diy_area_id = $(this).val();
+		var houses_id = $(this).attr('data-houses_id');
+		var area_id = $(this).attr('data-area_id');
+		$.post('/housespoints/set_diy_area', {'diy_area_id':diy_area_id, 'houses_id':houses_id, 'area_id':area_id}, function(data){
+			layer.msg(data.msg);
+		});
+	});
+</script>
 <!-- 底部 -->
 <?php $this->load->view("common/bottom");?>
