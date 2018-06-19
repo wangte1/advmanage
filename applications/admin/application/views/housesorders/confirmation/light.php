@@ -54,17 +54,21 @@
         #pic-panel table{width:90%;margin: 0 auto;}
         .frist{border-top: 1px solid;}
     </style>
-    
+    <!--link rel="stylesheet" type="text/css" href="<?php echo css_js_url('word.css','common');?>"-->
     <script src="<?php echo css_js_url('jquery-2.0.3.min.js','admin');?>"></script> 
 	<script src="<?php echo css_js_url('html2canvas.js','admin');?>"></script>
 	<script src="<?php echo css_js_url('jsPdf.debug.js','admin');?>"></script>
+	<script src="<?php echo css_js_url('jquery.wordexport.js','common');?>"></script>
+	<script src="<?php echo css_js_url('FileSaver.js','common');?>"></script>
 	<script> 
 	  
 	$(function(){ 
+		
 		$("#pdf-btn").click(function(){
         	window.open("/housesorders/confirmations?id=<?php echo $id;?>");return;
 		});
         $("#pdf-btn-houses").click(function(){
+        		//$("body").wordExport();
                 html2canvas($('#pic-panel'), { 
                     onrendered: function(canvas) {
                     	var imgData = canvas.toDataURL('image/jpeg');
@@ -123,7 +127,7 @@
             <?php endforeach;?>
 
             <!-- 第一页的点位条数不足17条时，备注和签名放在本页打印 -->
-            <?php if(count($points) > 0 && count($points) <= 17):?>
+            <?php if(count($group) > 0 && count($group) <= 17):?>
             <p class="page-p" style="line-height: 40px">备注：本次甲方共选<?php echo count($points);?>套<?php echo $order_type_text[$info['order_type']];?>广告，其中<?php //echo $str;?>。我司按照双方签订的户外广告发布合同要求于<?php echo date('Y年m月d日', strtotime($info['make_complete_time']));?>开始制作、安装广告画面，于<?php echo $complete_date;?>按时按量完成<?php echo count($points);?>套<?php echo $order_type_text[$info['order_type']];?>广告的发布，投放时间为<?php echo date('Y.m.d', strtotime($info['release_start_time']));?>-<?php echo date('Y.m.d', strtotime($info['release_end_time']));?>，现将验收照片发给甲方确认。</p>
             <p class="mid-p"></p>
             <p class="page-p"><span style="font-weight:bolder">甲方（盖章）：</span><span style="font-weight:bolder;margin-left:400px">乙方（盖章）：</span></p>
