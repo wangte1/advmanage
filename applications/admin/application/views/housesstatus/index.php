@@ -35,20 +35,7 @@
                                 <div class="table-responsive">
                                     <div id="container" style="width:630px;height:400px;float: left;"></div>
                                     <div id="container1" style="width:500px;height:400px;float: left;"></div>
-                                    <div class="row">
-                                        <div class="col-sm-6">
-                                        </div>
-                                        <div class="col-sm-6">
-                                            <div class="dataTables_paginate paging_bootstrap">
-
-                                                <ul class="pagination">
-                                                    <?php echo $pagestr;?>
-                                                </ul>
-
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <!-- 分页 -->
+                                    
                                 </div>
                             </div>
                         </div>

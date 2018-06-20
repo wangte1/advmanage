@@ -317,7 +317,7 @@
 													<td><?php echo $val['remarks']?></td>
 													<td>
 														<?php if($val['point_status'] == 4):?>
-														<button class="btn-primary see-report">查看</button>
+														<button class="btn-primary see-report">已报损</button>
 														<?php endif;?>
 													</td>
                                                     <td>
@@ -419,7 +419,7 @@
 	});
 
 	$('.see-report').on('click', function(){
-		layer.msg('开发中...');
+		layer.msg('请打开报损列表查看');
 	});
     
     $('#houses').change(function(){

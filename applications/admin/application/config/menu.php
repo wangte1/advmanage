@@ -119,6 +119,12 @@ $config = array(
     		        'active'=> 'houses_status_list'
     		    ),
     		    
+    		    array(
+    		        'url'=>'/report_list',
+    		        'name'=> '报损列表',
+    		        'active'=> 'houses_report_list'
+    		    ),
+    		    
     			array(
     				'url'=>'/housespoints',
     				'name'=> '点位管理',
