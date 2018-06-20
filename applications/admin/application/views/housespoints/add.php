@@ -109,7 +109,7 @@
                             <div class="form-group">
                                 <label class="col-sm-3 control-label no-padding-right" for="form-field-1"> <span class="middle" style="color: red">*</span>楼栋： </label>
                                 <div class="col-sm-3 padding-right0">
-                                    <input type="text" id="ban" required name="ban" placeholder=""  class="form-control input-sm">
+                                    <input type="text" id="ban" name="ban" placeholder=""  class="form-control input-sm">
                                 </div>
                                 <div class="col-sm-2 padding0">
                                     <select id="ban-sel" class="">
