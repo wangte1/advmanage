@@ -129,6 +129,8 @@ class Admin extends MY_Controller{
         #标记删除
         $this->write_log($data['userInfo']['id'],3,"删除用户：".$tmp['name']);
         $this->Madmins->update_info(array("is_del"=>2),array("id"=>$id)) ;
+        //更新用户所关联的自定义区域
+        $this->Mhouses_user_diy_area->update_info(['diy_area_id' => 0], ['user_id' => $id]);
         $this->success("操作成功","/admin");
     }
 
