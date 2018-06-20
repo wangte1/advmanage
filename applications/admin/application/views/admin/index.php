@@ -35,6 +35,7 @@
             <div class="page-content">
                 <div class="page-header">
                     <a  href="/admin/add" class="btn btn-sm btn-primary"><i class="fa fa-plus-square" aria-hidden="true"></i> 添加管理员</a>
+                	<a href="/admin/partition" class="btn btn-sm btn-primary"><i class="ace-icon glyphicon glyphicon-edit" aria-hidden="true"></i> 分配人员区域</a>
                 </div> 
 
                 <div class="row">

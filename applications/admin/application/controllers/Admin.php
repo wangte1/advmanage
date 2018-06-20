@@ -12,7 +12,8 @@ class Admin extends MY_Controller{
             'Model_admins' => 'Madmins',
             'Model_admins_group' => 'Madmins_group',
             'Model_admins_purview' => 'Madmins_purview',
-            "Model_allowance_place" =>"Mallowance_place"
+            "Model_allowance_place" =>"Mallowance_place",
+            'Model_houses_user_diy_area' => 'Mhouses_user_diy_area'
         ]);
         $this->pageconfig = C('page.page_lists');
         $this->load->library('pagination');
@@ -294,6 +295,76 @@ class Admin extends MY_Controller{
         $data['title'] = array("管理员修改信息","个人设置");
         $this->load->view("admin/usercenter/edit",$data);
     }
+    
+    public function partition(){
+        $data = $this->data;
+        $this->Mhouses_user_diy_area->get_lists('*');
+        //获取工程人员
+        $userList = $this->Madmins->get_lists('id,pid,fullname,diy_area_id',['in' => ['group_id' => [4,6]], 'is_del' => 1]);
+        $data['userList'] = $userList;
+        unset($userList);
+        $this->load->view("admin/partition", $data);
+    }
+    
+    /**
+     * 设定自定义区域
+     */
+    public function set_diy_area(){
+        if(IS_POST){
+            $diy_area_id = $this->input->post('diy_area_id');
+            $user_id = $this->input->post('user_id');
+            //判断这个人是否有记录
+            $count = $this->Mhouses_user_diy_area->count(['user_id' => $user_id]);
+            if($count){
+                if($diy_area_id == 0){
+                    //取消的情况
+                    $res = $this->Mhouses_user_diy_area->update_info(['diy_area_id' => 0], ['user_id' => $user_id]);
+                    if(!$res){
+                        $this->return_json(['code' => 0, 'msg' => '更新区域表失败']);
+                    }
+                    //更新用户区域
+                    $res = $this->Madmins->update_info(['diy_area_id' => $diy_area_id], ['id' => $user_id]);
+                    if(!$res){
+                        $this->return_json(['code' => 0, 'msg' => '更新用户数据失败']);
+                    }
+                    $this->return_json(['code' => 1, 'msg' => '编辑成功']);
+                }else{
+                    //选择的情况
+                    //判断区域是否已经被选中了
+                    $count = $this->Mhouses_user_diy_area->count(['diy_area_id' => $diy_area_id]);
+                    if($count) $this->return_json(['code' => 1, 'msg' => '该区域已分配']);
+                    $res = $this->Mhouses_user_diy_area->update_info(['diy_area_id' => $diy_area_id], ['user_id' => $user_id]);
+                    if(!$res){
+                        $this->return_json(['code' => 0, 'msg' => '操作失败']);
+                    }
+                    //更新用户区域
+                    $res = $this->Madmins->update_info(['diy_area_id' => $diy_area_id], ['id' => $user_id]);
+                    if(!$res){
+                        $this->return_json(['code' => 0, 'msg' => '更新失败']);
+                    }
+                    $this->return_json(['code' => 1, 'msg' => '编辑成功']);
+                }
+            }else{
+                //判断区域是否已经被选中了
+                $count = $this->Mhouses_user_diy_area->count(['diy_area_id' => $diy_area_id]);
+                if($count) $this->return_json(['code' => 1, 'msg' => '该区域已分配']);
+                $add = [
+                    'user_id' => $user_id,
+                    'diy_area_id' => $diy_area_id,
+                ];
+                $res = $this->Mhouses_user_diy_area->create($add);
+                if(!$res){
+                    $this->return_json(['code' => 0, 'msg' => '操作失败']);
+                }
+                //更新用户区域
+                $res = $this->Madmins->update_info(['diy_area_id' => $diy_area_id], ['id' => $user_id]);
+                if(!$res){
+                    $this->return_json(['code' => 0, 'msg' => '更新失败']);
+                }
+                $this->return_json(['code' => 1, 'msg' => '编辑成功']);
+            }
+        }
+    }
 
 }
-?>
+
