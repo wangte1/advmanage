@@ -16,7 +16,9 @@ class Tour extends MY_Controller {
         $this->load->model([
             'Model_admins' => 'Madmins',
             'Model_houses_points' => 'Mhouses_points',
-            'Model_houses_tour_points' => 'Mhouses_tour_points'
+            'Model_houses_tour_points' => 'Mhouses_tour_points',
+            'Model_houses_area' => 'Mhouses_area',
+            'Model_houses' => 'Mhouses',
         ]);
     }
     
