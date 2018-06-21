@@ -331,7 +331,7 @@
                                                             </a-->
                                                             <?php endif;?>
                                                             <?php if($val['point_status'] != 4 && $val['can_report']):?>
-                                                        	<a class="green tooltip-info reportnow" point_id="<?php echo $val['id'];?>" point_code="<?php echo $val['code'];?>" data-rel="tooltip" data-placement="top" data-original-title="报损">
+                                                        	<a class="green tooltip-info reportnow" point_id="<?php echo $val['id'];?>" point_code="<?php echo $val['code'];?>" data-status="<?php echo $val['point_status']?>" data-rel="tooltip" data-placement="top" data-original-title="报损">
                                                                 <i class="ace-icon fa fa-gavel bigger-130"></i>
                                                             </a>
                                                             <?php endif;?>
@@ -532,6 +532,11 @@
     $('.reportnow').on('click', function(){
 		var id = $(this).attr('point_id');
 		var code = $(this).attr('point_code');
+		var status  =$(this).attr('data-status');
+		if(status == 3){
+			layer.alert('占用点位在pc端不支持报损，请先将该点位从订单中移除再进行报损操作');
+			return;
+		}
 		layer.open({
 		  type: 2,
 		  title: '编号: '+code+' 点位报修',
