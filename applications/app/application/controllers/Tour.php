@@ -37,7 +37,7 @@ class Tour extends MY_Controller {
         $page = (int) $this->input->get_post('page') ? : '1';
         $size = (int) $this->input->get_post('size');
         
-        $where = ['is_del' => 0, 'diy_area_id' => $diy_area_id];
+        $where = ['is_del' => 0, 'in' => ['diy_area_id' => $diy_area_id]];
         if(!$size) $size = $pageconfig['per_page'];
         
         $orderBy = ['houses_id' => 'asc'];
@@ -84,4 +84,35 @@ class Tour extends MY_Controller {
         }
         $this->return_json(['code' => 1, 'data' => $list, 'page' => $page]);
     }
+    
+    /**
+     * 巡视更新
+     */
+    public function check(){
+        //创建巡视记录
+        $point_id = $this->input->get_post('point_id');
+        $img_url = $this->input->get_post('img_url');
+        $status = $this->input->get_post('status');
+        $user_id = decrypt($this->token)['user_id'];
+        $create_time = date('Y-m-d H:i:s');
+        $add = [
+            'point_id' => $point_id,
+            'principal_id' => $user_id,
+            'img' => $img_url,
+            'status' => $status,
+            'create_time' => date('Y-m-d H:i:s')
+        ];
+        $res = $this->Mhouses_tour_points->create($add);
+        if(!$res){
+            $this->write_log($user_id, 1, json_encode($add));
+            $this->return_json(['code' => 0, 'msg' => '创建巡视记录失败，已记录到系统日志']);
+        }
+        //更新点位数据
+        $up = ['tour_time' => $create_time, 'tour_id' => $res];
+        $this->Mhouses_points->update_info($up, ['id' => $point_id]);
+        $this->return_json(['code' => 1, 'msg' => '操作成功']);
+    }
 }
+
+
+
