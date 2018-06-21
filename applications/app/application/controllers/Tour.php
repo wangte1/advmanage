@@ -29,11 +29,11 @@ class Tour extends MY_Controller {
         $data = $this->data;
         //获取用户id,根据id获取用户负责的区域点位
         $user_id = decrypt($this->token)['user_id'];
-        $diy_area_id = $this->Madmins->get_one('diy_area_id', ['id' => $user_id]);
+        $info = $this->Madmins->get_one('diy_area_id', ['id' => $user_id]);
+        $diy_area_id = (int) $info['diy_area_id'];
         if($diy_area_id == 0){
             $this->return_json(['code' => 0, 'data' => [], 'msg' => '系统还未给您分配区域']);
         }
-        
         $pageconfig = C('page.page_lists');
         $this->load->library('pagination');
         $page = (int) $this->input->get_post('page') ? : '1';
