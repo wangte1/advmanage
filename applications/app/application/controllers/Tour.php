@@ -108,6 +108,7 @@ class Tour extends MY_Controller {
         $size = (int) $this->input->get_post('size');
         
         $where = ['is_del' => 0, 'in' => ['diy_area_id' => $diy_area_id]];
+        $where['houses_id'] = $this->input->get_post('houses_id');
         if(!$size) $size = $pageconfig['per_page'];
         
         $orderBy = ['houses_id' => 'asc'];
