@@ -66,6 +66,17 @@
                                                     <input type="text" name="fullname" value="<?php echo $fullname;?>" class="col-xs-10 col-sm-12" />
                                                 </div>
                                             </div>
+                                            <div class="col-sm-3">
+                                                <label class="col-sm-3 control-label no-padding-right" for="form-field-1"> 所属角色 </label>
+                                                <div class="col-sm-9">
+                                                	<select id="group_id" class="select2" data-placeholder="Click to Choose..." name="group_id">
+                                                		<option value="">全部</option>
+				                                		<?php foreach ($admin_group_id as $k => $v) {?>
+				                                    		<option value="<?php echo $v['id']?>"<?php if($v['id'] == $group_id) {?>selected="selected"<?php }?>><?php echo $v['name']?></option>
+				                                    	<?php }?>
+				                                    </select>
+                                                </div>
+                                            </div>
                                         </div>
                                         <div class="clearfix form-actions">
                                             <div class="col-md-offset-3 col-md-9">

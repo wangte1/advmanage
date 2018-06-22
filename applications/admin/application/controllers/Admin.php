@@ -40,10 +40,16 @@ class Admin extends MY_Controller{
         if ($this->input->get('fullname')) {
             $where['like']['fullname'] = $this->input->get('fullname');
         }
+        
+        if ($this->input->get('group_id')) {
+            $where['group_id'] = $this->input->get('group_id');
+        }
         $data['name'] = $this->input->get('name');
         $data['fullname'] = $this->input->get('fullname');
+        $data['group_id'] = $this->input->get('group_id');
 
         $data['admin_list'] = $this->Madmins->get_lists('*',$where,array("id"=>"asc"),$size,($page-1)*$size);
+        $data['admin_group_id'] = $this->Madmins_group->get_lists();
 
         $data_count = $this->Madmins->count($where);
 
@@ -62,7 +68,6 @@ class Admin extends MY_Controller{
 
         $admins = $this->Madmins->get_admin_list();
         $data['admins'] = array_column($admins , 'fullname','id');
-
         $this->load->view("admin/index",$data);
     }
 
