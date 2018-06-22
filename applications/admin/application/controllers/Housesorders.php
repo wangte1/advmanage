@@ -1157,6 +1157,7 @@ class Housesorders extends MY_Controller{
         //如果订单已经下画则释放所有点位
         $tmp_list = $this->Mhouses_orders->get_one('point_ids, customer_id, is_self', ["id"=>$id]);
         $point_ids_arr = explode(',', $tmp_list['point_ids']);
+        $point_ids_arr = array_unique($point_ids_arr);//去重，防止被多次执行
         $point_ids_arr = $this->moveOutReportPoint($point_ids_arr);
         if($tmp_list['is_self'] ==1){
             $size = 2000;
@@ -1216,7 +1217,7 @@ class Housesorders extends MY_Controller{
                 }
                 $sql.= ' END where id in (';
                 $sql.= implode(',', $point_ids_arr);
-                $sql.= ')';
+                $sql.= ') and ad_use_num > 0';
                 $this->db->query($sql);
                 return $this->db->count_all_results();
             }
