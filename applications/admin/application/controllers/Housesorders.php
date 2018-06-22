@@ -1132,6 +1132,7 @@ class Housesorders extends MY_Controller{
                     //如果订单已经下画则释放所有点位
                     $tmp_list = $this->Mhouses_orders->get_one('point_ids, customer_id', ["id"=>$id]);
                     $point_ids_arr = explode(',', $tmp_list['point_ids']);
+                    $point_ids_arr = array_unique($point_ids_arr);//去重，防止被多次执行
                     $point_ids_arr = $this->moveOutReportPoint($point_ids_arr);
                     //释放锁定的客户和占用数
                     $_result = $this->release($id, $tmp_list['customer_id']);
