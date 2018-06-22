@@ -138,7 +138,9 @@ class Housespoints extends MY_Controller{
             
             $post['creator'] = $data['userInfo']['id'];
             $post['create_time'] = date("Y-m-d H:i:s");
-            
+            if($post['addr'] == 0){
+                $this->error("添加失败，请填写点位位置");
+            }
             //临时匹配导入数据
             $tmpArr = $this->Mhouses->get_one("name",array("id" =>$post['houses_id']));
             $post['houses_name'] = $tmpArr['name'];
@@ -187,7 +189,9 @@ class Housespoints extends MY_Controller{
                     $this->error("编号已存在，请核实后提交");
                 }
             }
-
+            if($post['addr'] == 0){
+                $this->error("添加失败，请填写点位位置");
+            }
             $post['update_time'] = date("Y-m-d H:i:s");
             $result = $this->Mhouses_points->update_info($post,array("id"=>$id));
             if($result){

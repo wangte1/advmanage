@@ -174,7 +174,7 @@
                             </div>
                             
                             <div class="form-group">
-                                <label class="col-sm-3 control-label no-padding-right" for="form-field-1"> 点位位置： </label>
+                                <label class="col-sm-3 control-label no-padding-right" for="form-field-1"> <span class="middle" style="color: red">*</span>点位位置： </label>
                                 <div class="col-sm-9">
                                 	<select id="addr" data-placeholder="Click to Choose..." name="addr">
 	                                    <option value="0">--请选择点位位置--</option>
