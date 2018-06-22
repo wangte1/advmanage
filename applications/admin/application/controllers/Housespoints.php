@@ -271,10 +271,23 @@ class Housespoints extends MY_Controller{
             $houses_ids = array_column($list, 'houses_id');
             if($houses_ids){
                 $houses_ids = array_unique($houses_ids);
+                sort($houses_ids);//升序
                 foreach ($houses_ids as $k => $v){
                     $listData[$k]['houses_id'] = $v;
+                    $listData[$k]['areas'] = '';
                     $listData[$k]['houses_name'] = '';
                     $listData[$k]['area'] = [];
+                }
+            }
+            //行政区域
+            $areaList = $this->Mhouses->get_lists('id,city,area', ['in' => ['id' => $houses_ids]]);
+            if($areaList){
+                foreach ($listData as $k => $v){
+                    foreach ($areaList as $key => $val){
+                        if($v['houses_id'] == $val['id']){
+                            $listData[$k]['areas'] = $val['city'].$val['area'];
+                        }
+                    }
                 }
             }
             foreach ($list as $k => $v){

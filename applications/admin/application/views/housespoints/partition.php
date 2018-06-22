@@ -48,6 +48,7 @@
                     <caption style="border: 1px solid #ddd;"><span style="font-size:18px">楼盘-组团-区域</span></caption>
                     <thead>
                     <tr>
+                        <th style="text-align: center;width:20%;">行政区域</th>
                         <th style="text-align: center;width:20%;">楼盘</th>
                         <th style="text-align: center;width:20%;">组团</th>
                         <th style="text-align: center;width:20%;">点位数</th>
@@ -60,6 +61,9 @@
 						<?php $i = 0;?>
 						<?php foreach ($v['area'] as $key => $val):?>
                         <tr>
+                        	<?php if($i == 0):?>
+                            <td style="vertical-align: middle;" rowspan="<?php echo count($v['area']);?>"><?php echo $v['areas'];?></td>
+                            <?php endif;?>
                         	<?php if($i == 0):?>
                             <td style="vertical-align: middle;" rowspan="<?php echo count($v['area']);?>"><?php echo $v['houses_name'];?></td>
                             <?php endif;?>
