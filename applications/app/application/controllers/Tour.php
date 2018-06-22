@@ -87,7 +87,7 @@ class Tour extends MY_Controller {
             }
         }
         unset($list);
-        $this->return_json(['code' => 1, 'data' => $listData, 'page' => $page]);
+        $this->return_json(['code' => 1, 'data' => $listData]);
     }
     
     /**
