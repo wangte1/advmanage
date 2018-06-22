@@ -19,13 +19,80 @@ class Tour extends MY_Controller {
             'Model_houses_tour_points' => 'Mhouses_tour_points',
             'Model_houses_area' => 'Mhouses_area',
             'Model_houses' => 'Mhouses',
+            'Model_houses_diy_area' => 'Mhouses_diy_area'
         ]);
+    }
+    
+    /**
+     * 按楼盘排列
+     */
+    public function index(){
+        $data = $this->data;
+        //获取用户id,根据id获取用户负责的区域点位
+        $user_id = decrypt($this->token)['user_id'];
+        $info = $this->Madmins->get_one('diy_area_id', ['id' => $user_id]);
+        $diy_area_id = (int) $info['diy_area_id'];
+        if($diy_area_id == 0){
+            $this->return_json(['code' => 0, 'data' => [], 'msg' => '系统还未给您分配区域']);
+        }
+        //查询用户负责的楼盘列表
+        $houses = $this->Mhouses_diy_area->get_lists('houses_id', ['diy_area_id' => $diy_area_id]);
+        $houses_ids = array_column($houses, 'houses_id');
+        if(count($houses_ids) > 1){
+            $houses_ids = array_unique($houses_ids);
+        }
+        //提取楼盘、组团
+        $where = ['in' => ['houses_id' => $houses_ids]];
+        $group_by = ['houses_id', 'area_id'];
+        $list = $this->Mhouses_points->get_lists('houses_id, houses_name, area_id, count(id) as num,area_name', $where, ['houses_id' => 'asc'], 0, 0, $group_by);
+        //提取楼盘ids
+        $listData = [];
+        if($list){
+            foreach ($houses_ids as $k => $v){
+                $listData[$k]['houses_id'] = $v;
+                $listData[$k]['areas'] = '';
+                $listData[$k]['houses_name'] = '';
+                $listData[$k]['area'] = [];
+            }
+            //行政区域
+            $areaList = $this->Mhouses->get_lists('id,city,area', ['in' => ['id' => $houses_ids]]);
+            if($areaList){
+                foreach ($listData as $k => $v){
+                    foreach ($areaList as $key => $val){
+                        if($v['houses_id'] == $val['id']){
+                            $listData[$k]['areas'] = $val['city'].$val['area'];
+                        }
+                    }
+                }
+            }
+            foreach ($list as $k => $v){
+                foreach ($listData as $key => $val){
+                    if($v['houses_id'] == $val['houses_id']){
+                        //设置楼盘名称
+                        if(empty($val['houses_name'])){
+                            $listData[$k]['houses_name'] = $v['houses_name'];
+                        }
+                        if(!in_array($v['area_id'], $val['area_id'])){
+                            $listData[$key]['area'][$k]['id'] = $v['area_id'];
+                            $listData[$key]['area'][$k]['num'] = $v['num'];
+                            if(empty($v['area_name'])){
+                                $v['area_name'] = '无组团';
+                            }
+                            $listData[$key]['area'][$k]['area_name'] = $v['area_name'];
+                            $listData[$key]['area'][$k]['diy_area_id'] = 0;
+                        }
+                    }
+                }
+            }
+        }
+        unset($list);
+        $this->return_json(['code' => 1, 'data' => $listData, 'page' => $page]);
     }
     
     /**
      * 工程人员个人区域点位接口
      */
-    public function index(){
+    public function detail(){
         $data = $this->data;
         //获取用户id,根据id获取用户负责的区域点位
         $user_id = decrypt($this->token)['user_id'];
