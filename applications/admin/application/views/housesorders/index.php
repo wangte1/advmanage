@@ -116,7 +116,7 @@
                                                     <select name="order_status">
                                                         <option value="">全部</option>
                                                         <?php foreach($status_text as $key => $val):?>
-                                                        <option value="<?php echo $key;?>" <?php if($key == $order_status){ echo "selected"; }?>><?php echo $val;?></option>
+                                                        <option value="<?php echo $key;?>" <?php if(isset($order_status)&&$key == $order_status){ echo "selected"; }?>><?php echo $val;?></option>
                                                         <?php endforeach;?>
                                                     </select>
                                                 </div>
