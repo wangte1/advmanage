@@ -132,6 +132,33 @@
                                                 <a href="javascript:;" data-rel="popover" title="说明" data-trigger="hover" data-content="锁定起止时间默认是从新建预定订单之日起一个星期之内，过了锁定结束时间，如果客户还没确认下单，系统将自动释放出该订单所有锁定点位。"><i class="fa fa-question-circle-o" aria-hidden="true"></i></a>
                                             </div>
                                         </div>
+                                        
+                                        <div class="form-group">
+                                            <label class="col-sm-2 control-label no-padding-right" for="form-input-readonly"> 排期开始时间： </label>
+                                            <div class="col-sm-5">
+                                                <div class="input-group date datepicker">
+                                                    <input class="form-control date-picker" id="schedule_start" type="text" name="schedule_start" value="<?php echo $info['schedule_start'];?>" >
+                                                    <span class="input-group-addon">
+                                                        <i class="icon-calendar bigger-110"></i>
+                                                    </span>
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        <div class="form-group">
+                                            <label class="col-sm-2 control-label no-padding-right" for="form-input-readonly"> 排期结束时间： </label>
+                                            <div class="col-sm-5">
+                                                <div class="input-group date datepicker">
+                                                    <input class="form-control date-picker" type="text" name="schedule_end" value="<?php echo $info['schedule_end'];?>">
+                                                    <span class="input-group-addon">
+                                                        <i class="icon-calendar bigger-110"></i>
+                                                    </span>
+                                                </div>
+                                            </div>
+                                            <div class="col-sm-4" style="padding-top: 6px">
+                                                <a href="javascript:;" data-rel="popover" title="说明" data-trigger="hover" data-content="排期开始-结束即订单的开始时间与结束时间 能确定则填入"><i class="fa fa-question-circle-o" aria-hidden="true"></i></a>
+                                            </div>
+                                        </div>
 
                                         <div class="form-group">
                                             <label class="col-sm-2 control-label no-padding-right" for="form-input-readonly"> 投放点位： </label>

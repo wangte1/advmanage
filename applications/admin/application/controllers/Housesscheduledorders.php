@@ -54,6 +54,28 @@ class Housesscheduledorders extends MY_Controller{
         $data['admin_id'] = $this->input->get('admin_id');
         $data['order_status'] = $this->input->get('order_status');
         
+        $schedule_start = $this->input->get('schedule_start');
+        $schedule_end = $this->input->get('schedule_end');
+        
+        if($schedule_start){
+            $data['schedule_start'] = $schedule_start;
+            if($schedule_end){
+                $where['`A.schedule_start`>='] = $schedule_start;
+            }else{
+                $where['`A.schedule_start`'] = $schedule_start;
+            }
+        }
+        
+        if($schedule_end){
+            $data['schedule_end'] = $schedule_end;
+            if($schedule_start){
+                $where['`A.schedule_end`<='] = $schedule_end;
+            }else{
+                $where['`A.schedule_end`'] = $schedule_end;
+            }
+        }
+        
+        
         $data['list'] = $this->Mhouses_scheduled_orders->get_order_lists($where, ($page-1)*$pageconfig['per_page'], $pageconfig['per_page']);
         $data_count = $this->Mhouses_scheduled_orders->get_order_count($where);
         $data['data_count'] = $data_count;

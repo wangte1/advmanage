@@ -116,6 +116,31 @@
                                                 </div>
                                             </div>
                                         </div>
+                                        <div class="form-group">
+                                        	<div class="col-sm-4">
+                                                <label class="col-sm-3 control-label no-padding-right" for="form-input-readonly"> 排期开始时间： </label>
+                                                <div class="col-sm-9">
+                                                    <div class="input-group date datepicker">
+                                                        <input class="form-control date-picker" id="release_start_time" type="text" name="schedule_start" value="<?php if(isset($schedule_start)){ echo $schedule_start;}?>" >
+                                                        <span class="input-group-addon">
+                                                            <i class="icon-calendar bigger-110"></i>
+                                                        </span>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            
+                                            <div class="col-sm-4">
+                                                <label class="col-sm-3 control-label no-padding-right" for="form-input-readonly"> 排期结束时间： </label>
+                                                <div class="col-sm-9">
+                                                    <div class="input-group date datepicker">
+                                                        <input class="form-control date-picker" id="schedule_end" type="text" name="schedule_end" value="<?php if(isset($schedule_end)){ echo $schedule_end;}?>" >
+                                                        <span class="input-group-addon">
+                                                            <i class="icon-calendar bigger-110"></i>
+                                                        </span>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
                                         <div class="clearfix form-actions">
                                             <div class="col-md-offset-3 col-md-9">
                                                 <button class="btn btn-info" type="submit">
@@ -146,6 +171,7 @@
                                                 <th>锁定点位</th>
                                                 <th>确认点位</th>
                                                 <th>锁定时间</th>
+                                                <th>排期时间</th>
                                                 <th>锁定人</th>
                                                 <th>业务员</th>
                                                 <th>订单创建日期</th>
@@ -186,6 +212,9 @@
                                                     ?>个点位</td>
                                                 <td>
                                                     <?php echo $value['lock_start_time'].'至'.$value['lock_end_time'];?>
+                                                </td>
+                                                <td>
+                                                    <?php echo $value['schedule_start'].'至'.$value['schedule_end'];?>
                                                 </td>
                                                 <td><?php echo $value['admin_name'];?></td>
                                                 <td>
