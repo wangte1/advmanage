@@ -30,6 +30,7 @@ class Housesorders extends MY_Controller{
         	'Model_houses_assign' => 'Mhouses_assign',
         	'Model_houses_assign_down' => 'Mhouses_assign_down',
         	'Model_houses_change_pic_orders' => 'Mhouses_changepicorders',
+            'Model_houses_points_report' => 'Mhouses_points_report'
         ]);
         $this->data['code'] = 'horders_manage';
         $this->data['active'] = 'houses_orders_list';
@@ -1129,6 +1130,7 @@ class Housesorders extends MY_Controller{
                     //如果订单已经下画则释放所有点位
                     $tmp_list = $this->Mhouses_orders->get_one('point_ids, customer_id', ["id"=>$id]);
                     $point_ids_arr = explode(',', $tmp_list['point_ids']);
+                    $point_ids_arr = $this->moveOutReportPoint($point_ids_arr);
                     //释放锁定的客户和占用数
                     $_result = $this->release($id, $tmp_list['customer_id']);
                     $where_point['in']['id'] = $point_ids_arr;
@@ -1153,6 +1155,7 @@ class Housesorders extends MY_Controller{
         //如果订单已经下画则释放所有点位
         $tmp_list = $this->Mhouses_orders->get_one('point_ids, customer_id, is_self', ["id"=>$id]);
         $point_ids_arr = explode(',', $tmp_list['point_ids']);
+        $point_ids_arr = $this->moveOutReportPoint($point_ids_arr);
         if($tmp_list['is_self'] ==1){
             $size = 2000;
             if(count($point_ids_arr) > $size){
@@ -1216,6 +1219,27 @@ class Housesorders extends MY_Controller{
                 return $this->db->count_all_results();
             }
         }
+    }
+    
+    /**
+     * 移除、排除已报损不可上画的点位
+     * @param array $ids
+     */
+    private function moveOutReportPoint($ids=[]){
+        $where['repair_time'] = 0;
+        $where['usable'] = 0;//是否可以上画
+        $list = $this->Mhouses_points_report->get_lists('id', $where, ['create_time' => 'desc'], 0, 0, ['point_id']);
+        if(count($list)==0){
+            return $ids;
+        }
+        //提取点位ids
+        $rpoint_ids = array_column($list, 'id');
+        foreach ($ids as $k => $v){
+            if(in_array($v, $rpoint_ids)){
+                unset($ids[$k]);
+            }
+        }
+        return $ids;
     }
 
     private function get_make_info($data) {
