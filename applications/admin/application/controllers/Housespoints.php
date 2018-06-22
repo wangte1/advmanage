@@ -271,7 +271,6 @@ class Housespoints extends MY_Controller{
             $houses_ids = array_column($list, 'houses_id');
             if($houses_ids){
                 $houses_ids = array_unique($houses_ids);
-                sort($houses_ids);//升序
                 foreach ($houses_ids as $k => $v){
                     $listData[$k]['houses_id'] = $v;
                     $listData[$k]['areas'] = '';
