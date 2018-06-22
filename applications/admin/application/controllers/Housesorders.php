@@ -1076,6 +1076,7 @@ class Housesorders extends MY_Controller{
      * 1034487709@qq.com
      */
     public  function ajax_update_status(){
+        $data = $this->data;
         if ($this->data['pur_code'] == 1) {
             $this->return_failed('您没有更新订单状态的权限！');
         }
@@ -1140,7 +1141,7 @@ class Housesorders extends MY_Controller{
                     $where_point['field']['`ad_num` >'] = '`ad_use_num` + `lock_num`';
                     $update_data['point_status'] = 1;
                     $this->Mhouses_points->update_info($update_data, $where_point);
-
+                    $this->write_log($data['userInfo']['id'], 2, '释放点位：'.$this->db->last_query());
                     //更新该订单下所有换画订单的状态为已下画
                     $order_code = $this->Mhouses_orders->get_one('order_code', array('id' => $id))['order_code'];
                     $change_count = $this->Mhouses_changepicorders->count(array('order_code' => $order_code));
@@ -1155,6 +1156,7 @@ class Housesorders extends MY_Controller{
     }
     
     public function release($id, $customer_id){
+        $data = $this->data;
         //如果订单已经下画则释放所有点位
         $tmp_list = $this->Mhouses_orders->get_one('point_ids, customer_id, is_self', ["id"=>$id]);
         $point_ids_arr = explode(',', $tmp_list['point_ids']);
@@ -1220,6 +1222,7 @@ class Housesorders extends MY_Controller{
                 $sql.= implode(',', $point_ids_arr);
                 $sql.= ') and ad_use_num > 0';
                 $this->db->query($sql);
+                $this->write_log($data['userInfo']['id'], 2, '释放点位移出客户：'.$sql);
                 return $this->db->count_all_results();
             }
         }
