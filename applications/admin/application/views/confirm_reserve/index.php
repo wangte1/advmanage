@@ -142,6 +142,7 @@
                                                 <th>客户</th>
                                                 <th>锁定点位</th>
                                                 <th>锁定时间</th>
+                                                <th>排期时间</th>
                                                 <th>锁定人</th>
                                                 <th>业务员</th>
                                                 <th>订单创建日期</th>
@@ -167,6 +168,9 @@
                                                 <td><?php echo $value['point_ids'] ? count(explode(',', $value['point_ids'])) : 0;?>个点位</td>
                                                 <td>
                                                     <?php echo $value['lock_start_time'].'至'.$value['lock_end_time'];?>
+                                                </td>
+                                                <td>
+                                                    <?php echo $value['schedule_start'].'至'.$value['schedule_end'];?>
                                                 </td>
                                                 <td><?php echo $value['admin_name'];?></td>
                                                 <td>
