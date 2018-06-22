@@ -7,6 +7,7 @@
 
 class Tour extends MY_Controller {
     private $token;
+    private $time = 14*24*3600;
     public function __construct() {
         parent::__construct();
         
@@ -153,7 +154,7 @@ class Tour extends MY_Controller {
                 }
             }
         }
-        $this->return_json(['code' => 1, 'data' => $list, 'page' => $page]);
+        $this->return_json(['code' => 1, 'data' => $list, 'page' => $page, 'time' => $this->time]);
     }
     
     /**
