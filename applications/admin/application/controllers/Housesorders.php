@@ -63,7 +63,9 @@ class Housesorders extends MY_Controller{
             $data['order_status'] = $this->input->get('order_status');
             $where['A.order_status'] = $this->input->get('order_status');
         }else{
-            $where['A.order_status!='] = 8;
+            if(!$this->input->get('customer_id')){
+                $where['A.order_status!='] = 8;
+            }
         }
         
         $expire_time = $this->input->get("expire_time");
@@ -1219,6 +1221,20 @@ class Housesorders extends MY_Controller{
                 return $this->db->count_all_results();
             }
         }
+    }
+    
+    /**
+     * 查询报损点位
+     * @return unknown|array
+     */
+    private function getReportPoint(){
+        $where['repair_time'] = 0;
+        $where['usable'] = 0;//是否可以上画
+        $list = $this->Mhouses_points_report->get_lists('id', $where, ['create_time' => 'desc'], 0, 0, ['point_id']);
+        if($list){
+            return $list;
+        }
+        return [];
     }
     
     /**
