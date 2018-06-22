@@ -43,6 +43,7 @@ class Tour extends MY_Controller {
         }
         //提取楼盘、组团
         $where = ['in' => ['houses_id' => $houses_ids]];
+        $where['diy_area_id>'] = 0;
         $group_by = ['houses_id', 'area_id'];
         $list = $this->Mhouses_points->get_lists('houses_id, houses_name, area_id, count(id) as num,area_name', $where, ['houses_id' => 'asc'], 0, 0, $group_by);
         //提取楼盘ids
