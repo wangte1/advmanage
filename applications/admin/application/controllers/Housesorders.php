@@ -1765,6 +1765,32 @@ class Housesorders extends MY_Controller{
         $objWriter = PHPExcel_IOFactory::createWriter($this->phpexcel, 'Excel5');
         $objWriter->save('php://output');
     }
+    
+    /**
+     * 移除工单被删除的点位以及对应已生成的工单记录 
+     */
+    private function delWorkerOrderByPointIdAndOrderId($point_ids = [], $order_id = 0){
+        //获取当前的子订单
+        $sonList = $this->Mhouses_orders->get_lists('id, order_status', ['pid' => $order_id]);
+        if($sonList){
+            foreach ($sonList as $k => $v){
+                //查询工单
+                $type = 1;
+                if($v['order_status'] >= 6){$type = 2;}
+                $tmp = $this->Mhouses_work_order->get_one('id', ['order_id' => $v['id'], 'type' => $type]);
+                if($tmp){
+                    //判断当前工单是否存在被删除的点位
+                    $tmpList = $this->Mhouses_work_order->detail('id, point_id', ['pid' => $tmp['id']]);
+                    if($tmpList){
+                        $num = 0;
+                        foreach ($tmpList as $k1 => $v1){
+                            
+                        }
+                    }
+                }
+            }
+        }
+    }
 
 }
 
