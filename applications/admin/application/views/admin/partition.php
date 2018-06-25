@@ -48,9 +48,10 @@
                     <caption style="border: 1px solid #ddd;"><span style="font-size:18px">用户-区域</span></caption>
                     <thead>
                     <tr>
-                        <th style="text-align: center;width:20%;">序号</th>
-                        <th style="text-align: center;width:20%;">姓名</th>
-                        <th style="text-align: center;width:20%;">自定义区域</th>
+                        <th style="text-align: center;width:10%;">序号</th>
+                        <th style="text-align: center;width:10%;">姓名</th>
+                        <th style="text-align: center;width:10%;">自定义区域</th>
+                        <th style="text-align: center;width:60%;">包含的区域</th>
                     </tr>
                     </thead>
                     <tbody>
@@ -67,6 +68,13 @@
                             		<?php endforeach;?>
                             	</select>
                             	
+                            </td>
+                            <td style="text-align:left;">
+                            	<?php if(count($v['list'])):?>
+                            	<?php foreach ($v['list'] as $key => $val):?>
+                            	[ <?php echo $val['houses_name']?> - <?php echo $val['houses_area_name'];?> ]
+                            	<?php endforeach;?>
+                            	<?php endif;?>
                             </td>
                         </tr>
                         <?php endforeach;?>
@@ -95,6 +103,10 @@
 		var diy_area_id = $(this).val();
 		var user_id = $(this).attr('data-user_id');
 		$.post('/admin/set_diy_area', {'diy_area_id':diy_area_id, 'user_id':user_id}, function(data){
+			if(data.code == 1){
+				window.location.reload(true);
+				return;
+			}
 			layer.msg(data.msg);
 		});
 	});
