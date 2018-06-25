@@ -136,6 +136,7 @@ class Tour extends MY_Controller {
         if($houses_list){
             foreach ($list as $k => &$v){
                 $v['houses_name'] = '';
+                $v['houses_area_name'] = '';
                 foreach ($houses_list as $key => $val){
                     if($v['houses_id'] == $val['id']){
                         $v['houses_name'] = $val['name'];
@@ -149,7 +150,6 @@ class Tour extends MY_Controller {
         }
         if($area_list){
             foreach ($list as $k => &$v){
-                $v['houses_area_name'] = '';
                 foreach ($area_list as $key => $val){
                     if($v['area_id'] == $val['id']){
                         $v['houses_area_name'] = $val['name'];

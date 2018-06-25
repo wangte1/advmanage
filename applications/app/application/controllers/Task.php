@@ -259,7 +259,7 @@ class Task extends MY_Controller {
     	$id = (int) $this->input->get_post('id');
     	$img_url = $this->input->get_post('img_url');
     	$status = $this->input->get_post('status');//临时接收
-    	$info = $this->Mhouses_work_order_detail->get_one('pid', ['id' => $id, 'status' => 0]);
+    	$info = $this->Mhouses_work_order_detail->get_one('point_id,pid', ['id' => $id, 'status' => 0]);
     	if($info){
     	    $up = [
     	        'status' => $status,
