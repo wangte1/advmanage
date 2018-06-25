@@ -159,7 +159,7 @@ $config = array(
     		    ),
     		    array(
     		        'url'=>'/housesquery',
-    		        'name'=> '点位查询',
+    		        'name'=> '位置查询',
     		        'active'=> 'houses_query_lists'
     		    )
     		)

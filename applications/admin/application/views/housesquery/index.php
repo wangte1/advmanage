@@ -23,7 +23,7 @@
                     </li>
                     
                     <li>
-                        <span>点位查询</span>
+                        <span>位置查询</span>
                     </li>
 
                 </ul>
