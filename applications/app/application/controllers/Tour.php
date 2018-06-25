@@ -162,10 +162,14 @@ class Tour extends MY_Controller {
      */
     public function check(){
         //创建巡视记录
+        $user_id = decrypt($this->token)['user_id'];
         $point_id = $this->input->get_post('point_id');
+        if(!$point_id){
+            $this->write_log($user_id, 1, '点位编号未传');
+            $this->return_json(['code' => 0, 'msg' => '点位编号必传']);
+        }
         $img_url = $this->input->get_post('img_url');
         $status = $this->input->get_post('status');
-        $user_id = decrypt($this->token)['user_id'];
         $create_time = date('Y-m-d H:i:s');
         $add = [
             'point_id' => $point_id,

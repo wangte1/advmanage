@@ -259,7 +259,6 @@ class Task extends MY_Controller {
     	$id = (int) $this->input->get_post('id');
     	$img_url = $this->input->get_post('img_url');
     	$status = $this->input->get_post('status');//临时接收
-    	$this->write_log(decrypt($this->token)['user_id'], 1, '编号图上传情况：'.json_encode($_REQUEST));
     	$info = $this->Mhouses_work_order_detail->get_one('pid', ['id' => $id, 'status' => 0]);
     	if($info){
     	    $up = [
