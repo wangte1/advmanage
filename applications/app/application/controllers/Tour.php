@@ -88,6 +88,10 @@ class Tour extends MY_Controller {
             }
         }
         unset($list);
+        $listData = array_values($listData);
+        foreach ($listData as $k => &$v){
+            $v['area'] = array_values($v['area']);
+        }
         $this->return_json(['code' => 1, 'data' => $listData]);
     }
     
