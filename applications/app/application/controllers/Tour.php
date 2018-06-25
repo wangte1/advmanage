@@ -185,7 +185,11 @@ class Tour extends MY_Controller {
         }
         //更新点位数据
         $up = ['tour_time' => $create_time, 'tour_id' => $res];
-        $this->Mhouses_points->update_info($up, ['id' => $point_id]);
+        $ret = $this->Mhouses_points->update_info($up, ['id' => $point_id]);
+        if(!$ret){
+            $this->write_log($user_id, 1, json_encode($up));
+            $this->return_json(['code' => 0, 'msg' => '巡视日志已更新，点位数据未能更新']);
+        }
         $this->return_json(['code' => 1, 'msg' => '操作成功']);
     }
 }

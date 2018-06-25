@@ -372,6 +372,38 @@ class Admin extends MY_Controller{
             }
         }
     }
+    
+    public function seeWorker(){
+        $data = $this->data;
+        $sql = "select * from t_app_location where user_id > 1 and date = '".date('Y-m-d')."' order by create_time desc";
+        $query = $this->db->query($sql);
+        $list = $query->result_array();
+        $tmp = [];
+        if($list){
+            foreach ($list as $k => &$v){
+                $v['create_time'] = date("y-m-d H:s:i", $v['create_time']);
+            }
+            foreach ($list as $k => $v){
+                if(in_array($v['user_id'], $tmp)){
+                    unset($list[$k]);
+                }else{
+                    array_push($tmp, $v['user_id']);
+                }
+            }
+        }
+        //admin
+        $admin = $this->Madmins->get_lists('id,fullname', ['in' => ['group_id' => [4,6]]]);
+        foreach ($list as $k => $v){
+            foreach ($admin as $key => $val){
+                $list[$k]['fullname'] = '';
+                if($val['id'] == $v['user_id']){
+                    $list[$k]['fullname'] = $val['fullname'];
+                }
+            }
+        }
+        $data['list'] = $list;
+        $this->load->view('admin/seeworker', $data);
+    }
 
 }
 
