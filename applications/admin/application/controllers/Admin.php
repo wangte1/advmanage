@@ -394,8 +394,8 @@ class Admin extends MY_Controller{
         //admin
         $admin = $this->Madmins->get_lists('id,fullname', ['in' => ['group_id' => [4,6]]]);
         foreach ($list as $k => $v){
+            $list[$k]['fullname'] = '';
             foreach ($admin as $key => $val){
-                $list[$k]['fullname'] = '';
                 if($val['id'] == $v['user_id']){
                     $list[$k]['fullname'] = $val['fullname'];
                 }
