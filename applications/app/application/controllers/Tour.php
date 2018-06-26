@@ -216,6 +216,37 @@ class Tour extends MY_Controller {
         }
         $this->return_json(['code' => 1, 'msg' => '操作成功']);
     }
+    
+    /**
+     * 提交异常，更新点位状态为4（异常状态），能上画，则不跟新为4，而是提交报告
+     */
+    public function report(){
+        
+        $token = decrypt($this->token);
+        $report_img = $this->input->get_post('report_img');
+        $point_id = $this->input->get_post('point_id');
+        $this->write_log($token['user_id'], 1, '巡视报损图片url'.$report_img);
+        if(!$report_img) $this->return_json(['code' => 0, 'msg' => '请拍照上传图片']);
+        $report = $this->input->get_post('report');
+        if(!$report) $this->return_json(['code' => 0, 'msg' => '请选择异常选项']);
+        $report_msg = $this->input->get_post('report_msg');
+        $usable = $this->input->get_post('usable');
+        
+        $up = [
+            'report_img' => $report_img,
+            'point_id' => $point_id,
+            'report' => $report,
+            'create_id' => $token['user_id'],
+            'report_msg' => $report_msg,
+            'create_time' => strtotime(date('Y-m-d')),
+            'usable' => $usable
+        ];
+        $res = $this->Mhouses_points_report->create($up);
+        if(!$res){
+            $this->return_json(['code' => 0, 'msg' => '操作失败，请重试']);
+        }
+        $this->return_json(['code' => 1, 'msg' => '提交成功']);
+    }
 }
 
 
