@@ -81,7 +81,10 @@ class Houseschangepicorders extends MY_Controller{
         $data = $this->data;
         if (IS_POST) {
             $post_data = $this->input->post();
-            
+            if($post_data['point_ids']){
+                $point_ids = array_unique(explode(',', $post_data['point_ids']));
+                $post_data['point_ids'] = implode(',', $point_ids);
+            }
             if (isset($post_data['make_complete_time'])) {
                 $post_data['make_complete_time'] = $post_data['make_complete_time'].' '.$post_data['hour'].':'.$post_data['minute'].':'.$post_data['second'];
             }
@@ -123,7 +126,8 @@ class Houseschangepicorders extends MY_Controller{
         $where = array(
             'A.order_code' => $this->input->post('order_code'), 
             'A.order_type' => $this->input->post('order_type'),
-            'A.order_status' => 6
+            'A.order_status>=' => 4,
+            'A.pid' => 0
         );
 
         //订单信息
@@ -131,16 +135,7 @@ class Houseschangepicorders extends MY_Controller{
 
         $where_point['in']['A.id'] = explode(',', $order['point_ids']);
         $points_lists = $this->Mhouses_points->get_points_lists($where_point);
-//         if ($points_lists) {
-//             $make_num = $this->Mpoints_make_num->get_lists('order_id, point_id, make_num', array('order_id' => $order['id'], 'type' => 1));
-//             foreach ($points_lists as $key => $value) {
-//                 foreach ($make_num as $k => $v) {
-//                     if ($v['point_id'] == $value['id']) {
-//                         $points_lists[$key]['make_num'] = $v['make_num'];
-//                     }
-//                 }
-//             }
-//         }
+
         $order['order_type'] = $this->data['order_type_text'][$order['order_type']];
         $this->return_json(array('flag' => true, 'order_info' => $order, 'points_lists' => $points_lists, 'count' => count($points_lists)));
     }

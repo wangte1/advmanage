@@ -12,7 +12,8 @@ class Model_houses_change_pic_orders extends MY_Model {
      * 获取订单列表
      */
     public function get_order_lists($where = array(), $order_by = array(), $offset = 0, $pagesize = 0) {
-    	$this->db->select('A.*, B.order_code, B.order_type, B.release_start_time, B.release_end_time, B.total_price, C.name AS customer_name, D.fullname AS sales_name, D.tel AS sales_mobile');
+        $this->db->select('A.*, B.order_code, B.order_type, B.release_start_time, B.release_end_time, B.total_price, C.name AS customer_name, D.fullname AS sales_name, D.tel AS sales_mobile');
+        $this->db->distinct();
     	$this->db->from('t_houses_change_pic_orders A');
         $this->db->join('t_houses_orders B', 'A.order_code = B.order_code', 'left');
         $this->db->join('t_houses_customers C', 'B.customer_id = C.id', 'left');
