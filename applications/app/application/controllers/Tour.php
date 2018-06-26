@@ -36,6 +36,7 @@ class Tour extends MY_Controller {
         if($diy_area_id == 0){
             $this->return_json(['code' => 0, 'data' => [], 'msg' => '系统还未给您分配区域']);
         }
+        
         //查询用户负责的楼盘列表
         $houses = $this->Mhouses_diy_area->get_lists('houses_id', ['diy_area_id' => $diy_area_id]);
         if(!$houses){
@@ -44,6 +45,7 @@ class Tour extends MY_Controller {
         $houses_ids = array_column($houses, 'houses_id');
         if(count($houses_ids) > 1){
             $houses_ids = array_unique($houses_ids);
+            
         }
         //提取楼盘、组团
         $where = ['in' => ['houses_id' => $houses_ids]];
@@ -60,11 +62,12 @@ class Tour extends MY_Controller {
                 $listData[$k]['area'] = [];
             }
             //行政区域
-            $areaList = $this->Mhouses->get_lists('id,city,area', ['in' => ['id' => $houses_ids]]);
+            $areaList = $this->Mhouses->get_lists('id,name,city,area', ['in' => ['id' => $houses_ids]]);
             if($areaList){
                 foreach ($listData as $k => $v){
                     foreach ($areaList as $key => $val){
                         if($v['houses_id'] == $val['id']){
+                            $listData[$k]['houses_name'] = $val['name'];
                             $listData[$k]['areas'] = $val['city'].$val['area'];
                         }
                     }
@@ -110,16 +113,28 @@ class Tour extends MY_Controller {
         if($diy_area_id == 0){
             $this->return_json(['code' => 0, 'data' => [], 'msg' => '系统还未给您分配区域']);
         }
+        $houses_id = $this->input->get_post('houses_id');
+        
+        
         $pageconfig = C('page.page_lists');
         $this->load->library('pagination');
         $page = (int) $this->input->get_post('page') ? : '1';
         $size = (int) $this->input->get_post('size');
         
-        $where = ['is_del' => 0, 'in' => ['diy_area_id' => $diy_area_id]];
-        $where['houses_id'] = $this->input->get_post('houses_id');
+        $where = ['is_del' => 0, 'diy_area_id' => $diy_area_id];
+        $where['houses_id'] = $houses_id;
+        //获取这个楼盘、和用户所关联的组团
+        $areaInfo = $this->Mhouses_diy_area->get_lists('area_id', ['houses_id' => $houses_id, 'diy_area_id' => $diy_area_id]);
+        if($areaInfo){
+            $area_ids = array_column($areaInfo, 'area_id');
+            if($area_ids){
+                $area_ids = array_unique($area_ids);
+                $where['in']['area_id'] = $area_ids;
+            }
+        }
         if(!$size) $size = $pageconfig['per_page'];
         
-        $orderBy = ['houses_id' => 'asc', 'area_id' => 'asc', 'ban' => 'asc'];
+        $orderBy = ['area_id' => 'asc', 'ban' => 'asc'];
         $list = $this->Mhouses_points->get_lists("*", $where, $orderBy, $size, ($page-1)*$size);
         if(!$list){
             $this->return_json(['code' => 0, 'msg' => '暂无数据']);
