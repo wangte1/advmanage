@@ -48,11 +48,12 @@
                     <caption style="border: 1px solid #ddd;"><span style="font-size:18px">楼盘-组团-区域</span></caption>
                     <thead>
                     <tr>
+                    	<th style="text-align: center;width:5%;">序号</th>
                         <th style="text-align: center;width:20%;">行政区域</th>
                         <th style="text-align: center;width:20%;">楼盘</th>
                         <th style="text-align: center;width:20%;">组团</th>
                         <th style="text-align: center;width:20%;">点位数</th>
-                        <th style="text-align: center;width:20%;">
+                        <th style="text-align: center;width:15%;">
                             <label>自定义区域 </label>
                             	<select id="diy_area_id" class="select2" data-placeholder="Click to Choose..." name="diy_area_id" onchange="tt(this.id)">
                             		<option>全部</option>
@@ -64,11 +65,13 @@
                     </tr>
                     </thead>
                     <tbody>
+                    	<?php $j = 0;?>
 						<?php if($list):?>
 						<?php foreach ($list as $k => $v):?>
 						<?php $i = 0;?>
 						<?php foreach ($v['area'] as $key => $val):?>
                         <tr>
+                        	<td><?php echo $j+1;$j++;?></td>
                         	<?php if($i == 0):?>
                             <td style="vertical-align: middle;" rowspan="<?php echo count($v['area']);?>"><?php echo $v['areas'];?></td>
                             <?php endif;?>
