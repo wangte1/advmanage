@@ -6,7 +6,8 @@
  */
 
 class Login extends MY_Controller {
-
+    
+    private $Cr = 0.95; //图片压缩率
     public function __construct() {
         parent::__construct();
         $this->load->model([
@@ -50,7 +51,10 @@ class Login extends MY_Controller {
                        ));
                         
                        $token = $this->setToken($user_info['id']);
-                       $this->return_json(array("code" => 1, "msg"=>"登录成功", 'token' => $token, 'data' => $user_info));
+                       $config = [
+                           'rc' => $this->Cr
+                       ];
+                       $this->return_json(array("code" => 1, "msg"=>"登录成功", 'token' => $token, 'data' => $user_info, 'config' => $config));
                     }else{
                         $this->return_json(array("code" => 0, "msg" => "密码错误请重新输入"));
                     }

@@ -119,7 +119,7 @@ class Tour extends MY_Controller {
         $where['houses_id'] = $this->input->get_post('houses_id');
         if(!$size) $size = $pageconfig['per_page'];
         
-        $orderBy = ['houses_id' => 'asc'];
+        $orderBy = ['houses_id' => 'asc', 'area_id' => 'asc', 'ban' => 'asc'];
         $list = $this->Mhouses_points->get_lists("*", $where, $orderBy, $size, ($page-1)*$size);
         if(!$list){
             $this->return_json(['code' => 0, 'msg' => '暂无数据']);
