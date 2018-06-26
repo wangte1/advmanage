@@ -37,11 +37,44 @@ class Housesquery extends MY_Controller{
         if($houses_id){
             $where['id'] = $houses_id;
             $data['houses_id'] = $houses_id;
-            $data['list'] = $this->Mhouses->get_lists('*', $where);
+            $data['list']['db'] = $this->Mhouses->get_one('*', $where);
+            $data['count']['count_1'] = $this->Mhouses_points->get_one('count(0) as count', ['houses_id' => $houses_id, 'addr' => 1, 'is_del' => 0])['count'];
+            $data['count']['count_2'] = $this->Mhouses_points->get_one('count(0) as count', ['houses_id' => $houses_id, 'addr' => 2, 'is_del' => 0])['count'];
+            $data['count']['count_3'] = $this->Mhouses_points->get_one('count(0) as count', ['houses_id' => $houses_id, 'addr' => 3, 'is_del' => 0])['count'];
+            $data['count']['count_4'] = $this->Mhouses_points->get_one('count(0) as count', ['houses_id' => $houses_id, 'is_del' => 0])['count'];
+            
+            $temp= C('housespoint.put_trade'); //禁投放行业
+            $arr = explode(',',$data['list']['db']['put_trade']);
+            $data['list']['db']['put_trade'] = '';
+            foreach ($arr as $k => $v){
+                if($v != ''){
+                   $data['list']['db']['put_trade'] .= $temp[$v].',';
+                }
+            }
+            $temp = C("public.houses_grade");//等级
+            $data['list']['db']['grade'] = $temp[$data['list']['db']['grade']];
+            
+            $data_count = $this->Mhouses->count($where);
+            $data['page'] = $page;
+            $data['data_count'] = $data_count;
         }
+        
+        //获取分页
+        $pageconfig['base_url'] = "/houses";
+        $pageconfig['total_rows'] = $data_count;
+        $this->pagination->initialize($pageconfig);
+        $data['pagestr'] = $this->pagination->create_links(); // 分页信息
+        
+        //$data['houses_type'] = C("public.houses_type");
+        
+        $data['houses_grade'] = C("public.houses_grade");
+        
         $this->load->view("housesquery/index",$data);
     }
-    
+    /**
+     * @desc ajax获取楼盘信息
+     * @author admin@ttitt.net
+     */
     public function get_houses() {
         $list = $this->Mhouses->get_lists('id,name');
         $this->return_json(['code' => 1, 'list' => $list]);

@@ -23,7 +23,7 @@
                     </li>
                     
                     <li>
-                        <span>点位管理</span>
+                        <span>位置查询</span>
                     </li>
 
                 </ul>
@@ -32,11 +32,6 @@
             </div>
 
             <div class="page-content">
-                <div class="page-header">
-                    <a href="/housespoints/add" class="btn btn-sm btn-primary"><i class="fa fa-plus-square" aria-hidden="true"></i> 新增点位</a>
-                	<a href="javascript:;" class="btn btn-sm btn-primary btn-export"><i class="fa fa-download out_excel" aria-hidden="true"></i> 导出</a>
-                	<a href="/housespoints/partition" class="btn btn-sm btn-primary"><i class="ace-icon glyphicon glyphicon-edit" aria-hidden="true"></i> 分配区域</a>
-                </div>
                 <div class="row">
                     <div class="col-xs-12">
                         <div class="widget-box">
@@ -58,8 +53,8 @@
                                                 <label class="col-sm-3 control-label no-padding-right" for="form-field-1"> 所属楼盘 </label>
                                                 <div class="col-sm-9">
                                                 	<select id="houses" class="select2" data-placeholder="Click to Choose..." name="houses_id">
-                                                		<option value="">全部</option>
-				                                		<?php foreach ($hlist as $k => $v) {?>
+                                                		<option value="">请选择楼盘</option>
+				                                		<?php foreach ($list as $k => $v) {?>
 				                                    		<option value="<?php echo $v['id'];?>" <?php if($v['id'] == $houses_id) {?>selected="selected"<?php }?>><?php echo $v['name'];?></option>
 				                                    	<?php }?>
 				                                    </select>
@@ -117,6 +112,14 @@
                                                 	<td><?php echo $val['province'];?>-<?php echo $val['city']?>-<?php echo $val['area']?></td>
                                                 	<td><?php echo $val['position']?></td>
                                                 	<td><?php echo $val['households']?></td>
+                                                	<td><?php echo $val['occ_rate'] * 100 . '%'?></td>
+                                                	<td><?php echo $val['put_trade']?></td>
+                                                	<td><?php echo $val['grade']?></td>
+                                                	<td><?php echo $val['deliver_year']?></td>
+                                                	<td><?php echo $count['count_1']?></td>
+                                                	<td><?php echo $count['count_2']?></td>
+                                                	<td><?php echo $count['count_3']?></td>
+                                                	<td><?php echo $count['count_4']?></td>
                                                 </tr>
                                             <?php } }?>
 										</tbody>
