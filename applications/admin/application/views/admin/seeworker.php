@@ -47,7 +47,7 @@
                 //label默认蓝框白底左上角显示，样式className为：amap-marker-label
                 offset: new AMap.Pixel(25, -5),
                 //修改label相对于maker的位置
-                content: "<?php echo 'ID:'.$val['user_id'].' '.$val['fullname']?>"
+                content: "<?php echo 'ID:'.$val['user_id'].'-'.$val['fullname']?> 最后时间 <?php echo date('H:i:s', strtotime($val['create_time']))?>"
             }
     	}, 
     	<?php endforeach;?>

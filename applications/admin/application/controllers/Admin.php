@@ -13,7 +13,10 @@ class Admin extends MY_Controller{
             'Model_admins_group' => 'Madmins_group',
             'Model_admins_purview' => 'Madmins_purview',
             "Model_allowance_place" =>"Mallowance_place",
-            'Model_houses_user_diy_area' => 'Mhouses_user_diy_area'
+            'Model_houses_user_diy_area' => 'Mhouses_user_diy_area',
+            'Model_houses_diy_area' => 'Mhouses_diy_area',
+            'Model_houses' => 'Mhouses',
+            'Model_houses_area' => 'Mhouses_area',
         ]);
         $this->pageconfig = C('page.page_lists');
         $this->load->library('pagination');
@@ -308,6 +311,59 @@ class Admin extends MY_Controller{
         $this->Mhouses_user_diy_area->get_lists('*');
         //获取工程人员
         $userList = $this->Madmins->get_lists('id,pid,fullname,diy_area_id',['in' => ['group_id' => [4,6]], 'is_del' => 1]);
+        foreach ($userList as $k => $v){
+            $userList[$k]['list'] = [];
+        }
+        
+        //获取已设置的分布区域
+        $areaList = $this->Mhouses_diy_area->get_lists('*');
+        if($areaList){
+            foreach ($userList as $k => $v){
+                foreach ($areaList as $key => $val){
+                    if($v['diy_area_id'] == $val['diy_area_id']){
+                        $arr = [
+                            'houses_id' => $val['houses_id'],
+                            'houses_name' => '',
+                            'area_id' => $val['area_id'],
+                            'houses_area_name' => '无组团',
+                        ];
+                        $userList[$k]['list'][] = $arr;
+                    }
+                }
+            }
+        }
+        
+        //提取楼盘ids;
+        $houses_ids = array_unique(array_column($areaList, 'houses_id'));
+        if($houses_ids){
+            //获取该订单下面的所有楼盘
+            $housesList = $this->Mhouses->get_lists("id, name", ['in' => ['id' =>$houses_ids]]);
+        }
+        
+        
+        $area_ids = array_unique(array_column($areaList, 'area_id'));
+        if($area_ids){
+            //获取所有组团
+            $areaList = $this->Mhouses_area->get_lists('id,name', ['in' => ['id' =>$area_ids]]);
+        }
+        //组装数据
+        foreach ($userList as $k => $v){
+            if(count($v['list'])){
+                foreach ($v['list'] as $k1 => $v1){
+                    foreach ($housesList as $k2 => $v2){
+                        if($v1['houses_id'] == $v2['id']){
+                            $userList[$k]['list'][$k1]['houses_name'] = $v2['name'];
+                        }
+                    }
+                    foreach ($areaList as $k2 => $v2){
+                        if($v1['area_id'] == $v2['id']){
+                            $userList[$k]['list'][$k1]['houses_area_name'] = $v2['name'];
+                        }
+                    }
+                }
+            }
+        }
+        //提取区域ids
         $data['userList'] = $userList;
         unset($userList);
         $this->load->view("admin/partition", $data);

@@ -38,6 +38,9 @@ class Tour extends MY_Controller {
         }
         //查询用户负责的楼盘列表
         $houses = $this->Mhouses_diy_area->get_lists('houses_id', ['diy_area_id' => $diy_area_id]);
+        if(!$houses){
+            $this->return_json(['code' => 0, 'data' => [], 'msg' => '您所负责的区域暂无分配楼盘']);
+        }
         $houses_ids = array_column($houses, 'houses_id');
         if(count($houses_ids) > 1){
             $houses_ids = array_unique($houses_ids);
@@ -88,6 +91,10 @@ class Tour extends MY_Controller {
             }
         }
         unset($list);
+        $listData = array_values($listData);
+        foreach ($listData as $k => &$v){
+            $v['area'] = array_values($v['area']);
+        }
         $this->return_json(['code' => 1, 'data' => $listData]);
     }
     
@@ -112,7 +119,7 @@ class Tour extends MY_Controller {
         $where['houses_id'] = $this->input->get_post('houses_id');
         if(!$size) $size = $pageconfig['per_page'];
         
-        $orderBy = ['houses_id' => 'asc'];
+        $orderBy = ['houses_id' => 'asc', 'area_id' => 'asc', 'ban' => 'asc'];
         $list = $this->Mhouses_points->get_lists("*", $where, $orderBy, $size, ($page-1)*$size);
         if(!$list){
             $this->return_json(['code' => 0, 'msg' => '暂无数据']);
@@ -132,6 +139,7 @@ class Tour extends MY_Controller {
         if($houses_list){
             foreach ($list as $k => &$v){
                 $v['houses_name'] = '';
+                $v['houses_area_name'] = '';
                 foreach ($houses_list as $key => $val){
                     if($v['houses_id'] == $val['id']){
                         $v['houses_name'] = $val['name'];
@@ -145,7 +153,6 @@ class Tour extends MY_Controller {
         }
         if($area_list){
             foreach ($list as $k => &$v){
-                $v['houses_area_name'] = '';
                 foreach ($area_list as $key => $val){
                     if($v['area_id'] == $val['id']){
                         $v['houses_area_name'] = $val['name'];
