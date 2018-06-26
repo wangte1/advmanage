@@ -38,6 +38,9 @@ class Tour extends MY_Controller {
         }
         //查询用户负责的楼盘列表
         $houses = $this->Mhouses_diy_area->get_lists('houses_id', ['diy_area_id' => $diy_area_id]);
+        if(!$houses){
+            $this->return_json(['code' => 0, 'data' => [], 'msg' => '您所负责的区域暂无分配楼盘']);
+        }
         $houses_ids = array_column($houses, 'houses_id');
         if(count($houses_ids) > 1){
             $houses_ids = array_unique($houses_ids);
