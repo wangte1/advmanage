@@ -265,8 +265,13 @@ class Housespoints extends MY_Controller{
     
     public function partition(){
         $data = $this->data;
-        //提取楼盘、组团
+        //提取楼盘、组团 
         $where = [];
+        $diy_area_id = (int) $this->input->get('diy_area_id');
+        if($diy_area_id){
+            $where['diy_area_id'] = $diy_area_id;
+            $data['diy_area_id'] = $diy_area_id;
+        }
         $group_by = ['houses_id', 'area_id'];
         $list = $this->Mhouses_points->get_lists('houses_id, houses_name, area_id, count(id) as num,area_name', $where, ['houses_id' => 'asc'], 0, 0, $group_by);
         //提取楼盘ids

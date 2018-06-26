@@ -52,7 +52,15 @@
                         <th style="text-align: center;width:20%;">楼盘</th>
                         <th style="text-align: center;width:20%;">组团</th>
                         <th style="text-align: center;width:20%;">点位数</th>
-                        <th style="text-align: center;width:20%;">自定义区域</th>
+                        <th style="text-align: center;width:20%;">
+                            <label>自定义区域 </label>
+                            	<select id="diy_area_id" class="select2" data-placeholder="Click to Choose..." name="diy_area_id" onchange="tt(this.id)">
+                            		<option>全部</option>
+                            		<?php foreach (C('diy_area') as $k1 => $v1):?>
+                            			<option <?php if($k1 == $diy_area_id){echo 'selected';}?> value="<?php echo $k1?>"><?php echo $v1?></option>
+                            		<?php endforeach;?>
+                                </select>
+                        </th>
                     </tr>
                     </thead>
                     <tbody>
@@ -111,6 +119,10 @@
 			layer.msg(data.msg);
 		});
 	});
+	function tt(id) {
+		  var aa = document.getElementById(id);
+		   window.location.href="?diy_area_id="+ aa.value;
+		}
 </script>
 <!-- 底部 -->
 <?php $this->load->view("common/bottom");?>
