@@ -112,14 +112,14 @@ class Tour extends MY_Controller {
         if($diy_area_id == 0){
             $this->return_json(['code' => 0, 'data' => [], 'msg' => '系统还未给您分配区域']);
         }
-        
+        $houses_id = $this->input->get_post('houses_id');
         $pageconfig = C('page.page_lists');
         $this->load->library('pagination');
         $page = (int) $this->input->get_post('page') ? : '1';
         $size = (int) $this->input->get_post('size');
         
         $where = ['is_del' => 0, 'diy_area_id' => $diy_area_id];
-        $where['houses_id'] = $this->input->get_post('houses_id');
+        $where['houses_id'] = $houses_id;
         if(!$size) $size = $pageconfig['per_page'];
         
         $orderBy = ['area_id' => 'asc', 'ban' => 'asc'];
