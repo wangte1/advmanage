@@ -60,6 +60,7 @@ class Tour extends MY_Controller {
                 $listData[$k]['areas'] = '';
                 $listData[$k]['houses_name'] = '';
                 $listData[$k]['area'] = [];
+                $listData[$k]['num'] = 0;
             }
             //行政区域
             $areaList = $this->Mhouses->get_lists('id,name,city,area', ['in' => ['id' => $houses_ids]]);
@@ -83,6 +84,7 @@ class Tour extends MY_Controller {
                         if(!in_array($v['area_id'], $val['area_id'])){
                             $listData[$key]['area'][$k]['id'] = $v['area_id'];
                             $listData[$key]['area'][$k]['num'] = $v['num'];
+                            $listData[$key]['num'] += $v['num'];
                             if(empty($v['area_name'])){
                                 $v['area_name'] = '无组团';
                             }
