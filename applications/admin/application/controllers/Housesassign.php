@@ -94,7 +94,7 @@ class Housesassign extends MY_Controller{
         $data['no_confirm_count1'] = $this->Mhouses_orders->get_order_count(['A.order_status'=> 3, 'A.assign_status'=>1]);
         $data['no_confirm_count2'] = $this->Mhouses_orders->get_order_count(['A.order_status'=> 7, 'A.assign_status'=>1]);
         $data['no_confirm_count3'] = $this->Mhouses_changepicorders->get_order_count(['A.order_status'=> 3, 'A.assign_status'=>1]);
-        
+
         $this->load->view("housesassign/index", $data);
     }
     
@@ -221,7 +221,6 @@ class Housesassign extends MY_Controller{
         //从订单获取点位信息
         $tmp_order = $tmp_moudle->get_one('id,point_ids', ['id'=>$data['order_id']]);
         $where['in']['id'] = explode(',', $tmp_order['point_ids']);
-
         $group_by = ['houses_id'];
         $list = $this->Mhouses_points->get_lists('houses_id,count(0) as count', $where, [],  0,0,  $group_by);  //点位分组
         
@@ -774,13 +773,11 @@ class Housesassign extends MY_Controller{
     	$size = $pageconfig['per_page'];
     	$where_orders['is_del'] = $where['is_del'] = 0;
     	if ($this->input->get('order_id')) $where_orders['id'] = $data['order_id'] =  $this->input->get('order_id');
-    	 
     	if($this->input->get('assign_type') == 3) {
     		$tmp_moudle = $this->Mhouses_changepicorders;
     	}else {
     		$tmp_moudle = $this->Mhouses_orders;
     	}
-    	
     	$charge_id_str = $this->input->get('charge_id_str');
     	if($charge_id_str) {
     		$data['charge_id_arr'] = explode(',', $charge_id_str);

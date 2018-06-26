@@ -81,6 +81,7 @@ class Houseschangepicorders extends MY_Controller{
         $data = $this->data;
         if (IS_POST) {
             $post_data = $this->input->post();
+            $post_data['order_type'] = $order_type;
             if($post_data['point_ids']){
                 $point_ids = array_unique(explode(',', $post_data['point_ids']));
                 $post_data['point_ids'] = implode(',', $point_ids);

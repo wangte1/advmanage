@@ -81,11 +81,18 @@ class Housesconfirm extends MY_Controller{
         $where['type'] = $assign_type;
         $where['is_del'] = 0;
         
-        $data['list'] = $list = $this->Mhouses_work_order->get_lists("*", $where, ['create_time'=>'desc'], $size, ($page-1)*$size);
+        $list = $this->Mhouses_work_order->get_lists("*", $where, ['create_time'=>'desc'], $size, ($page-1)*$size);
+        $data['list']= $list;
         if($data['list']){
             //查询这些工单的订单信息
             $order_ids= array_unique(array_column($data['list'], 'order_id'));
-            $order_list = $this->Mhouses_orders->get_lists('id, order_code, order_type, customer_id', ['in' => ['id' => $order_ids]]);
+            if ($assign_type != 3) {	//上画和下画派单
+                $tmp_moudle = $this->Mhouses_orders;
+            }else {
+                //换画派单
+                $tmp_moudle = $this->Mhouses_changepicorders;
+            }
+            $order_list = $tmp_moudle->get_lists('id, order_code, order_type, customer_id', ['in' => ['id' => $order_ids]]);
             
             foreach ($list as $k => $v){
                 foreach ($order_list as $key => $val){
@@ -124,7 +131,7 @@ class Housesconfirm extends MY_Controller{
         $data['count1'] = (int) $this->Mhouses_work_order->count(['type' => 1, 'status' => 0]);
         $data['count2'] = (int) $this->Mhouses_work_order->count(['type' => 2, 'status' => 0]);
         $data['count3'] = (int) $this->Mhouses_work_order->count(['type' => 3, 'status' => 0]);
-        
+
         $this->load->view("housesconfirm/index", $data);
     }
     
