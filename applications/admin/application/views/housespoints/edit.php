@@ -45,7 +45,7 @@
                 <div class="page-header">
                     <h1>
                        编辑点位
-                        <a  href="/housespoints" style="float: right; margin-right: 50px" class="btn btn-sm btn-primary">《返回列表页</a>
+                        <a  href="<?php echo $_COOKIE['lasturl'];?>" style="float: right; margin-right: 50px" class="btn btn-sm btn-primary">《返回列表页</a>
                     </h1>
                 </div><!-- /.page-header -->
 

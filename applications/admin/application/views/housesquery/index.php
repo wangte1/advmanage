@@ -23,7 +23,7 @@
                     </li>
                     
                     <li>
-                        <span>位置查询</span>
+                        <span>点位管理</span>
                     </li>
 
                 </ul>
@@ -33,7 +33,9 @@
 
             <div class="page-content">
                 <div class="page-header">
+                    <a href="/housespoints/add" class="btn btn-sm btn-primary"><i class="fa fa-plus-square" aria-hidden="true"></i> 新增点位</a>
                 	<a href="javascript:;" class="btn btn-sm btn-primary btn-export"><i class="fa fa-download out_excel" aria-hidden="true"></i> 导出</a>
+                	<a href="/housespoints/partition" class="btn btn-sm btn-primary"><i class="ace-icon glyphicon glyphicon-edit" aria-hidden="true"></i> 分配区域</a>
                 </div>
                 <div class="row">
                     <div class="col-xs-12">
@@ -51,52 +53,20 @@
                                 <div class="widget-main">
                                     <form id="search-form" class="form-horizontal" role="form">
                                         <div class="form-group">
-                                            <div class="col-sm-4">
-                                                <label class="col-sm-3 control-label no-padding-right" for="form-field-1"> 楼盘名称</label>
-                                                <div class="col-sm-9">
-                                                    <input type="text" name="name" value="<?php echo $name;?>"  class="col-xs-10 col-sm-12" />
-                                                </div>
-                                            </div>
-                                            <div class="col-sm-8">
-                                                <label class="col-sm-3 control-label no-padding-right" for="form-field-1"> 所属地区</label>
-                                                <div class="col-sm-9">
-				                                    <div id="distpicker1">
-													  <select name="province"></select>
-													  <select name="city"></select>
-													  <select name="area"></select>
-													</div>
-				                                </div>
-                                            </div>
-                                        </div>
-                                        
-                                        <div class="form-group">
-                                            <!-- <div class="col-sm-4">
-                                                <label class="col-sm-3 control-label no-padding-right" for="form-field-1"> 类型</label>
-                                                <div class="col-sm-9">
-                                                    <select id="state" name="type"  class="select2" data-placeholder="Click to Choose...">
-                                                        <option value="all" <?php if($type == 'all' || empty($type)){ echo 'selected'; }?>>全部</option>
-                                                        <?php foreach(C('public.houses_type') as $key=>$val){ ?>
-                                                            <option value="<?php echo $key;?>" <?php if($type != 'all' && ($key == $type)) { echo "selected"; }?>><?php echo $val;?></option>
-                                                        <?php } ?>
-                                                    </select>
-                                                </div>
-                                            </div> -->
                                             
-                                            <div class="col-sm-4">
-                                                <label class="col-sm-3 control-label no-padding-right" for="form-field-1"> 等级</label>
+                                            <div class="col-sm-3">
+                                                <label class="col-sm-3 control-label no-padding-right" for="form-field-1"> 所属楼盘 </label>
                                                 <div class="col-sm-9">
-                                                    <select id="state" name="grade"  class="select2" data-placeholder="Click to Choose...">
-                                                        <option value="all" <?php if($grade == 'all' || empty($grade)){ echo 'selected'; }?>>全部</option>
-                                                        <?php foreach(C('public.houses_grade') as $key=>$val){ ?>
-                                                            <option value="<?php echo $key;?>" <?php if($grade != 'all' && ($key == $grade)) { echo "selected"; }?>><?php echo $val;?></option>
-                                                        <?php } ?>
-                                                    </select>
+                                                	<select id="houses" class="select2" data-placeholder="Click to Choose..." name="houses_id">
+                                                		<option value="">全部</option>
+				                                		<?php foreach ($hlist as $k => $v) {?>
+				                                    		<option value="<?php echo $v['id'];?>" <?php if($v['id'] == $houses_id) {?>selected="selected"<?php }?>><?php echo $v['name'];?></option>
+				                                    	<?php }?>
+				                                    </select>
                                                 </div>
                                             </div>
-                                        </div>
-                                        
-                                       
                                             
+                                      	</div>
                                         
                                         
                                         <div class="clearfix form-actions">
@@ -123,25 +93,18 @@
                                     <table id="sample-table-2" class="table table-striped table-bordered table-hover">
                                         <thead>
                                             <tr>
-                                                <th>序号</th>
                                                 <th>楼盘名称</th>
                                                 <th>地区</th>
                                                 <th>具体位置</th>
-                                                <th>规划入住户数（户）</th>
-                                                <th>层数（层）</th>
+                                                <th>规划入住户</th>
                                                 <th>入住率</th>
-                                                <th>单元数</th>
                                                 <th>禁投放行业</th>
-                                                <th>类型</th>
                                                 <th>等级</th>
                                                 <th>交付年份</th>
-                                                <th>发送物业审核</th>
-                                                <th>物业公司</th>
                                                 <th>门禁点位数</th>
                                                 <th>地面电梯前室点位数</th>
-                                                <th>地下电梯前室点位数</th>
+                                                <th>地下电梯前室	点位数</th>
                                                 <th>合计点位数</th>
-                                                <th>备注</th>
                                             </tr>
                                         </thead>
                                         <tbody>
@@ -150,34 +113,10 @@
                                             foreach($list as $key=>$val){
                                                 ?>
                                                 <tr>
-                                                    <td><a href=""><?php echo $key+1;?></a></td>
-                                                    <td><a href=""><?php echo $val['name'];?></a></td>
-                                                    <td><?php echo $val['province'];?>-<?php echo $val['city'];?>-<?php echo $val['area'];?></td>
-                                                    <td><?php echo $val['position'];?></td>
-                                                    <td><?php echo $val['households'];?></td>
-                                                    <td><?php echo $val['floor_num'];?></td>
-                                                    <td><?php echo $val['occ_rate'] * 100 . '%';?></td>
-                                                    <td><?php echo $val['unit_rate'];?></td>
-													<td>
-														<?php if(isset($val['put_trade']) && !empty($val['put_trade'])) {
-														    $put_trade_arr = explode(',', $val['put_trade']);
-														    $put_trade_str = '';
-														    foreach ($put_trade_arr as $k => $v) {
-														        $put_trade_str .= $put_trade[$v].',';
-														    }
-														    echo $put_trade_str;
-													    }?>
-													</td>
-													<td><?php echo $val['type'];?></td>
-													<td><?php if(isset($houses_grade[$val['grade']])) echo $houses_grade[$val['grade']];?></td>
-													<td><?php if($val['deliver_year'] == '0000') echo ''; else echo $val['deliver_year'];?></td>
-													<td><?php if($val['is_check_out'] == 1) echo '是'; else echo '否';?></td>
-													<td><?php echo $val['property_company'];?></td>
-													<td><?php if($val['count_1']['count']) echo $val['count_1']['count'];?></td>
-													<td><?php if($val['count_2']['count']) echo $val['count_2']['count'];?></td>
-													<td><?php if($val['count_3']['count']) echo $val['count_3']['count'];?></td>
-													<td><?php if($val['count_4']['count']) echo $val['count_4']['count'];?></td>
-													<td><?php echo $val['remarks'];?></td>
+                                                	<td><?php echo $val['name'];?></td>
+                                                	<td><?php echo $val['province'];?>-<?php echo $val['city']?>-<?php echo $val['area']?></td>
+                                                	<td><?php echo $val['position']?></td>
+                                                	<td><?php echo $val['households']?></td>
                                                 </tr>
                                             <?php } }?>
 										</tbody>
@@ -199,23 +138,174 @@
 
 <script src="<?php echo css_js_url('jqdistpicker/distpicker.data.js','admin');?>"></script>
 <script src="<?php echo css_js_url('jqdistpicker/distpicker.js','admin');?>"></script>
-
-<script>
+<script src="<?php echo css_js_url('select2.min.js','admin');?>"></script>
+<script type="text/javascript">
+	var buf_info = '';
+	
 	$("#distpicker1").distpicker({
 		autoSelect: false,
 		province: "<?php if(isset($province)) { echo $province;}else{?>贵州省<?php }?>",
 		city: "<?php if(isset($city)) { echo $city;}else{?>贵阳市<?php }?>",
 		district : "<?php if(isset($area)) { echo $area;}?>",
 	});
+	
+    $(function(){
+    	$.post('/housesquery/get_houses',{},function(data){
+        	console.log(data);
+			if(data) {
+				var housesStr = '<option value="">--请选择楼盘--</option>';
+				for(var i = 0; i < data.list.length; i++) {
+					housesStr += '<option value="' + data.list[i].id + '">' + data.list[i].name + '</option>';
+				}
+				$("select[name='houses_id']").html(housesStr);
+			}
+		});
+       $(".select2").css('width','230px').select2({allowClear:true});
 
-	$(function(){
-		$(".btn-export").click(function(){
-        	$("#search-form").attr('action', '/housesquery/out_excel');
+       $(".btn-export").click(function(){
+        	$("#search-form").attr('action', '/housespoints/out_excel');
             $("#search-form").submit();
             $("#search-form").attr('action', '');
        });
+    });
+	
+	$('.m-del').click(function(){
+		var url = $(this).attr('data-url');
+		layer.confirm('确认要删除该点位吗？', {
+			  btn: ['确认','取消'] //按钮
+			}, function(){
+				location.href = url;
+			});
 	});
-</script>
 
+	$('.see-report').on('click', function(){
+		layer.msg('请打开报损列表查看');
+	});
+    
+    $('#houses').change(function(){
+        $('#area').html();
+        $('#s2id_area,#s2id_ban-sel,#s2id_unit-sel,#s2id_floor-sel').find('.select2-chosen').text('全部');
+        var areaStr = '<option value="">全部</option>';
+    	var houses_id = $(this).val();
+    	$.post('/housespoints/get_area', {'houses_id':houses_id}, function(data){
+    		if(data.code == 1){
+				for(var i=0; i < data.list.length; i++){
+					areaStr += '<option value="'+data.list[i]["id"]+'">'+data.list[i]["name"]+'</option>';
+				}
+        	}
+    		$("#area").html(areaStr);
+
+    		get_buf_info();
+    	});
+    });
+
+    $('#ban-sel').change(function(){
+        var ban_val = $(this).val();
+        var unitArr = new Array();
+        var unitStr = '<option value="">选择单元</option>';
+		for(var i = 0; i < buf_info.length; i++) {
+			if(buf_info[i]['ban'] != '' && ban_val == buf_info[i]['ban'] && unitArr.indexOf(buf_info[i]['unit']) == -1) {
+				unitArr[i] = buf_info[i]['unit'];
+				unitStr += '<option value="'+buf_info[i]['unit']+'">'+buf_info[i]['unit']+'</option>'
+				$.unique(unitArr);
+			}
+		}
+
+		$('#unit-sel').html(unitStr);
+
+		var floorArr = new Array();
+        var floorStr = '<option value="">选择楼层</option>';
+		for(var i = 0; i < buf_info.length; i++) {
+			if(buf_info[i]['ban'] != '' && ban_val == buf_info[i]['ban'] && floorArr.indexOf(buf_info[i]['floor']) == -1) {
+				floorArr[i] = buf_info[i]['floor'];
+				floorStr += '<option value="'+buf_info[i]['floor']+'">'+buf_info[i]['floor']+'</option>'
+				$.unique(floorArr);
+			}
+		}
+
+		$('#floor-sel').html(floorStr);
+		
+    });
+
+
+    function get_buf_info() {
+    	var houses_id = $("#houses").val();
+    	var area_id = $("#area").val();
+
+    	$.post('/housespoints/get_buf_info',{houses_id:houses_id, area_id:area_id},function(data){
+			if(data.code == 1) {
+				buf_info = data.list;
+
+				var banArr = new Array();
+				var banStr = '<option value="">选择楼栋</option>';
+				for(var i = 0; i < data.list.length; i++) {
+					if((data.list)[i]['ban'] != '' && banArr.indexOf((data.list)[i]['ban']) == -1) {
+						banArr[i] = (data.list)[i]['ban'];
+						banStr += '<option value="'+(data.list)[i]['ban']+'">'+(data.list)[i]['ban']+'</option>'
+						$.unique(banArr);
+					}
+				}
+
+				$('#ban-sel').html(banStr);
+				
+			}
+		});
+    	
+    }
+    //修复点位
+    $('.reported').on('click', function(){
+        return;
+		var id = $(this).attr('point_id');
+		var code = $(this).attr('point_code');
+		layer.confirm(
+			'确定点位 '+code+' 已经修复？',
+			{
+			  	btn: ['确定','取消'] //按钮
+			}, 
+			function(){
+				$.post('/housespoints/reported', {'id':id}, function(data){
+					if(data.code == 1){
+						window.parent.location.reload(); //刷新父页面
+						return;
+					}
+					layer.msg(data.msg, {icon: 2});
+				});
+			}, 
+			function(){
+			  	layer.close();
+			}
+		);
+    });
+
+    //报修点位
+    $('.report_img').on('click', function(){
+		var img = $(this).attr('img');
+		if(img == "") {layer.msg('该点位没有上传报损图片');return;}
+		layer.open({
+			  type: 1,
+			  area: ['50%', '50%'], //宽高
+			  content: '<div style="width:100%;height:100%;text-align: center;"><img src="'+img+'"></div>'
+		});
+    });
+    
+    //报修点位
+    $('.reportnow').on('click', function(){
+		var id = $(this).attr('point_id');
+		var code = $(this).attr('point_code');
+		var status  =$(this).attr('data-status');
+		if(status == 3){
+			layer.alert('占用点位在pc端不支持报损，请先将该点位从订单中移除再进行报损操作');
+			return;
+		}
+		layer.open({
+		  type: 2,
+		  title: '编号: '+code+' 点位报修',
+		  shadeClose: true,
+		  shade: 0.8,
+		  area: ['50%', '70%'],
+		  content: '/housespoints/report?id='+id
+		});
+    });
+</script>
 <!-- 底部 -->
 <?php $this->load->view("common/bottom");?>
