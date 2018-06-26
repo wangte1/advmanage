@@ -8,6 +8,7 @@
 class Login extends MY_Controller {
     
     private $Cr = 0.95; //图片压缩率
+    private $TourGap = 14*24*3600; //巡视时间隔，14天
     public function __construct() {
         parent::__construct();
         $this->load->model([
@@ -52,7 +53,8 @@ class Login extends MY_Controller {
                         
                        $token = $this->setToken($user_info['id']);
                        $config = [
-                           'rc' => $this->Cr
+                           'Cr' => $this->Cr,
+                           'TourGap' => $this->TourGap
                        ];
                        $this->return_json(array("code" => 1, "msg"=>"登录成功", 'token' => $token, 'data' => $user_info, 'config' => $config));
                     }else{
