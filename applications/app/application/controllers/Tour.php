@@ -113,6 +113,8 @@ class Tour extends MY_Controller {
             $this->return_json(['code' => 0, 'data' => [], 'msg' => '系统还未给您分配区域']);
         }
         $houses_id = $this->input->get_post('houses_id');
+        
+        
         $pageconfig = C('page.page_lists');
         $this->load->library('pagination');
         $page = (int) $this->input->get_post('page') ? : '1';
@@ -120,11 +122,19 @@ class Tour extends MY_Controller {
         
         $where = ['is_del' => 0, 'diy_area_id' => $diy_area_id];
         $where['houses_id'] = $houses_id;
+        //获取这个楼盘、和用户所关联的组团
+        $areaInfo = $this->Mhouses_diy_area->get_lists('area_id', ['houses_id' => $houses_id, 'diy_area_id' => $diy_area_id]);
+        if($areaInfo){
+            $area_ids = array_column($areaInfo, 'area_id');
+            if($area_ids){
+                $area_ids = array_unique($area_ids);
+                $where['in']['area_id'] = $area_ids;
+            }
+        }
         if(!$size) $size = $pageconfig['per_page'];
         
         $orderBy = ['area_id' => 'asc', 'ban' => 'asc'];
         $list = $this->Mhouses_points->get_lists("*", $where, $orderBy, $size, ($page-1)*$size);
-        $this->write_log($user_id, 1, "调试sql".$this->db->last_query());
         if(!$list){
             $this->return_json(['code' => 0, 'msg' => '暂无数据']);
         }
