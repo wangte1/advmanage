@@ -60,22 +60,7 @@
 				                                    </select>
                                                 </div>
                                             </div>
-                                            
                                       	</div>
-                                        
-                                        
-                                        <div class="clearfix form-actions">
-                                            <div class="col-md-offset-3 col-md-9">
-                                                <button class="btn btn-info" type="submit">
-                                                    <i class="fa fa-search"></i>
-                                                    查询
-                                                </button>
-                                                <button class="btn" type="reset">
-                                                    <i class="icon-undo bigger-110"></i>
-                                                    重置
-                                                </button>
-                                            </div>
-                                        </div>
                                     </form>
                                 </div>
                             </div>
@@ -98,7 +83,7 @@
                                                 <th>交付年份</th>
                                                 <th>门禁点位数</th>
                                                 <th>地面电梯前室点位数</th>
-                                                <th>地下电梯前室	点位数</th>
+                                                <th>地下电梯前室点位数</th>
                                                 <th>合计点位数</th>
                                             </tr>
                                         </thead>
@@ -186,20 +171,7 @@
 	});
     
     $('#houses').change(function(){
-        $('#area').html();
-        $('#s2id_area,#s2id_ban-sel,#s2id_unit-sel,#s2id_floor-sel').find('.select2-chosen').text('全部');
-        var areaStr = '<option value="">全部</option>';
-    	var houses_id = $(this).val();
-    	$.post('/housespoints/get_area', {'houses_id':houses_id}, function(data){
-    		if(data.code == 1){
-				for(var i=0; i < data.list.length; i++){
-					areaStr += '<option value="'+data.list[i]["id"]+'">'+data.list[i]["name"]+'</option>';
-				}
-        	}
-    		$("#area").html(areaStr);
-
-    		get_buf_info();
-    	});
+        $("#search-form").submit();    //提交ID为myform的表单
     });
 
     $('#ban-sel').change(function(){
