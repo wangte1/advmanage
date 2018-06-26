@@ -20,7 +20,8 @@ class Tour extends MY_Controller {
             'Model_houses_tour_points' => 'Mhouses_tour_points',
             'Model_houses_area' => 'Mhouses_area',
             'Model_houses' => 'Mhouses',
-            'Model_houses_diy_area' => 'Mhouses_diy_area'
+            'Model_houses_diy_area' => 'Mhouses_diy_area',
+            'Model_houses_points_report' => 'Mhouses_points_report',
         ]);
     }
     
