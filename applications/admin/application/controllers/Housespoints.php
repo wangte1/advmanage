@@ -173,7 +173,6 @@ class Housespoints extends MY_Controller{
     public function edit($id = 0){
         $data = $this->data;
         $data['title'] = array("站台管理","添加站台");
-
         if(IS_POST){
             $post = $this->input->post();
             
@@ -209,13 +208,15 @@ class Housespoints extends MY_Controller{
                     }
                 }
                 $this->write_log($data['userInfo']['id'],2,"社区编辑点位：".$post['code']);
-                $this->success("编辑成功","/housespoints");
+                $this->success("编辑成功",$_COOKIE["lasturl"]);
             }else{
                 $this->error("编辑失败");
             }
 
+        }else{
+            $this->input->set_cookie("lasturl",$_SERVER['HTTP_REFERER'],60);
         }
-
+        
         $info = $this->Mhouses_points->get_one("*",array("id"=>$id));
         if(empty($info) || !isset($info)){
             die("非法参数");
