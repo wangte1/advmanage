@@ -62,11 +62,12 @@ class Tour extends MY_Controller {
                 $listData[$k]['area'] = [];
             }
             //行政区域
-            $areaList = $this->Mhouses->get_lists('id,city,area', ['in' => ['id' => $houses_ids]]);
+            $areaList = $this->Mhouses->get_lists('id,name,city,area', ['in' => ['id' => $houses_ids]]);
             if($areaList){
                 foreach ($listData as $k => $v){
                     foreach ($areaList as $key => $val){
                         if($v['houses_id'] == $val['id']){
+                            $listData[$k]['houses_name'] = $val['name'];
                             $listData[$k]['areas'] = $val['city'].$val['area'];
                         }
                     }
