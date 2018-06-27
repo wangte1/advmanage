@@ -1660,6 +1660,7 @@ class Housesorders extends MY_Controller{
         
         //设置表头
         $table_header =  array(
+            '序号' => "id",
             '点位编号'=>"code",
             '楼盘'=>"houses_name",
             '组团'=>"houses_area_name",
@@ -1668,9 +1669,11 @@ class Housesorders extends MY_Controller{
             '楼层'=>"floor",
             '点位位置'=>"addr",
             '规格'=>"size",
+            '类型' => 'type',
+            '客户名称'=>"customer_name"
         );
         
-        $orderList = $this->Mhouses_orders->get_lists('point_ids,customer_id', ['in' => ['id' => $ids]]);
+        $orderList = $this->Mhouses_orders->get_lists('id as order_id, point_ids,customer_id', ['in' => ['id' => $ids]]);
         if(!$orderList) $this->return_json(['code' => 0, 'msg' => '暂无数据']);
         $point_ids = [];
         foreach ($orderList as $k => $v){
@@ -1700,66 +1703,58 @@ class Housesorders extends MY_Controller{
         $total =[];
         foreach ($point_ids as $k => $v){
             $where['in']['A.id'] = $v;
-            $list = $this->Mhouses_points->get_points_lists($where);
+            $list = $this->Mhouses_points->get_points_lists_of_merge_load($where);
             foreach ($list as $key => $val){
                 if($val['addr'] == 1){
                     $list[$key]['addr'] = '门禁';
                 }else{
                     $list[$key]['addr'] = '电梯前室';
                 }
+                if($val['type_id'] == 1){
+                    $list[$key]['type'] = '冷光灯箱';
+                }else{
+                    $list[$key]['type'] = '广告机';
+                }
             }
             $total[$k] =$list;
         }
-
-        foreach ($total as $k => $v){
-            
-            $num = count($table_header) -1;
-            $field = 'A1';
-            $fields = chr(ord($field)+$num).'1';
-            
-            if( $k>0 ){
-                $fields = chr(ord($field)+$num);
-                $tmp = count($total[$k-1])+3;
-                $field = 'A'.$tmp;
-                $fields = $fields.$tmp;
-            }
-            //合并单元格
-            $this->phpexcel->getActiveSheet(0)->mergeCells($field.':'.$fields);
-            $row = 1;
-            if($k>0){
-                //计算当前订单内容起始应该在的行数
-                $row = count($total[$k-1])+2+1;
-            }
-            $cell = PHPExcel_Cell::stringFromColumnIndex(0).$row;
-            $val = '客户:【'.$customers[$k].'】-点位数:【'.count($v).'】';
-            //设置标题
-            $this->phpexcel->setActiveSheetIndex(0)->setCellValue($cell, $val);
-            //填充字段
-            $i = 0;
-            foreach($table_header as  $k1=>$v1){
-                $tmp = $row+1;
-                $cell = PHPExcel_Cell::stringFromColumnIndex($i).$tmp;
-                $this->phpexcel->setActiveSheetIndex(0)->setCellValue($cell, $k1);
-                $i++;
-            }
-            
-            //填充字段内容
-            foreach ($v as $key => $val){
-                $j = 0;
-                $tmp = $row+1+($key+1);
-                foreach($table_header as $k1 => $v1){
-                    $cell = PHPExcel_Cell::stringFromColumnIndex($j++).$tmp;
-                    $value = $val[$v1];
-                    $this->phpexcel->getActiveSheet(0)->setCellValue($cell, $value);
+        foreach ($customersList as $k => $v){
+            foreach ($total as $key => $val){
+                if($k == $key){
+                    foreach ($val as $k1 => $v1){
+                        //重新对点位id替换成序号
+                        $total[$key][$k1]['id'] = ($k1+1)*($k+1);
+                        $total[$key][$k1]['customer_name'] = $v['name'];
+                    }
                 }
             }
         }
-        
+        //数据准备就绪， 绘制表头
+        $i = 0;
+        foreach($table_header as  $k=>$v){
+            $cell = PHPExcel_Cell::stringFromColumnIndex($i).'1';
+            $this->phpexcel->setActiveSheetIndex(0)->setCellValue($cell, $k);
+            $i++;
+        }
+        //填充数据
+        $h = 2;
+        foreach($total as $key => $val){
+            foreach ($val as $k1 => $v1){
+                $j = 0;
+                foreach($table_header as $k => $v){
+                    $cell = PHPExcel_Cell::stringFromColumnIndex($j++).$h;
+                    $value = $v1[$v];
+                    $this->phpexcel->getActiveSheet(0)->setCellValue($cell, $value);
+                }
+                $h++;
+            }
+            
+        }
         
         $this->phpexcel->setActiveSheetIndex(0);
         // 输出
         header('Content-Type: application/vnd.ms-excel');
-        header('Content-Disposition: attachment;filename=投放点位表['.$customersStr.'].xls');
+        header('Content-Disposition: attachment;filename='.date('Ymd').'合并导出投放点位表.xls');
         header('Cache-Control: max-age=0');
         
         $objWriter = PHPExcel_IOFactory::createWriter($this->phpexcel, 'Excel5');

@@ -27,7 +27,7 @@ class Report_list extends MY_Controller{
         $size = $pageconfig['per_page'];
         $where = [];
         $where['repair_time'] = 0;
-        $list = $this->Mhouses_points_report->get_lists('*', $where, ['create_time' => 'desc'], $size, ($page-1)*$size, ['point_id']);
+        $list = $this->Mhouses_points_report->get_lists('*', $where, ['create_time' => 'desc', 'id' => 'desc'], $size, ($page-1)*$size, ['point_id']);
         if($list){
             foreach ($list as $k => $v){
                 $list[$k]['fullname'] = '';
