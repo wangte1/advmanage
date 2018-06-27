@@ -51,7 +51,17 @@ class Tour extends MY_Controller {
         $where = ['in' => ['houses_id' => $houses_ids]];
         $where['diy_area_id>'] = 0;
         $group_by = ['houses_id', 'area_id'];
+        //获取这个楼盘、和用户所关联的组团
+        $areaInfo = $this->Mhouses_diy_area->get_lists('area_id', ['in' => ['houses_id' => $houses_id], 'diy_area_id' => $diy_area_id]);
+        if($areaInfo){
+            $area_ids = array_column($areaInfo, 'area_id');
+            if($area_ids){
+                $area_ids = array_unique($area_ids);
+                $where['in']['area_id'] = $area_ids;
+            }
+        }
         $list = $this->Mhouses_points->get_lists('houses_id, houses_name, area_id, count(id) as num,area_name', $where, ['houses_id' => 'asc'], 0, 0, $group_by);
+        
         //提取楼盘ids
         $listData = [];
         if($list){
