@@ -20,7 +20,8 @@ class Tour extends MY_Controller {
             'Model_houses_tour_points' => 'Mhouses_tour_points',
             'Model_houses_area' => 'Mhouses_area',
             'Model_houses' => 'Mhouses',
-            'Model_houses_diy_area' => 'Mhouses_diy_area'
+            'Model_houses_diy_area' => 'Mhouses_diy_area',
+            'Model_houses_points_report' => 'Mhouses_points_report',
         ]);
     }
     
@@ -231,7 +232,6 @@ class Tour extends MY_Controller {
      * 提交异常，更新点位状态为4（异常状态），能上画，则不跟新为4，而是提交报告
      */
     public function report(){
-        
         $token = decrypt($this->token);
         $report_img = $this->input->get_post('report_img');
         $point_id = $this->input->get_post('point_id');
@@ -240,6 +240,7 @@ class Tour extends MY_Controller {
         $report = $this->input->get_post('report');
         if(!$report) $this->return_json(['code' => 0, 'msg' => '请选择异常选项']);
         $report_msg = $this->input->get_post('report_msg');
+        $report_msg = $report_msg ? $report_msg : "";
         $usable = $this->input->get_post('usable');
         
         $up = [
