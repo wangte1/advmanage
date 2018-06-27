@@ -1298,8 +1298,9 @@ class Housesscheduledorders extends MY_Controller{
      * @param string $point_ids
      */
     public function checkPointIsCanUse($point_ids = ''){
+        $data = $this->data;
         $point_ids = explode(',', $point_ids);
-        $pointList = $this->Mhouses_points->get_lists('id,point_status,type_id,ad_num,ad_use_num,lock_num', ['in' => ['id' => $point_ids]]);
+        $pointList = $this->Mhouses_points->get_lists('id,code,point_status,type_id,ad_num,ad_use_num,lock_num', ['in' => ['id' => $point_ids]]);
         $msg = '';
         if($pointList){
             foreach ($pointList as $k => $v){
@@ -1309,6 +1310,11 @@ class Housesscheduledorders extends MY_Controller{
                 }
                 if($v['ad_num'] < ($v['ad_use_num'] + $v['lock_num'])){
                     $msg = '包含异常数据点位，无法转订单，请管理员解决';
+                    break;
+                }
+                if($v['ad_use_num'] > 0 && $v['type_id'] == 1){
+                    $this->write_log($data['userInfo'], 4, '转订单包含已上画的点位编号：'.$v['code']);
+                    $msg = '包含已上画点位，无法转订单，请管理员解决';
                     break;
                 }
             }
