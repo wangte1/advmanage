@@ -422,6 +422,7 @@ class Housesorders extends MY_Controller{
                     $this->Mhouses_points->update_info($update_data, $where_point);
                     
                 }
+                //$this->delWorkerOrderByPointIdAndOrderId($del, $id);
             }
 
             //占用已选的点位
@@ -1767,6 +1768,7 @@ class Housesorders extends MY_Controller{
      * 移除工单被删除的点位以及对应已生成的工单记录 
      */
     private function delWorkerOrderByPointIdAndOrderId($point_ids = [], $order_id = 0){
+        $data = $this->data;
         //获取当前的子订单
         $sonList = $this->Mhouses_orders->get_lists('id, order_status', ['pid' => $order_id]);
         if($sonList){
@@ -1777,11 +1779,38 @@ class Housesorders extends MY_Controller{
                 $tmp = $this->Mhouses_work_order->get_one('id', ['order_id' => $v['id'], 'type' => $type]);
                 if($tmp){
                     //判断当前工单是否存在被删除的点位
-                    $tmpList = $this->Mhouses_work_order->detail('id, point_id', ['pid' => $tmp['id']]);
+                    $tmpList = $this->Mhouses_work_order_detail->get_lists('id, point_id', ['pid' => $tmp['id']]);
                     if($tmpList){
-                        $num = 0;
+                        $del = [];//即将删除的工单列表id
+                        $point = [];//即将释放掉的点位
                         foreach ($tmpList as $k1 => $v1){
-                            
+                            if(in_array($v1['point_id'], $point_ids)){
+                                array_push($del, $v1['id']);
+                                array_push($point, $v1['point_id']);
+                            }
+                        }
+                        if(count($del)){
+                            $ret = $this->Mhouses_work_order_detail->delete(['in' => ['id' => $del]]);
+                            if(!$ret){
+                                $this->write_log($data['userInfo']['id'], 3, '未能撤回工程人员工单部分点位id: '.json_encode($del));
+                            }else{
+                                $this->write_log($data['userInfo']['id'], 3, '撤回工程人员工单部分点位id: '.json_encode($del));
+                            }
+                        }
+                        if(count($point)){
+                            //ids 
+                            $ids = array_column($tmpList, 'point_id');
+                            foreach ($ids as $k1 => $v1){
+                                if(in_array($v, $point)){
+                                    unset($ids[$k1]);
+                                }
+                            }
+                            $res = $this->Mhouses_orders->update_info(['point_ids' => implode(',', $ids)], ['id' => $v['id']]);
+                            if(!$res){
+                                $this->write_log($data['userInfo']['id'], 3, '未能更新子订单id: '.$v['id']);
+                            }else{
+                                $this->write_log($data['userInfo']['id'], 3, '更新子订单id: '.$v['id']);
+                            }
                         }
                     }
                 }
