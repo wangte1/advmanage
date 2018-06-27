@@ -256,6 +256,14 @@ class Tour extends MY_Controller {
         if(!$res){
             $this->return_json(['code' => 0, 'msg' => '操作失败，请重试']);
         }
+        //如果不能上画，则更新为4
+        if($usable == 0){
+            //更新点位为异常状态
+            $res = $this->Mhouses_points->update_info(['point_status' => 4], ['id' => $info['point_id']]);
+            if(!$res){
+                $this->write_log($token['user_id'], 1, '点位成功报异常，但未能更新点位状态,工单详情id'.$id);
+            }
+        }
         $this->return_json(['code' => 1, 'msg' => '提交成功']);
     }
 }
