@@ -1675,62 +1675,62 @@ class Housesorders extends MY_Controller{
         
         $orderList = $this->Mhouses_orders->get_lists('id as order_id, point_ids,customer_id', ['in' => ['id' => $ids]], [], 0, 0, ['id']);
         if(!$orderList) $this->return_json(['code' => 0, 'msg' => '暂无数据']);
-        $point_ids = [];
+        
         foreach ($orderList as $k => $v){
             if($v['point_ids']){
                 $tmp = explode(',', $v['point_ids']);
-                foreach ($tmp as $key => $val){
-                    $point_ids[$k][$key] = $val;
-                }
+                $orderList[$k]['point_ids'] = $tmp;
             }
         }
-        $customers_ids = $customers = [];
+        $customers_ids = [];
         foreach ($orderList as $k => $v){
             $customers_ids[$k] = $v['customer_id'];
         }
 
         $customersList = $this->Mhouses_customers->get_lists("id,name", ['in' => ['id' => $customers_ids]]); //客户列表
-        foreach ($customers_ids as $k => $v){
-            foreach ($customersList as $key => $val){
-                if($v == $val['id']){
-                    $customers[] = $val['name'];
-                }
-            }
-        }
-        
-        
-        $customersStr = implode('-', array_column($customersList, 'name'));
-        $total =[];
-        foreach ($point_ids as $k => $v){
-            $where['in']['A.id'] = $v;
-            $list = $this->Mhouses_points->get_points_lists_of_merge_load($where);
-            foreach ($list as $key => $val){
-                if($val['addr'] == 1){
-                    $list[$key]['addr'] = '门禁';
-                }else{
-                    $list[$key]['addr'] = '电梯前室';
-                }
-                if($val['type_id'] == 1){
-                    $list[$key]['type'] = '冷光灯箱';
-                }else{
-                    $list[$key]['type'] = '广告机';
-                }
-            }
-            $total[$k] =$list;
-        }
-        $num = 1;
-        foreach ($customersList as $k => $v){
-            foreach ($total as $key => $val){
-                if($k == $key){
-                    foreach ($val as $k1 => $v1){
-                        //重新对点位id替换成序号
-                        $total[$key][$k1]['id'] = $num;
-                        $total[$key][$k1]['customer_name'] = $v['name'];
-                        $num++;
+        if($customersList){
+            foreach ($orderList as $k => $v){
+                foreach ($customersList as $key => $val){
+                    if($v['customer_id'] == $val['id']){
+                        $orderList[$k]['customer_name'] = $val['name'];
                     }
                 }
             }
         }
+        
+        
+        foreach ($orderList as $k => $v){
+            $where['in']['A.id'] = $v['point_ids'];
+            $list = $this->Mhouses_points->get_points_lists_of_merge_load($where);
+            $orderList[$k]['list'] = [];
+            if($list){
+                foreach ($list as $key => $val){
+                    if($val['addr'] == 1){
+                        $list[$key]['addr'] = '门禁';
+                    }else{
+                        $list[$key]['addr'] = '电梯前室';
+                    }
+                    if($val['type_id'] == 1){
+                        $list[$key]['type'] = '冷光灯箱';
+                    }else{
+                        $list[$key]['type'] = '广告机';
+                    }
+                }
+                $orderList[$k]['list'] = $list;
+            }
+        }
+        
+        $num = 1;
+        foreach ($orderList as $k => $v){
+            foreach ($v['list'] as $key => $val){
+                //重新定义id
+                $orderList[$k]['list'][$key]['id'] = $num;
+                $orderList[$k]['list'][$key]['customer_name'] = $v['customer_name'];
+                $num++;
+                unset($orderList[$k]['point_ids']);
+            }
+        }
+        
         //数据准备就绪， 绘制表头
         $i = 0;
         foreach($table_header as  $k=>$v){
@@ -1740,8 +1740,8 @@ class Housesorders extends MY_Controller{
         }
         //填充数据
         $h = 2;
-        foreach($total as $key => $val){
-            foreach ($val as $k1 => $v1){
+        foreach($orderList as $key => $val){
+            foreach ($val['list'] as $k1 => $v1){
                 $j = 0;
                 foreach($table_header as $k => $v){
                     $cell = PHPExcel_Cell::stringFromColumnIndex($j++).$h;
