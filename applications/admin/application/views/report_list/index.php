@@ -113,7 +113,7 @@
                                                     	<?php if(isset(C('housespoint.point_addr')[$val['point']['addr']])) echo C('housespoint.point_addr')[$val['point']['addr']];?>
                                                     </td>
                                                     <td>
-                                                    	<img style="width:200px;" src="<?php echo $val['report_img']?>" />
+                                                    	<img style="width:100px;" src="<?php echo $val['report_img']?>" />
                                                     </td>
                                                     <td>
                                                     	<?php echo $val['fullname'];?>
