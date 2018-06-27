@@ -1673,7 +1673,7 @@ class Housesorders extends MY_Controller{
             '客户名称'=>"customer_name"
         );
         
-        $orderList = $this->Mhouses_orders->get_lists('id as order_id, point_ids,customer_id', ['in' => ['id' => $ids]]);
+        $orderList = $this->Mhouses_orders->get_lists('id as order_id, point_ids,customer_id', ['in' => ['id' => $ids]], [], 0, 0, ['id']);
         if(!$orderList) $this->return_json(['code' => 0, 'msg' => '暂无数据']);
         $point_ids = [];
         foreach ($orderList as $k => $v){
@@ -1688,7 +1688,7 @@ class Housesorders extends MY_Controller{
         foreach ($orderList as $k => $v){
             $customers_ids[$k] = $v['customer_id'];
         }
-        
+
         $customersList = $this->Mhouses_customers->get_lists("id,name", ['in' => ['id' => $customers_ids]]); //客户列表
         foreach ($customers_ids as $k => $v){
             foreach ($customersList as $key => $val){
@@ -1718,13 +1718,15 @@ class Housesorders extends MY_Controller{
             }
             $total[$k] =$list;
         }
+        $num = 1;
         foreach ($customersList as $k => $v){
             foreach ($total as $key => $val){
                 if($k == $key){
                     foreach ($val as $k1 => $v1){
                         //重新对点位id替换成序号
-                        $total[$key][$k1]['id'] = ($k1+1)*($k+1);
+                        $total[$key][$k1]['id'] = $num;
                         $total[$key][$k1]['customer_name'] = $v['name'];
+                        $num++;
                     }
                 }
             }
