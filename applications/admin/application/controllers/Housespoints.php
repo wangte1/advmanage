@@ -183,7 +183,7 @@ class Housespoints extends MY_Controller{
             //判断点位编号是否重复
             $info = $this->Mhouses_points->get_one('code,point_status', ['id' => $id]);
             if($info['code'] != $post['code']){
-                $count = $this->Mhouses_points->count(['code' => $post['code']]);
+                $count = $this->Mhouses_points->count(['code' => $post['code'], 'is_del' => 0]);
                 if($count){
                     $this->error("编号已存在，请核实后提交");
                 }
