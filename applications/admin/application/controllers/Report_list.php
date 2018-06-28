@@ -29,6 +29,7 @@ class Report_list extends MY_Controller{
         $where = [];
         $repair_time= $this->input->get('repair_time');
         $houses_id = $this->input->get('houses_id');
+        $usable = $this->input->get('usable');
         $report = $this->input->get('report');
         if($repair_time){
             switch ((int)$repair_time){
@@ -43,6 +44,10 @@ class Report_list extends MY_Controller{
         if($houses_id) {
             $where['B.houses_id'] = $houses_id;
             $data['houses_id'] = $houses_id;
+        }
+        if($usable != '-1'){
+            $where['usable'] = $usable;
+            $data['usable'] = $usable;
         }
         $data['report_id'] = $report;
         $data['repair_time'] = $repair_time;
