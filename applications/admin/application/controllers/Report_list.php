@@ -9,6 +9,7 @@ class Report_list extends MY_Controller{
     public function __construct(){
         parent::__construct();
         $this->load->model([
+            'Model_houses' => 'Mhouses',
             'Model_admins' => 'Madmins',
             'Model_houses_points' => 'Mhouses_points',
             'Model_houses_points_report' => 'Mhouses_points_report',
@@ -26,8 +27,28 @@ class Report_list extends MY_Controller{
         $page =  intval($this->input->get("per_page",true)) ?  : 1;
         $size = $pageconfig['per_page'];
         $where = [];
-        $where['repair_time'] = 0;
-        $list = $this->Mhouses_points_report->get_lists('*', $where, ['create_time' => 'desc', 'id' => 'desc'], $size, ($page-1)*$size, ['point_id']);
+        $repair_time= $this->input->get('repair_time');
+        $houses_id = $this->input->get('houses_id');
+        $report = $this->input->get('report');
+        if($repair_time){
+            switch ((int)$repair_time){
+                case 1:
+                    $where['A.repair_time !='] = 0;
+                    break;
+            }
+        }else{
+            $where['A.repair_time'] = 0;
+        }
+        if($report)$where['like'] = ['report' => $report . ','];
+        if($houses_id) {
+            $where['B.houses_id'] = $houses_id;
+            $data['houses_id'] = $houses_id;
+        }
+        $data['report_id'] = $report;
+        $data['repair_time'] = $repair_time;
+        $data['report'] = C('housespoint.report');
+        $data['hlist'] = $this->Mhouses->get_lists();
+        $list = $this->Mhouses_points_report->get_report_list($where, ['A.create_time' => 'desc', 'A.id' => 'desc'], $size, ($page-1)*$size, ['A.point_id']);
         if($list){
             foreach ($list as $k => $v){
                 $list[$k]['fullname'] = '';
@@ -58,9 +79,10 @@ class Report_list extends MY_Controller{
                 }
             }
         }
+        
         $data['list'] = $list;
         //获取分页
-        $data_count = $this->Mhouses_points_report->get_lists('*', $where, ['create_time' => 'desc'], 0, 0, ['point_id']);
+        $data_count = $this->Mhouses_points_report->get_report_list($where);
         $data_count = count($data_count);
         $data['data_count'] = $data_count;
         $pageconfig['base_url'] = "/report_list/index";
@@ -68,6 +90,15 @@ class Report_list extends MY_Controller{
         $this->pagination->initialize($pageconfig);
         $data['pagestr'] = $this->pagination->create_links(); // 分页信息
         $this->load->view('report_list/index', $data);
+    }
+    
+    /**
+     * @desc ajax获取楼盘信息
+     * @author admin@ttitt.net
+     */
+    public function get_houses() {
+        $list = $this->Mhouses->get_lists('id,name');
+        $this->return_json(['code' => 1, 'list' => $list]);
     }
     
     /**

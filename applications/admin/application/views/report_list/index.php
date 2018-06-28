@@ -33,9 +33,8 @@
             </div>
 
             <div class="page-content">
-
                 <div class="row">
-                    <!--div class="col-xs-12">
+                    <div class="col-xs-12">
                         <div class="widget-box">
                             <div class="widget-header">
                                 <h4>筛选条件</h4>
@@ -49,15 +48,44 @@
                             <div class="widget-body">
                                 <div class="widget-main">
                                     <form class="form-horizontal" role="form" method="get" action="#">
-                                        <div class="form-group">
-                                            <div class="col-sm-4">
-                                                <label class="col-sm-3 control-label no-padding-right" for="form-field-1"> 类型： </label>
+                                    
+                                    	<div class="form-group">
+                                    		<div class="col-sm-3">
+                                                <label class="col-sm-3 control-label no-padding-right" for="form-field-1"> 所属楼盘 </label>
                                                 <div class="col-sm-9">
-                                                    <select class="col-xs-7 " name="type" id="form-field-select-1" >
-                                                        <option value="">全部</option>
+                                                	<select id="houses" class="select2" data-placeholder="Click to Choose..." name="houses_id">
+                                                		<option value="">请选择楼盘</option>
+				                                		<?php foreach ($hlist as $k => $v) {?>
+				                                    		<option value="<?php echo $v['id'];?>" <?php if($v['id'] == $houses_id) {?>selected="selected"<?php }?>><?php echo $v['name'];?></option>
+				                                    	<?php }?>
+				                                    </select>
+                                                </div>
+                                            </div>
+                                    	
+                                    	
+                                            <div class="col-sm-4">
+                                                <label class="col-sm-3 control-label no-padding-right" for="form-field-1"> 报损类型： </label>
+                                                <div class="col-sm-9">
+                                                    <select class="col-xs-7 " name="report" id="form-field-select-1" >
+                                                        <option value="0">全部</option>
+                                                        <?php foreach ($report as $k => $v) {?>
+			                                    		<option value="<?php echo $k;?>" <?php if($k == $report_id) {?>selected="selected"<?php }?>><?php echo $v;?></option>
+				                                    	<?php }?>
                                                     </select>
                                                 </div>
                                             </div>
+                                        
+                                    
+                                            <div class="col-sm-4">
+                                                <label class="col-sm-3 control-label no-padding-right" for="form-field-1"> 修复状态： </label>
+                                                <div class="col-sm-9">
+                                                    <select class="col-xs-7 " name="repair_time" id="form-field-select-1" >
+                                                        <option value="0">未修复</option>
+                                                        <option value="1"<?php if($repair_time == '1') { echo "selected"; }?>>已修复</option>
+                                                    </select>
+                                                </div>
+                                            </div>
+                                            
                                         </div>
                                         <div class="clearfix form-actions">
                                             <div class="col-md-offset-3 col-md-9">
@@ -75,8 +103,7 @@
                                 </div>
                             </div>
                         </div>
-                    </div-->
-
+                    </div>
                     <div class="col-xs-12">
                         <div class="row">
                             <div class="col-xs-12">
@@ -162,7 +189,11 @@
 
 <!-- 加载尾部公用js -->
 <?php $this->load->view("common/footer");?>
+<script src="<?php echo css_js_url('jqdistpicker/distpicker.data.js','admin');?>"></script>
+<script src="<?php echo css_js_url('jqdistpicker/distpicker.js','admin');?>"></script>
+<script src="<?php echo css_js_url('select2.min.js','admin');?>"></script>
 <script type="text/javascript">
+$(".select2").css('width','230px').select2({allowClear:true});
 var baseUrl = "<?php echo $domain['admin']['url'];?>";
 $('img').on('click', function(){
 	url = $(this).attr('src');
@@ -183,6 +214,5 @@ $('.report').on('click', function(){
 	});
 });
 </script>
-
 <!-- 底部 -->
 <?php $this->load->view("common/bottom");?>
