@@ -93,15 +93,6 @@ class Report_list extends MY_Controller{
     }
     
     /**
-     * @desc ajax获取楼盘信息
-     * @author admin@ttitt.net
-     */
-    public function get_houses() {
-        $list = $this->Mhouses->get_lists('id,name');
-        $this->return_json(['code' => 1, 'list' => $list]);
-    }
-    
-    /**
      * 点位报修
      */
     public function report(){
