@@ -170,7 +170,7 @@
                                                         <h4>选择点位（意向点位数量：<?php echo $info['points_count'];?>个）</h4>
                                                         <button type="button" style="margin-top:-3px;" class="btn btn-info btn-xs" onclick="machine_sel();">机选</button>
                                                         <span class="widget-toolbar">
-                                                            共<span id="all_points_num">0</span>个点位
+                                                            本查询共<span id="all_points_num">0</span>个点位（限1000个防止页面加载过慢）
                                                         </span>
                                                     </div>
                                                     <div class="widget-body" style="height:820px">

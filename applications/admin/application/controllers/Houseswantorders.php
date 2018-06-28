@@ -291,8 +291,7 @@ class Houseswantorders extends MY_Controller{
     	
     	$where['A.point_status'] = 1;
     	$where['field']['`A`.`ad_num`>'] = '`A`.`ad_use_num` + `A`.`lock_num`';
-    	$points_lists = $this->Mhouses_points->get_points_lists($where);
-    	//echo $this->db->last_query();exit;
+    	$points_lists = $this->Mhouses_points->get_points_lists_limit(1000, 0, $where);
     	
     	$houses_lists = [];
     	$area_lists = [];
