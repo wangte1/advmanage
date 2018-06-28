@@ -131,7 +131,7 @@ class Housespoints extends MY_Controller{
 
         if(IS_POST){
             $post = $this->input->post();
-            $count = $this->Mhouses_points->count(['code' => $post['code']]);
+            $count = $this->Mhouses_points->count(['code' => $post['code'], 'is_del' => 0]);
             if($count){
                 $this->error("编号已存在，请核实后提交");
             }
