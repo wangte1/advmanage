@@ -66,7 +66,7 @@
                                             <div class="col-sm-4">
                                                 <label class="col-sm-3 control-label no-padding-right" for="form-field-1"> 报损类型： </label>
                                                 <div class="col-sm-9">
-                                                    <select class="col-xs-7 " name="report" id="form-field-select-1" >
+                                                    <select class="select2" name="report" >
                                                         <option value="0">全部</option>
                                                         <?php foreach ($report as $k => $v) {?>
 			                                    		<option value="<?php echo $k;?>" <?php if($k == $report_id) {?>selected="selected"<?php }?>><?php echo $v;?></option>
@@ -79,13 +79,24 @@
                                             <div class="col-sm-4">
                                                 <label class="col-sm-3 control-label no-padding-right" for="form-field-1"> 修复状态： </label>
                                                 <div class="col-sm-9">
-                                                    <select class="col-xs-7 " name="repair_time" id="form-field-select-1" >
+                                                    <select class="select2" name="repair_time" >
                                                         <option value="0">未修复</option>
                                                         <option value="1"<?php if($repair_time == '1') { echo "selected"; }?>>已修复</option>
                                                     </select>
                                                 </div>
                                             </div>
-                                            
+                                        </div>
+                                        <div class="form-group">
+                                            <div class="col-sm-3">
+                                                <label class="col-sm-3 control-label no-padding-right" for="form-field-1"> 是否可上画： </label>
+                                                <div class="col-sm-9">
+                                                    <select class="select2" name="usable">
+                                                        <option value="-1">全部</option>
+                                                        <option value="0"<?php if($usable == '0') { echo "selected"; }?>>不可上画</option>
+                                                        <option value="1"<?php if($usable == '1') { echo "selected"; }?>>可以上画</option>
+                                                    </select>
+                                                </div>
+                                            </div>
                                         </div>
                                         <div class="clearfix form-actions">
                                             <div class="col-md-offset-3 col-md-9">
