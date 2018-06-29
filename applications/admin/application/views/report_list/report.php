@@ -37,7 +37,7 @@
 		var id = $('#id').val();
 		var repair_img = $('input[name="cover_img[]"]').val();
 		if(!repair_img) {
-			layer.msg('修复图必须上传');return;
+			repair_img = "";
 		}
 		var post_data = {'id':id,'repair_img':repair_img};
 		$.post('/report_list/report_add', post_data, function(data){

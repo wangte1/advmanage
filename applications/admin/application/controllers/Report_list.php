@@ -118,7 +118,7 @@ class Report_list extends MY_Controller{
             if(!$count) $this->return_json(['code' => 0, 'msg' => '请勿重复提交']);
             
             $repair_img = $this->input->post('repair_img');
-            if(!$repair_img) $this->return_json(['code' => 0, 'msg' => '请上传修复图']);
+            if(!$repair_img) $repair_img = "";
             
             $up = [
                 'repair_img' => $repair_img,
@@ -140,7 +140,7 @@ class Report_list extends MY_Controller{
                     'update_user' =>$data['userInfo']['id']
                 ];
                 $res = $this->Mhouses_points->update_info($point_up, ['id' => $info['point_id']]);
-                if(!$res) $this->write_log($data['userInfo']['id'], 2, "已z修复，但无法更新点位数据id:".$info['point_id']."数据：".json_encode($point_up));
+                if(!$res) $this->write_log($data['userInfo']['id'], 2, "已修复，但无法更新点位数据id:".$info['point_id']."数据：".json_encode($point_up));
             }
             $this->return_json(['code' => 1, 'msg' => '操作成功']);
         }
