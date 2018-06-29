@@ -22,7 +22,8 @@ class Housesscheduledorders extends MY_Controller{
             'Model_salesman' => 'Msalesman',
             'Model_make_company' => 'Mmake_company',
             'Model_houses_points' => 'Mhouses_points',
-            'Model_houses_points_format' => 'Mhouses_points_format'
+            'Model_houses_points_format' => 'Mhouses_points_format',
+            'Model_houses_points_report' => 'Mhouses_points_report'
         ]);
         $this->data['code'] = 'horders_manage';
         $this->data['active'] = 'housesscheduledorders_list';
@@ -260,6 +261,7 @@ class Housesscheduledorders extends MY_Controller{
             }
             
             if(!empty($del)){
+                $del = $this->moveOutReportPoint($del);
                 //取消的点位锁定数-1 
                 $update_data['decr'] = ['lock_num' => 1];
                 $this->Mhouses_points->update_info($update_data, ['in' => array('id' => $del), '`lock_num` >' => 0]);
@@ -1328,5 +1330,26 @@ class Housesscheduledorders extends MY_Controller{
     
     private function backAlert($msg = ''){
         $this->error($msg);
+    }
+    
+    /**
+     * 移除、排除已报损不可上画的点位
+     * @param array $ids
+     */
+    private function moveOutReportPoint($ids=[]){
+        $where['repair_time'] = 0;
+        $where['usable'] = 0;//是否可以上画
+        $list = $this->Mhouses_points_report->get_lists('point_id', $where, ['create_time' => 'desc'], 0, 0, ['point_id']);
+        if(count($list)==0){
+            return $ids;
+        }
+        //提取点位ids
+        $rpoint_ids = array_column($list, 'point_id');
+        foreach ($ids as $k => $v){
+            if(in_array($v, $rpoint_ids)){
+                unset($ids[$k]);
+            }
+        }
+        return $ids;
     }
 }
