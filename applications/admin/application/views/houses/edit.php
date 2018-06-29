@@ -86,7 +86,7 @@
                         <div class="form-group">
                                 <label class="col-sm-3 control-label no-padding-right" for="form-field-1"> 入住率： </label>
                                 <div class="col-sm-9">
-                                    <input type="text"  name="occ_rate" value="<?php echo $info['occ_rate'];?>"> &nbsp;&nbsp;x 100%
+                                    <input type="text"  name="occ_rate" value="<?php echo $info['occ_rate'];?>"> &nbsp;&nbsp;× 100%
                                 </div>
                         </div>
                         
