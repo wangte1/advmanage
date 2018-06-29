@@ -54,7 +54,7 @@
                                                 <label class="col-sm-3 control-label no-padding-right" for="form-field-1"> 所属楼盘 </label>
                                                 <div class="col-sm-9">
                                                 	<select id="houses" class="select2" data-placeholder="Click to Choose..." name="houses_id">
-                                                		<option value="">请选择楼盘</option>
+                                                		<option value="">全部</option>
 				                                		<?php foreach ($hlist as $k => $v) {?>
 				                                    		<option value="<?php echo $v['id'];?>" <?php if($v['id'] == $houses_id) {?>selected="selected"<?php }?>><?php echo $v['name'];?></option>
 				                                    	<?php }?>
