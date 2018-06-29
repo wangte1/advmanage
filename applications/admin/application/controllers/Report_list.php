@@ -117,6 +117,14 @@ class Report_list extends MY_Controller{
             $count = $this->Mhouses_points_report->count(['id' => $id, 'repair_time' => 0]);
             if(!$count) $this->return_json(['code' => 0, 'msg' => '请勿重复提交']);
             
+            $is_new_code = (int) $this->input->post('is_new_code');
+            $new_code = $this->input->post('new_code');
+            if($is_new_code){
+                if(empty($new_code)){
+                    $this->return_json(['code' => 0, 'msg' => '请填编号！']);
+                }
+            }
+            
             $repair_img = $this->input->post('repair_img');
             if(!$repair_img) $repair_img = "";
             
@@ -141,6 +149,11 @@ class Report_list extends MY_Controller{
                 ];
                 $res = $this->Mhouses_points->update_info($point_up, ['id' => $info['point_id']]);
                 if(!$res) $this->write_log($data['userInfo']['id'], 2, "已修复，但无法更新点位数据id:".$info['point_id']."数据：".json_encode($point_up));
+            }
+            if($is_new_code){
+                $res = $this->Mhouses_points->update_info(['code' => $new_code], ['id' => $info['point_id']]);
+                if(!$res) $this->write_log($data['userInfo']['id'], 2, "已修复，但无法更新点位数据id:".$info['point_id']."编号为：".$new_code);
+                $this->write_log($data['userInfo']['id'], 2, "{$data['userInfo']['fullname']}将点位id:".$info['point_id']."编号更改为：".$new_code);
             }
             $this->return_json(['code' => 1, 'msg' => '操作成功']);
         }
