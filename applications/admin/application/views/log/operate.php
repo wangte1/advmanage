@@ -120,6 +120,7 @@
                                                     </label>
                                                 </th>
                                                 <th>编号</th>
+                                                <th>操作用户名</th>
                                                 <th>操作人</th>
                                                 <th>操作类型</th>
                                                 <th class="hidden-480">操作内容</th>
@@ -145,6 +146,7 @@
                                                 <a href="#"><?php echo $val['id'];?></a>
                                             </td>
                                             <td><?php echo $admin[$val['operate_id']]?></td>
+                                            <td><?php echo $adminfullname[$val['operate_id']]?></td>
                                             <td><?php echo $log_type[$val['operate_type']];?></td>
                                             <td><?php echo $val['operate_content'];?></td>
                                             <td class="hidden-480">

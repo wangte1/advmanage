@@ -137,8 +137,8 @@ class Operatelog extends MY_Controller{
         $data['active'] = 'login_operate_list';
 
         $data["admin"] = array_column($this->Madmins->get_lists("id,name",array("is_del"=>1)),"name","id");
-
-
+        $data["adminfullname"] = array_column($this->Madmins->get_lists("id,fullname",array("is_del"=>1)),"fullname","id");
+        
         $this->load->view("log/operate",$data);
     }
 
