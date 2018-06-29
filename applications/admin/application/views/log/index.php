@@ -92,7 +92,7 @@
                                                     <select class="select2" name="operate_id" id="form-field-select-1">
                                                         <option value="">全部</option>
                                                         <?php foreach($operate_id as $k => $v){ ?>
-                                                            <option <?php if($admin_id2== $v['id']){echo "selected";}?>  value="<?php echo $v['id'];?>"><?php echo $v['fullname'];?></option>
+                                                            <option <?php if($admin_id2 == $v['id']){echo "selected";}?>  value="<?php echo $v['id'];?>"><?php echo $v['fullname'];?></option>
                                                         <?php } ?>
                                                     </select>
                                                 </div>

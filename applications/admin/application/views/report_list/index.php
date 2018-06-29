@@ -128,14 +128,18 @@
                                                 <th>组团</th>
                                                 <th>详细地址</th>
                                                 <th>报损图片</th>
+                                                <?php if($_GET['repair_time']):?>
                                                 <th>修复图片</th>
+                                                <?php endif;?>
                                                 <th>报损人</th>
                                                 <th>报损类型</th>
                                                 <th>说明</th>
                                                 <th>是否可以上画</th>
-                                                <th>日期</th>
                                                 <?php if($_GET['repair_time'] == 0):?>
+                                                <th>报损日期</th>
                                                 <th>操作</th>
+                                                <?php else :?>
+                                                <th>修复日期</th>
                                                 <?php endif;?>
                                             </tr>
                                         </thead>
@@ -156,9 +160,11 @@
                                                     <td>
                                                     	<img style="width:100px;" src="<?php echo $val['report_img']?>" />
                                                     </td>
+                                                    <?php if($_GET['repair_time']):?>
                                                     <td>
                                                     	<img style="width:100px;" src="<?php echo $val['repair_img']?>" />
                                                     </td>
+                                                    <?php endif;?>
                                                     <td>
                                                     	<?php echo $val['fullname'];?>
                                                     </td>
@@ -184,11 +190,13 @@
                                                     <td>
                                                         <?php if($val['usable']){echo'是';}else{echo'否';}?>
                                                     </td>
-                                                    <td><?php echo date('Y-m-d', $val['create_time']);?></td>
                                                     <?php if($_GET['repair_time'] == 0):?>
+                                                    <td><?php echo date('Y-m-d', $val['create_time']);?></td>
                                                     <td>
                                                         <button class="btn btn-primary report" data-id="<?php echo $val['id']?>" data-code="<?php echo $val['point']['code'];?>">修复</button>
                                                     </td>
+                                                    <?php else :?>
+                                                    <td><?php echo date('Y-m-d', $val['repair_time']);?></td>
                                                     <?php endif;?>
                                                 </tr>
                                             <?php } }?>
