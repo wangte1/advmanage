@@ -261,8 +261,9 @@ class Tour extends MY_Controller {
             //更新点位为异常状态
             $res = $this->Mhouses_points->update_info(['point_status' => 4], ['id' => $info['point_id']]);
             if(!$res){
-                $this->write_log($token['user_id'], 1, '点位成功报异常，但未能更新点位状态,工单详情id'.$id);
+                $this->write_log($token['user_id'], 1, '点位成功报异常，但未能更新点位状态,工单详情id'.$info['point_id']);
             }
+            $this->write_log($token['user_id'], 2, "app 已报损，并更新点位id:{$info['point_id']}数据状态为4");
         }
         $this->return_json(['code' => 1, 'msg' => '提交成功']);
     }
