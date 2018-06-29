@@ -287,6 +287,8 @@
                                                                                 	<span class="badge badge-success">空闲</span>
                                                                                 	<?php }else if($v['point_status'] == 3) {?>
                                                                                 	<span class="badge badge-danger">占用</span>
+                                                                                	<?php }else if($v['point_status'] == 4) {?>
+                                                                                	<span class="badge badge-danger">已报损</span>
                                                                                 	<?php }?>
                                                                                 </td>
                                                                                 <td width="10%">
@@ -394,6 +396,9 @@
                                                                             $class = 'badge-success';
                                                                             break;
                                                                         case '3':
+                                                                            $class = 'badge-danger';
+                                                                            break;
+                                                                        case '4':
                                                                             $class = 'badge-danger';
                                                                             break;
                                                                     }
