@@ -22,6 +22,7 @@
     	<div id="new_code_area" style="margin: 0 auto;width: 50%;height: 40px;text-align:center;display:none;">
     		<div style="clear:both;margin-left: 0px;width: 118px;clear: both;">
     			<input type="text" name="code" class="code" placeholder="请输入新编号">
+    			<input type="text" name="code2" class="code2" placeholder="请再次输入新编号">
     		</div>
     	</div>
 
@@ -65,12 +66,16 @@
 			}
 		});
 		var new_code = $('.code').val();
+		var new_code2 = $('.code2').val();
 		if(is_new_code == 1){
 			if(new_code == ""){
 				layer.alert('您请选择了是，必须填新编号！');
 				return;
 			}
-			
+			if(new_code != new_code2){
+				layer.alert('两次输入的编号不一致！');
+				return;
+			}
 		}
 		var repair_img = $('input[name="cover_img[]"]').val();
 		if(!repair_img) {
