@@ -28,6 +28,7 @@ class Operatelog extends MY_Controller{
 
         $start_time = $this->input->get("start_time");
         $end_time = $this->input->get("end_time");
+        $operate_id = $this->input->get('operate_id');
         $data['start_time'] = $start_time;
         $data['end_time'] = $end_time;
         $where[1] = 1;
@@ -48,10 +49,15 @@ class Operatelog extends MY_Controller{
             $where['login_time>='] = $start_time;
             $where['login_time<='] = $end_time." 23:59:59";
         }
+        if($operate_id){
+            $where['admin_id'] = $operate_id;
+            $data['admin_id2'] = $operate_id;
+        }
 
         $page =  intval($this->input->get("per_page",true)) ?  : 1;
         $size = $this->pageconfig['per_page'];
         $data['log_list'] = $this->Mlogin_log->get_lists('*',$where,array("id"=>"desc"),$size,($page-1)*$size);
+        $data['operate_id'] = $this->Madmins->get_lists();
 
         $data_count = $this->Mlogin_log->count($where);
 
@@ -86,6 +92,7 @@ class Operatelog extends MY_Controller{
         }
         $start_time = $this->input->get("start_time");
         $end_time = $this->input->get("end_time");
+        $operate_id = $this->input->get('operate_id');
         $data['start_time'] = $start_time;
         $data['end_time'] = $end_time;
 
@@ -106,10 +113,13 @@ class Operatelog extends MY_Controller{
             $where['create_time>='] = strtotime($start_time);
             $where['create_time<='] = strtotime($end_time." 23:59:59");
         }
-
-
+        if($operate_id) {
+            $data['admin_id'] = $operate_id;
+            $where['operate_id'] = $operate_id;
+        }
 
         $data['log_list'] = $this->Moperate_log->get_lists('*',$where,array("id"=>"desc"),$size,($page-1)*$size);
+        $data['operate_id'] = $this->Madmins->get_lists();
 //        echo $this->db->last_query();
         $data_count = $this->Moperate_log->count($where);
       //  print_r($where);

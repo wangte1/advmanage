@@ -86,6 +86,18 @@
                                 <div class="widget-main">
                                     <form class="form-horizontal" role="form">
                                         <div class="form-group">
+                                        	<div class="col-sm-4">
+                                                <label class="col-sm-3 control-label no-padding-right" for="form-field-1"> 操作人 </label>
+                                                <div class="col-sm-9">
+                                                    <select class="select2" name="operate_id" id="form-field-select-1">
+                                                        <option value="">全部</option>
+                                                        <?php foreach($operate_id as $k => $v){ ?>
+                                                            <option <?php if($admin_id2== $v['id']){echo "selected";}?>  value="<?php echo $v['id'];?>"><?php echo $v['fullname'];?></option>
+                                                        <?php } ?>
+                                                    </select>
+                                                </div>
+                                            </div>
+                                            
                                             <div class="col-sm-4">
                                                 <label class="col-sm-3 control-label no-padding-right" for="form-field-1"> 开始时间 </label>
                                                 <div class="col-sm-9">
@@ -211,6 +223,11 @@
 
 <!-- 加载尾部公用js -->
 <?php $this->load->view("common/footer");?>
-
+<script src="<?php echo css_js_url('jqdistpicker/distpicker.data.js','admin');?>"></script>
+<script src="<?php echo css_js_url('jqdistpicker/distpicker.js','admin');?>"></script>
+<script src="<?php echo css_js_url('select2.min.js','admin');?>"></script>
+<script>
+$(".select2").css('width','230px').select2({allowClear:true});
+</script>
 <!-- 底部 -->
 <?php $this->load->view("common/bottom");?>
