@@ -45,7 +45,7 @@ class Report_list extends MY_Controller{
             $where['B.houses_id'] = $houses_id;
             $data['houses_id'] = $houses_id;
         }
-        if($usable != '-1'){
+        if($usable != '-1' && $usable != null){
             $where['usable'] = $usable;
             $data['usable'] = $usable;
         }
