@@ -262,6 +262,8 @@
                                                                                 	<span class="badge badge-success">空闲</span>
                                                                                 	<?php }else if($v['point_status'] == 3) {?>
                                                                                 	<span class="badge badge-danger">占用</span>
+                                                                                	<?php }else if($v['point_status'] == 4) {?>
+                                                                                	<span class="badge badge-danger">报损</span>
                                                                                 	<?php }?>
                                                                                 </td>
                                                                                 <td width="10%">
@@ -371,6 +373,9 @@
                                                                         case '3':
                                                                             $class = 'badge-danger';
                                                                             break;
+                                                                        case '4':
+                                                                            $class = 'badge-danger';
+                                                                            break;
                                                                     }
                                                                 ?>
                                                                 <span class="badge <?php echo $class; ?>">
@@ -463,6 +468,9 @@ $(function(){
                             $class = 'badge-success';
                             break;
                         case '3':
+                            $class = 'badge-danger';
+                            break;
+                        case '4':
                             $class = 'badge-danger';
                             break;
                 	}

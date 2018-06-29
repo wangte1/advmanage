@@ -320,6 +320,8 @@
                                                             	<span class="badge badge-success">空闲</span>
                                                             	<?php }else if($value['point_status'] == 3) {?>
                                                             	<span class="badge badge-danger">占用</span>
+                                                            	<?php }else if($value['point_status'] == 4) {?>
+                                                            	<span class="badge badge-danger">报损</span>
                                                             	<?php }?>
                                                             </td>
                                                             <td width="10%"><button class="btn btn-xs btn-info do-sel" type="button" data-id="<?php echo $value['id'];?>">移除点位<i class="fa fa-remove" aria-hidden="true"></i></button></td>
@@ -410,6 +412,9 @@ $(function(){
                         $class = 'badge-success';
                         break;
                     case '3':
+                        $class = 'badge-danger';
+                        break;
+                    case '4':
                         $class = 'badge-danger';
                         break;
             		}
