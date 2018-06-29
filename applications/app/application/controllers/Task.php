@@ -523,7 +523,7 @@ class Task extends MY_Controller {
         $report = $this->input->get_post('report');
         if(!$report) $this->return_json(['code' => 0, 'msg' => '请选择异常选项']);
         $report_msg = $this->input->get_post('report_msg');
-        $usable = $this->input->get_post('usable');
+        $usable = (int) $this->input->get_post('usable');
         
         $info = $this->Mhouses_work_order_detail->get_one('*', ['id' => $id]);
         if(!$info) $this->return_json(['code' => 0, 'msg' => '数据不存在']);

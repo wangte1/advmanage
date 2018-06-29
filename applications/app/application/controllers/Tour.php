@@ -241,7 +241,7 @@ class Tour extends MY_Controller {
         if(!$report) $this->return_json(['code' => 0, 'msg' => '请选择异常选项']);
         $report_msg = $this->input->get_post('report_msg');
         $report_msg = $report_msg ? $report_msg : "";
-        $usable = $this->input->get_post('usable');
+        $usable = (int) $this->input->get_post('usable');
         
         $up = [
             'report_img' => $report_img,
