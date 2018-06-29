@@ -86,7 +86,14 @@
                         <div class="form-group">
                                 <label class="col-sm-3 control-label no-padding-right" for="form-field-1"> 入住率： </label>
                                 <div class="col-sm-9">
-                                    <input type="text"  name="occ_rate" value="<?php echo $info['occ_rate'];?>">
+                                    <input type="text"  name="occ_rate" value="<?php echo $info['occ_rate'];?>"> &nbsp;&nbsp;x 100%
+                                </div>
+                        </div>
+                        
+                        <div class="form-group">
+                                <label class="col-sm-3 control-label no-padding-right" for="form-field-1"> 交付年份： </label>
+                                <div class="col-sm-9">
+                                    <input type="number"  name="deliver_year" value="<?php echo $info['deliver_year'];?>" onkeyup="(this.v=function(){this.value=this.value.replace(/[^0-9-]+/,'');}).call(this)" onblur="this.v();">&nbsp;&nbsp;年
                                 </div>
                         </div>
                             
