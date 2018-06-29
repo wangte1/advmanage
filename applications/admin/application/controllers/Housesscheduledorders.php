@@ -1304,6 +1304,10 @@ class Housesscheduledorders extends MY_Controller{
         $msg = '';
         if($pointList){
             foreach ($pointList as $k => $v){
+                if($v['point_status'] == 4){
+                    $this->write_log($data['userInfo'], 4, '转订单包含已报损点位 编号：'.$v['code']);
+                    $msg = '包含已报损点位，无法转订单，请管理员解决';
+                }
                 if($v['point_status'] == 1 && $v['type_id'] == 1){
                     $msg = '包含空闲点位，无法转订单，请重新编辑';
                     break;
