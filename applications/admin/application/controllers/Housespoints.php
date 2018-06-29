@@ -417,6 +417,7 @@ class Housespoints extends MY_Controller{
                 ];
                 $res = $this->Mhouses_points->update_info($point_up, ['id' => $point_id]);
                 if(!$res) $this->write_log($data['userInfo']['id'], 2, "已报损，但无法更新点位数据id:".$point_id."数据：".json_encode($point_up));
+                $this->write_log($data['userInfo']['id'], 2, "已报损，并更新点位id:{$point_id}数据状态为4");
             }
             $this->return_json(['code' => 1, 'msg' => '操作成功']);
         }
