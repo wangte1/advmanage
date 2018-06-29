@@ -128,6 +128,7 @@
                                                 <th>组团</th>
                                                 <th>详细地址</th>
                                                 <th>报损图片</th>
+                                                <th>修复图片</th>
                                                 <th>报损人</th>
                                                 <th>报损类型</th>
                                                 <th>说明</th>
@@ -152,6 +153,9 @@
                                                     </td>
                                                     <td>
                                                     	<img style="width:100px;" src="<?php echo $val['report_img']?>" />
+                                                    </td>
+                                                    <td>
+                                                    	<img style="width:100px;" src="<?php echo $val['repair_img']?>" />
                                                     </td>
                                                     <td>
                                                     	<?php echo $val['fullname'];?>
