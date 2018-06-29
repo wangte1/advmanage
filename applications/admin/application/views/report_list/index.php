@@ -134,7 +134,9 @@
                                                 <th>说明</th>
                                                 <th>是否可以上画</th>
                                                 <th>日期</th>
+                                                <?php if($_GET['repair_time'] == 0):?>
                                                 <th>操作</th>
+                                                <?php endif;?>
                                             </tr>
                                         </thead>
                                         <tbody>
@@ -183,9 +185,11 @@
                                                         <?php if($val['usable']){echo'是';}else{echo'否';}?>
                                                     </td>
                                                     <td><?php echo date('Y-m-d', $val['create_time']);?></td>
+                                                    <?php if($_GET['repair_time'] == 0):?>
                                                     <td>
                                                         <button class="btn btn-primary report" data-id="<?php echo $val['id']?>" data-code="<?php echo $val['point']['code'];?>">修复</button>
                                                     </td>
+                                                    <?php endif;?>
                                                 </tr>
                                             <?php } }?>
                                         </tbody>
