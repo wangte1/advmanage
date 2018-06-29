@@ -193,7 +193,7 @@ class Tour extends MY_Controller {
     }
     
     /**
-     * 巡视更新
+     * 巡视按拍照更新
      */
     public function check(){
         //创建巡视记录
@@ -204,6 +204,9 @@ class Tour extends MY_Controller {
             $this->return_json(['code' => 0, 'msg' => '点位编号必传']);
         }
         $img_url = $this->input->get_post('img_url');
+        if(!$img_url){
+            $this->return_json(['code' => 0, 'msg' => '请拍照上传图片']);
+        }
         $status = $this->input->get_post('status');
         $create_time = date('Y-m-d H:i:s');
         $add = [
@@ -235,8 +238,10 @@ class Tour extends MY_Controller {
         $token = decrypt($this->token);
         $report_img = $this->input->get_post('report_img');
         $point_id = $this->input->get_post('point_id');
+        if(!$report_img){
+            $this->return_json(['code' => 0, 'msg' => '请拍照上传图片']);
+        }
         $this->write_log($token['user_id'], 1, '巡视报损图片url'.$report_img);
-        if(!$report_img) $this->return_json(['code' => 0, 'msg' => '请拍照上传图片']);
         $report = $this->input->get_post('report');
         if(!$report) $this->return_json(['code' => 0, 'msg' => '请选择异常选项']);
         $report_msg = $this->input->get_post('report_msg');

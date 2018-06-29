@@ -534,18 +534,25 @@
 		var code = $(this).attr('point_code');
 		var status  =$(this).attr('data-status');
 		if(status == 3){
-			layer.alert('占用点位在pc端不支持报损，请先将该点位从订单中移除再进行报损操作');
+			layer.alert('该点位已被占用，确认要提交报损吗？', function(){
+				show_report_add(id, code);
+			});
 			return;
 		}
-		layer.open({
-		  type: 2,
-		  title: '编号: '+code+' 点位报修',
-		  shadeClose: true,
-		  shade: 0.8,
-		  area: ['50%', '70%'],
-		  content: '/housespoints/report?id='+id
-		});
+		show_report_add(id, code);
+		
     });
+
+    function show_report_add(id, code){
+    	layer.open({
+    		  type: 2,
+    		  title: '编号: '+code+' 点位报修',
+    		  shadeClose: true,
+    		  shade: 0.8,
+    		  area: ['50%', '70%'],
+    		  content: '/housespoints/report?id='+id
+    	});
+    }
 </script>
 <!-- 底部 -->
 <?php $this->load->view("common/bottom");?>
