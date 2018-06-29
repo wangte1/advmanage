@@ -1236,7 +1236,7 @@ class Housesorders extends MY_Controller{
     private function getReportPoint(){
         $where['repair_time'] = 0;
         $where['usable'] = 0;//是否可以上画
-        $list = $this->Mhouses_points_report->get_lists('id', $where, ['create_time' => 'desc'], 0, 0, ['point_id']);
+        $list = $this->Mhouses_points_report->get_lists('point_id', $where, ['create_time' => 'desc'], 0, 0, ['point_id']);
         if($list){
             return $list;
         }
@@ -1250,12 +1250,12 @@ class Housesorders extends MY_Controller{
     private function moveOutReportPoint($ids=[]){
         $where['repair_time'] = 0;
         $where['usable'] = 0;//是否可以上画
-        $list = $this->Mhouses_points_report->get_lists('id', $where, ['create_time' => 'desc'], 0, 0, ['point_id']);
+        $list = $this->Mhouses_points_report->get_lists('point_id', $where, ['create_time' => 'desc'], 0, 0, ['point_id']);
         if(count($list)==0){
             return $ids;
         }
         //提取点位ids
-        $rpoint_ids = array_column($list, 'id');
+        $rpoint_ids = array_column($list, 'point_id');
         foreach ($ids as $k => $v){
             if(in_array($v, $rpoint_ids)){
                 unset($ids[$k]);
