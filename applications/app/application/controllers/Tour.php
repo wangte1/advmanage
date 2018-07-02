@@ -115,6 +115,41 @@ class Tour extends MY_Controller {
     }
     
     /**
+     * 显示楼盘
+     */
+    public function show_area(){
+        $data = $this->data;
+        //获取用户id,根据id获取用户负责的区域点位
+        $user_id = decrypt($this->token)['user_id'];
+        $info = $this->Madmins->get_one('diy_area_id', ['id' => $user_id]);
+        $diy_area_id = (int) $info['diy_area_id'];
+        if($diy_area_id == 0){
+            $this->return_json(['code' => 0, 'data' => [], 'msg' => '系统还未给您分配区域']);
+        }
+        $houses_id = $this->input->get_post('houses_id');
+        //查询用户负责的楼盘列表
+        $houses = $this->Mhouses_diy_area->get_lists('houses_id, area_id', ['diy_area_id' => $diy_area_id, 'houses_id' => $houses_id]);
+        if(!$houses){
+            $this->return_json(['code' => 0, 'data' => [], 'msg' => '您所负责的区域暂无分配楼盘']);
+        }
+        //提取组团
+        $area_ids = array_column($houses, 'area_id');
+        if(count($area_ids) == 0){
+            $this->return_json(['code' => 0, 'data' => [], 'msg' => '您所负责的区域暂无分配组团']);
+        }
+        $area_ids = array_unique($area_ids);
+
+        $where['houses_id'] = $houses_id;
+        $where['in'] = ['area_id' => $area_ids];
+        $group_by = ['houses_id', 'area_id'];
+        $list = $this->Mhouses_points->get_lists('houses_id, houses_name, area_id, count(id) as num,area_name', $where, ['houses_id' => 'asc'], 0, 0, $group_by);
+        if(!$list){
+            $this->return_json(['code' => 0, 'data' => [], 'msg' => '您所负责的组团暂无点位']);
+        }
+        $this->return_json(['code' => 1, 'data' => $list]);
+    }
+    
+    /**
      * 工程人员个人区域点位接口
      */
     public function detail(){
@@ -238,6 +273,10 @@ class Tour extends MY_Controller {
         $token = decrypt($this->token);
         $report_img = $this->input->get_post('report_img');
         $point_id = $this->input->get_post('point_id');
+        
+        $count = $this->Mhouses_points_report->count(['point_id' => $point_id, 'repair_time' => 0]);
+        if(!$count) $this->return_json(['code' => 0, 'msg' => '该点位已报损，请勿重复提交']);
+        
         if(!$report_img){
             $this->return_json(['code' => 0, 'msg' => '请拍照上传图片']);
         }
