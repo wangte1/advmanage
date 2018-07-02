@@ -55,7 +55,12 @@
                                             <div class="col-sm-4">
                                                 <label class="col-sm-3 control-label no-padding-right" for="form-field-1"> 楼盘名称</label>
                                                 <div class="col-sm-9">
-                                                    <input type="text" name="name" value="<?php echo $name;?>"  class="col-xs-10 col-sm-12" />
+                                                	<select class="select2" data-placeholder="Click to Choose..." name="name">
+                                                		<option value="">全部</option>
+				                                		<?php foreach ($hlist as $k => $v) {?>
+				                                    		<option value="<?php echo $v['id'];?>" <?php if($v['id'] == $name) {?>selected="selected"<?php }?>><?php echo $v['name'];?></option>
+				                                    	<?php }?>
+				                                    </select>
                                                 </div>
                                             </div>
                                             <div class="col-sm-8">
@@ -211,8 +216,10 @@
 
 <script src="<?php echo css_js_url('jqdistpicker/distpicker.data.js','admin');?>"></script>
 <script src="<?php echo css_js_url('jqdistpicker/distpicker.js','admin');?>"></script>
+<script src="<?php echo css_js_url('select2.min.js','admin');?>"></script>
 
 <script>
+$(".select2").css('width','230px').select2({allowClear:true});
 	$("#distpicker1").distpicker({
 		autoSelect: false,
 		province: "<?php if(isset($province)) { echo $province;}else{?>贵州省<?php }?>",
