@@ -34,7 +34,7 @@ class Houses extends MY_Controller{
         $size = $pageconfig['per_page'];
         $where['is_del'] = 0;
 
-        if ($this->input->get('name')) $where['like']['name'] = $this->input->get('name');
+        if ($this->input->get('name')) $where['id'] = $this->input->get('name');
         if ($this->input->get('province')) $where['province'] = $this->input->get('province');
         if ($this->input->get('city')) $where['city'] = $this->input->get('city');
         if ($this->input->get('area')) $where['area'] = $this->input->get('area');
@@ -92,6 +92,7 @@ class Houses extends MY_Controller{
         	
         	
         }
+        $data['hlist'] = $this->Mhouses->get_lists();
         
         $data['list'] = $tmpList;
         
