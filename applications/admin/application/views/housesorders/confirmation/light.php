@@ -7,6 +7,10 @@
     <meta name="description" content="">
 
     <style type="text/css"> 
+        .tttext{
+        	font-size:24px;
+        	border:none;
+        }
         html, body {width: 100%; height: 90%; margin: 0; padding: 0; font-family: "Microsoft YaHei","Helvetica Neue","Helvetica","Arial",sans-serif;background: "#fff"}
         .content {width: 1000px; margin: 0 auto; padding: 10px;}
         .title {font-size: 38px; font-weight: bold; margin-top: 10px;clear: both}
@@ -128,7 +132,7 @@
 
             <!-- 第一页的点位条数不足17条时，备注和签名放在本页打印 -->
             <?php if(count($group) > 0 && count($group) <= 17):?>
-            <p class="page-p" style="line-height: 40px">备注：本次甲方共选<?php echo count($points);?>套<?php echo $order_type_text[$info['order_type']];?>广告，其中<?php //echo $str;?>。我司按照双方签订的户外广告发布合同要求于<?php echo date('Y年m月d日', strtotime($info['make_complete_time']));?>开始制作、安装广告画面，于<?php echo $complete_date;?>按时按量完成<?php echo count($points);?>套<?php echo $order_type_text[$info['order_type']];?>广告的发布，投放时间为<?php echo date('Y.m.d', strtotime($info['release_start_time']));?>-<?php echo date('Y.m.d', strtotime($info['release_end_time']));?>，现将验收照片发给甲方确认。</p>
+            <p class="page-p" style="line-height: 40px">备注：本次甲方共选<?php echo count($points);?>套<?php echo $order_type_text[$info['order_type']];?>广告，其中<?php //echo $str;?>。我司按照双方签订的户外广告发布合同要求于<input class="tttext" type="text" size="11" value="<?php echo date('Y年m月d日', strtotime($info['make_complete_time']));?>">开始制作、安装广告画面，于<input class="tttext" type="text" size="11" value="<?php echo $complete_date;?>">按时按量完成<?php echo count($points);?>套<?php echo $order_type_text[$info['order_type']];?>广告的发布，投放时间为<input class="tttext" type="text" size="17" value="<?php echo date('Y.m.d', strtotime($info['release_start_time']));?>-<?php echo date('Y.m.d', strtotime($info['release_end_time']));?>">，现将验收照片发给甲方确认。</p>
             <p class="mid-p"></p>
             <p class="page-p"><span style="font-weight:bolder">甲方（盖章）：</span><span style="font-weight:bolder;margin-left:400px">乙方（盖章）：</span></p>
             <p class="page-p"><span style="font-weight:bolder">确认人（签字）：</span><span style="font-weight:bolder;margin-left:376px">确认人（签字）：</span></p>
