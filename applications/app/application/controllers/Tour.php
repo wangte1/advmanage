@@ -347,10 +347,10 @@ class Tour extends MY_Controller {
         $token = decrypt($this->token);
         $report_img = $this->input->get_post('report_img');
         $point_id = $this->input->get_post('point_id');
-        
-        $count = $this->Mhouses_points_report->count(['point_id' => $point_id, 'repair_time' => 0]);
-        if(!$count) $this->return_json(['code' => 0, 'msg' => '该点位已报损，请勿重复提交']);
-        
+        $count = $this->Mhouses_points_report->get_one("repair_time", ['point_id' => $point_id]);
+        if($count){
+            if(!$count['repair_time']) $this->return_json(['code' => 0, 'msg' => '该点位已报损，请勿重复提交']);
+        }
         if(!$report_img){
             $this->return_json(['code' => 0, 'msg' => '请拍照上传图片']);
         }
