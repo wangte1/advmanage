@@ -1250,7 +1250,7 @@ class Housesorders extends MY_Controller{
     private function moveOutReportPoint($ids=[]){
         $where['repair_time'] = 0;
         $where['usable'] = 0;//是否可以上画
-        $list = $this->Mhouses_points_report->get_lists('point_id', $where, ['create_time' => 'desc'], 0, 0, ['point_id']);
+        $list = $this->Mhouses_points_report->get_lists('point_id', $where);
         if(count($list)==0){
             return $ids;
         }
