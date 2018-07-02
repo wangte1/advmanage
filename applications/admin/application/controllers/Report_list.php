@@ -158,4 +158,146 @@ class Report_list extends MY_Controller{
             $this->return_json(['code' => 1, 'msg' => '操作成功']);
         }
     }
+    
+    public function out_excel(){
+        $data = $this->data;
+        $where = [];
+        $repair_time= $this->input->get('repair_time');
+        $houses_id = $this->input->get('houses_id');
+        $usable = $this->input->get('usable');
+        $report = $this->input->get('report');
+        if($repair_time){
+            switch ((int)$repair_time){
+                case 1:
+                    $where['A.repair_time !='] = 0;
+                    break;
+            }
+        }else{
+            $where['A.repair_time'] = 0;
+        }
+        if($report)$where['like'] = ['report' => $report . ','];
+        if($houses_id) {
+            $where['B.houses_id'] = $houses_id;
+            $data['houses_id'] = $houses_id;
+        }
+        if($usable != '-1' && $usable != null){
+            $where['usable'] = $usable;
+            $data['usable'] = $usable;
+        }
+        $data['report_id'] = $report;
+        $data['repair_time'] = $repair_time;
+        $data['report'] = C('housespoint.report');
+        $data['hlist'] = $this->Mhouses->get_lists();
+        $list = $this->Mhouses_points_report->get_report_list($where, ['A.create_time' => 'desc', 'A.id' => 'desc'], 0, 0, ['A.point_id']);
+        if($list){
+            foreach ($list as $k => $v){
+                $list[$k]['fullname'] = '';
+                $list[$k]['point'] = '';
+            }
+            //获取报损人ids
+            $admin_ids = array_unique(array_column($list, 'create_id'));
+            $adminList = $this->Madmins->get_lists('id, fullname', ['in' => ['id' => $admin_ids]]);
+            if($adminList){
+                foreach ($list as $k => $v){
+                    foreach ($adminList as $key => $val){
+                        if($v['create_id'] == $val['id']){
+                            $list[$k]['fullname'] = $val['fullname'];
+                        }
+                    }
+                }
+            }
+            //提取点位ids
+            $point_ids = array_unique(array_column($list, 'point_id'));
+            $pointList = $this->Mhouses_points->get_points_lists(['in' => ['A.id' => $point_ids]]);
+            if($pointList){
+                foreach ($list as $k => $v){
+                    foreach ($pointList as $key => $val){
+                        if($v['point_id'] == $val['id']){
+                            $list[$k]['point'] = $val;
+                        }
+                    }
+                }
+            }
+        }
+        if($list){
+            foreach ($list as $key => $val){
+                if($val['point']['addr'] == 1){
+                    $list[$key]['point']['addr'] = '门禁';
+                }else{
+                    $list[$key]['point']['addr'] = '电梯前室';
+                }
+                if($val['point']['type_id'] == 1){
+                    $list[$key]['point']['type'] = '冷光灯箱';
+                }else{
+                    $list[$key]['point']['type'] = '广告机';
+                }
+            }
+                
+        }
+
+        //加载phpexcel
+        $this->load->library("PHPExcel");
+        
+        $table_header =  array(
+            '点位编号'=>"code",
+            '类型' => 'type',
+            '行政区域'=>"area",
+            '所属楼盘'=>"houses_name",
+            '所属组团'=>"houses_area_name",
+            '楼栋'=>"ban",
+            '单元'=>"unit",
+            '楼层'=>"floor",
+            '位置'=>"addr",
+            '报损人' => 'fullname',
+            '报损时间' => 'create_time',
+            '修复时间' => 'repair_time',
+            '报损类型' => "report",
+            '报损描述' => "report_msg",
+        );
+        
+        
+        $i = 0;
+        foreach($table_header as  $k=>$v){
+            $cell = PHPExcel_Cell::stringFromColumnIndex($i).'1';
+            $this->phpexcel->setActiveSheetIndex(0)->setCellValue($cell, $k);
+            $i++;
+        }
+        
+        //填充数据
+        $h = 2;
+        foreach($list as $key => $val){
+            $j = 0;
+            foreach($table_header as $k => $v){
+                $cell = PHPExcel_Cell::stringFromColumnIndex($j++).$h;
+                if(in_array($v, ['report', 'report_msg', 'fullname', 'create_time', 'repair_time'])){
+                    if($v == 'report'){
+                        $tmp = explode(',', $val['report']);
+                        $value = '';
+                        foreach ($tmp as $k1 => $v1){
+                            if($v1){
+                                $value .= C('housespoint.report')[$v1].',';
+                            }
+                        }
+                    }else if($v == 'create_time'){
+                        $value = date('Y-m-d', $val[$v]);
+                    }else{
+                        $value = $val[$v];
+                    }
+                }else{
+                    $value = $val['point'][$v];
+                }
+                $this->phpexcel->getActiveSheet(0)->setCellValue($cell, $value);
+            }
+            $h++;
+        }
+        
+        $this->phpexcel->setActiveSheetIndex(0);
+        // 输出
+        header('Content-Type: application/vnd.ms-excel');
+        header('Content-Disposition: attachment;filename='.date('Ymd').'-报损表.xls');
+        header('Cache-Control: max-age=0');
+        
+        $objWriter = PHPExcel_IOFactory::createWriter($this->phpexcel, 'Excel5');
+        $objWriter->save('php://output');
+    }
 }

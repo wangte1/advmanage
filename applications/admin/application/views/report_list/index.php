@@ -33,6 +33,9 @@
             </div>
 
             <div class="page-content">
+            	<div class="page-header">
+                	<a href="javascript:;" class="btn btn-sm btn-primary btn-export"><i class="fa fa-download out_excel" aria-hidden="true"></i> 导出</a>
+                </div>
                 <div class="row">
                     <div class="col-xs-12">
                         <div class="widget-box">
@@ -225,6 +228,12 @@ var baseUrl = "<?php echo $domain['admin']['url'];?>";
 $('img').on('click', function(){
 	url = $(this).attr('src');
 	window.open(baseUrl+url,'_blank');
+});
+
+$(".btn-export").on('click', function(){
+	$(".form-horizontal").attr('action', '/report_list/out_excel');
+    $(".form-horizontal").submit();
+    $(".form-horizontal").attr('action', '');
 });
 
 //报修点位
