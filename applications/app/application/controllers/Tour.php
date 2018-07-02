@@ -115,6 +115,45 @@ class Tour extends MY_Controller {
     }
     
     /**
+     * 显示楼盘
+     */
+    public function show_area(){
+        $data = $this->data;
+        //获取用户id,根据id获取用户负责的区域点位
+        $user_id = decrypt($this->token)['user_id'];
+        $info = $this->Madmins->get_one('diy_area_id', ['id' => $user_id]);
+        $diy_area_id = (int) $info['diy_area_id'];
+        if($diy_area_id == 0){
+            $this->return_json(['code' => 0, 'data' => [], 'msg' => '系统还未给您分配区域']);
+        }
+        $houses_id = $this->input->get_post('houses_id');
+        //查询用户负责的楼盘列表
+        $houses = $this->Mhouses_diy_area->get_lists('houses_id, area_id', ['diy_area_id' => $diy_area_id, 'houses_id' => $houses_id]);
+        if(!$houses){
+            $this->return_json(['code' => 0, 'data' => [], 'msg' => '您所负责的区域暂无分配楼盘']);
+        }
+        //提取组团
+        $area_ids = array_column($houses, 'area_id');
+        if(count($area_ids) == 0){
+            $this->return_json(['code' => 0, 'data' => [], 'msg' => '您所负责的区域暂无分配组团']);
+        }
+        $area_ids = array_unique($area_ids);
+        $where['houses_id'] = $houses_id;
+        $where['in'] = ['area_id' => $area_ids];
+        $group_by = ['houses_id', 'area_id'];
+        $list = $this->Mhouses_points->get_lists('houses_id, houses_name, area_id, count(id) as num,area_name', $where, ['houses_id' => 'asc'], 0, 0, $group_by);
+        if(!$list){
+            $this->return_json(['code' => 0, 'data' => [], 'msg' => '您所负责的组团暂无点位']);
+        }
+        foreach ($list as $k => $v){
+            if($v['area_id'] == 0){
+                $list[$k]['area_name'] = "无组团";
+            }
+        }
+        $this->return_json(['code' => 1, 'data' => $list]);
+    }
+    
+    /**
      * 工程人员个人区域点位接口
      */
     public function detail(){
@@ -127,8 +166,7 @@ class Tour extends MY_Controller {
             $this->return_json(['code' => 0, 'data' => [], 'msg' => '系统还未给您分配区域']);
         }
         $houses_id = $this->input->get_post('houses_id');
-        
-        
+
         $pageconfig = C('page.page_lists');
         $this->load->library('pagination');
         $page = (int) $this->input->get_post('page') ? : '1';
@@ -168,6 +206,77 @@ class Tour extends MY_Controller {
             foreach ($list as $k => &$v){
                 $v['houses_name'] = '';
                 $v['houses_area_name'] = '';
+                foreach ($houses_list as $key => $val){
+                    if($v['houses_id'] == $val['id']){
+                        $v['houses_name'] = $val['name'];
+                        $v['province'] = $val['province'];
+                        $v['city'] = $val['city'];
+                        $v['area'] = $val['area'];
+                        break;
+                    }
+                }
+            }
+        }
+        if($area_list){
+            foreach ($list as $k => &$v){
+                foreach ($area_list as $key => $val){
+                    if($v['area_id'] == $val['id']){
+                        $v['houses_area_name'] = $val['name'];
+                        break;
+                    }
+                }
+            }
+        }
+        $this->return_json(['code' => 1, 'data' => $list, 'page' => $page, 'time' => $this->time]);
+    }
+    
+    /**
+     * 工程人员个人区域点位接口
+     */
+    public function new_detail(){
+        $data = $this->data;
+        //获取用户id,根据id获取用户负责的区域点位
+        $user_id = decrypt($this->token)['user_id'];
+        $info = $this->Madmins->get_one('diy_area_id', ['id' => $user_id]);
+        $diy_area_id = (int) $info['diy_area_id'];
+        if($diy_area_id == 0){
+            $this->return_json(['code' => 0, 'data' => [], 'msg' => '系统还未给您分配区域']);
+        }
+        $houses_id = $this->input->get_post('houses_id');
+        $area_id = $this->input->get_post('area_id');
+        
+        $pageconfig = C('page.page_lists');
+        $this->load->library('pagination');
+        $page = (int) $this->input->get_post('page') ? : '1';
+        $size = (int) $this->input->get_post('size');
+        
+        $where = ['is_del' => 0, 'diy_area_id' => $diy_area_id];
+        $where['houses_id'] = $houses_id;
+        $where['area_id'] = $area_id;
+        
+        if(!$size) $size = $pageconfig['per_page'];
+        
+        $orderBy = ['area_id' => 'asc', 'ban' => 'asc'];
+        $list = $this->Mhouses_points->get_lists("*", $where, $orderBy, $size, ($page-1)*$size);
+        if(!$list){
+            $this->return_json(['code' => 0, 'msg' => '暂无数据']);
+        }
+        //获取所有楼盘id
+        $houses_ids = array_column($list, 'houses_id');
+        if(count($houses_ids) > 1){
+            $houses_ids = array_unique($houses_ids);
+        }
+        //获取所有区域id
+        $area_ids = array_column($list, 'area_id');
+        if(count($area_ids) > 1){
+            $area_ids= array_unique($area_ids);
+        }
+        $houses_list = $this->Mhouses->get_lists('id, name, province, city, area', ['in' => ['id' => $houses_ids ]]);
+        $area_list = $this->Mhouses_area->get_lists('id, name', ['in' => ['id' => $area_ids ]]);
+        if($houses_list){
+            foreach ($list as $k => &$v){
+                $v['houses_name'] = '';
+                $v['houses_area_name'] = '无组团';
                 foreach ($houses_list as $key => $val){
                     if($v['houses_id'] == $val['id']){
                         $v['houses_name'] = $val['name'];
@@ -238,6 +347,10 @@ class Tour extends MY_Controller {
         $token = decrypt($this->token);
         $report_img = $this->input->get_post('report_img');
         $point_id = $this->input->get_post('point_id');
+        
+        $count = $this->Mhouses_points_report->count(['point_id' => $point_id, 'repair_time' => 0]);
+        if(!$count) $this->return_json(['code' => 0, 'msg' => '该点位已报损，请勿重复提交']);
+        
         if(!$report_img){
             $this->return_json(['code' => 0, 'msg' => '请拍照上传图片']);
         }

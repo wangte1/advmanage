@@ -310,7 +310,7 @@ class Admin extends MY_Controller{
         $data = $this->data;
         $this->Mhouses_user_diy_area->get_lists('*');
         //获取工程人员
-        $userList = $this->Madmins->get_lists('id,pid,fullname,diy_area_id',['in' => ['group_id' => [4,6]], 'is_del' => 1]);
+        $userList = $this->Madmins->get_lists('id,pid,fullname,diy_area_id',['in' => ['group_id' => [4,6]], 'is_del' => 1], ['diy_area_id'=> 'asc']);
         foreach ($userList as $k => $v){
             $userList[$k]['list'] = [];
         }
