@@ -179,11 +179,11 @@
 				                                                            <i class="icon-check bigger-130"></i>
 				                                                        </a> 
 				                                                        <?php }?>
-				                                                        <?php if($val['total'] != $val['finish']):?>
+				                                                        
 			                                                        	<a class="green tooltip-info m-upload" data-id="<?php echo $val['id'];?>" data-rel="tooltip" data-placement="top" title="" data-original-title="验收结果">
 				                                                            <i class="fa fa-picture-o bigger-130"></i>
 				                                                        </a>
-				                                                        <?php endif;?>
+				                                                        
 			                                                        	<a class="green tooltip-info out" data-id="<?php echo $val['id'];?>" data-rel="tooltip" data-placement="top" title="" data-original-title="导出点位">
 				                                                            <i class="ace-icon glyphicon glyphicon-print bigger-130"></i>
 				                                                        </a>
