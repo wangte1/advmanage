@@ -100,6 +100,17 @@
                                                     </select>
                                                 </div>
                                             </div>
+                                            <div class="col-sm-4">
+                                                <label class="col-sm-3 control-label no-padding-right" for="form-input-readonly"> 报损时间： </label>
+                                                <div class="col-sm-9">
+                                                    <div class="input-group date datepicker">
+                                                        <input class="form-control date-picker" type="text" name="time" value="<?php if(isset($time)){ echo $time;}?>" >
+                                                        <span class="input-group-addon">
+                                                            <i class="icon-calendar bigger-110"></i>
+                                                        </span>
+                                                    </div>
+                                                </div>
+                                            </div>
                                         </div>
                                         <div class="clearfix form-actions">
                                             <div class="col-md-offset-3 col-md-9">
