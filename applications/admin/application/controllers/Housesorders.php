@@ -1118,6 +1118,8 @@ class Housesorders extends MY_Controller{
             if($status == 3) {
             	$msg = "你有新的订单需要派单,请到派单列表页面！";
             	$this->send(['group_id' => 5, 'message' => $msg]);
+            	$msg2 = "媒介人员已更新订单状态，工程主管需要执行工单派发！";
+            	$this->send(['group_id' => 1, 'message' => $msg2]);
             }
 
             $update_order['order_status'] = $status;
