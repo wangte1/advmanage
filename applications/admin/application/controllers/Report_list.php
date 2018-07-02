@@ -31,6 +31,7 @@ class Report_list extends MY_Controller{
         $houses_id = $this->input->get('houses_id');
         $usable = $this->input->get('usable');
         $report = $this->input->get('report');
+        $time = $this->input->get('time');
         if($repair_time){
             switch ((int)$repair_time){
                 case 1:
@@ -48,6 +49,10 @@ class Report_list extends MY_Controller{
         if($usable != '-1' && $usable != null){
             $where['usable'] = $usable;
             $data['usable'] = $usable;
+        }
+        if($time){
+            $where['A.create_time'] = strtotime($time);
+            $data['time'] = $time;
         }
         $data['report_id'] = $report;
         $data['repair_time'] = $repair_time;
