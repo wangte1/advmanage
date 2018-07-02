@@ -148,12 +148,12 @@
             		<td rows="2"><?php echo $value['houses_name'];?></td>
            		</tr>
            		<tr>
-            		<td style="width: 33%;">
+            		<td style="width: 33%;padding-left: 0px;">
             			<img style="width:100%;" src="<?php echo $value['no_img'];?>">
             		</td>
-            		<td rows="2" >
+            		<td rows="2" style="padding-left: 0px;">
                 		<img style="width:50%;" src="<?php echo $value['pano_img'];?>">
-                		<img style="width:50%;" src="<?php echo $value['news_img'];?>">
+                		<img style="width:49%;" src="<?php echo $value['news_img'];?>">
             		</td>
            		</tr>
         	</tbody>
