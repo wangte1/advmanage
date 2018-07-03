@@ -34,6 +34,7 @@ class Report_list extends MY_Controller{
         $report = $this->input->get('report');
         $time = $this->input->get('time');
         $create_id = $this->input->get('create_id');
+        $code = $this->input->get('code');
         $install_id = $this->input->get('install');
         if($repair_time){
             $where['A.repair_time >'] = 0;
@@ -62,6 +63,10 @@ class Report_list extends MY_Controller{
         if($install_id){
             $where['C.install'] = $install_id;
             $data['install'] = $install_id;
+        }
+        if($code){
+            $where['B.code'] = $code;
+            $data['code'] = $code;
         }
         $data['report_id'] = $report;
         $data['repair_time'] = $repair_time;
