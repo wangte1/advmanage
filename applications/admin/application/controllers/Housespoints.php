@@ -76,6 +76,7 @@ class Housespoints extends MY_Controller{
         //提取本次的点位
         $point_ids = array_column($data['list'], 'id');
         //查询报修表是否存在改点位的已报损但可以上画的点位
+        $report_list = [];
         if($point_ids){
             $report_list = $this->Mhouses_points_report->get_lists('point_id', ['in' => ['point_id' => $point_ids], 'repair_time' => 0]);
             if($data['list']){
