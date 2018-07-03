@@ -111,7 +111,7 @@
                                                     </div>
                                                 </div>
                                             </div>
-                                            <div class="col-sm-3">
+                                            <div class="col-sm-4">
                                                 <label class="col-sm-3 control-label no-padding-right" for="form-field-1"> 报损人： </label>
                                                 <div class="col-sm-9">
                                                     <select class="select2" name="create_id">
