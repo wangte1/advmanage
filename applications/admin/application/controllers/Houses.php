@@ -152,6 +152,8 @@ class Houses extends MY_Controller{
         $data['houses_type'] = C("public.houses_type");
         
         $data['houses_grade'] = C("public.houses_grade");
+        
+        $data['install'] = C('install.install');
 
         $this->load->view("houses/add",$data);
     }
@@ -187,8 +189,6 @@ class Houses extends MY_Controller{
             die("非法参数");
         }
         $data['info'] = $info;
-		
-        
         //获取省级
         $data['province'] = $this->Marea->get_lists("id,area_name,parent_id,level",array("parent_id"=>0));
         //城市
@@ -199,7 +199,9 @@ class Houses extends MY_Controller{
         $data['houses_type'] = C("public.houses_type");
         
         $data['houses_grade'] = C("public.houses_grade");
-
+        
+        $data['install'] = C('install.install');
+        
         $this->load->view("houses/edit",$data);
     }
 

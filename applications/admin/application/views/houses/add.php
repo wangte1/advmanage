@@ -153,6 +153,21 @@
                             </div>
                             
                             <div class="form-group">
+                                <label class="col-sm-3 control-label no-padding-right" for="form-field-1"> 安装公司： </label>
+                                <div class="col-sm-9">
+                                    <select class="col-xs-2 " name="install" id="select-font-size " >
+                                    <option value="0">无</option>
+                                        <?php foreach($install as $key=>$val){ ?>
+                                            <option value="<?php echo $key;?>"><?php echo $val;?></option>
+                                        <?php } ?>
+                                    </select>
+                                    <span class="help-inline col-xs-12 col-sm-7">
+										<span class="middle" style="color: red">*</span>
+									</span>
+                                </div>
+                            </div>
+                            
+                            <div class="form-group">
                                 <label class="col-sm-3 control-label no-padding-right" for="form-field-1">  备注： </label>
                                 <div class="col-sm-9">
                                     <textarea id="form-field-11" rows="5" name="remarks" placeholder="（选填）备注信息。最多200个字。" class="autosize-transition col-xs-10 col-sm-3" style="overflow: hidden; word-wrap: break-word; resize: horizontal;"></textarea>
