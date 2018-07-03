@@ -36,13 +36,11 @@ class Report_list extends MY_Controller{
         $create_id = $this->input->get('create_id');
         $install_id = $this->input->get('install');
         if($repair_time){
-            switch ((int)$repair_time){
-                case 1:
-                    $where['A.repair_time !='] = 0;
-                    break;
-            }
+            $where['A.repair_time >'] = 0;
+            $data['repair_time'] = $repair_time;
         }else{
             $where['A.repair_time'] = 0;
+            $data['repair_time'] = 0;
         }
         if($report)$where['like'] = ['report' => $report . ','];
         if($houses_id) {
