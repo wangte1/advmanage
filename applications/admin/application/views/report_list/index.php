@@ -168,7 +168,7 @@
                                                 <th>组团</th>
                                                 <th>详细地址</th>
                                                 <th>报损图片</th>
-                                                <?php if( isset($_GET['repair_time']) && $_GET['repair_time']):?>
+                                                <?php if($repair_time == 1):?>
                                                 <th>修复图片</th>
                                                 <?php endif;?>
                                                 <th>报损人</th>
@@ -176,7 +176,7 @@
                                                 <th>说明</th>
                                                 <th>是否可以上画</th>
                                                 <th>安装公司</th>
-                                                <?php if( isset($_GET['repair_time']) && ($_GET['repair_time'] == 0) ):?>
+                                                <?php if($repair_time == 0):?>
                                                 <th>报损日期</th>
                                                 <th>操作</th>
                                                 <?php else :?>
@@ -201,7 +201,7 @@
                                                     <td>
                                                     	<img style="width:100px;" src="<?php echo $val['report_img']?>" />
                                                     </td>
-                                                    <?php if(isset($_GET['repair_time']) && $_GET['repair_time']):?>
+                                                    <?php if($repair_time == 1):?>
                                                     <td>
                                                     	<img style="width:100px;" src="<?php echo $val['repair_img']?>" />
                                                     </td>
@@ -234,7 +234,7 @@
                                                     <td>
                                                         <?php if($val['install'] != '0') echo $val['install'];else echo '';?>
                                                     </td>
-                                                    <?php if(isset($_GET['repair_time']) && $_GET['repair_time'] == 0):?>
+                                                    <?php if($repair_time == 0):?>
                                                     <td><?php echo date('Y-m-d', $val['create_time']);?></td>
                                                     <td>
                                                         <button class="btn btn-primary report" data-id="<?php echo $val['id']?>" data-code="<?php echo $val['point']['code'];?>">修复</button>
