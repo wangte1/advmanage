@@ -111,6 +111,32 @@
                                                     </div>
                                                 </div>
                                             </div>
+                                            <div class="col-sm-3">
+                                                <label class="col-sm-3 control-label no-padding-right" for="form-field-1"> 报损人： </label>
+                                                <div class="col-sm-9">
+                                                    <select class="select2" name="create_id">
+                                                        <option>全部</option>
+                                                        <?php if($adminList):?>
+                                                        <?php foreach ($adminList as $k => $v):?>
+                                                        <option <?php if(isset($create_id) && $create_id == $v['id']){echo "selected";}?>  value="<?php echo $v['id']?>"><?php echo $v['fullname']?></option>
+                                                        <?php endforeach;?>
+                                                        <?php endif;?>
+                                                    </select>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="form-group">
+                                        	<div class="col-sm-3">
+                                                <label class="col-sm-3 control-label no-padding-right" for="form-field-1"> 安装公司： </label>
+                                                <div class="col-sm-9">
+                                                    <select class="select2" name="install">
+                                                        <option>全部</option>
+                                                        <?php foreach (C('install.install') as $k => $v):?>
+                                                        <option <?php if(isset($install) && $install== $k){echo "selected";}?>  value="<?php echo $k;?>"><?php echo $v?></option>
+                                                        <?php endforeach;?>
+                                                    </select>
+                                                </div>
+                                            </div>
                                         </div>
                                         <div class="clearfix form-actions">
                                             <div class="col-md-offset-3 col-md-9">
@@ -142,7 +168,7 @@
                                                 <th>组团</th>
                                                 <th>详细地址</th>
                                                 <th>报损图片</th>
-                                                <?php if($_GET['repair_time']):?>
+                                                <?php if( isset($_GET['repair_time']) && $_GET['repair_time']):?>
                                                 <th>修复图片</th>
                                                 <?php endif;?>
                                                 <th>报损人</th>
@@ -150,7 +176,7 @@
                                                 <th>说明</th>
                                                 <th>是否可以上画</th>
                                                 <th>安装公司</th>
-                                                <?php if($_GET['repair_time'] == 0):?>
+                                                <?php if( isset($_GET['repair_time']) && ($_GET['repair_time'] == 0) ):?>
                                                 <th>报损日期</th>
                                                 <th>操作</th>
                                                 <?php else :?>
@@ -175,7 +201,7 @@
                                                     <td>
                                                     	<img style="width:100px;" src="<?php echo $val['report_img']?>" />
                                                     </td>
-                                                    <?php if($_GET['repair_time']):?>
+                                                    <?php if(isset($_GET['repair_time']) && $_GET['repair_time']):?>
                                                     <td>
                                                     	<img style="width:100px;" src="<?php echo $val['repair_img']?>" />
                                                     </td>
@@ -208,7 +234,7 @@
                                                     <td>
                                                         <?php if($val['install'] != '0') echo $val['install'];else echo '';?>
                                                     </td>
-                                                    <?php if($_GET['repair_time'] == 0):?>
+                                                    <?php if(isset($_GET['repair_time']) && $_GET['repair_time'] == 0):?>
                                                     <td><?php echo date('Y-m-d', $val['create_time']);?></td>
                                                     <td>
                                                         <button class="btn btn-primary report" data-id="<?php echo $val['id']?>" data-code="<?php echo $val['point']['code'];?>">修复</button>

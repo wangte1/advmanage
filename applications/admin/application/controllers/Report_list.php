@@ -33,6 +33,8 @@ class Report_list extends MY_Controller{
         $usable = $this->input->get('usable');
         $report = $this->input->get('report');
         $time = $this->input->get('time');
+        $create_id = $this->input->get('create_id');
+        $install_id = $this->input->get('install');
         if($repair_time){
             switch ((int)$repair_time){
                 case 1:
@@ -55,10 +57,21 @@ class Report_list extends MY_Controller{
             $where['A.create_time'] = strtotime($time);
             $data['time'] = $time;
         }
+        if($create_id){
+            $where['A.create_id'] = $create_id;
+            $data['create_id'] = $create_id;
+        }
+        if($install_id){
+            $where['C.install'] = $install_id;
+            $data['install'] = $install_id;
+        }
         $data['report_id'] = $report;
         $data['repair_time'] = $repair_time;
         $data['report'] = C('housespoint.report');
         $data['hlist'] = $this->Mhouses->get_lists();
+
+        $adminList = $this->Madmins->get_lists('id, fullname');
+        $data['adminList'] = $adminList;
         $list = $this->Mhouses_points_report->get_report_list($where, ['A.create_time' => 'desc', 'A.id' => 'desc'], $size, ($page-1)*$size, ['A.point_id']);
         if($list){
             foreach ($list as $k => $v){
@@ -70,9 +83,7 @@ class Report_list extends MY_Controller{
                     }
                 }
             }
-            //获取报损人ids
-            $admin_ids = array_unique(array_column($list, 'create_id'));
-            $adminList = $this->Madmins->get_lists('id, fullname', ['in' => ['id' => $admin_ids]]);
+            
             if($adminList){
                 foreach ($list as $k => $v){
                     foreach ($adminList as $key => $val){
