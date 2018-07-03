@@ -28,6 +28,7 @@ class Houses extends MY_Controller{
     public function index(){
         $data = $this->data;
         $pageconfig = C('page.page_lists');
+        $install = C('install.install');
         $this->load->library('pagination');
 
         $page =  intval($this->input->get("per_page",true)) ?  : 1;
@@ -83,6 +84,11 @@ class Houses extends MY_Controller{
         			}
         		}
         		
+        		foreach ($install as $k3 => $v3){
+        		    if($v['install'] == $k3){
+        		        $v['install'] = $v3;
+        		    }
+        		}
         		
         		$v['count_1'] = $this->Mhouses_points->get_one('count(0) as count', ['houses_id' => $v['id'], 'addr' => 1, 'is_del' => 0]);
         		$v['count_2'] = $this->Mhouses_points->get_one('count(0) as count', ['houses_id' => $v['id'], 'addr' => 2, 'is_del' => 0]);
@@ -93,7 +99,6 @@ class Houses extends MY_Controller{
         	
         }
         $data['hlist'] = $this->Mhouses->get_lists();
-        
         $data['list'] = $tmpList;
         
         $data_count = $this->Mhouses->count($where);

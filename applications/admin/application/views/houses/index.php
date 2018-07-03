@@ -143,6 +143,7 @@
                                                 <th>交付年份</th>
                                                 <th>发送物业审核</th>
                                                 <th>物业公司</th>
+                                                <th>安装公司</th>
                                                 <th>门禁点位数</th>
                                                 <th>地面电梯前室点位数</th>
                                                 <th>地下电梯前室点位数</th>
@@ -180,6 +181,7 @@
 													<td><?php if($val['deliver_year'] == '0000') echo ''; else echo $val['deliver_year'];?></td>
 													<td><?php if($val['is_check_out'] == 1) echo '是'; else echo '否';?></td>
 													<td><?php echo $val['property_company'];?></td>
+													<td><?php if($val['install'] != '0') echo $val['install'];else echo '';?></td>
 													<td><?php if($val['count_1']['count']) echo $val['count_1']['count'];?></td>
 													<td><?php if($val['count_2']['count']) echo $val['count_2']['count'];?></td>
 													<td><?php if($val['count_3']['count']) echo $val['count_3']['count'];?></td>
