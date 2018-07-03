@@ -10,9 +10,10 @@ class Model_houses_points_report extends MY_Model {
     
     public function get_report_list($where = [], $order_by =[],  $pagesize = 0,$offset = 0, $group_by =[]){
         $this->db->distinct();
-        $this->db->select("A.*");
+        $this->db->select("A.*,C.install");
         $this->db->from("t_houses_points_report A");
         $this->db->join("t_houses_points B", "A.point_id = B.id", "left");
+        $this->db->join("t_houses C", "B.houses_id = C.id", "left");
         
         if(isset($where['like'])) {
             foreach($where['like'] as $k => $v) {

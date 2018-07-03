@@ -23,6 +23,7 @@ class Report_list extends MY_Controller{
     public function index(){
         $data = $this->data;
         $pageconfig = C('page.page_lists');
+        $install = C('install.install');
         $this->load->library('pagination');
         $page =  intval($this->input->get("per_page",true)) ?  : 1;
         $size = $pageconfig['per_page'];
@@ -63,6 +64,11 @@ class Report_list extends MY_Controller{
             foreach ($list as $k => $v){
                 $list[$k]['fullname'] = '';
                 $list[$k]['point'] = '';
+                foreach ($install as $k2 => $v2){
+                    if($list[$k]['install'] == $k2){
+                        $list[$k]['install'] = $v2;
+                    }
+                }
             }
             //获取报损人ids
             $admin_ids = array_unique(array_column($list, 'create_id'));
@@ -89,7 +95,6 @@ class Report_list extends MY_Controller{
                 }
             }
         }
-        
         $data['list'] = $list;
         //获取分页
         $data_count = $this->Mhouses_points_report->get_report_list($where);
