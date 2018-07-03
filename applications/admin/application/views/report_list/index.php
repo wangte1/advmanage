@@ -115,7 +115,7 @@
                                                 <label class="col-sm-3 control-label no-padding-right" for="form-field-1"> 报损人： </label>
                                                 <div class="col-sm-9">
                                                     <select class="select2" name="create_id">
-                                                        <option>全部</option>
+                                                        <option value="0">全部</option>
                                                         <?php if($adminList):?>
                                                         <?php foreach ($adminList as $k => $v):?>
                                                         <option <?php if(isset($create_id) && $create_id == $v['id']){echo "selected";}?>  value="<?php echo $v['id']?>"><?php echo $v['fullname']?></option>
@@ -130,7 +130,7 @@
                                                 <label class="col-sm-3 control-label no-padding-right" for="form-field-1"> 安装公司： </label>
                                                 <div class="col-sm-9">
                                                     <select class="select2" name="install">
-                                                        <option>全部</option>
+                                                        <option value="0">全部</option>
                                                         <?php foreach (C('install.install') as $k => $v):?>
                                                         <option <?php if(isset($install) && $install== $k){echo "selected";}?>  value="<?php echo $k;?>"><?php echo $v?></option>
                                                         <?php endforeach;?>
