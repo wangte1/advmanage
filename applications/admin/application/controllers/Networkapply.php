@@ -25,7 +25,7 @@ class Networkapply extends MY_Controller{
     	$data = $this->data;
 		
     	//媒介人员才能审核 begin
-    	if($data['userInfo']['group_id'] == 3) {
+    	if($data['userInfo']['group_id'] == 3 || $data['userInfo']['group_id'] == 1) {
     		$data['role_auth'] = 1;
     	}else { //其他角色只能查看自己的
     		$where['apply_user_id'] = $data['userInfo']['id'];
