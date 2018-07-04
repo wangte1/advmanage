@@ -881,7 +881,74 @@ class Housesorders extends MY_Controller{
             }
         }
         $data['points_lists'] = array_chunk($data['points'], 100);
+        $this->loads($data['points_lists'][0]);
         $this->load->view('housesorders/confirmation/imgpdf', $data);
+    }
+    
+    public function loads($list = []){
+        //加载phpexcel
+        $this->load->library("PHPExcel");
+        //填充数据
+        $this->phpexcel->setActiveSheetIndex(0);
+        //设置表头
+        $table_header =  array(
+            '序号' => "id",
+            '点位编号'=>"code",
+            '地址'=>"addr",
+            '广告图' => 'img'
+        );
+        
+        $this->phpexcel->getDefaultStyle()->getAlignment()->setHorizontal(PHPExcel_Style_Alignment::HORIZONTAL_CENTER);
+        $this->phpexcel->getDefaultStyle()->getAlignment()->setVertical(PHPExcel_Style_Alignment::VERTICAL_CENTER);
+        //设置表头行高
+        $this->phpexcel->getActiveSheet(0)->getRowDimension(0)->setRowHeight(20);
+        //设置列宽
+        $this->phpexcel->getActiveSheet(0)->getColumnDimension("A")->setWidth(10);
+        $this->phpexcel->getActiveSheet(0)->getColumnDimension("B")->setWidth(10);
+        $this->phpexcel->getActiveSheet(0)->getColumnDimension("C")->setWidth(30);
+        $this->phpexcel->getActiveSheet(0)->getColumnDimension("D")->setWidth(30);
+        //数据准备就绪， 绘制表头
+        $i = 0;
+        foreach($table_header as  $k=>$v){
+            $cell = PHPExcel_Cell::stringFromColumnIndex($i).'1';
+            $this->phpexcel->setActiveSheetIndex(0)->setCellValue($cell, $k);
+            $i++;
+        }
+        
+        $h = 2;
+        foreach($list as $key => $val){
+            $j = 0;
+            $objDrawing = new PHPExcel_Worksheet_Drawing();
+            foreach($table_header as $k => $v){
+                //设置行高
+                $this->phpexcel->getActiveSheet(0)->getRowDimension($h)->setRowHeight(120);
+                if($v == "img" && !empty($val['img'])){
+                    if(file_exists('.'.$val['img']) && is_readable('.'.$val['img'])){
+                        $objDrawing->setPath(".".$val['img']);
+                        $objDrawing->setCoordinates('D'.($j-1));
+                        $objDrawing->setWidthAndHeight('100%',120);
+                        $objDrawing->setWorksheet($this->phpexcel->getActiveSheet(0));
+                    }else{
+                        $cell = PHPExcel_Cell::stringFromColumnIndex($j++).$h;
+                        $value = '图片找不到或不存在';
+                        $this->phpexcel->getActiveSheet(0)->setCellValue($cell, $value);
+                    }
+                }else{
+                    $cell = PHPExcel_Cell::stringFromColumnIndex($j++).$h;
+                    $value = $val[$v];
+                    $this->phpexcel->getActiveSheet(0)->setCellValue($cell, $value);
+                }
+            }
+            $h++;
+        }
+        
+        // 输出
+        header('Content-Type: application/vnd.ms-excel');
+        header('Content-Disposition: attachment;filename='.date('Ymd').'客户验收表.xls');
+        header('Cache-Control: max-age=0');
+        
+        $objWriter = PHPExcel_IOFactory::createWriter($this->phpexcel, 'Excel5');
+        $objWriter->save('php://output');
     }
 
 
