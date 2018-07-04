@@ -36,6 +36,9 @@
                 </li>
             </ul>
         </div>
+        <div style="margin: 0 auto;width: 50%;height: 40px;text-align:center;margin-top:170px;" class="check-area">
+        	<p style="text-align: left;">备注：<input type="text" id="remarks" name="remarks"></p>
+    	</div>
         <div style="clear: both;"><button style="width: 50%;margin-top:1%;" class="btn btn-info">确认修复</button></div>
 		<br/>
 	</div>
@@ -60,6 +63,7 @@
 	$('body').on('click', '.btn', function(){
 		
 		var id = $('#id').val();
+		var remarks = $('#remarks').val();
 		$('.is_new_code').each(function(){
 			if($(this).prop('checked')){
 				is_new_code = $(this).val();
@@ -81,7 +85,7 @@
 		if(!repair_img) {
 			repair_img = "";
 		}
-		var post_data = {'id':id,'repair_img':repair_img, 'is_new_code':is_new_code, 'new_code':new_code};
+		var post_data = {'id':id,'repair_img':repair_img, 'is_new_code':is_new_code, 'new_code':new_code, 'remarks':remarks};
 		$.post('/report_list/report_add', post_data, function(data){
 			if(data.code == 1){
 				layer.alert(data.msg, function(){
