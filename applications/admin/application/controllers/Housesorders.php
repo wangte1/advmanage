@@ -918,12 +918,12 @@ class Housesorders extends MY_Controller{
         $h = 2;
         foreach($list as $key => $val){
             $j = 0;
-            $objDrawing = new PHPExcel_Worksheet_Drawing();
             foreach($table_header as $k => $v){
                 //设置行高
                 $this->phpexcel->getActiveSheet(0)->getRowDimension($h)->setRowHeight(120);
                 if($v == "img" && !empty($val['img'])){
                     if(file_exists('.'.$val['img']) && is_readable('.'.$val['img'])){
+                        $objDrawing = new PHPExcel_Worksheet_Drawing();
                         $objDrawing->setPath(".".$val['img']);
                         $objDrawing->setCoordinates('D'.($j-1));
                         $objDrawing->setWidthAndHeight('100%',120);
