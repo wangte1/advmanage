@@ -140,7 +140,7 @@
                                             <div class="col-sm-3">
                                                 <label class="col-sm-3 control-label no-padding-right" for="form-field-1"> 点位编号： </label>
                                                 <div class="col-sm-9">
-                                                    <input type="text" name="code" value="<?php if(isset($code)){echo $code;}?>" />
+                                                    <input type="text" name="rcode" value="<?php if(isset($rcode)){echo $rcode;}?>" />
                                                 </div>
                                             </div>
                                         </div>
