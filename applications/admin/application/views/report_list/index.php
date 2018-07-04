@@ -137,7 +137,7 @@
                                                     </select>
                                                 </div>
                                             </div>
-                                            <div class="col-sm-3">
+                                            <div class="col-sm-4">
                                                 <label class="col-sm-3 control-label no-padding-right" for="form-field-1"> 点位编号： </label>
                                                 <div class="col-sm-9">
                                                     <input type="text" name="rcode" value="<?php if(isset($rcode)){echo $rcode;}?>" />
@@ -187,6 +187,7 @@
                                                 <th>操作</th>
                                                 <?php else :?>
                                                 <th>修复日期</th>
+                                                <th>修复备注</th>
                                                 <?php endif;?>
                                             </tr>
                                         </thead>
@@ -247,6 +248,7 @@
                                                     </td>
                                                     <?php else :?>
                                                     <td><?php echo date('Y-m-d', $val['repair_time']);?></td>
+                                                    <td><?php echo $val['remarks']?></td>
                                                     <?php endif;?>
                                                 </tr>
                                             <?php } }?>

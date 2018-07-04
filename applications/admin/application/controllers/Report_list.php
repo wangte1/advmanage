@@ -143,6 +143,7 @@ class Report_list extends MY_Controller{
             
             $is_new_code = (int) $this->input->post('is_new_code');
             $new_code = $this->input->post('new_code');
+            $remarks = $this->input->post('remarks');
             if($is_new_code){
                 if(empty($new_code)){
                     $this->return_json(['code' => 0, 'msg' => '请填编号！']);
@@ -154,7 +155,8 @@ class Report_list extends MY_Controller{
             
             $up = [
                 'repair_img' => $repair_img,
-                'repair_time' => strtotime(date('Y-m-d'))
+                'repair_time' => strtotime(date('Y-m-d')),
+                'remarks' => $remarks
             ];
             $res = $this->Mhouses_points_report->update_info($up, ['id' => $id]);
             if(!$res){
