@@ -187,6 +187,7 @@
                                                 <th>操作</th>
                                                 <?php else :?>
                                                 <th>修复日期</th>
+                                                <th>修复备注</th>
                                                 <?php endif;?>
                                             </tr>
                                         </thead>
@@ -247,6 +248,7 @@
                                                     </td>
                                                     <?php else :?>
                                                     <td><?php echo date('Y-m-d', $val['repair_time']);?></td>
+                                                    <td><?php echo $val['remarks']?></td>
                                                     <?php endif;?>
                                                 </tr>
                                             <?php } }?>
