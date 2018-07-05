@@ -854,7 +854,7 @@ class Housesorders extends MY_Controller{
             //提取所有子详情
             $pids = array_column($workerOrder, 'id');
             if($pids){
-                $imglist = $this->Mhouses_work_order_detail->get_lists('point_id, pano_img', ['in' => ['pid' => $pids]]);
+                $imglist = $this->Mhouses_work_order_detail->get_lists('point_id,no_img, pano_img', ['in' => ['pid' => $pids]]);
             }
         }
         
@@ -875,17 +875,40 @@ class Housesorders extends MY_Controller{
             if(isset($imglist)){
                 foreach ($imglist as $key => $val){
                     if($v['id'] == $val['point_id']){
-                        $data['points'][$k]['img'] = $val['pano_img'];
+                        $data['points'][$k]['img'] = $val['no_img'];
                     }
                 }
             }
         }
-        $data['points_lists'] = array_chunk($data['points'], 100);
-        $this->loads($data['points_lists'][0]);
-        $this->load->view('housesorders/confirmation/imgpdf', $data);
+        $list = array_chunk($data['points'], 80);
+        $data['points_lists'] = $list;
+        if($this->input->get("load")){
+            $this->loadAll($list[$page-1], $page);
+        }else{
+            $this->load->view('housesorders/confirmation/imgpdf', $data);
+        }
+        
     }
     
-    public function loads($list = []){
+    public function loadAll($list = [], $page= 1){
+        set_time_limit(0);
+        foreach ($list as $k => $v){
+            //重新排序id
+            $list[$k]['id'] = $k+1;
+            
+            if($v['addr'] == 1){
+                $v['addr'] = "门禁";
+            }else if($v['addr'] == 2){
+                $v['addr'] = "地面电梯";
+            }else{
+                $v['addr'] = "地下电梯";
+            }
+            $list[$k]['addr'] = $v['area'].$v['houses_name'].$v['houses_area_name'].$v['ban'].$v['unit'].$v['floor'].'楼'.$v['addr'];
+            unset($list[$k]['houses_name'], $list[$k]['houses_area_name'], $list[$k]['ban'], $list[$k]['unit'], $list[$k]['floor']);
+            unset($list[$k]['ad_num'], $list[$k]['ad_use_num'], $list[$k]['used_num'], $list[$k]['lock_num'], $list[$k]['price']);
+            unset($list[$k]['order_id'], $list[$k]['customer_id'], $list[$k]['images'], $list[$k]['remarks']);
+            unset($list[$k]['province'], $list[$k]['city']);
+        }
         //加载phpexcel
         $this->load->library("PHPExcel");
         //填充数据
@@ -897,7 +920,8 @@ class Housesorders extends MY_Controller{
             '地址'=>"addr",
             '广告图' => 'img'
         );
-        
+        //自动换行
+        $this->phpexcel->getDefaultStyle()->getAlignment()->setWrapText(TRUE);
         $this->phpexcel->getDefaultStyle()->getAlignment()->setHorizontal(PHPExcel_Style_Alignment::HORIZONTAL_CENTER);
         $this->phpexcel->getDefaultStyle()->getAlignment()->setVertical(PHPExcel_Style_Alignment::VERTICAL_CENTER);
         //设置表头行高
@@ -906,7 +930,7 @@ class Housesorders extends MY_Controller{
         $this->phpexcel->getActiveSheet(0)->getColumnDimension("A")->setWidth(10);
         $this->phpexcel->getActiveSheet(0)->getColumnDimension("B")->setWidth(10);
         $this->phpexcel->getActiveSheet(0)->getColumnDimension("C")->setWidth(30);
-        $this->phpexcel->getActiveSheet(0)->getColumnDimension("D")->setWidth(30);//这里的宽度是等于7*30px
+        $this->phpexcel->getActiveSheet(0)->getColumnDimension("D")->setWidth(38);//这里的宽度是等于7*38px
         //数据准备就绪， 绘制表头
         $i = 0;
         foreach($table_header as  $k=>$v){
@@ -920,14 +944,13 @@ class Housesorders extends MY_Controller{
             $j = 0;
             foreach($table_header as $k => $v){
                 //设置行高
-                $this->phpexcel->getActiveSheet(0)->getRowDimension($h)->setRowHeight(280);
+                $this->phpexcel->getActiveSheet(0)->getRowDimension($h)->setRowHeight(354);
                 if($v == "img" && !empty($val['img'])){
                     if(file_exists('.'.$val['img']) && is_readable('.'.$val['img'])){
                         $objDrawing[$k] = new PHPExcel_Worksheet_Drawing();
                         $objDrawing[$k]->setPath(".".$val['img']);
                         $objDrawing[$k]->setCoordinates('D'.($h));
-                        $objDrawing[$k]->setHeight(153);//照片高度
-                        $objDrawing[$k]->setWidth(210); //照片宽度 这里的宽度是像素
+                        $objDrawing[$k]->setWidth(266); //照片宽度 这里的宽度是像素px
                         $objDrawing[$k]->setWorksheet($this->phpexcel->getActiveSheet(0));
                     }else{
                         $cell = PHPExcel_Cell::stringFromColumnIndex($j++).$h;
@@ -944,7 +967,7 @@ class Housesorders extends MY_Controller{
         }
         // 输出
         header('Content-Type: application/vnd.ms-excel');
-        header('Content-Disposition: attachment;filename='.date('Ymd').'客户验收表.xls');
+        header('Content-Disposition: attachment;filename='.date('Ymd').'客户验收表'.$page.'.xls');
         header('Cache-Control: max-age=0');
         
         $objWriter = PHPExcel_IOFactory::createWriter($this->phpexcel, 'Excel5');
