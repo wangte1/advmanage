@@ -81,7 +81,7 @@ class Report_list extends MY_Controller{
                 $list[$k]['fullname'] = '';
                 $list[$k]['point'] = '';
                 foreach ($install as $k2 => $v2){
-                    if($list[$k]['install'] == $k2){
+                    if($list[$k]['install_id'] == $k2){
                         $list[$k]['install'] = $v2;
                     }
                 }

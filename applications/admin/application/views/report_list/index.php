@@ -239,7 +239,7 @@
                                                         <?php if($val['usable']){echo'是';}else{echo'否';}?>
                                                     </td>
                                                     <td>
-                                                        <?php if($val['install_id'] != '0') echo $val['install_id'];else echo '';?>
+                                                        <?php if($val['install'] != '0') echo $val['install'];else echo '';?>
                                                     </td>
                                                     <?php if($repair_time == 0):?>
                                                     <td><?php echo date('Y-m-d', $val['create_time']);?></td>
