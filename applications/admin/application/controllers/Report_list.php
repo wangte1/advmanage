@@ -187,19 +187,26 @@ class Report_list extends MY_Controller{
     
     public function out_excel(){
         $data = $this->data;
+        $pageconfig = C('page.page_lists');
+        $install = C('install.install');
+        $this->load->library('pagination');
+        $page =  intval($this->input->get("per_page",true)) ?  : 1;
+        $size = $pageconfig['per_page'];
         $where = [];
         $repair_time= $this->input->get('repair_time');
         $houses_id = $this->input->get('houses_id');
         $usable = $this->input->get('usable');
         $report = $this->input->get('report');
+        $time = $this->input->get('time');
+        $create_id = $this->input->get('create_id');
+        $rcode = trim($this->input->get('rcode'));
+        $install_id = $this->input->get('install');
         if($repair_time){
-            switch ((int)$repair_time){
-                case 1:
-                    $where['A.repair_time !='] = 0;
-                    break;
-            }
+            $where['A.repair_time >'] = 0;
+            $data['repair_time'] = $repair_time;
         }else{
             $where['A.repair_time'] = 0;
+            $data['repair_time'] = 0;
         }
         if($report)$where['like'] = ['report' => $report . ','];
         if($houses_id) {
@@ -210,9 +217,26 @@ class Report_list extends MY_Controller{
             $where['usable'] = $usable;
             $data['usable'] = $usable;
         }
+        if($time){
+            $where['A.create_time'] = strtotime($time);
+            $data['time'] = $time;
+        }
+        if($create_id){
+            $where['A.create_id'] = $create_id;
+            $data['create_id'] = $create_id;
+        }
+        if($install_id){
+            $where['C.install'] = $install_id;
+            $data['install'] = $install_id;
+        }
+        if($rcode){
+            $where['B.code'] = $rcode;
+            $data['rcode'] = $rcode;
+        }
         $data['report_id'] = $report;
         $data['repair_time'] = $repair_time;
         $data['report'] = C('housespoint.report');
+
         $data['hlist'] = $this->Mhouses->get_lists();
         $list = $this->Mhouses_points_report->get_report_list($where, ['A.create_time' => 'desc', 'A.id' => 'desc'], 0, 0, ['A.point_id']);
         if($list){
