@@ -906,7 +906,7 @@ class Housesorders extends MY_Controller{
         $this->phpexcel->getActiveSheet(0)->getColumnDimension("A")->setWidth(10);
         $this->phpexcel->getActiveSheet(0)->getColumnDimension("B")->setWidth(10);
         $this->phpexcel->getActiveSheet(0)->getColumnDimension("C")->setWidth(30);
-        $this->phpexcel->getActiveSheet(0)->getColumnDimension("D")->setWidth(30);
+        $this->phpexcel->getActiveSheet(0)->getColumnDimension("D")->setWidth(30);//这里的宽度是等于7*30px
         //数据准备就绪， 绘制表头
         $i = 0;
         foreach($table_header as  $k=>$v){
@@ -927,7 +927,7 @@ class Housesorders extends MY_Controller{
                         $objDrawing[$k]->setPath(".".$val['img']);
                         $objDrawing[$k]->setCoordinates('D'.($h));
                         $objDrawing[$k]->setHeight(153);//照片高度
-                        $objDrawing[$k]->setWidth(210); //照片宽度
+                        $objDrawing[$k]->setWidth(210); //照片宽度 这里的宽度是像素
                         $objDrawing[$k]->setWorksheet($this->phpexcel->getActiveSheet(0));
                     }else{
                         $cell = PHPExcel_Cell::stringFromColumnIndex($j++).$h;
