@@ -920,14 +920,15 @@ class Housesorders extends MY_Controller{
             $j = 0;
             foreach($table_header as $k => $v){
                 //设置行高
-                $this->phpexcel->getActiveSheet(0)->getRowDimension($h)->setRowHeight(120);
+                $this->phpexcel->getActiveSheet(0)->getRowDimension($h)->setRowHeight(280);
                 if($v == "img" && !empty($val['img'])){
                     if(file_exists('.'.$val['img']) && is_readable('.'.$val['img'])){
-                        $objDrawing = new PHPExcel_Worksheet_Drawing();
-                        $objDrawing->setPath(".".$val['img']);
-                        $objDrawing->setCoordinates('D'.($j-1));
-                        $objDrawing->setWidthAndHeight('100%',120);
-                        $objDrawing->setWorksheet($this->phpexcel->getActiveSheet(0));
+                        $objDrawing[$k] = new PHPExcel_Worksheet_Drawing();
+                        $objDrawing[$k]->setPath(".".$val['img']);
+                        $objDrawing[$k]->setCoordinates('D'.($h));
+                        $objDrawing[$k]->setHeight(153);//照片高度
+                        $objDrawing[$k]->setWidth(210); //照片宽度
+                        $objDrawing[$k]->setWorksheet($this->phpexcel->getActiveSheet(0));
                     }else{
                         $cell = PHPExcel_Cell::stringFromColumnIndex($j++).$h;
                         $value = '图片找不到或不存在';
@@ -941,7 +942,6 @@ class Housesorders extends MY_Controller{
             }
             $h++;
         }
-        
         // 输出
         header('Content-Type: application/vnd.ms-excel');
         header('Content-Disposition: attachment;filename='.date('Ymd').'客户验收表.xls');
