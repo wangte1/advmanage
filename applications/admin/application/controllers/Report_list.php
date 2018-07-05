@@ -245,6 +245,7 @@ class Report_list extends MY_Controller{
                 }
             }
         }
+        
         if($list){
             foreach ($list as $key => $val){
                 if($val['point']['addr'] == 1){
@@ -260,7 +261,6 @@ class Report_list extends MY_Controller{
             }
                 
         }
-
         //加载phpexcel
         $this->load->library("PHPExcel");
         
@@ -279,6 +279,7 @@ class Report_list extends MY_Controller{
             '修复时间' => 'repair_time',
             '报损类型' => "report",
             '报损描述' => "report_msg",
+            '安装公司'=>"install_id"
         );
         
         
@@ -295,7 +296,7 @@ class Report_list extends MY_Controller{
             $j = 0;
             foreach($table_header as $k => $v){
                 $cell = PHPExcel_Cell::stringFromColumnIndex($j++).$h;
-                if(in_array($v, ['report', 'report_msg', 'fullname', 'create_time', 'repair_time'])){
+                if(in_array($v, ['report','report_msg', 'fullname', 'create_time', 'repair_time'])){
                     if($v == 'report'){
                         $tmp = explode(',', $val['report']);
                         $value = '';
@@ -311,6 +312,9 @@ class Report_list extends MY_Controller{
                     }
                 }else{
                     $value = $val['point'][$v];
+                    if($v == 'install_id' && $val[$v]){
+                        $value = C('install.install')[$val[$v]];
+                    }
                 }
                 $this->phpexcel->getActiveSheet(0)->setCellValue($cell, $value);
             }
