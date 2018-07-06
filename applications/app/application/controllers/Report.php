@@ -41,6 +41,11 @@ class Report extends MY_Controller {
         $list = $this->Mhouses_points_report->get_report_list(['A.repair_time' => 0, 'C.id' => $houses_id]);
         if($list){
             foreach ($list as $k => $v){
+                $install = C('install.install');
+                $list[$k]['install_company'] = "未设置";
+                if($v['install']){
+                    $list[$k]['install_company'] = $install[$v['install']];
+                }
                 $list[$k]['create_time'] = date('Y-m-d', $v['create_time']);
             }
         }
