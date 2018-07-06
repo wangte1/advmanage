@@ -156,7 +156,8 @@ class Report_list extends MY_Controller{
             $up = [
                 'repair_img' => $repair_img,
                 'repair_time' => strtotime(date('Y-m-d')),
-                'remarks' => $remarks
+                'remarks' => $remarks,
+                'repair_id' => $data['userInfo']['id']
             ];
             $res = $this->Mhouses_points_report->update_info($up, ['id' => $id]);
             if(!$res){
