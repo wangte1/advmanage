@@ -127,6 +127,7 @@
 			                                                <th>已完成</th>
 			                                                <th>远景图上传</th>
 			                                                <th>负责人</th>
+			                                                <th>新负责人</th>
 			                                                <th class="phone-hide">派单时间</th>
 			                                                <th>状态</th>
 			                                                <th nowrap>操作</th>
@@ -161,6 +162,15 @@
 																</td>
 			                                                    <td>
 			                                                    	<?php if(isset($user_list[$val['charge_user']])) echo $user_list[$val['charge_user']];?>
+			                                                    </td>
+			                                                    
+			                                                    <td>
+			                                                    	<select class="user" name="user" data-id="<?php echo $val['id']?>">
+                                                                    	<option value="">请选择</option>
+                                                                    	<?php foreach ($user_canuse_list as $k => $v):?>
+                                                                    		<option value="<?php echo $v['id'];?>" <?php if($v['id'] == $val['charge_user']) {echo "selected";}?>><?php echo $v['fullname']?></option>
+                                                                    	<?php endforeach;?>
+                                                                    </select>
 			                                                    </td>
 			                                                    
 			                                                    <td class="phone-hide"><?php echo $val['create_time'];?></td>
@@ -228,6 +238,15 @@
 		city: "<?php if(isset($city)) { echo $city;}else{?>贵阳市<?php }?>",
 		district : "<?php if(isset($area)) { echo $area;}?>",
 	});
+	$('.user').change(function(){
+		var user_id = $(this).val();
+		var id  = $(this).data("id");
+		$.post("housesconfirm/update_charge_user",{user_id : user_id,id : id},function(data){
+			if(data.code == 0){
+				alert(data.msg);
+			}
+		});
+    });
 
 	$(function(){
 		$('.nav-tabs').find('a').click(function(){

@@ -119,8 +119,12 @@ class Housesconfirm extends MY_Controller{
         
         $where = [];
         $where['in'] = ['group_id' => [4,6]];
-        $tmp_user = $this->Madmins->get_lists('id,fullname', $where);
+        $tmp_user = $this->Madmins->get_lists('id,fullname,is_del', $where);
         $data['user_list'] = array_column($tmp_user, 'fullname', 'id');
+        $data['user_canuse_list'] = [];
+        foreach ($tmp_user as $k => $v){
+            if($v['is_del'] == 1) array_push($data['user_canuse_list'], $v);
+        }
 
         //获取分页
         $pageconfig['base_url'] = "/housesconfirm";
@@ -621,6 +625,21 @@ class Housesconfirm extends MY_Controller{
     	}
     	
     }
-    
+    /**
+     * @desc 更新负责人
+     */
+    public function update_charge_user(){
+        $charge_user = $this->input->post('user_id');
+        $id = $this->input->post('id');
+        if(!$charge_user && !$id){
+            $this->return_json(['code' => 0, 'msg' => '失败，失败原因：缺少参数']);
+        }
+        $where['charge_user'] = $charge_user;
+        $res = $this->Mhouses_work_order->update_info($where, ['id' => $id]);
+        if(!$res){
+            $this->return_json(['code' => 0, 'msg' => '失败，失败原因：数据库没写成功']);
+        }
+        $this->return_json(['code' => 1, 'msg' => '成功']);
+    }
 }
 
