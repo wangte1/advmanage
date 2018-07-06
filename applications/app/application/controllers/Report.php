@@ -41,17 +41,73 @@ class Report extends MY_Controller {
         $list = $this->Mhouses_points_report->get_report_list(['A.repair_time' => 0, 'C.id' => $houses_id]);
         if($list){
             foreach ($list as $k => $v){
+                if($v['addr'] == 1){
+                    $list[$k]['addr'] = "门禁";
+                }else if($v['addr'] == 2){
+                    $list[$k]['addr'] = "地面电梯前室";
+                }else{
+                    $list[$k]['addr'] = "地下电梯前室";
+                }
                 $install = C('install.install');
                 $list[$k]['install_company'] = "未设置";
-                if($v['install']){
-                    $list[$k]['install_company'] = $install[$v['install']];
+                if($v['install_id']){
+                    $list[$k]['install_company'] = $install[$v['install_id']];
                 }
                 $list[$k]['create_time'] = date('Y-m-d', $v['create_time']);
+                $tmp = explode(',', $v['report']);
+                $list[$k]['report_txt'] = '';
+                foreach ($tmp as $key => $val){
+                    if($val){
+                        if($key == 0){
+                            $list[$k]['report_txt'] .= C('housespoint.report')[$val];
+                        }else{
+                            $list[$k]['report_txt'] .= ",".C('housespoint.report')[$val];
+                        }
+                    }
+                }
             }
         }
+
         if(!$list){
             $this->return_json(['code' => 0, 'data' => [], 'msg' => "暂无数据"]);
         }
+        //提取点位ids，获取点位信息
+        $point_ids = array_column($list, 'point_id');
+        $plist = $this->Mhouses_points->get_lists('id,houses_id, area_id', ['in' => ['id' => $point_ids]]);
+        if($plist){
+            foreach ($plist as $k => $v){
+                foreach ($list as $key => $val){
+                    if($v['id'] == $val['point_id']){
+                        $list[$key]['houses_name'] = "";
+                        $list[$key]['area_name'] = "无组团";
+                    }
+                }
+            }
+            $houses_ids = array_column($plist, 'houses_id');
+            //行政区域和楼盘
+            $housesList = $this->Mhouses->get_lists('id,name,area', ['in' => ['id' => $houses_ids]]);
+            if($housesList){
+                foreach ($housesList as $k => $v){
+                    foreach ($list as $key => $val){
+                        if($v['id'] == $val['houses_id']){
+                            $list[$key]['houses_name'] = $v['area'].$v['name'];
+                        }
+                    }
+                }
+            }
+            //获取这个楼盘、和用户所关联的组团
+            $areaList = $this->Mhouses_area->get_lists('id, name, houses_id', ['in' => ['houses_id' => $houses_ids]]);
+            if($areaList){
+                foreach ($areaList as $k => $v){
+                    foreach ($list as $key => $val){
+                        if($v['houses_id'] == $val['houses_id'] && $v['id'] == $val['area_id']){
+                            $list[$key]['area_name'] = $v['name'];
+                        }
+                    }
+                }
+            }
+        }
+
         $this->return_json(['code' => 1, 'data' => $list, 'msg' => "ok"]);
     }
     
