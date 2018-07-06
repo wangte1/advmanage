@@ -527,10 +527,10 @@ class Task extends MY_Controller {
         
         $info = $this->Mhouses_work_order_detail->get_one('*', ['id' => $id]);
         if(!$info) $this->return_json(['code' => 0, 'msg' => '数据不存在']);
-        //检查重复
-        $count = $this->Mhouses_points_report->get_one("repair_time", ['point_id' => $point_id]);
+        //检查是否已经存在未修复的记录，如果有则不允许提交
+        $count = $this->Mhouses_points_report->count(['point_id' => $point_id, 'repair_time' => 0]);
         if($count){
-            if(!$count['repair_time']) $this->return_json(['code' => 0, 'msg' => '该点位已报损，请勿重复提交']);
+            $this->return_json(['code' => 0, 'msg' => '该点位已报损，请勿重复提交']);
         }
         
         $up = [
