@@ -21,6 +21,7 @@ class Houseschangepicorders extends MY_Controller{
              'Model_houses_order_inspect_images' => 'Mhouses_order_inspect_images',
              'Model_salesman' => 'Msalesman',
         	 'Model_houses_assign' => 'Mhouses_assign',
+             'Model_status_operate_time' => 'Mstatus_operate_time'
              //'Model_points_make_num' => 'Mpoints_make_num',
         ]);
         $this->data['code'] = 'horders_manage';
