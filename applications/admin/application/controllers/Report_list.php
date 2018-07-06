@@ -81,7 +81,7 @@ class Report_list extends MY_Controller{
                 $list[$k]['fullname'] = '';
                 $list[$k]['point'] = '';
                 foreach ($install as $k2 => $v2){
-                    if($list[$k]['install'] == $k2){
+                    if($list[$k]['install_id'] == $k2){
                         $list[$k]['install'] = $v2;
                     }
                 }
@@ -131,7 +131,7 @@ class Report_list extends MY_Controller{
     }
     
     /**
-     * 提交报损
+     * 提交修复
      */
     public function report_add(){
         $data = $this->data;
@@ -188,19 +188,26 @@ class Report_list extends MY_Controller{
     
     public function out_excel(){
         $data = $this->data;
+        $pageconfig = C('page.page_lists');
+        $install = C('install.install');
+        $this->load->library('pagination');
+        $page =  intval($this->input->get("per_page",true)) ?  : 1;
+        $size = $pageconfig['per_page'];
         $where = [];
         $repair_time= $this->input->get('repair_time');
         $houses_id = $this->input->get('houses_id');
         $usable = $this->input->get('usable');
         $report = $this->input->get('report');
+        $time = $this->input->get('time');
+        $create_id = $this->input->get('create_id');
+        $rcode = trim($this->input->get('rcode'));
+        $install_id = $this->input->get('install');
         if($repair_time){
-            switch ((int)$repair_time){
-                case 1:
-                    $where['A.repair_time !='] = 0;
-                    break;
-            }
+            $where['A.repair_time >'] = 0;
+            $data['repair_time'] = $repair_time;
         }else{
             $where['A.repair_time'] = 0;
+            $data['repair_time'] = 0;
         }
         if($report)$where['like'] = ['report' => $report . ','];
         if($houses_id) {
@@ -211,9 +218,26 @@ class Report_list extends MY_Controller{
             $where['usable'] = $usable;
             $data['usable'] = $usable;
         }
+        if($time){
+            $where['A.create_time'] = strtotime($time);
+            $data['time'] = $time;
+        }
+        if($create_id){
+            $where['A.create_id'] = $create_id;
+            $data['create_id'] = $create_id;
+        }
+        if($install_id){
+            $where['C.install'] = $install_id;
+            $data['install'] = $install_id;
+        }
+        if($rcode){
+            $where['B.code'] = $rcode;
+            $data['rcode'] = $rcode;
+        }
         $data['report_id'] = $report;
         $data['repair_time'] = $repair_time;
         $data['report'] = C('housespoint.report');
+
         $data['hlist'] = $this->Mhouses->get_lists();
         $list = $this->Mhouses_points_report->get_report_list($where, ['A.create_time' => 'desc', 'A.id' => 'desc'], 0, 0, ['A.point_id']);
         if($list){
@@ -246,6 +270,7 @@ class Report_list extends MY_Controller{
                 }
             }
         }
+        
         if($list){
             foreach ($list as $key => $val){
                 if($val['point']['addr'] == 1){
@@ -261,7 +286,6 @@ class Report_list extends MY_Controller{
             }
                 
         }
-
         //加载phpexcel
         $this->load->library("PHPExcel");
         
@@ -280,6 +304,7 @@ class Report_list extends MY_Controller{
             '修复时间' => 'repair_time',
             '报损类型' => "report",
             '报损描述' => "report_msg",
+            '安装公司'=>"install_id"
         );
         
         
@@ -296,7 +321,7 @@ class Report_list extends MY_Controller{
             $j = 0;
             foreach($table_header as $k => $v){
                 $cell = PHPExcel_Cell::stringFromColumnIndex($j++).$h;
-                if(in_array($v, ['report', 'report_msg', 'fullname', 'create_time', 'repair_time'])){
+                if(in_array($v, ['report','report_msg', 'fullname', 'create_time', 'repair_time'])){
                     if($v == 'report'){
                         $tmp = explode(',', $val['report']);
                         $value = '';
@@ -312,6 +337,9 @@ class Report_list extends MY_Controller{
                     }
                 }else{
                     $value = $val['point'][$v];
+                    if($v == 'install_id' && $val[$v]){
+                        $value = C('install.install')[$val[$v]];
+                    }
                 }
                 $this->phpexcel->getActiveSheet(0)->setCellValue($cell, $value);
             }

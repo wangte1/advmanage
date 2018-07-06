@@ -59,7 +59,7 @@
                                                 	<select id="houses" class="select2" data-placeholder="Click to Choose..." name="houses_id">
                                                 		<option value="">全部</option>
 				                                		<?php foreach ($hlist as $k => $v) {?>
-				                                    		<option value="<?php echo $v['id'];?>" <?php if($v['id'] == $houses_id) {?>selected="selected"<?php }?>><?php echo $v['name'];?></option>
+				                                    		<option value="<?php echo $v['id'];?>" <?php if(isset($houses_id) && $v['id'] == $houses_id) {?>selected="selected"<?php }?>><?php echo $v['name'];?></option>
 				                                    	<?php }?>
 				                                    </select>
                                                 </div>

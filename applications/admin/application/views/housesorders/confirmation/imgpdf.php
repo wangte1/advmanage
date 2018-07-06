@@ -1,12 +1,42 @@
-<!DOCTYPE html>
-<html>
-<head>
+<html lang="en">
+    <head>
+
     <meta charset="utf-8">
     <title>灯箱广告验收报告</title>
     <meta name="keywords" content="">
     <meta name="description" content="">
-	<!-- 加载公用css -->
-	<?php $this->load->view('common/header');?>
+    <!-- basic styles -->
+        <link href="http://adv.wesogou.com/static/admin/css/bootstrap.min.css?v=201605161353" rel="stylesheet" />
+        <link href="http://adv.wesogou.com/static/admin/css/font-awesome.min.css?v=201605161353" rel="stylesheet" />
+        <link href="http://adv.wesogou.com/static/font-awesome/css/font-awesome.min.css?v=201607201012" rel="stylesheet" />
+        <link href="http://adv.wesogou.com/static/admin/css/chosen.css?v=201605161353" rel="stylesheet" />
+
+        <link href="http://adv.wesogou.com/static/admin/css/select2.css?v=201605161353" rel="stylesheet" />
+
+        <link href="http://adv.wesogou.com/static/admin/css/colorbox.css?v=201605161353" rel="stylesheet" />
+        <link href="http://adv.wesogou.com/static/admin/css/jquery-ui-1.10.3.full.min.css?v=201605161353" rel="stylesheet" />
+
+
+        <link href="http://adv.wesogou.com/static/admin/css/ui-dialog.css?v=201605161353" rel="stylesheet" />
+
+
+
+        <!--[if IE 7]>
+          <link href="http://adv.wesogou.com/static/admin/css/font-awesome-ie7.min.css?v=201605161353" rel="stylesheet" />
+        <![endif]-->
+
+        <link href="http://adv.wesogou.com/static/admin/css/ace.min.css?v=201605161353" rel="stylesheet" />
+
+        <!--[if lte IE 8]>
+          <link href="http://adv.wesogou.com/static/admin/css/ace-ie.min.css?v=201605161353" rel="stylesheet" />
+        <![endif]-->
+
+        <!-- datepicker -->
+        <link href="http://adv.wesogou.com/static/common/css/datepicker3.css?v=201601121059" rel="stylesheet" />
+
+        <link href="http://adv.wesogou.com/static/admin/css/public.css?v=201605161353" rel="stylesheet" />
+    </head>
+
     <style type="text/css"> 
         html, body {width: 100%; height: 90%; margin: 0; padding: 0; font-family: "Microsoft YaHei","Helvetica Neue","Helvetica","Arial",sans-serif;background: "#fff"}
         .content {width: 1000px; margin: 0 auto; padding: 10px;}
@@ -14,10 +44,10 @@
         .page-p {font-size:24px;height:20px}
         .mid-p {height: 100px;}
         .detail-info {width: 1000px; border-collapse: collapse;border-spacing: 0;margin-top: 30px; border: 1px solid black;}
-        .detail-info tr td, .detail-info th {border: 1px solid black;height: 40px;font-size: 18px;padding-left: 20px;text-align: center;}
+        .detail-info tr td, .detail-info th {border: 1px solid black;height: 40px;font-size: 18px;text-align: center;}
 
         .detail-info-print {width: 1000px; border-collapse: collapse;border-spacing: 0;}
-        .detail-info-print tr td, .detail-info-print th {border: 1px solid black;height: 40px;font-size: 18px;padding-left: 20px;text-align: center; border-top: 0}
+        .detail-info-print tr td, .detail-info-print th {border: 1px solid black;height: 40px;font-size: 18px;text-align: center; border-top: 0}
         
         .header {padding:10px; width: 984px}
         .header .logo {width:167px; float: left}
@@ -46,43 +76,18 @@
         .detail-info,.detail-info-print{width:100%;}
         .mypage{cursor: pointer;}
     </style>
-    
     <script src="<?php echo css_js_url('jquery-2.0.3.min.js','admin');?>"></script> 
-	<script src="<?php echo css_js_url('html2canvas.js','admin');?>"></script>
-	<script src="<?php echo css_js_url('jsPdf.debug.js','admin');?>"></script>
-	<script> 
-	  
-	$(function(){ 
-
-        $("#pdf-out").click(function(){
-            	var id = '<?php echo $page;?>';
-                html2canvas($('#pic-panel'), { 
-                    onrendered: function(canvas) {
-                    	var imgData = canvas.toDataURL('image/jpeg');
-                        var img = new Image();
-                        img.src = imgData;
-                        //根据图片的尺寸设置pdf的规格，要在图片加载成功时执行，之所以要*0.225是因为比例问题
-                        img.onload = function() {
-                            //此处需要注意，pdf横置和竖置两个属性，需要根据宽高的比例来调整，不然会出现显示不完全的问题
-                            if (this.width > this.height) {
-                            	var doc = new jsPDF('l', 'mm', [this.width * 0.225, this.height * 0.225]);
-                            } else {
-                            	var doc = new jsPDF('p', 'mm', [this.width * 0.225, this.height * 0.225]);
-                            }
-                            doc.addImage(imgData, 'jpeg', 0, 0, this.width * 0.225, this.height * 0.225);
-                            //根据下载保存成不同的文件名
-                            doc.save('<?php echo $info["customer_name"];?>-<?php echo $order_type_text[$info["order_type"]];?>广告验收报告-'+id+'.pdf');
-                        }
-                      },
-                      background: "#fff",
-                      //这里给生成的图片默认背景，不然的话，如果你的html根节点没设置背景的话，会用黑色填充。
-                      allowTaint: true //避免一些不识别的图片干扰，默认为false，遇到不识别的图片干扰则会停止处理html2canvas
-                      
-                });
-        }); 
-	}); 
-	</script> 
-    
+    <script type="text/javascript">
+    $(function(){
+    	$('#pdf-out').on('click', function(){
+			var page = $(this).attr('data');
+			var url = '/housesorders/confirmations?id=<?php echo $id;?>&page='+page+"&load=1";
+			window.location.href = url;
+		});
+    });
+		
+    </script>
+	
 </head>
 <body>
     <div class="content" id="container" style="background-color:#fff;">
@@ -99,31 +104,30 @@
         <?php foreach ($points_lists as $k => $v):?>
         <?php if($k == ($page-1)):?>
         <div id="pic-panel" style="background-color:#fff;">
-		<table class="detail-info">
-			<thead>
+       	<table class="detail-info-print" style="border-top:1px solid;padding-top:50px;">
+       		<thead>
              	<th width="10%">序号</th>
              	<th width="10%">点位编号</th>
                	<th width="30%">点位地址</th>
                	<th width="50%">广告图</th>
 			</thead>
-		</table>
- 		<?php $num = ($k*100)+1;?>
-     	<?php foreach($v as $key => $value):?>
-       	<table class="detail-info-print">
            	<tbody>
+           		<?php $num = ($k*80)+1;?>
+     			<?php foreach($v as $key => $value):?>
                	<tr>
             		<td width="10%"><?php echo $num ++;?></td>
             		<td width="10%"><?php  echo $value['code'];?></td>
            			<td width="30%"><?php echo $value['houses_name'].$value['houses_area_name'].$value['ban'].$value['unit'].$value['floor']?></td>
          			<?php if(!empty($value['img'])):?>
-         			<td width="50%"><img style="width:450px;height:300px;" src="<?php echo $value['img'];?>"></td>
+         			<td width="50%"><img style="width:100%;" src="<?php echo $value['img'];?>"></td>
            			<?php else:?>
            			<td width="50%"></td>
            			<?php endif;?>
            		</tr>
+           		<?php endforeach;?>
         	</tbody>
         </table>
-        <?php endforeach;?>
+        
         </div>
         <?php endif;?>
         <?php endforeach;?>
