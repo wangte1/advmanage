@@ -115,6 +115,7 @@ class Report extends MY_Controller {
      * app修复
      */
     public function reset(){
+        $this->return_json(['code' => 1, 'msg' => '操作成功']);
         $token = decrypt($this->token);
         $id = $this->input->get_post('id');
         $count = $this->Mhouses_points_report->count(['id' => $id, 'repair_time' => 0]);
