@@ -80,7 +80,6 @@
     <script type="text/javascript">
     $(function(){
     	$('#pdf-out').on('click', function(){
-			console.log(1);
 			var page = $(this).attr('data');
 			var url = '/housesorders/confirmations?id=<?php echo $id;?>&page='+page+"&load=1";
 			window.location.href = url;
@@ -115,7 +114,6 @@
            	<tbody>
            		<?php $num = ($k*80)+1;?>
      			<?php foreach($v as $key => $value):?>
-     			<?php if($key < 10):?>
                	<tr>
             		<td width="10%"><?php echo $num ++;?></td>
             		<td width="10%"><?php  echo $value['code'];?></td>
@@ -126,7 +124,6 @@
            			<td width="50%"></td>
            			<?php endif;?>
            		</tr>
-           		<?php endif;?>
            		<?php endforeach;?>
         	</tbody>
         </table>
