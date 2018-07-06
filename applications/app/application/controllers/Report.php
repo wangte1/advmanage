@@ -54,5 +54,57 @@ class Report extends MY_Controller {
         }
         $this->return_json(['code' => 1, 'data' => $list, 'msg' => "ok"]);
     }
+    
+    /**
+     * app修复
+     */
+    public function reset(){
+        $token = decrypt($this->token);
+        $id = $this->input->get_post('id');
+        $count = $this->Mhouses_points_report->count(['id' => $id, 'repair_time' => 0]);
+        if(!$count) $this->return_json(['code' => 0, 'msg' => '请勿重复提交']);
+        $is_new_code = (int) $this->input->post('is_new_code');
+        $new_code = $this->input->post('new_code');
+        $remarks = $this->input->post('remarks');
+        if($is_new_code){
+            if(empty($new_code)){
+                $this->return_json(['code' => 0, 'msg' => '请填编号！']);
+            }
+        }
+        
+        $repair_img = $this->input->post('repair_img');
+        if(!$repair_img) $repair_img = "";
+        
+        $up = [
+            'repair_img' => $repair_img,
+            'repair_time' => strtotime(date('Y-m-d')),
+            'remarks' => $remarks,
+            'repair_id' => $token['user_id']
+        ];
+        $res = $this->Mhouses_points_report->update_info($up, ['id' => $id]);
+        if(!$res){
+            $this->return_json(['code' => 0, 'msg' => '操作失败，请重试']);
+        }
+        //获取是否可以上画数据
+        $info = $this->Mhouses_points_report->get_one('usable, point_id', ['id' => $id]);
+        if($info['usable'] == 0){
+            $point_up = [
+                'point_status' => 1,
+                'lock_num' => 0,
+                'ad_use_num' => 0,
+                'customer_id' => 0,
+                'update_time' => date('Y-m-d H:i:s'),
+                'update_user' =>$token['user_id']
+            ];
+            $res = $this->Mhouses_points->update_info($point_up, ['id' => $info['point_id']]);
+            if(!$res) $this->write_log($token['user_id'], 2, "已修复，但无法更新点位数据id:".$info['point_id']."数据：".json_encode($point_up));
+        }
+        if($is_new_code){
+            $res = $this->Mhouses_points->update_info(['code' => $new_code], ['id' => $info['point_id']]);
+            if(!$res) $this->write_log($token['user_id'], 2, "已修复，但无法更新点位数据id:".$info['point_id']."编号为：".$new_code);
+            $this->write_log($token['user_id'], 2, "将点位id:".$info['point_id']."编号更改为：".$new_code);
+        }
+        $this->return_json(['code' => 1, 'msg' => '操作成功']);
+    }
 
 }

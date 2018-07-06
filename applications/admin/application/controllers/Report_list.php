@@ -131,7 +131,7 @@ class Report_list extends MY_Controller{
     }
     
     /**
-     * 提交报损
+     * 提交修复
      */
     public function report_add(){
         $data = $this->data;
