@@ -333,6 +333,7 @@ class Task extends MY_Controller {
      * 保存上传的全景、远景图片信息
      */
     public function upload_save2() {
+        $token = decrypt($this->token);
         $id = (int) $this->input->get_post('id');
         $count = $this->Mhouses_work_order_detail->count(['id' => $id, 'pano_status' => 1]);
         if($count)$this->return_json(['code' => 0, 'msg' => '请勿重复提交']);
@@ -349,10 +350,18 @@ class Task extends MY_Controller {
             if(!$res){
                 $this->return_json(['code' => 0, 'msg' => '操作失败']);
             }
+            
+            $this->add_redisp(['user_id' => $token['user_id'], 'detail_id' => $id, 'pano_img' => $img_url]);
+            
             $this->Mhouses_work_order->update_info(['incr' => ['pano_num' => 1]], ['id' => $info['pid']]);
             $this->return_json(['code' => 1, 'msg' => '操作成功']);
         }
         $this->return_json(['code' => 0, 'msg' => '点位不存在']);
+    }
+    
+    private function add_redisp($data = []){
+        $key = "AppUploadp_".date("Y_m_d");
+        $this->redis->lpush($key, json_encode($data));
     }
     
     
