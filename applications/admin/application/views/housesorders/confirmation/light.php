@@ -31,8 +31,8 @@
 
         .btn-print {width: 100%;margin-top: 50px; text-align: right; position: fixed; bottom: 50px;left: 0;}
         .btn-print2 {width: 100%;margin-top: 50px; text-align: right; position: fixed; bottom: 100px;left: 0;}
-        .btn-print button  {border-radius: 3px; width: 100px; height: 30px;}
-        .btn-print2 button  {border-radius: 3px; width: 100px; height: 30px;}
+        .btn-print button  {border-radius: 3px; width: 150px; height: 30px;}
+        .btn-print2 button  {border-radius: 3px; width: 150px; height: 30px;}
         .btn-print3 button  {border-radius: 3px; width: 150px; height: 30px;}
         .btn-print3{
 	        width: 100%;
@@ -67,34 +67,11 @@
 	<script> 
 	  
 	$(function(){ 
-		
 		$("#pdf-btn").click(function(){
         	window.open("/housesorders/confirmations?id=<?php echo $id;?>");return;
 		});
         $("#pdf-btn-houses").click(function(){
-        		//$("body").wordExport();
-                html2canvas($('#pic-panel'), { 
-                    onrendered: function(canvas) {
-                    	var imgData = canvas.toDataURL('image/jpeg');
-                        var img = new Image();
-                        img.src = imgData;
-                        //根据图片的尺寸设置pdf的规格，要在图片加载成功时执行，之所以要*0.225是因为比例问题
-                        img.onload = function() {
-                            //此处需要注意，pdf横置和竖置两个属性，需要根据宽高的比例来调整，不然会出现显示不完全的问题
-                            if (this.width > this.height) {
-                            	var doc = new jsPDF('l', 'mm', [this.width * 0.225, this.height * 0.225]);
-                            } else {
-                            	var doc = new jsPDF('p', 'mm', [this.width * 0.225, this.height * 0.225]);
-                            }
-                            doc.addImage(imgData, 'jpeg', 0, 0, this.width * 0.225, this.height * 0.225);
-                            //根据下载保存成不同的文件名
-                            doc.save('验收报告.pdf');
-                        }
-                      },
-                      background: "#fff",
-                      //这里给生成的图片默认背景，不然的话，如果你的html根节点没设置背景的话，会用黑色填充。
-                      allowTaint: true //避免一些不识别的图片干扰，默认为false，遇到不识别的图片干扰则会停止处理html2canvas
-                });
+        	window.open("/housesorders/loadByHouse?id=<?php echo $id;?>");return;
         }); 
 	}); 
 	</script> 
@@ -167,7 +144,7 @@
         </div>
         <div class="noprint btn-print2"><button type="button" onclick="document.getElementById('pic-panel').style.display='none';javascript: window.print();document.getElementById('pic-panel').style.display='block';">打印文字报告</button></div>
         <div class="noprint btn-print3"><button id="pdf-btn-houses" type="button" style="font-size:14px;">按楼盘导出图片报告</button></div>
-        <div class="noprint btn-print"><button id="pdf-btn" type="button" >导出图片报告</button></div>
+        <div class="noprint btn-print"><button id="pdf-btn" type="button" >导出所有图片报告</button></div>
     </div>
 </body>
 </html>

@@ -973,6 +973,170 @@ class Housesorders extends MY_Controller{
         $objWriter = PHPExcel_IOFactory::createWriter($this->phpexcel, 'Excel5');
         $objWriter->save('php://output');
     }
+    
+    /**
+     * 按楼栋
+     */
+    public function loadByHouse(){
+        set_time_limit(0);
+        $data = $this->data;
+        $id = $this->input->get('id');
+        $data['id'] = $id;
+        $data['info'] = $this->Mhouses_orders->get_one("*", array('id' => $id));
+        
+        //查询子订单id
+        $sonOrder = $this->Mhouses_orders->get_lists("id", array('pid' => $id));
+        if($sonOrder){
+            $order_ids = array_column($sonOrder, 'id');
+            $workerOrder = $this->Mhouses_work_order->get_lists("id", ['in' => ['order_id' => $order_ids], 'type' => 1]);
+            //提取所有子详情
+            $pids = array_column($workerOrder, 'id');
+            if($pids){
+                $imglist = $this->Mhouses_work_order_detail->get_lists('point_id, no_img, pano_img,status,pano_status,is_news_hand_img', ['in' => ['pid' => $pids]]);
+            }
+        }
+        //获取点位列表
+        $where['in'] = array('A.id' => explode(',', $data['info']['point_ids']));
+        $data['points'] = $pointList = $this->Mhouses_points->get_points_lists($where);
+        
+        if($imglist){
+            //提取id
+            $pointids = array_column($imglist, 'point_id');
+            $point_List = $this->Mhouses_points->get_lists('id,houses_id', ['in' => ['id' => $pointids]]);
+            if($point_List){
+                foreach ($imglist as $k => $v){
+                    $imglist[$k]['houses_id'] = 0;
+                    foreach ($point_List as $k1 => $v1){
+                        if($v['point_id'] == $v1['id']){
+                            $imglist[$k]['houses_id'] = $v1['houses_id'];
+                        }
+                    }
+                }
+            }
+        }
+        //分组统计
+        $group = array_unique(array_column($pointList, 'houses_id'));
+        $tmp = [];
+        foreach ($group as $k => $v){
+            $tmp[$k]['houses_id'] = $v;
+            $tmp[$k]['num'] = 0;
+            $tmp[$k]['houses_name'] = '';
+            $tmp[$k]['no_img'] = '';
+            $tmp[$k]['pano_img'] = '';
+            $tmp[$k]['news_img'] = '';
+        }
+        
+        foreach ($tmp as $k => $v){
+            foreach ($imglist as $k1 => $v1){
+                if($v['houses_id'] == $v1['houses_id']){
+                    if(!empty($v1['no_img'])){
+                        if($v['no_img'] == ""){
+                            $tmp[$k]['no_img'] = $v1['no_img'];
+                        }
+                    }
+                    if($v1['pano_img']){
+                        if($v['pano_img'] == ""){
+                            $tmp[$k]['pano_img'] = $v1['pano_img'];
+                        }
+                    }
+                    if($v1['is_news_hand_img'] == 1){
+                        if($v['news_img'] == ""){
+                            $tmp[$k]['news_img'] = $v1['pano_img'];
+                        }
+                    }
+                }
+            }
+        }
+        
+        foreach ($pointList as $k => $v){
+            foreach ($tmp as $key => $val){
+                if($v['houses_id'] == $val['houses_id']){
+                    $tmp[$key]['num'] += 1;
+                    if(empty($tmp[$key]['houses_name'])){
+                        $tmp[$key]['houses_name'] = $v['houses_name'];
+                    }
+                }
+            }
+            
+        }
+        $list = $tmp;
+        
+        //加载phpexcel
+        $this->load->library("PHPExcel");
+        //填充数据
+        $this->phpexcel->setActiveSheetIndex(0);
+        
+        //自动换行
+        $this->phpexcel->getDefaultStyle()->getAlignment()->setWrapText(TRUE);
+        $this->phpexcel->getDefaultStyle()->getAlignment()->setHorizontal(PHPExcel_Style_Alignment::HORIZONTAL_CENTER);
+        $this->phpexcel->getDefaultStyle()->getAlignment()->setVertical(PHPExcel_Style_Alignment::VERTICAL_CENTER);
+        
+        //设置列宽
+        $this->phpexcel->getActiveSheet(0)->getColumnDimension("A")->setWidth(43);
+        $this->phpexcel->getActiveSheet(0)->getColumnDimension("B")->setWidth(86);//86 = 86*7px
+
+        $h = 1;
+        $insert = 1;
+        foreach($list as $key => $val){
+            //设置行高
+            $this->phpexcel->getActiveSheet(0)->getRowDimension($h)->setRowHeight(20);
+            //设置表头
+            $cell = PHPExcel_Cell::stringFromColumnIndex(0).$h;
+            $value = $insert;
+            $insert++;
+            $this->phpexcel->getActiveSheet(0)->setCellValue($cell, $value);
+            $cell = PHPExcel_Cell::stringFromColumnIndex(1).$h;
+            $value = $val['houses_name'];
+            $this->phpexcel->getActiveSheet(0)->setCellValue($cell, $value);
+            $h+= 1;
+            //设置行高
+            if(($h%2) == 0){
+                $this->phpexcel->getActiveSheet(0)->getRowDimension($h)->setRowHeight(401);
+                if($val['no_img'] && file_exists('.'.$val['no_img'])){
+                    $objDrawing[$key] = new PHPExcel_Worksheet_Drawing();
+                    $objDrawing[$key]->setPath(".".$val['no_img']);
+                    $objDrawing[$key]->setCoordinates('A'.($h));
+                    $objDrawing[$key]->setWidth(301); //照片宽度 这里的宽度是像素px
+                    $objDrawing[$key]->setWorksheet($this->phpexcel->getActiveSheet(0));
+                }else{
+                    //设置第一个单元格
+                    $cell = PHPExcel_Cell::stringFromColumnIndex(0).$h;
+                    $value = "1";
+                    $this->phpexcel->getActiveSheet(0)->setCellValue($cell, $value);
+                }
+                
+                if($val['pano_img'] && file_exists('.'.$val['pano_img'])){
+                    $objDrawing[$key] = new PHPExcel_Worksheet_Drawing();
+                    $objDrawing[$key]->setPath(".".$val['pano_img']);
+                    $objDrawing[$key]->setCoordinates('B'.($h));
+                    $objDrawing[$key]->setWidth(301); //照片宽度 这里的宽度是像素px
+                    $objDrawing[$key]->setWorksheet($this->phpexcel->getActiveSheet(0));
+                    if($val['news_img'] && file_exists('.'.$val['news_img'])){
+                        $objD[$key] = new PHPExcel_Worksheet_Drawing();
+                        $objD[$key]->setPath(".".$val['news_img']);
+                        $objD[$key]->setCoordinates('B'.($h));
+                        $objD[$key]->setWidth(301); //照片宽度 这里的宽度是像素px
+                        $objD[$key]->setOffsetX(301);//水平方向
+                        $objD[$key]->setWorksheet($this->phpexcel->getActiveSheet(0));
+                    }
+                }else{
+                    //设置第一个单元格
+                    $cell = PHPExcel_Cell::stringFromColumnIndex(0).$h;
+                    $value = "1";
+                    $this->phpexcel->getActiveSheet(0)->setCellValue($cell, $value);
+                }
+            }
+            $h++;
+        }
+        // 输出
+        header('Content-Type: application/vnd.ms-excel');
+        header('Content-Disposition: attachment;filename='.date('Ymd').'客户验收表.xls');
+        header('Cache-Control: max-age=0');
+        
+        $objWriter = PHPExcel_IOFactory::createWriter($this->phpexcel, 'Excel5');
+        $objWriter->save('php://output');
+        
+    }
 
 
     /**
