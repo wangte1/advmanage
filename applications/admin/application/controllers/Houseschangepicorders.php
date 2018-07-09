@@ -59,6 +59,22 @@ class Houseschangepicorders extends MY_Controller{
         $data['list'] = $this->Mhouses_changepicorders->get_order_lists($where, ($page-1)*$pageconfig['per_page'], $pageconfig['per_page']);
         $data_count = $this->Mhouses_changepicorders->get_order_count($where);
         
+        if($data['list']){
+            $ordercodes = array_column($data['list'], 'order_code');
+            $orderList = $this->Mhouses_orders->get_lists('order_code, order_type, release_start_time, release_end_time, total_price', ['in' => ['order_code' => $ordercodes], 'pid' => 0]);
+            if($orderList){
+                foreach ($orderList  as $k => $v){
+                    foreach ($data['list'] as $k1 => $v1){
+                        $data['list'][$k1]['order_type'] = $v['order_type'];
+                        $data['list'][$k1]['release_start_time'] = $v['release_start_time'];
+                        $data['list'][$k1]['release_end_time'] = $v['release_end_time'];
+                        $data['list'][$k1]['total_price'] = $v['total_price'];
+                    }
+                }
+            }
+        }
+        
+        
         $data['data_count'] = $data_count;
         $data['page'] = $page;
 

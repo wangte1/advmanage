@@ -27,6 +27,9 @@ class Task extends MY_Controller {
         	'Model_houses_orders' => 'Mhouses_orders',
         	'Model_houses_order_inspect_images' => 'Mhouses_order_inspect_images',
         ]);
+        $this->load->library([
+            'MyRedis' => 'redis'
+        ]);
     }
     
     /**
@@ -256,9 +259,11 @@ class Task extends MY_Controller {
      * 保存上传的图片信息
      */
     public function upload_save() {
+        $token = decrypt($this->token);
     	$id = (int) $this->input->get_post('id');
     	$img_url = $this->input->get_post('img_url');
     	$status = $this->input->get_post('status');//临时接收
+    	$this->write_log($token['user_id'], 1, "上画或下画提交的数据：".json_encode($_REQUEST));
     	$info = $this->Mhouses_work_order_detail->get_one('point_id,pid', ['id' => $id, 'status' => 0]);
     	if($info){
     	    $up = [
@@ -267,14 +272,24 @@ class Task extends MY_Controller {
     	    ];
     	    $res = $this->Mhouses_work_order_detail->update_info($up, ['id' => $id]);
     	    if(!$res){
+    	        $this->write_log($token['user_id'], 2, '更新工单详情失败：'.$this->db->last_query());
     	        $this->return_json(['code' => 0, 'msg' => '操作失败']);
     	    }
+    	    
+    	    $this->add_redis(['user_id' => $token['user_id'], 'detail_id' => $id, 'img' => $img_url]);
+    	    
+    	    $this->write_log($token['user_id'], 2, '结果:'.$res.'执行的sql:'.$this->db->last_query());
     	    $this->Mhouses_work_order->update_info(['incr' => ['finish' => 1]], ['id' => $info['pid']]);
     	    $pinfo = $this->Mhouses_work_order->get_one('order_id,type', $info['pid']);
     	    $this->checkDoAllHasFinish($pinfo['order_id'], $pinfo['type']);
     	    $this->return_json(['code' => 1, 'msg' => '操作成功']);
     	}
     	$this->return_json(['code' => 0, 'msg' => '已审核或点位不存在']);
+    }
+    
+    private function add_redis($data = []){
+        $key = "AppUpload_".date("Y_m_d");
+        $this->redis->lpush($key, json_encode($data));
     }
     
     /**
@@ -318,6 +333,7 @@ class Task extends MY_Controller {
      * 保存上传的全景、远景图片信息
      */
     public function upload_save2() {
+        $token = decrypt($this->token);
         $id = (int) $this->input->get_post('id');
         $count = $this->Mhouses_work_order_detail->count(['id' => $id, 'pano_status' => 1]);
         if($count)$this->return_json(['code' => 0, 'msg' => '请勿重复提交']);
@@ -334,10 +350,18 @@ class Task extends MY_Controller {
             if(!$res){
                 $this->return_json(['code' => 0, 'msg' => '操作失败']);
             }
+            
+            $this->add_redisp(['user_id' => $token['user_id'], 'detail_id' => $id, 'pano_img' => $img_url]);
+            
             $this->Mhouses_work_order->update_info(['incr' => ['pano_num' => 1]], ['id' => $info['pid']]);
             $this->return_json(['code' => 1, 'msg' => '操作成功']);
         }
         $this->return_json(['code' => 0, 'msg' => '点位不存在']);
+    }
+    
+    private function add_redisp($data = []){
+        $key = "AppUploadp_".date("Y_m_d");
+        $this->redis->lpush($key, json_encode($data));
     }
     
     
