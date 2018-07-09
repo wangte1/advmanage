@@ -1101,7 +1101,7 @@ class Housesorders extends MY_Controller{
                 }else{
                     //设置第一个单元格
                     $cell = PHPExcel_Cell::stringFromColumnIndex(0).$h;
-                    $value = "1";
+                    $value = " ";
                     $this->phpexcel->getActiveSheet(0)->setCellValue($cell, $value);
                 }
                 
@@ -1122,7 +1122,7 @@ class Housesorders extends MY_Controller{
                 }else{
                     //设置第一个单元格
                     $cell = PHPExcel_Cell::stringFromColumnIndex(0).$h;
-                    $value = "1";
+                    $value = " ";
                     $this->phpexcel->getActiveSheet(0)->setCellValue($cell, $value);
                 }
             }
