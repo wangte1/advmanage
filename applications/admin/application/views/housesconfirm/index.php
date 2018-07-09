@@ -241,10 +241,15 @@
 	$('.user').change(function(){
 		var user_id = $(this).val();
 		var id  = $(this).data("id");
-		$.post("housesconfirm/update_charge_user",{user_id : user_id,id : id},function(data){
-			if(data.code == 0){
-				alert(data.msg);
-			}
+		var username = $(this).find("option:selected").text();
+		var index = layer.alert("确认需要修改新负责人为："+ username +" 吗？", function(){
+			$.post("housesconfirm/update_charge_user",{user_id : user_id,id : id},function(data){
+				if(data.code == 0){
+					layer.alert(data.msg)
+				}else{
+					layer.close(index);
+				}
+			});
 		});
     });
 
