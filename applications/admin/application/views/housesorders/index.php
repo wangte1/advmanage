@@ -301,7 +301,7 @@
                                                             <i class="fa fa-picture-o bigger-130"></i>
                                                         </a-->
                                                         <?php endif;?>
-                                                        <?php if($value['order_status'] == 6):?>
+                                                        <?php if($value['order_status'] >= 4 ):?>
                                                         <a class="green tooltip-info" href="/housesorders/confirmation/<?php echo $value['id'];?>" target="_blank" data-rel="tooltip" data-placement="top" title="" data-original-title="生成确认函">
                                                             <i class="fa fa-clone bigger-130"></i>
                                                         </a>
