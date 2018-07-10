@@ -16,6 +16,7 @@ class Task extends MY_Controller {
             'Model_token' => 'Mtoken',
             'Model_admins' => 'Madmins',
             'Model_houses_points' => 'Mhouses_points',
+            'Model_houses_tour_points' => 'Mhouses_tour_points',
             'Model_houses_area' => 'Mhouses_area',
             'Model_houses' => 'Mhouses',
             'Model_houses_customers' => 'Mhouses_customers',
@@ -286,10 +287,33 @@ class Task extends MY_Controller {
     	    
     	    $this->checkDoAllHasFinish($pinfo['order_id'], $pinfo['type']);
     	    
+    	    //每次上画都是一次巡视
+    	    $create_time = date('Y-m-d H:i:s');
+    	    $add = [
+    	        'point_id' => $info['point_id'],
+    	        'principal_id' => $token['user_id'],
+    	        'img' => $img_url,
+    	        'status' => 1,
+    	        'create_time' => date('Y-m-d H:i:s')
+    	    ];
+    	    $res = $this->Mhouses_tour_points->create($add);
+    	    if(!$res){
+    	        $this->write_log($token['user_id'], 1, json_encode($add));
+    	        $this->return_json(['code' => 0, 'msg' => '创建巡视记录失败，已记录到系统日志']);
+    	    }
+    	    //更新点位数据
+    	    $up = ['tour_time' => $create_time, 'tour_id' => $res];
+    	    $ret = $this->Mhouses_points->update_info($up, ['id' => $info['point_id']]);
+    	    if(!$ret){
+    	        $this->write_log($token['user_id'], 2, json_encode($up));
+    	        $this->return_json(['code' => 0, 'msg' => '巡视日志已更新，点位数据未能更新']);
+    	    }
+    	    
     	    $this->return_json(['code' => 1, 'msg' => '操作成功']);
     	}
     	$this->return_json(['code' => 0, 'msg' => '已审核或点位不存在']);
     }
+    
     
     private function add_redis($data = []){
         $key = "AppUpload_".date("Y_m_d");
