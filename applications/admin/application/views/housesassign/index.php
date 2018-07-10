@@ -346,14 +346,18 @@
 		$('.m-edit').click(function(){
 			var order_id = $(this).attr('data-id');
 			var assign_type = $(this).attr('assign_type');
-			layer.open({
-				  type: 2,
-				  title: '改派',
-				  shadeClose: true,
-				  shade: 0.6,
-				  area: ['70%', '70%'],
-				  content: 'housesassign/edit?order_id='+order_id+'&assign_type='+assign_type //iframe的url
-				}); 
+			var index = layer.alert("改派后，原先的派单将被删除", function(){
+				layer.close(index);
+				layer.open({
+					  type: 2,
+					  title: '改派',
+					  shadeClose: true,
+					  shade: 0.6,
+					  area: ['70%', '70%'],
+					  content: 'housesassign/new_assign?order_id='+order_id+'&assign_type='+assign_type //iframe的url
+				});
+			});
+			
 		});
 	});
 

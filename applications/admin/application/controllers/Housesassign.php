@@ -136,6 +136,23 @@ class Housesassign extends MY_Controller{
             $points_counts = $this->input->post('points_count');
             $charge_users = $this->input->post('charge_user');
             $remark = $this->input->post('remark');
+            //判断是否已经有派过
+            $orderoList = $tmp_moudle->get_lists('id', ['pid' => $order_id]);
+            if($orderoList){
+                //提取ids
+                $ids = array_column($orderoList, 'id');
+                //删除订单
+                $res = $tmp_moudle->delete(['in' => ['id' => $ids]]);
+                if(!$res){
+                    if(!$res) $this->write_log($data['userInfo']['id'], 3, "未能删除已生成的子订单".$this->db->last_query());
+                }
+                $this->write_log($data['userInfo']['id'], 3, "删除已生成的子订单".$this->db->last_query());
+                $res = $this->Mhouses_work_order->delete(['in' => ['order_id' => $ids]]);
+                if(!$res) {
+                    $this->write_log($data['userInfo']['id'], 3, "未能删除已派工单".$this->db->last_query());
+                }
+                $this->write_log($data['userInfo']['id'], 3, "删除已派工单".$this->db->last_query());
+            }
             
             $add_data = [];
             $tmp_arr = [];
@@ -221,6 +238,7 @@ class Housesassign extends MY_Controller{
             unset($orderInfo['id']);
             foreach ($group_data as $k => $v){
                 $insert_data[$k] = $orderInfo;
+                $insert_data[$k]['assign_status'] = 1;
                 $insert_data[$k]['pid'] = $order_id;
                 $insert_data[$k]['order_code'] = $orderInfo['order_code'];
                 $insert_data[$k]['point_ids'] = implode(',', $v['point_ids']);
