@@ -279,9 +279,13 @@ class Task extends MY_Controller {
     	    $this->add_redis(['user_id' => $token['user_id'], 'detail_id' => $id, 'img' => $img_url]);
     	    
     	    $this->write_log($token['user_id'], 2, '结果:'.$res.'执行的sql:'.$this->db->last_query());
+    	    
     	    $this->Mhouses_work_order->update_info(['incr' => ['finish' => 1]], ['id' => $info['pid']]);
-    	    $pinfo = $this->Mhouses_work_order->get_one('order_id,type', $info['pid']);
+    	    
+    	    $pinfo = $this->Mhouses_work_order->get_one('order_id,type', ['id' => $info['pid']]);
+    	    
     	    $this->checkDoAllHasFinish($pinfo['order_id'], $pinfo['type']);
+    	    
     	    $this->return_json(['code' => 1, 'msg' => '操作成功']);
     	}
     	$this->return_json(['code' => 0, 'msg' => '已审核或点位不存在']);
