@@ -307,7 +307,7 @@ class Housespoints extends MY_Controller{
                         if(empty($val['houses_name'])){
                             $listData[$k]['houses_name'] = $v['houses_name'];
                         }
-                        if(!in_array($v['area_id'], $val['area_id'])){
+                        if(!in_array($v['area_id'], $val['area'])){
                             $listData[$key]['area'][$k]['id'] = $v['area_id'];
                             $listData[$key]['area'][$k]['num'] = $v['num'];
                             if(empty($v['area_name'])){
