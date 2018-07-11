@@ -122,7 +122,56 @@ class Housesstatus extends MY_Controller{
         $this->phpexcel->setActiveSheetIndex(0);
         // 输出
         header('Content-Type: application/vnd.ms-excel');
-        header('Content-Disposition: attachment;filename=楼盘占用率.xls');
+        header('Content-Disposition: attachment;filename=楼盘占用率表.xls');
+        header('Cache-Control: max-age=0');
+        
+        $objWriter = PHPExcel_IOFactory::createWriter($this->phpexcel, 'Excel5');
+        $objWriter->save('php://output');
+        
+    }
+    
+    /**
+     * @desc 导出Excel
+     */
+    public function export2() {
+        $rlist = $this->Mhouses_points_report->get_report_listv([], ['num' => 'desc'], 0, 0, ['C.id']);
+        $total = array_column($rlist, 'num');
+        $total = array_sum($total);
+        foreach ($rlist as $k => $v){
+            $rlist[$k]['v'] = 0.00;
+            if($v['num'] > 0){
+                $rlist[$k]['v'] = sprintf("%.6f", $v['num']/$total) * 100;
+            }
+        }
+        //加载phpexcel
+        $this->load->library("PHPExcel");
+        //设置表头
+        $table_header =  array(
+            '楼盘名称' => "name",
+            '报损次数' => "num",
+            '报损率(%)' => 'v'
+        );
+        $i = 0;
+        foreach($table_header as  $k=>$v){
+            $cell = PHPExcel_Cell::stringFromColumnIndex($i).'1';
+            $this->phpexcel->setActiveSheetIndex(0)->setCellValue($cell, $k);
+            $i++;
+        }
+        $h = 2;
+        foreach($rlist as $key=>$val){
+            $j = 0;
+            foreach($table_header as $k => $v){
+                $cell = PHPExcel_Cell::stringFromColumnIndex($j++).$h;
+                $value = $val[$v];
+                $this->phpexcel->getActiveSheet(0)->setCellValue($cell, $value.' ');
+            }
+            $h++;
+        }
+        
+        $this->phpexcel->setActiveSheetIndex(0);
+        // 输出
+        header('Content-Type: application/vnd.ms-excel');
+        header('Content-Disposition: attachment;filename=楼盘报损率表.xls');
         header('Cache-Control: max-age=0');
         
         $objWriter = PHPExcel_IOFactory::createWriter($this->phpexcel, 'Excel5');
