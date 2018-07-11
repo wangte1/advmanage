@@ -44,6 +44,7 @@
                     	<div></div>
                     	<center>
                     	<span>楼盘投放率</span>
+                    	<a style="left: -50%;" href="housesstatus/export" class="btn btn-sm btn-primary btn-export"><i class="fa fa-download export" aria-hidden="true"></i> 导出</a>
                     	</center>
                     </div>
                     <div class="chart">
