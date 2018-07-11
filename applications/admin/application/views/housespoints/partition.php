@@ -58,7 +58,7 @@
                             	<select id="diy_area_id" class="select2" data-placeholder="Click to Choose..." name="diy_area_id" onchange="tt(this.id)">
                             		<option>全部</option>
                             		<?php foreach (C('diy_area') as $k1 => $v1):?>
-                            			<option <?php if($k1 == $diy_area_id){echo 'selected';}?> value="<?php echo $k1?>"><?php echo $v1?></option>
+                            			<option <?php if(isset($diy_area_id) && ($k1 == $diy_area_id)){echo 'selected';}?> value="<?php echo $k1?>"><?php echo $v1?></option>
                             		<?php endforeach;?>
                                 </select>
                         </th>
