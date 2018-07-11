@@ -29,7 +29,6 @@
                 <div class="page-header">
 <!--                     <a href="/housesapp/add" class="btn btn-sm btn-primary"><i class="fa fa-plus-square" aria-hidden="true"></i> 新增版本</a> -->
                 </div> 
-                
                     <div class="col-xs-12">
                         <div class="row">
                             <div class="col-xs-12">
@@ -42,29 +41,59 @@
                     </div>
                     <div class="line">
                     	<div></div>
-                    	<center>
-                    	<span>楼盘投放率</span>
-                    	<a style="left: -50%;" href="housesstatus/export" class="btn btn-sm btn-primary btn-export"><i class="fa fa-download export" aria-hidden="true"></i> 导出</a>
-                    	</center>
                     </div>
-                    <div class="chart">
-                    	<ul>
-                    		<li>
-                    		<?php foreach ($houses_list as $k => $v):?>
-                    			<div class="max">
-                    				<div class="house">
-                    					<?php echo $v['houses_name']?>
-                    					(<?php echo $v['num']?>)次
-                    				</div>
-                    				<div class="load">
-                    					<div data-val="<?php echo $v['v']*3?>" class="bar"></div>
-                    					<span class="val"><?php echo $v['v']?>%</span>
-                    				</div>
-                    			</div><br>
-                    		<?php endforeach;?>
-                    		</li>
-                    	</ul>
-                    </div>
+                    <div class="table">
+						<ul class="nav nav-tabs padding-12 tab-color-blue background-blue" id="myTab4">
+                            <li class="active">
+                                <a data-toggle="tab" href="#basic">楼盘占用率</a>
+                            </li>
+                            <li>
+                                <a data-toggle="tab" href="#points">楼盘报损率</a>
+                            </li>
+                        </ul>
+                        <div class="tab-content">
+                        	<div id="basic" class="tab-pane active">
+                        		<div class="chart">
+                                	<ul>
+                                		<li>
+                                		<?php foreach ($houses_list as $k => $v):?>
+                                			<div class="max">
+                                				<div class="house">
+                                					<?php echo $v['houses_name']?>
+                                					(<?php echo $v['num']?>)次
+                                				</div>
+                                				<div class="load">
+                                					<div data-val="<?php echo $v['v']*3?>" class="bar"></div>
+                                					<span class="val"><?php echo $v['v']?>%</span>
+                                				</div>
+                                			</div><br>
+                                		<?php endforeach;?>
+                                		</li>
+                                	</ul>
+                                </div>
+                        	</div>
+   		                    <div id="points" class="tab-pane">
+   		                    	<div class="chart">
+                                	<ul>
+                                		<li>
+                                		<?php foreach ($houses_list_report as $k => $v):?>
+                                			<div class="max">
+                                				<div class="house">
+                                					<?php echo $v['name']?>
+                                					(<?php echo $v['num']?>)次
+                                				</div>
+                                				<div class="load">
+                                					<div data-val="<?php echo $v['v']*3?>" class="bar"></div>
+                                					<span class="val"><?php echo $v['v']?>%</span>
+                                				</div>
+                                			</div><br>
+                                		<?php endforeach;?>
+                                		</li>
+                                	</ul>
+                                </div>
+   		                    </div>           
+                    	</div>
+                	</div>
                 </div>
             </div>
         </div>
