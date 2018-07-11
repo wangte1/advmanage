@@ -53,7 +53,7 @@
                     			<div class="max">
                     				<div class="house">
                     					<?php echo $v['houses_name']?>
-                    					(<?php echo $v['num']?>)个
+                    					(<?php echo $v['num']?>)次
                     				</div>
                     				<div class="load">
                     					<div data-val="<?php echo $v['v']*3?>" class="bar"></div>
