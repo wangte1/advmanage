@@ -48,7 +48,7 @@
                                 <a data-toggle="tab" href="#basic">楼盘占用率</a>
                             </li>
                             <li>
-                                <a data-toggle="tab" href="#points">报损率</a>
+                                <a data-toggle="tab" href="#points">楼盘报损率</a>
                             </li>
                         </ul>
                         <div class="tab-content">
@@ -73,8 +73,24 @@
                                 </div>
                         	</div>
    		                    <div id="points" class="tab-pane">
-   		                    	<p>123</p>
-   		                    	<p>456</p>
+   		                    	<div class="chart">
+                                	<ul>
+                                		<li>
+                                		<?php foreach ($houses_list_report as $k => $v):?>
+                                			<div class="max">
+                                				<div class="house">
+                                					<?php echo $v['name']?>
+                                					(<?php echo $v['num']?>)次
+                                				</div>
+                                				<div class="load">
+                                					<div data-val="<?php echo $v['v']*3?>" class="bar"></div>
+                                					<span class="val"><?php echo $v['v']?>%</span>
+                                				</div>
+                                			</div><br>
+                                		<?php endforeach;?>
+                                		</li>
+                                	</ul>
+                                </div>
    		                    </div>           
                     	</div>
                 	</div>

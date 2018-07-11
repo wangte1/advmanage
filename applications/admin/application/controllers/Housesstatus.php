@@ -11,6 +11,7 @@ class Housesstatus extends MY_Controller{
         $this->load->model([
             'Model_houses_points' => 'Mhouses_points',
             'Model_houses' => 'Mhouses',
+            'Model_houses_points_report' => 'Mhouses_points_report',
          ]);
         $this->data['code'] = 'community_manage';
         $this->data['active'] = 'houses_status_list';
@@ -30,6 +31,7 @@ class Housesstatus extends MY_Controller{
         $data['type1'] = (int) $this->Mhouses_points->count(['type_id' => 1, 'is_del' =>0]);
         $data['type2'] = (int) $this->Mhouses_points->count(['type_id' => 2, 'is_del' =>0]);
         $data['typesum'] = $data['type1'] + $data['type2'];
+        
         //楼盘占用率
         $list = $this->Mhouses_points->get_lists('houses_id,SUM(used_num) as num',['is_del' => 0], ["num" => 'desc'], 0, 0 ,['houses_id']);
         $total = array_column($list, 'num');
@@ -53,8 +55,18 @@ class Housesstatus extends MY_Controller{
             }
         }
         $data['houses_list'] = $list;
-        //报损率
         
+        //报损率
+        $rlist = $this->Mhouses_points_report->get_report_listv([], ['num' => 'desc'], 0, 0, ['C.id']);
+        $total = array_column($rlist, 'num');
+        $total = array_sum($total);
+        foreach ($rlist as $k => $v){
+            $rlist[$k]['v'] = 0.00;
+            if($v['num'] > 0){
+                $rlist[$k]['v'] = sprintf("%.6f", $v['num']/$total) * 100;
+            }
+        }
+        $data['houses_list_report'] = $rlist;
         $this->load->view("housesstatus/index",$data);
     }
     /**
