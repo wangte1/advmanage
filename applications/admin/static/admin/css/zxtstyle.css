@@ -1,0 +1,54 @@
+.chart{
+	width: 1200px;
+	height: 500px;
+    float: left;
+}
+.chart li{
+	width: 1200px;
+	height: 100%;
+	list-style: none;
+}
+.chart li .bar{
+	height: 100%;
+	width: 0px;
+	background: #49E;
+	float: left;
+    
+}
+.max{
+	width: 90%;
+	height: 30px;
+}
+.house{
+	height: 100%;
+	width: 25%;
+	float: left;
+	text-align: right;
+	line-height: 30px;
+    padding-right: 10px;
+}
+.load{
+	height: 100%;
+	width: 75%;
+	float: left;
+}
+.val{
+	text-align: center;
+	font-size: 20px;
+    line-height: 30px;
+    color: #fff;
+    padding-left: 15px;
+	text-shadow:#000 1px 0 0,#000 0 1px 0,#000 -1px 0 0,#000 0 -1px 0; 
+}
+.line{
+	width:1200px;
+	height:70px;
+	float: left;
+}
+.line div{
+    border-bottom: 2px dotted #e2e2e2;
+}
+.line span{
+    line-height: 50px;
+	font-size: 18px;
+}

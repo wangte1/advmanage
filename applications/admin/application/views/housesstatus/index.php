@@ -3,6 +3,7 @@
 
 <!-- 头部 -->
 <?php $this->load->view('common/top');?>
+<link rel="stylesheet" href="<?php echo css_js_url('zxtstyle.css', 'admin');?>">
 
 <div class="main-container" id="main-container">
     <div class="main-container-inner">
@@ -35,10 +36,33 @@
                                 <div class="table-responsive">
                                     <div id="container" style="width:630px;height:400px;float: left;"></div>
                                     <div id="container1" style="width:500px;height:400px;float: left;"></div>
-                                    
                                 </div>
                             </div>
                         </div>
+                    </div>
+                    <div class="line">
+                    	<div></div>
+                    	<center>
+                    	<span>楼盘投放率</span>
+                    	</center>
+                    </div>
+                    <div class="chart">
+                    	<ul>
+                    		<li>
+                    		<?php foreach ($houses_list as $k => $v):?>
+                    			<div class="max">
+                    				<div class="house">
+                    					<?php echo $v['houses_name']?>
+                    					(<?php echo $v['num']?>)次
+                    				</div>
+                    				<div class="load">
+                    					<div data-val="<?php echo $v['v']*3?>" class="bar"></div>
+                    					<span class="val"><?php echo $v['v']?>%</span>
+                    				</div>
+                    			</div><br>
+                    		<?php endforeach;?>
+                    		</li>
+                    	</ul>
                     </div>
                 </div>
             </div>
@@ -124,6 +148,21 @@
         </script>
 <!-- 加载尾部公用js -->
 <?php $this->load->view("common/footer");?>
-
+<script type="text/javascript">
+	$(function() {
+	  $("li .bar").each( function( key, bar ) {
+	    var val = $(this).data('val');
+	    if(val < 0.5){
+	    	$(this).animate({
+	  	      'width' : 0.5 + '%'
+	  	    }, 1000);
+	    }else{
+	    	$(this).animate({
+	  	      'width' : val + '%'
+	  	    }, 1000);
+	    }
+	  });
+	});
+</script>
 <!-- 底部 -->
 <?php $this->load->view("common/bottom");?>

@@ -10,6 +10,7 @@ class Housesstatus extends MY_Controller{
         parent::__construct();
         $this->load->model([
             'Model_houses_points' => 'Mhouses_points',
+            'Model_houses' => 'Mhouses',
          ]);
         $this->data['code'] = 'community_manage';
         $this->data['active'] = 'houses_status_list';
@@ -29,6 +30,29 @@ class Housesstatus extends MY_Controller{
         $data['type1'] = (int) $this->Mhouses_points->count(['type_id' => 1, 'is_del' =>0]);
         $data['type2'] = (int) $this->Mhouses_points->count(['type_id' => 2, 'is_del' =>0]);
         $data['typesum'] = $data['type1'] + $data['type2'];
+        //
+        $list = $this->Mhouses_points->get_lists('houses_id,SUM(used_num) as num',['is_del' => 0], ["num" => 'desc'], 0, 0 ,['houses_id']);
+        $total = array_column($list, 'num');
+        $total = array_sum($total);
+        foreach ($list as $k => $v){
+            $list[$k]['v'] = 0.00;
+            $list[$k]['houses_name'] = "";
+            if($v['num'] > 0){
+                $list[$k]['v'] = sprintf("%.6f", $v['num']/$total) * 100;
+            }
+        }
+        $houses_list = $this->Mhouses->get_lists("id, name");
+        if($houses_list){
+            foreach ($list as $k => $v){
+                foreach ($houses_list as $key => $val){
+                    if($v['houses_id'] == $val['id']){
+                        $list[$k]['houses_name'] = $val['name'];
+                        break;
+                    }
+                }
+            }
+        }
+        $data['houses_list'] = $list;
         $this->load->view("housesstatus/index",$data);
     }
 }
