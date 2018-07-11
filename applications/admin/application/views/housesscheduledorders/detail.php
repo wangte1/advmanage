@@ -53,7 +53,6 @@
                                             <a data-toggle="tab" href="#points">预选点位</a>
                                         </li>
                                     </ul>
-
                                     <div class="tab-content">
                                         <div id="basic" class="tab-pane <?php if($tab == 'basic'){echo 'in active';}?>">
                                             <div class="profile-user-info profile-user-info-striped">
@@ -206,7 +205,6 @@
                                             <!--分页start-->
                                     		<?php $this->load->view('common/page');?>
                                         </div>
-                                        
                                     </div>
                                 </div>
                             </div>

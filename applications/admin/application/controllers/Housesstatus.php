@@ -30,7 +30,7 @@ class Housesstatus extends MY_Controller{
         $data['type1'] = (int) $this->Mhouses_points->count(['type_id' => 1, 'is_del' =>0]);
         $data['type2'] = (int) $this->Mhouses_points->count(['type_id' => 2, 'is_del' =>0]);
         $data['typesum'] = $data['type1'] + $data['type2'];
-        //
+        //楼盘占用率
         $list = $this->Mhouses_points->get_lists('houses_id,SUM(used_num) as num',['is_del' => 0], ["num" => 'desc'], 0, 0 ,['houses_id']);
         $total = array_column($list, 'num');
         $total = array_sum($total);
@@ -53,6 +53,8 @@ class Housesstatus extends MY_Controller{
             }
         }
         $data['houses_list'] = $list;
+        //报损率
+        
         $this->load->view("housesstatus/index",$data);
     }
     /**
