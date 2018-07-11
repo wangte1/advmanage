@@ -53,6 +53,7 @@
                         </ul>
                         <div class="tab-content">
                         	<div id="basic" class="tab-pane active">
+        	                	<a href="housesstatus/export" class="btn btn-sm btn-primary btn-export"><i class="fa fa-download out_excel" aria-hidden="true"></i> 导出</a>
                         		<div class="chart">
                                 	<ul>
                                 		<li>
@@ -73,6 +74,7 @@
                                 </div>
                         	</div>
    		                    <div id="points" class="tab-pane">
+        	                	<a href="housesstatus/export2" class="btn btn-sm btn-primary btn-export"><i class="fa fa-download out_excel" aria-hidden="true"></i> 导出</a>
    		                    	<div class="chart">
                                 	<ul>
                                 		<li>
