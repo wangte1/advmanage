@@ -61,7 +61,7 @@ class Task extends MY_Controller {
         if($data['list']){
             //查询这些工单的订单信息
             $order_ids= array_unique(array_column($data['list'], 'order_id'));
-            $order_list = $this->Mhouses_orders->get_lists('id, order_code, order_type, customer_id', ['in' => ['id' => $order_ids]]);
+            $order_list = $this->Mhouses_orders->get_lists('id, order_code, order_type, customer_id, release_start_time, release_end_time', ['in' => ['id' => $order_ids]]);
             
             foreach ($list as $k => $v){
                 foreach ($order_list as $key => $val){
@@ -69,6 +69,8 @@ class Task extends MY_Controller {
                         $data['list'][$k]['order_code'] = $val['order_code'];
                         $data['list'][$k]['customer_name'] = "";
                         $data['list'][$k]['order_type'] = $val['order_type'];
+                        $data['list'][$k]['release_start_time'] = $val['release_start_time'];
+                        $data['list'][$k]['release_end_time'] = $val['release_end_time'];
                     }
                 }
             }
