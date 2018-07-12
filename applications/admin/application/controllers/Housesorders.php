@@ -369,7 +369,8 @@ class Housesorders extends MY_Controller{
             }
             //释放删除的点位
             if(count($del)){
-                $point_ids_arr = $del;
+                //排除已报损的点位防止点位报损后被更新为可用状态
+                $point_ids_arr =  $this->moveOutReportPoint($del);
                 $list = $this->Mhouses_points->get_lists('id,customer_id', ['in' => ['id' => $point_ids_arr]]);
                 if($list){
                     $new = [];
