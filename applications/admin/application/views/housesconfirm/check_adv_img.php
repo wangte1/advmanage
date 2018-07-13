@@ -73,9 +73,9 @@
                                                 	        $msg = "未上传未审核";
                                                 	        break;
                                                 	    case 1 :
-                                                	        $msg = "<img style='width:120px;' src='".$value["no_img"]."' layer-src='".$value["no_img"]."' src='".$value["no_img"]."'/>";
+                                                	        $msg = "<img style='width:120px;' src='".$value["no_img"]."' layer-src='".$value["no_img"]."' src='".$value["no_img"]."' alt='".'点位编号：'.$value['code']."'/>";
                                                 	        if($value['pano_img']){
-                                                	            $str = "<img style='width:120px;' src='".$value["pano_img"]."' layer-src='".$value["pano_img"]."' src='".$value["pano_img"]."' alt='".$value['code']."'/>";
+                                                	            $str = "<img style='width:120px;' src='".$value["pano_img"]."' layer-src='".$value["pano_img"]."' src='".$value["pano_img"]."' alt='".'点位编号：'.$value['code']."'/>";
                                                 	            $msg = $msg.$str;
                                                 	        }
                                                 	        break;
