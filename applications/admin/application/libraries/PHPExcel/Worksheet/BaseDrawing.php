@@ -132,7 +132,7 @@ class PHPExcel_Worksheet_BaseDrawing implements PHPExcel_IComparable
         $this->offsetY            = 0;
         $this->width              = 0;
         $this->height             = 0;
-        $this->resizeProportional = true;
+        $this->resizeProportional = false;
         $this->rotation           = 0;
         $this->shadow             = new PHPExcel_Worksheet_Drawing_Shadow();
 
