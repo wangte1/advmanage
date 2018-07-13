@@ -161,6 +161,11 @@ $config = array(
     		        'url'=>'/housesquery',
     		        'name'=> '位置查询',
     		        'active'=> 'houses_query_lists'
+    		    ),
+    		    array(
+    		        'url'=>'/housestour',
+    		        'name'=> '巡视记录',
+    		        'active'=> 'tour_lists'
     		    )
     		)
     	),
