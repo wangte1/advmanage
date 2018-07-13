@@ -33,9 +33,6 @@
             </div>
 
             <div class="page-content">
-            	<div class="page-header">
-                	<a href="javascript:;" class="btn btn-sm btn-primary btn-export"><i class="fa fa-download out_excel" aria-hidden="true"></i> 导出</a>
-                </div>
                 <div class="row">
                     <div class="col-xs-12">
                         <div class="widget-box">
@@ -59,7 +56,7 @@
                                                 <label class="col-sm-3 control-label no-padding-right" for="form-input-readonly"> 巡视日期： </label>
                                                 <div class="col-sm-9">
                                                     <div class="input-group date datepicker">
-                                                        <input class="form-control date-picker" type="text" name="time" value="<?php if(isset($create_time)){ echo $create_time;}?>" >
+                                                        <input class="form-control date-picker" type="text" name="create_time" value="<?php if(isset($create_time)){ echo $create_time;}?>" >
                                                         <span class="input-group-addon">
                                                             <i class="icon-calendar bigger-110"></i>
                                                         </span>
@@ -118,7 +115,7 @@
                                             <tr>
                                                 <td><?php echo $k+1;?></td>
                                                 <td><?php echo $v['fullname']?></td>
-                                                <td><?php echo $v['create_time']?></td>
+                                                <td><?php echo $create_time?></td>
                                                 <td><?php echo $v['num']?></td>
                                                 <td>
                                                     <button class="btn btn-primary detail" data-id="<?php echo $v['id']?>">详情</button>

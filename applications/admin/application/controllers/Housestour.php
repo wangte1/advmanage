@@ -22,16 +22,27 @@ class Housestour extends MY_Controller{
         $page =  intval($this->input->get("per_page",true)) ?  : 1;
         $size = $pageconfig['per_page'];
         $create_time = $this->input->get('create_time');
-        if(!$create_time){
+        if(empty($create_time)){
             $create_time= date('Y-m-d 00:00:00', time());
+        }else{
+            $create_time .= ' 00:00:00';
+        }
+        $data['create_time'] = date("Y-m-d", strtotime($create_time));
+        
+        $principal_id = $this->input->get('principal_id');
+        if($principal_id) {
+            $where['B.id'] = $principal_id;
+            $data['principal_id'] =$principal_id;
         }
         $where['A.create_time >'] = $create_time;
-        $where['A.create_time <'] = date("Y-m-d 00:00:00", strtotime(date("Y-m-d"))+(24*3600));
+        $where['A.create_time <'] = date("Y-m-d 00:00:00", strtotime(date("Y-m-d", strtotime($create_time)))+(24*3600));
+        
         $list = $this->Mhouses_tour_points->get_tour_list($where, ['num' => 'desc'], $size, ($page-1)*$size, ['B.id']);
+
         $data['list'] = $list;
         $adminList = $this->Madmins->get_lists('id, fullname', ['in' => ['group_id' => [4,6]]]);
         $data['adminList'] = $adminList;
-        $count = $this->Mhouses_tour_points->get_tour_list($where);
+        $count = $this->Mhouses_tour_points->get_tour_list($where, [], 0, 0, ['B.id']);
         $data['data_count'] = count($count);
         $pageconfig['base_url'] = "/report_list/index";
         $pageconfig['total_rows'] = count($count);
