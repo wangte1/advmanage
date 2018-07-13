@@ -75,7 +75,7 @@
                                                 	    case 1 :
                                                 	        $msg = "<img style='width:120px;' src='".$value["no_img"]."' layer-src='".$value["no_img"]."' src='".$value["no_img"]."'/>";
                                                 	        if($value['pano_img']){
-                                                	            $str = "<img style='width:120px;' src='".$value["pano_img"]."' layer-src='".$value["pano_img"]."' src='".$value["pano_img"]."'/>";
+                                                	            $str = "<img style='width:120px;' src='".$value["pano_img"]."' layer-src='".$value["pano_img"]."' src='".$value["pano_img"]."' alt='".$value['code']."'/>";
                                                 	            $msg = $msg.$str;
                                                 	        }
                                                 	        break;
