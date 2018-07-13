@@ -930,8 +930,8 @@ class Housesorders extends MY_Controller{
         //设置列宽
         $this->phpexcel->getActiveSheet(0)->getColumnDimension("A")->setWidth(10);
         $this->phpexcel->getActiveSheet(0)->getColumnDimension("B")->setWidth(10);
-        $this->phpexcel->getActiveSheet(0)->getColumnDimension("C")->setWidth(30);
-        $this->phpexcel->getActiveSheet(0)->getColumnDimension("D")->setWidth(38);//这里的宽度是等于7*38px
+        $this->phpexcel->getActiveSheet(0)->getColumnDimension("C")->setWidth(27.14);
+        $this->phpexcel->getActiveSheet(0)->getColumnDimension("D")->setWidth(27.14);//这里的宽度是等于7*27.14px
         //数据准备就绪， 绘制表头
         $i = 0;
         foreach($table_header as  $k=>$v){
@@ -945,13 +945,15 @@ class Housesorders extends MY_Controller{
             $j = 0;
             foreach($table_header as $k => $v){
                 //设置行高
-                $this->phpexcel->getActiveSheet(0)->getRowDimension($h)->setRowHeight(354);
+                $this->phpexcel->getActiveSheet(0)->getRowDimension($h)->setRowHeight(183);
                 if($v == "img" && !empty($val['img'])){
                     if(file_exists('.'.$val['img']) && is_readable('.'.$val['img'])){
                         $objDrawing[$k] = new PHPExcel_Worksheet_Drawing();
                         $objDrawing[$k]->setPath(".".$val['img']);
                         $objDrawing[$k]->setCoordinates('D'.($h));
-                        $objDrawing[$k]->setWidth(266); //照片宽度 这里的宽度是像素px
+                        $objDrawing[$k]->setWidthAndHeight(175, 230);//单位px
+                        $objDrawing[$k]->setOffsetX(8);//水平方向
+                        $objDrawing[$k]->setOffsetY(8);//竖直方向
                         $objDrawing[$k]->setWorksheet($this->phpexcel->getActiveSheet(0));
                     }else{
                         $cell = PHPExcel_Cell::stringFromColumnIndex($j++).$h;
@@ -1073,8 +1075,9 @@ class Housesorders extends MY_Controller{
         $this->phpexcel->getDefaultStyle()->getAlignment()->setVertical(PHPExcel_Style_Alignment::VERTICAL_CENTER);
         
         //设置列宽
-        $this->phpexcel->getActiveSheet(0)->getColumnDimension("A")->setWidth(43);
-        $this->phpexcel->getActiveSheet(0)->getColumnDimension("B")->setWidth(86);//86 = 86*7px
+        $this->phpexcel->getActiveSheet(0)->getColumnDimension("A")->setWidth(27.14);
+        $this->phpexcel->getActiveSheet(0)->getColumnDimension("B")->setWidth(27.14);//27.14 = 27.14*7px
+        $this->phpexcel->getActiveSheet(0)->getColumnDimension("C")->setWidth(27.14);//27.14 = 27.14*7px
 
         $h = 1;
         $insert = 1;
@@ -1085,19 +1088,27 @@ class Housesorders extends MY_Controller{
             $cell = PHPExcel_Cell::stringFromColumnIndex(0).$h;
             $value = $insert;
             $insert++;
+            
+            //合并单元格
+            if(($h%2) != 0){
+                $this->phpexcel->getActiveSheet(0)->mergeCells("B".$h.":C".$h); 
+            }
             $this->phpexcel->getActiveSheet(0)->setCellValue($cell, $value);
             $cell = PHPExcel_Cell::stringFromColumnIndex(1).$h;
             $value = $val['houses_name'];
             $this->phpexcel->getActiveSheet(0)->setCellValue($cell, $value);
             $h+= 1;
+            
             //设置行高
             if(($h%2) == 0){
-                $this->phpexcel->getActiveSheet(0)->getRowDimension($h)->setRowHeight(401);
+                $this->phpexcel->getActiveSheet(0)->getRowDimension($h)->setRowHeight(183);
                 if($val['no_img'] && file_exists('.'.$val['no_img'])){
                     $objDrawing[$key] = new PHPExcel_Worksheet_Drawing();
                     $objDrawing[$key]->setPath(".".$val['no_img']);
                     $objDrawing[$key]->setCoordinates('A'.($h));
-                    $objDrawing[$key]->setWidth(301); //照片宽度 这里的宽度是像素px
+                    $objDrawing[$key]->setWidthAndHeight(175, 230);//单位px
+                    $objDrawing[$key]->setOffsetX(8);//水平方向
+                    $objDrawing[$key]->setOffsetY(8);//竖直方向
                     $objDrawing[$key]->setWorksheet($this->phpexcel->getActiveSheet(0));
                 }else{
                     //设置第一个单元格
@@ -1110,21 +1121,25 @@ class Housesorders extends MY_Controller{
                     $objDrawing[$key] = new PHPExcel_Worksheet_Drawing();
                     $objDrawing[$key]->setPath(".".$val['pano_img']);
                     $objDrawing[$key]->setCoordinates('B'.($h));
-                    $objDrawing[$key]->setWidth(301); //照片宽度 这里的宽度是像素px
+                    $objDrawing[$key]->setWidthAndHeight(175, 230);//单位px
+                    $objDrawing[$key]->setOffsetX(8);//水平方向
+                    $objDrawing[$key]->setOffsetY(8);//竖直方向
                     $objDrawing[$key]->setWorksheet($this->phpexcel->getActiveSheet(0));
-                    if($val['news_img'] && file_exists('.'.$val['news_img'])){
-                        $objD[$key] = new PHPExcel_Worksheet_Drawing();
-                        $objD[$key]->setPath(".".$val['news_img']);
-                        $objD[$key]->setCoordinates('B'.($h));
-                        $objD[$key]->setWidth(301); //照片宽度 这里的宽度是像素px
-                        $objD[$key]->setOffsetX(301);//水平方向
-                        $objD[$key]->setWorksheet($this->phpexcel->getActiveSheet(0));
-                    }
                 }else{
                     //设置第一个单元格
                     $cell = PHPExcel_Cell::stringFromColumnIndex(0).$h;
                     $value = " ";
                     $this->phpexcel->getActiveSheet(0)->setCellValue($cell, $value);
+                }
+                
+                if($val['news_img'] && file_exists('.'.$val['news_img'])){
+                    $objD[$key] = new PHPExcel_Worksheet_Drawing();
+                    $objD[$key]->setPath(".".$val['news_img']);
+                    $objD[$key]->setCoordinates('C'.($h));
+                    $objD[$key]->setWidthAndHeight(175, 230);//单位px
+                    $objD[$key]->setOffsetX(8);//水平方向
+                    $objD[$key]->setOffsetY(8);//竖直方向
+                    $objD[$key]->setWorksheet($this->phpexcel->getActiveSheet(0));
                 }
             }
             $h++;
