@@ -812,12 +812,11 @@ class Housesscheduledorders extends MY_Controller{
         if(!empty($this->input->post('houses_id'))) {
             //临时限制不让选花果园和山水黔城
             $houses_id = $this->input->post('houses_id');
-            $where['houses_id'] = $houses_id;
-            //if(in_array($houses_id, [167, 168])){
-            //    $this->return_json(array('flag' => true, 'points_lists' => [], 'count' => 0, 'area_list' => []));
-            //}else{
-            //    $where['houses_id'] = $houses_id;
-            //}
+            if(in_array($houses_id, [167, 168])){
+               $this->return_json(array('flag' => true, 'points_lists' => [], 'count' => 0, 'area_list' => []));
+            }else{
+               $where['houses_id'] = $houses_id;
+            }
         }
         if(!empty($this->input->post('area_id'))) {$where['area_id'] = $this->input->post('area_id');}
         if(!empty($this->input->post('ban'))) $where['ban'] = $this->input->post('ban');
@@ -832,7 +831,7 @@ class Housesscheduledorders extends MY_Controller{
         $where['is_del'] = 0;
         $where['`lock_num` >='] = 0; //防止出现多次选择
         $where['point_status'] = 1;
-        //$where['not_in'] = ['houses_id' => [167, 168]];
+        $where['not_in'] = ['houses_id' => [167, 168]];
         
         $fields = 'id,code,houses_id,area_id,ban,unit,floor,addr,type_id,ad_num, ad_use_num, lock_num,point_status';
         $points_lists = $this->Mhouses_points->get_usable_point($fields, $where, $order_id, $type);
