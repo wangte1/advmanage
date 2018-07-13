@@ -191,7 +191,7 @@
                                                 <?php endif;?>
                                             </tr>
                                         </thead>
-                                        <tbody>
+                                        <tbody id="layer-photos-demo" class="layer-photos-demo">
                                         <?php
                                         if($list){
                                             foreach($list as $key=>$val){
@@ -206,7 +206,7 @@
                                                     	<?php if(isset(C('housespoint.point_addr')[$val['point']['addr']])) echo C('housespoint.point_addr')[$val['point']['addr']];?>
                                                     </td>
                                                     <td>
-                                                    	<img style="width:100px;" src="<?php echo $val['report_img']?>" />
+                                                    	<img style="width:100px;" src="<?php echo $val['report_img']?>" layer-src="<?php echo $val['report_img']?>" src="<?php echo $val['report_img']?>"/>
                                                     </td>
                                                     <?php if($repair_time == 1):?>
                                                     <td>
@@ -274,10 +274,10 @@
 <script type="text/javascript">
 $(".select2").css('width','230px').select2({allowClear:true});
 var baseUrl = "<?php echo $domain['admin']['url'];?>";
-$('img').on('click', function(){
-	url = $(this).attr('src');
-	window.open(baseUrl+url,'_blank');
-});
+// $('img').on('click', function(){
+// 	url = $(this).attr('src');
+// 	window.open(baseUrl+url,'_blank');
+// });
 
 $(".btn-export").on('click', function(){
 	$(".form-horizontal").attr('action', '/report_list/out_excel');
@@ -298,6 +298,13 @@ $('.report').on('click', function(){
 	  content: '/report_list/report?id='+id
 	});
 });
+</script>
+<script>
+	//调用示例
+    layer.photos({
+      photos: '#layer-photos-demo'
+      ,anim: 5 //0-6的选择，指定弹出图片动画类型，默认随机（请注意，3.0之前的版本用shift参数）
+    }); 
 </script>
 <!-- 底部 -->
 <?php $this->load->view("common/bottom");?>
