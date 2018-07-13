@@ -813,9 +813,9 @@ class Housesscheduledorders extends MY_Controller{
             //临时限制不让选花果园和山水黔城
             $houses_id = $this->input->post('houses_id');
             if(in_array($houses_id, [167, 168])){
-                $this->return_json(array('flag' => true, 'points_lists' => [], 'count' => 0, 'area_list' => []));
+               $this->return_json(array('flag' => true, 'points_lists' => [], 'count' => 0, 'area_list' => []));
             }else{
-                $where['houses_id'] = $houses_id;
+               $where['houses_id'] = $houses_id;
             }
         }
         if(!empty($this->input->post('area_id'))) {$where['area_id'] = $this->input->post('area_id');}
