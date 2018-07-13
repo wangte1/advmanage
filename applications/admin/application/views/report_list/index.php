@@ -206,7 +206,7 @@
                                                     	<?php if(isset(C('housespoint.point_addr')[$val['point']['addr']])) echo C('housespoint.point_addr')[$val['point']['addr']];?>
                                                     </td>
                                                     <td>
-                                                    	<img style="width:100px;" src="<?php echo $val['report_img']?>" layer-src="<?php echo $val['report_img']?>" src="<?php echo $val['report_img']?>"/>
+                                                    	<img style="width:100px;" src="<?php echo $val['report_img']?>" layer-src="<?php echo $val['report_img']?>" src="<?php echo $val['report_img']?>" alt="<?php echo $val['point']['code'];?>"/>
                                                     </td>
                                                     <?php if($repair_time == 1):?>
                                                     <td>
