@@ -1,7 +1,7 @@
 <?php
 /**
  * 点位状态管理控制器
- * 867332352@qq.com
+ * 254274509@qq.com
  */
 defined('BASEPATH') or exit('No direct script access allowed');
 class Housestour extends MY_Controller{
