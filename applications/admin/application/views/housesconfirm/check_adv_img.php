@@ -55,7 +55,7 @@
                                             <th style="width:20%;" class="center" nowrap>图片</th>
                                         </tr>
                                     </thead>
-                                    <tbody>
+                                    <tbody id="layer-photos-demo" class="layer-photos-demo">
                                         <?php if(isset($list))foreach ($list as $key => $value) :?>
                                         <tr>
                                         	<td  style="text-align: center;vertical-align: middle;"><?php echo $value['code'];?></td>
@@ -73,9 +73,9 @@
                                                 	        $msg = "未上传未审核";
                                                 	        break;
                                                 	    case 1 :
-                                                	        $msg = "<img style='width:120px;' src='".$value["no_img"]."'/>";
+                                                	        $msg = "<img style='width:120px;' src='".$value["no_img"]." layer-src=".$value["no_img"]." src=".$value["no_img"]."'/>";
                                                 	        if($value['pano_img']){
-                                                	            $str = "<img style='width:120px;' src='".$value["pano_img"]."'/>";
+                                                	            $str = "<img style='width:120px;' src='".$value["pano_img"]." layer-src=".$value["pano_img"]." src=".$value["pano_img"]."'/>";
                                                 	            $msg = $msg.$str;
                                                 	        }
                                                 	        break;
@@ -120,10 +120,10 @@
 
 <script>
 
-	$('img').on('click', function(){
-		url = $(this).attr('src');
-		window.open(baseUrl+url,'_blank');
-	});
+// 	$('img').on('click', function(){
+// 		url = $(this).attr('src');
+// 		window.open(baseUrl+url,'_blank');
+// 	});
 	
 	var uploader_id;
 	var uploader = WebUploader.create({
@@ -243,6 +243,13 @@
 		var url  = '/housesconfirm/user_all_task_export?id='+<?php echo $id;?>+"&type="+<?php echo $type;?>;
 		window.location.href = url;
 	});
+</script>
+<script>
+    //调用示例
+    layer.photos({
+      photos: '#layer-photos-demo'
+      ,anim: 5 //0-6的选择，指定弹出图片动画类型，默认随机（请注意，3.0之前的版本用shift参数）
+    }); 
 </script>
 <!-- 底部 -->
 <?php $this->load->view("common/bottom");?>
