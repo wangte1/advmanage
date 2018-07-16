@@ -120,7 +120,7 @@
                                                     <?php echo $v['houses_name'].$v['area_name'].$v['unit'].$v['floor'].$v['addr'];?>
                                                 </td>
                                                 <td>
-                                                    <img style="width:100px;" alt="" src="<?php echo $v['img']?>">
+                                                    <img style="width:100px;" alt="" src="<?php echo $v['img']?>" />
                                                 </td>
                                             </tr>
                                             <?php endforeach;?>
