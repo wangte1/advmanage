@@ -101,10 +101,10 @@
                                                 </div>
                                             </div>
                                             <div class="col-sm-4">
-                                                <label class="col-sm-3 control-label no-padding-right" for="form-input-readonly"> 报损时间： </label>
+                                                <label class="col-sm-3 control-label no-padding-right" for="form-input-readonly"> 开始时间： </label>
                                                 <div class="col-sm-9">
                                                     <div class="input-group date datepicker">
-                                                        <input class="form-control date-picker" type="text" name="time" value="<?php if(isset($time)){ echo $time;}?>" >
+                                                        <input class="form-control date-picker" type="text" name="start_time" value="<?php if(isset($start_time)){ echo $start_time;}?>" >
                                                         <span class="input-group-addon">
                                                             <i class="icon-calendar bigger-110"></i>
                                                         </span>
@@ -112,16 +112,14 @@
                                                 </div>
                                             </div>
                                             <div class="col-sm-4">
-                                                <label class="col-sm-3 control-label no-padding-right" for="form-field-1"> 报损人： </label>
+                                                <label class="col-sm-3 control-label no-padding-right" for="form-input-readonly"> 结束时间： </label>
                                                 <div class="col-sm-9">
-                                                    <select class="select2" name="create_id">
-                                                        <option value="0">全部</option>
-                                                        <?php if($adminList):?>
-                                                        <?php foreach ($adminList as $k => $v):?>
-                                                        <option <?php if(isset($create_id) && $create_id == $v['id']){echo "selected";}?>  value="<?php echo $v['id']?>"><?php echo $v['fullname']?></option>
-                                                        <?php endforeach;?>
-                                                        <?php endif;?>
-                                                    </select>
+                                                    <div class="input-group date datepicker">
+                                                        <input class="form-control date-picker" type="text" name="end_time" value="<?php if(isset($end_time)){ echo $end_time;}?>" >
+                                                        <span class="input-group-addon">
+                                                            <i class="icon-calendar bigger-110"></i>
+                                                        </span>
+                                                    </div>
                                                 </div>
                                             </div>
                                         </div>
@@ -141,6 +139,19 @@
                                                 <label class="col-sm-3 control-label no-padding-right" for="form-field-1"> 点位编号： </label>
                                                 <div class="col-sm-9">
                                                     <input type="text" name="rcode" value="<?php if(isset($rcode)){echo $rcode;}?>" />
+                                                </div>
+                                            </div>
+                                            <div class="col-sm-4">
+                                                <label class="col-sm-3 control-label no-padding-right" for="form-field-1"> 报损人： </label>
+                                                <div class="col-sm-9">
+                                                    <select class="select2" name="create_id">
+                                                        <option value="0">全部</option>
+                                                        <?php if($adminList):?>
+                                                        <?php foreach ($adminList as $k => $v):?>
+                                                        <option <?php if(isset($create_id) && $create_id == $v['id']){echo "selected";}?>  value="<?php echo $v['id']?>"><?php echo $v['fullname']?></option>
+                                                        <?php endforeach;?>
+                                                        <?php endif;?>
+                                                    </select>
                                                 </div>
                                             </div>
                                         </div>

@@ -32,7 +32,8 @@ class Report_list extends MY_Controller{
         $houses_id = $this->input->get('houses_id');
         $usable = $this->input->get('usable');
         $report = $this->input->get('report');
-        $time = $this->input->get('time');
+        $start_time = $this->input->get('start_time');
+        $end_time = $this->input->get('end_time');
         $create_id = $this->input->get('create_id');
         $rcode = trim($this->input->get('rcode'));
         $install_id = $this->input->get('install');
@@ -52,9 +53,18 @@ class Report_list extends MY_Controller{
             $where['usable'] = $usable;
             $data['usable'] = $usable;
         }
-        if($time){
-            $where['A.create_time'] = strtotime($time);
-            $data['time'] = $time;
+        if($start_time){
+            if($end_time){
+                $where['A.create_time>='] = strtotime($start_time);
+                $data['start_time'] = $start_time;
+            }else{
+                $where['A.create_time'] = strtotime($start_time);
+                $data['start_time'] = $start_time;
+            }
+        }
+        if($end_time){
+            $where['A.create_time<='] = strtotime($end_time);
+            $data['end_time'] = $end_time;
         }
         if($create_id){
             $where['A.create_id'] = $create_id;
@@ -198,7 +208,8 @@ class Report_list extends MY_Controller{
         $houses_id = $this->input->get('houses_id');
         $usable = $this->input->get('usable');
         $report = $this->input->get('report');
-        $time = $this->input->get('time');
+        $start_time = $this->input->get('start_time');
+        $end_time = $this->input->get('end_time');
         $create_id = $this->input->get('create_id');
         $rcode = trim($this->input->get('rcode'));
         $install_id = $this->input->get('install');
@@ -218,9 +229,18 @@ class Report_list extends MY_Controller{
             $where['usable'] = $usable;
             $data['usable'] = $usable;
         }
-        if($time){
-            $where['A.create_time'] = strtotime($time);
-            $data['time'] = $time;
+        if($start_time){
+            if($end_time){
+                $where['A.create_time>='] = strtotime($start_time);
+                $data['start_time'] = $start_time;
+            }else{
+                $where['A.create_time'] = strtotime($start_time);
+                $data['start_time'] = $start_time;
+            }
+        }
+        if($end_time){
+            $where['A.create_time<='] = strtotime($end_time);
+            $data['end_time'] = $end_time;
         }
         if($create_id){
             $where['A.create_id'] = $create_id;
