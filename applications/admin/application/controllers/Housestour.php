@@ -80,7 +80,7 @@ class Housestour extends MY_Controller{
             $where['A.create_time >'] = $date.' 00:00:00';
             $where['A.create_time <']= date("Y-m-d 00:00:00", strtotime(date("Y-m-d", strtotime($date)))+(24*3600));
         }
-        $list = $this->Mhouses_tour_points->get_user_all($where, [], $size, ($page-1)*$size, []);
+        $list = $this->Mhouses_tour_points->get_user_all($where, ['A.create_time' => 'desc'], $size, ($page-1)*$size, []);
 
         if($list){
             foreach ($list as $k => $v){
