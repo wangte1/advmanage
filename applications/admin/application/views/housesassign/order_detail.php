@@ -255,13 +255,14 @@
                                     			<iframe frameborder="no" border="0" src="/housesassign/show_points?order_id=<?php echo $id;?>&houses_id=<?php echo $houses_id;?>&assign_type=<?php echo $assign_type?>" width="100%" height="650px;"></iframe>
                                     		<?php }else {?>
 
-                                    			<?php if($assign_status == 1) {?>
+                                    			
                                     				<table class="table table-striped table-bordered">
 		                                                <thead>
 		                                                    <tr>
 		                                                        <th class="center">行政区域</th>
 		                                                        <th class="center">楼盘</th>
 		                                                        <th class="center">点位数</th>
+		                                                        <th class="center">组长</th>
 		                                                        <th class="center">操作</th>
 		                                                    </tr>
 		                                                </thead>
@@ -271,6 +272,11 @@
 		                                                        <td class="center"><?php echo $value['province']."-".$value['city']."-".$value['area'];?></td>
 		                                                        <td class="center"><?php echo $value['houses_name'];?></td>
 		                                                        <td class="center"><?php echo $value['count'];?></td>
+		                                                        <td class="center">
+		                                                        	<?php if($groupInfo):?>
+		                                                        	<?php echo $groupInfo['fullname']?>
+		                                                        	<?php endif;?>
+		                                                        </td>
 		                                                        <td class="center">
 		                                                        	<a class="green tooltip-info" onclick="show_points_detail(<?php echo $id;?>,<?php echo $value['houses_id'];?>);" href="#" data-rel="tooltip" data-placement="top" data-original-title="详情">
 			                                                            <i class="icon-eye-open bigger-130"></i>
@@ -292,9 +298,7 @@
 		                                            			}); 
 		                                                }
 		                                            </script>
-                                    			<?php }else {?>
-	                                    			<iframe frameborder="no" border="0" src="/housesassign/detail?order_id=<?php echo $id;?>&assign_type=<?php echo $assign_type?>" width="100%" height="650px;"></iframe>
-	                                            <?php }?>
+                                    			
                                     			
                                     		
 

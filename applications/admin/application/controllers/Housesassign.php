@@ -659,6 +659,11 @@ class Housesassign extends MY_Controller{
         if($this->input->get('houses_id')) {
         	$data['houses_id'] = $this->input->get('houses_id');
         }
+        $data['groupInfo'] = false;
+        if($data['info']['group_id']){
+            $data['groupInfo'] = $this->Madmins->get_one('fullname', ['id' => $data['info']['group_id']]);
+        }
+        
 
         //客户名称
         $data['info']['customer_name'] = $this->Mhouses_customers->get_one('name', array('id' => $data['info']['customer_id']))['name'];
