@@ -53,24 +53,22 @@
                                         <div class="form-group">
                                             
                                             <div class="col-sm-4">
-                                                <label class="col-sm-3 control-label no-padding-right" for="form-input-readonly"> 巡视日期： </label>
+                                                <label class="col-sm-3 control-label no-padding-right" for="form-input-readonly"> 点位编号： </label>
                                                 <div class="col-sm-9">
-                                                    <div class="input-group date datepicker">
-                                                        <input class="form-control date-picker" type="text" name="create_time" value="<?php if(isset($create_time)){ echo $create_time;}?>" >
-                                                        <span class="input-group-addon">
-                                                            <i class="icon-calendar bigger-110"></i>
-                                                        </span>
+                                                    <div class="input-group">
+                                                        <input class="form-control col-sm-12" type="text" name="point_code" value="<?php if(isset($point_code)){ echo $point_code;}?>" >
                                                     </div>
                                                 </div>
                                             </div>
                                             <div class="col-sm-4">
-                                                <label class="col-sm-3 control-label no-padding-right" for="form-field-1"> 巡视人： </label>
+                                            	<input type="hidden" name="create_time" value="<?php echo $create_time?>">
+                                                <label class="col-sm-3 control-label no-padding-right" for="form-field-1"> 楼盘： </label>
                                                 <div class="col-sm-9">
-                                                    <select class="select2" name="principal_id">
+                                                    <select class="select2" name="houses_id">
                                                         <option value="0">全部</option>
-                                                        <?php if($adminList):?>
-                                                        <?php foreach ($adminList as $k => $v):?>
-                                                        <option <?php if(isset($principal_id) && $principal_id== $v['id']){echo "selected";}?>  value="<?php echo $v['id']?>"><?php echo $v['fullname']?></option>
+                                                        <?php if($hlist):?>
+                                                        <?php foreach ($hlist as $k => $v):?>
+                                                        <option <?php if(isset($houses_id) && $houses_id == $v['id']){echo 'selected';}?> value="<?php echo $v['id']?>"><?php echo $v['name']?></option>
                                                         <?php endforeach;?>
                                                         <?php endif;?>
                                                     </select>
@@ -105,20 +103,24 @@
                                                 <th>序号</th>
                                                 <th>工程人员</th>
                                                 <th>巡视日期</th>
-                                                <th>巡视个数</th>
-                                                <th>详情</th>
+                                                <th>点位编号</th>
+                                                <th>地址</th>
+                                                <th>图片</th>
                                             </tr>
                                         </thead>
-                                        <tbody>
+                                        <tbody id="layer-photos-demo">
                                             <?php if($list):?>
                                             <?php foreach ($list as $k => $v):?>
                                             <tr>
                                                 <td><?php echo $k+1;?></td>
                                                 <td><?php echo $v['fullname']?></td>
-                                                <td><?php echo $create_time?></td>
-                                                <td><?php echo $v['num']?></td>
+                                                <td><?php echo $v['create_time']?></td>
+                                                <td><?php echo $v['code']?></td>
                                                 <td>
-                                                    <button class="btn btn-primary detail" data-id="<?php echo $v['id']?>" data-date="<?php echo $create_time?>">详情</button>
+                                                    <?php echo $v['houses_name'].$v['area_name'].$v['unit'].$v['floor'].$v['addr'];?>
+                                                </td>
+                                                <td>
+                                                    <img style="width:100px;" alt="" src="<?php echo $v['img']?>">
                                                 </td>
                                             </tr>
                                             <?php endforeach;?>
@@ -145,13 +147,11 @@
 <script type="text/javascript">
 $(".select2").css('width','230px').select2({allowClear:true});
 var baseUrl = "<?php echo $domain['admin']['url'];?>";
-
-//报修点位
-$('.detail').on('click', function(){
-	var user_id = $(this).attr('data-id');
-	var date = $(this).attr('data-date');
-	window.location.href = '/housestour/detail?user_id='+user_id+'&create_time='+date;
-});
+//调用示例
+layer.photos({
+  photos: '#layer-photos-demo'
+  ,anim: 5 //0-6的选择，指定弹出图片动画类型，默认随机（请注意，3.0之前的版本用shift参数）
+}); 
 </script>
 
 <!-- 底部 -->
