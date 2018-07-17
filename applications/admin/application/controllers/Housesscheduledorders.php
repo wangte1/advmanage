@@ -1187,6 +1187,7 @@ class Housesscheduledorders extends MY_Controller{
                 unset($update_data['decr']);
                 //字段的比较where['field'],将所有预定的点位释放掉
                 $__where['field']['`ad_num`>'] = '`ad_use_num` + `lock_num`';
+                $__where['in'] = ['id' => $oldpointids];
                 $this->Mhouses_points->update_info(['point_status' => 1], $__where);
                 
                 //更新该订单的状态为“已转订单”
