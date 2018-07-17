@@ -143,8 +143,6 @@
 			                                                    <td class="phone-hide">
 			                                                    	<?php echo $val['order_code'];?>
 			                                                    </td>
-			                                                    
-			                                                   
 			                                                    <td class="phone-hide">
 			                                                    	<?php if(isset($order_type_text[$val['order_type']])) echo $order_type_text[$val['order_type']];?>
 			                                                    </td>

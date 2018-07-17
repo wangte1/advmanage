@@ -112,6 +112,23 @@ class Housesconfirm extends MY_Controller{
                 }
             }
         }
+
+        //解决换画订单类型的问题
+        if($order_list){
+            $code_list  = array_unique(array_column($order_list, 'order_code'));
+            $tmp_where = [];
+            $oldOrderList = $this->Mhouses_orders->get_lists('order_code, order_type', $tmp_where);
+            if($oldOrderList){
+                foreach ($data['list'] as $k => $v){
+                    foreach ($oldOrderList as $key => $val){
+                        if($v['order_code'] == $val['order_code']){
+                            $data['list'][$k]['order_type'] = $val['order_type'];
+                        }
+                    }
+                }
+            }
+        }
+
         $data_count = $this->Mhouses_work_order->count($where);
         
         $data['data_count'] = $data_count;
