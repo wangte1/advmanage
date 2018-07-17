@@ -116,7 +116,10 @@ class Housesconfirm extends MY_Controller{
         //解决换画订单类型的问题
         if($order_list){
             $code_list  = array_unique(array_column($order_list, 'order_code'));
-            $tmp_where = [];
+            $tmp_where = [
+                'in' => ['id' => $code_list],
+                'pid' => 0
+            ];
             $oldOrderList = $this->Mhouses_orders->get_lists('order_code, order_type', $tmp_where);
             if($oldOrderList){
                 foreach ($data['list'] as $k => $v){
