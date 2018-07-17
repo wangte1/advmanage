@@ -53,7 +53,7 @@ class Tour extends MY_Controller {
         $where['diy_area_id>'] = 0;
         $group_by = ['houses_id', 'area_id'];
         //获取这个楼盘、和用户所关联的组团
-        $areaInfo = $this->Mhouses_diy_area->get_lists('area_id', ['in' => ['houses_id' => $houses_id], 'diy_area_id' => $diy_area_id]);
+        $areaInfo = $this->Mhouses_diy_area->get_lists('area_id', ['in' => ['houses_id' => $houses_ids], 'diy_area_id' => $diy_area_id]);
         if($areaInfo){
             $area_ids = array_column($areaInfo, 'area_id');
             if($area_ids){
@@ -92,7 +92,7 @@ class Tour extends MY_Controller {
                         if(empty($val['houses_name'])){
                             $listData[$k]['houses_name'] = $v['houses_name'];
                         }
-                        if(!in_array($v['area_id'], $val['area_id'])){
+                        if(!in_array($v['area_id'], $val['area'])){
                             $listData[$key]['area'][$k]['id'] = $v['area_id'];
                             $listData[$key]['area'][$k]['num'] = $v['num'];
                             $listData[$key]['num'] += $v['num'];
