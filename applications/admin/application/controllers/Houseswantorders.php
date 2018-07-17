@@ -173,6 +173,7 @@ class Houseswantorders extends MY_Controller{
     			
     			//如果锁定数量+占用数量=可投放数量，那么点位状态变为已占满
     			$_where['field']['`ad_num`'] = '`lock_num`+`ad_use_num`';
+    			$_where['in'] = ['id' => explode(',', $post_data['point_ids'])];
     			$this->Mhouses_points->update_info(['point_status' => 3], $_where);
     			
     			$this->write_log($data['userInfo']['id'], 1, "新增".$data['order_type_text'][$post_data['order_type']]."预定订单,订单id【".$id."】");
@@ -345,6 +346,14 @@ class Houseswantorders extends MY_Controller{
     			'floor_lists'=>$floor_lists,
     			'addr_lists'=>$addr_lists,
     			'count' => count($points_lists)));
+    }
+    
+    private function getReportPoints(){
+        $where['repair_time'] = 0;
+        $where['usable'] = 0;//是否可以上画
+        $list = $this->Mhouses_points_report->get_lists('point_id', $where);
+        if(!$list) return false;
+        return $list;
     }
     
     
