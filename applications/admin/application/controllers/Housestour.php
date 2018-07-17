@@ -13,7 +13,7 @@ class Housestour extends MY_Controller{
             'Model_houses_tour_points' => 'Mhouses_tour_points',
         ]);
         $this->data['code'] = 'community_manage';
-        $this->data['active'] = 'tour_list';
+        $this->data['active'] = 'tour_lists';
     }
     
     public function index(){
