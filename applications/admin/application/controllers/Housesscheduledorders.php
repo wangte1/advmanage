@@ -925,9 +925,7 @@ class Housesscheduledorders extends MY_Controller{
         $where['in']['A.id'] = explode(',', $scheduledorder['confirm_point_ids']);
         
         $customers = $this->Mhouses_customers->get_one("name", array('id' => $scheduledorder['lock_customer_id'], 'is_del' => 0)); //客户
-        
         $list = $this->Mhouses_points->get_points_lists($where);
-        
         foreach ($list as $k => $v){
             if($v['addr'] == 1){
                 $list[$k]['addr'] = '门禁';
