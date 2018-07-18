@@ -2036,6 +2036,42 @@ class Housesorders extends MY_Controller{
         $objWriter->save('php://output');
     }
     
+    private function downloadAllImg($list = []){
+        if(empty($list)) echo "该订单暂无图片";exit;
+        $basedir = '/mnt/www/advmanage/applications/admin';
+        $tmpName = md5(time().$this->data['userInfo']['id']).'.zip';
+        $savePath = "/mnt/www/advmanage/applications/admin/excel/".$tmpName;
+        if(file_exists($savePath)){
+            unlink($savePath);
+        }
+        $cmd = "zip -j ".$savePath;
+        foreach ($list as $k => $val){
+            $cmd .= " ".$basedir.$val;
+        }
+        exec($cmd);
+        //以只读方式打开文件，并强制使用二进制模式
+        $fileHandle=fopen($savePath,"rb");
+        if($fileHandle===false){
+            exit("文件找不到: $savePath");
+        }
+        //文件类型是二进制流。设置为utf8编码（支持中文文件名称）
+        header('Content-type:application/octet-stream; charset=utf-8');
+        header("Content-Transfer-Encoding: binary");
+        header("Accept-Ranges: bytes");
+        //文件大小
+        header("Content-Length: ".filesize($savePath));
+        //触发浏览器文件下载功能
+        header('Content-Disposition:attachment;filename="'.urlencode($tmpName).'"');
+        //循环读取文件内容，并输出
+        while(!feof($fileHandle)) {
+            //从文件指针 handle 读取最多 length 个字节（每次输出300k）
+            echo fread($fileHandle, 1024*300);
+        }
+        //关闭文件流
+        fclose($fileHandle);
+        unlink($savePath);
+    }
+    
     /**
      * 移除工单被删除的点位以及对应已生成的工单记录 
      */
