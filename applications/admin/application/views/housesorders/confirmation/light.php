@@ -28,9 +28,12 @@
         .header p {height: 12px;}
         .footer {margin-top: 10px; padding: 10px; clear: both; color:#D2D2D2;width: 984px}
         .footer p{height: 10px;}
-
-        .btn-print {width: 100%;margin-top: 50px; text-align: right; position: fixed; bottom: 50px;left: 0;}
-        .btn-print2 {width: 100%;margin-top: 50px; text-align: right; position: fixed; bottom: 100px;left: 0;}
+        
+        .btn-print4 {width: 100%;margin-top: 50px; text-align: right; position: fixed; bottom: 50px;left: 0;}
+        .btn-print {width: 100%;margin-top: 50px; text-align: right; position: fixed; bottom: 100px;left: 0;}
+        .btn-print2 {width: 100%;margin-top: 50px; text-align: right; position: fixed; bottom: 150px;left: 0;}
+        
+        .btn-print4 button  {border-radius: 3px; width: 150px; height: 30px;}
         .btn-print button  {border-radius: 3px; width: 150px; height: 30px;}
         .btn-print2 button  {border-radius: 3px; width: 150px; height: 30px;}
         .btn-print3 button  {border-radius: 3px; width: 150px; height: 30px;}
@@ -73,6 +76,10 @@
         $("#pdf-btn-houses").click(function(){
         	window.open("/housesorders/loadByHouse?id=<?php echo $id;?>");return;
         }); 
+
+        $('#pdf-btn4').on('click', function(){
+        	window.open("/housesorders/loadAllImgByHouse?id=<?php echo $id;?>");return;
+        });
 	}); 
 	</script> 
     
@@ -144,6 +151,7 @@
         </div>
         <div class="noprint btn-print2"><button type="button" onclick="document.getElementById('pic-panel').style.display='none';javascript: window.print();document.getElementById('pic-panel').style.display='block';">打印文字报告</button></div>
         <div class="noprint btn-print3"><button id="pdf-btn-houses" type="button" style="font-size:14px;">按楼盘导出图片报告</button></div>
+        <div class="noprint btn-print4"><button id="pdf-btn4" type="button" >仅导出所有图片</button></div>
         <div class="noprint btn-print"><button id="pdf-btn" type="button" >导出所有图片报告</button></div>
     </div>
 </body>

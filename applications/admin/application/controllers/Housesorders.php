@@ -1153,6 +1153,62 @@ class Housesorders extends MY_Controller{
         $objWriter->save('php://output');
         
     }
+    
+    public function loadAllImgByHouse(){
+        $data = $this->data;
+        $data['id'] = $id = $this->input->get('id');
+        $data['info'] = $this->Mhouses_orders->get_one("*", array('id' => $id));
+        
+        //查询子订单id
+        $sonOrder = $this->Mhouses_orders->get_lists("id", array('pid' => $id));
+        if($sonOrder){
+            $order_ids = array_column($sonOrder, 'id');
+            $workerOrder = $this->Mhouses_work_order->get_lists("id", ['in' => ['order_id' => $order_ids], 'type' => 1]);
+            //提取所有子详情
+            $pids = array_column($workerOrder, 'id');
+            if($pids){
+                $imglist = $this->Mhouses_work_order_detail->get_lists('point_id,no_img, pano_img', ['in' => ['pid' => $pids]]);
+            }
+        }
+
+        //获取点位列表
+        $where['in'] = array('A.id' => explode(',', $data['info']['point_ids']));
+        $data['points'] = $pointList = $this->Mhouses_points->get_points_lists($where);
+        foreach ($pointList as $k => $v){
+            $data['points'][$k]['img'] = '';
+            if(isset($imglist)){
+                foreach ($imglist as $key => $val){
+                    if($v['id'] == $val['point_id']){
+                        $data['points'][$k]['img'] = $val['no_img'];
+                    }
+                }
+            }
+        }
+        
+        //提取近景图片
+        $imgDir = '/mnt/www/advmanage/applications/admin';
+        $saveDir = '/mnt/www/advmanage/applications/admin/excel/';
+        $tmpDirName = date('Ymd').'/'.$this->data['userInfo']['id'];
+        $allPath = $saveDir.$tmpDirName;
+        if(!file_exists($allPath)){
+            exec("mkdir -p ".$allPath);
+        }
+        //复制并重命名图片
+        $num = 0;
+        foreach ($data['points'] as $k => $v){
+            if(!empty($v['img'])){
+                $copyName = $v['houses_name'].'-'.$v['code'].'.jpg';
+                $cmd = 'cp '.$imgDir.$v['img'].' '.$allPath.'/'.$copyName;
+                exec($cmd);
+                $num++;
+            }
+        }
+        if($num){
+            $this->downloadAllImg();
+        }else{
+            echo "暂无验收图片";
+        }
+    }
 
 
     /**
@@ -2036,18 +2092,20 @@ class Housesorders extends MY_Controller{
         $objWriter->save('php://output');
     }
     
-    private function downloadAllImg($list = []){
-        if(empty($list)) echo "该订单暂无图片";exit;
-        $basedir = '/mnt/www/advmanage/applications/admin';
-        $tmpName = md5(time().$this->data['userInfo']['id']).'.zip';
-        $savePath = "/mnt/www/advmanage/applications/admin/excel/".$tmpName;
-        if(file_exists($savePath)){
-            unlink($savePath);
-        }
-        $cmd = "zip -j ".$savePath;
-        foreach ($list as $k => $val){
-            $cmd .= " ".$basedir.$val;
-        }
+    /**
+     * 打包并下载图片
+     * @param array $list
+     */
+    private function downloadAllImg(){
+        
+        $downloadName = md5(time()).'.zip';
+        $basedir = '/mnt/www/advmanage/applications/admin/excel/';
+        $allPath = $basedir.date('Ymd')."/".$this->data['userInfo']['id'];
+        
+        $savePath = $basedir.$downloadName;
+
+        $cmd = "zip -j ".$savePath. ' '. $allPath.'/*';
+        
         exec($cmd);
         //以只读方式打开文件，并强制使用二进制模式
         $fileHandle=fopen($savePath,"rb");
@@ -2061,7 +2119,7 @@ class Housesorders extends MY_Controller{
         //文件大小
         header("Content-Length: ".filesize($savePath));
         //触发浏览器文件下载功能
-        header('Content-Disposition:attachment;filename="'.urlencode($tmpName).'"');
+        header('Content-Disposition:attachment;filename="'.urlencode($downloadName).'"');
         //循环读取文件内容，并输出
         while(!feof($fileHandle)) {
             //从文件指针 handle 读取最多 length 个字节（每次输出300k）
@@ -2070,6 +2128,7 @@ class Housesorders extends MY_Controller{
         //关闭文件流
         fclose($fileHandle);
         unlink($savePath);
+        exec('rm -rf '.$allPath);
     }
     
     /**
