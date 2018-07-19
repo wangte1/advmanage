@@ -2149,10 +2149,10 @@ class Housesorders extends MY_Controller{
             foreach ($point_list as $k => $v){
                 $list[$k]['id'] = $v['id'];
                 if(empty($v['order_id'])){
-                    $list[$k]['order_id'] = "0";
+                    $list[$k]['order_id'] = "";
                 }else{
                     if($v['order_id'] == $order_id){
-                        $list[$k]['order_id'] = "0";
+                        $list[$k]['order_id'] = "";
                     }else{
                         $tmp = explode(',', $v['order_id']);
                         foreach ($tmp as $key => $val){
@@ -2168,7 +2168,7 @@ class Housesorders extends MY_Controller{
             //数据准备完毕
             $sql = "update t_houses_points SET order_id = CASE id";
             foreach ($list as $k => $v){
-                $sql.= " WHEN {$v['id']} THEN {$v['order_id']}";
+                $sql.= " WHEN {$v['id']} THEN '{$v['order_id']}'";
             }
             $sql .= " END where id in(";
             $sql .= implode(',', $point_ids);
