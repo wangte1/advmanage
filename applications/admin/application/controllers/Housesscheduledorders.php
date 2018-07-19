@@ -1155,6 +1155,7 @@ class Housesscheduledorders extends MY_Controller{
                 $post_data['point_ids'] = array_unique($post_data['point_ids']);
                 $post_data['point_ids'] = implode(',', $post_data['point_ids']);
             }
+            
             //检查是否包含异常数据的点位
             $this->checkPointIsCanUse($post_data['point_ids']);
             //查询提交的点位是可用
@@ -1205,6 +1206,9 @@ class Housesscheduledorders extends MY_Controller{
                 //字段的比较where['field']
                 $_where['field']['`ad_num`<='] = '`ad_use_num` + `lock_num`';
                 $this->Mhouses_points->update_info(['point_status' => 3], $_where);
+                
+                //更新点位order_id
+                $this->addOrderIdToPoint($order_id, explode(',', $post_data['point_ids']));
                 
                 
                 //判断是否有自有画面的点位，如果有，则将自有订单的点位去除，并更新self_lock = 0
@@ -1266,6 +1270,51 @@ class Housesscheduledorders extends MY_Controller{
         }
         
         $this->load->view('housesscheduledorders/checkout', $data);
+    }
+    
+    /**
+     * 转订单时，点位的order_id加上本订单的id
+     * @param number $order_id
+     * @param array $point_ids
+     */
+    private function addOrderIdToPoint($order_id = 0, $point_ids = []){
+        $list = [];
+        $where['in'] = ['id' => $point_ids];
+        $point_list = $this->Mhouses_points->get_lists('id, order_id', $where);
+        if($point_list){
+            foreach ($point_list as $k => $v){
+                $list[$k]['id'] = $v['id'];
+                if(empty($v['order_id'])){
+                    $list[$k]['order_id'] = $order_id;
+                }else{
+                    $now = [];
+                    $tmp = explode(',', $v['order_id']);
+                    foreach ($tmp as $key => $val){
+                        if($val){
+                            array_push($now, $val);
+                        }
+                    }
+                    if(empty($now)){
+                        $list[$k]['order_id'] = $order_id;
+                    }else{
+                        array_push($now, $order_id);
+                        $list[$k]['order_id'] = implode(',', $now);
+                    }
+                }
+                
+            }
+        }
+        //数据准备完毕
+        $sql = "update t_houses_points SET order_id = CASE id";
+        foreach ($list as $k => $v){
+            $sql.= " WHEN {$v['id']} THEN '{$v['order_id']}'";
+        }
+        $sql .= " END where id in(";
+        $sql .= implode(',', $point_ids);
+        $sql .= ')';
+        $this->db->query($sql);
+        
+        return $this->db->count_all_results();
     }
     
     

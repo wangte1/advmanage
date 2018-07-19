@@ -1464,6 +1464,7 @@ class Housesorders extends MY_Controller{
                     $point_ids_arr = explode(',', $tmp_list['point_ids']);
                     $point_ids_arr = array_unique($point_ids_arr);//去重，防止被多次执行
                     $point_ids_arr = $this->moveOutReportPoint($point_ids_arr);
+
                     //释放锁定的客户和占用数
                     $_result = $this->release($id, $tmp_list['customer_id']);
                     $where_point['in']['id'] = $point_ids_arr;
@@ -1471,6 +1472,10 @@ class Housesorders extends MY_Controller{
                     $update_data['point_status'] = 1;
                     $this->Mhouses_points->update_info($update_data, $where_point);
                     $this->write_log($data['userInfo']['id'], 2, '释放点位：'.$this->db->last_query());
+                    
+                    //移除点位本次的order_id
+                    $res = $this->delOrderIdForPoint($id, $point_ids_arr);
+                    
                     //更新该订单下所有换画订单的状态为已下画
                     $order_code = $this->Mhouses_orders->get_one('order_code', array('id' => $id))['order_code'];
                     $change_count = $this->Mhouses_changepicorders->count(array('order_code' => $order_code));
@@ -2129,6 +2134,50 @@ class Housesorders extends MY_Controller{
         fclose($fileHandle);
         unlink($savePath);
         exec('rm -rf '.$allPath);
+    }
+    
+    /**
+     * 释放订单，点位的order_id去掉本订单的id
+     * @param number $order_id
+     * @param array $point_ids
+     */
+    private function delOrderIdForPoint($order_id = 0, $point_ids = []){
+        $list = [];
+        $where['in'] = ['id' => $point_ids];
+        $point_list = $this->Mhouses_points->get_lists('id, order_id', $where);
+        if($point_list){
+            foreach ($point_list as $k => $v){
+                $list[$k]['id'] = $v['id'];
+                if(empty($v['order_id'])){
+                    $list[$k]['order_id'] = "0";
+                }else{
+                    if($v['order_id'] == $order_id){
+                        $list[$k]['order_id'] = "0";
+                    }else{
+                        $tmp = explode(',', $v['order_id']);
+                        foreach ($tmp as $key => $val){
+                            if($val == $order_id){
+                                unset($tmp[$key]);
+                                break;
+                            }
+                        }
+                        $list[$k]['order_id'] = implode(',', $tmp);
+                    }
+                }
+            }
+            //数据准备完毕
+            $sql = "update t_houses_points SET order_id = CASE id";
+            foreach ($list as $k => $v){
+                $sql.= " WHEN {$v['id']} THEN {$v['order_id']}";
+            }
+            $sql .= " END where id in(";
+            $sql .= implode(',', $point_ids);
+            $sql .= ')';
+
+            $this->db->query($sql);
+            
+            return $this->db->count_all_results();
+        }
     }
     
     /**

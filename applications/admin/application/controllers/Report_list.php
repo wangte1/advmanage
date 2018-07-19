@@ -178,6 +178,7 @@ class Report_list extends MY_Controller{
             if($info['usable'] == 0){
                 $point_up = [
                     'point_status' => 1,
+                    'order_id' => "",
                     'lock_num' => 0,
                     'ad_use_num' => 0,
                     'customer_id' => 0,
