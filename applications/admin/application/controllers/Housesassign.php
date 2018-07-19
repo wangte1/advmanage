@@ -79,6 +79,17 @@ class Housesassign extends MY_Controller{
         $data['data_count'] = (int) count($data_count);
         $data['page'] = $page;
         
+        //提取组长id
+        $data['groupList'] = [];
+        $group_id = array_column($data['list'], 'group_id');
+        if(count($group_id)){
+            $group_id = array_unique($group_id);
+            $group_list = $this->Madmins->get_lists('id, fullname', ['in' => ['id' => $group_id]]);
+            if($group_list){
+                $data['groupList'] = $group_list;
+            }
+        }
+        
         if($data['list']){
             $ordercodes = array_column($data['list'], 'order_code');
             $orderList = $this->Mhouses_orders->get_lists('order_code, order_type, release_start_time, release_end_time, total_price', ['in' => ['order_code' => $ordercodes], 'pid' => 0]);
