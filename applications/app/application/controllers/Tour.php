@@ -316,6 +316,15 @@ class Tour extends MY_Controller {
         if(!$img_url){
             $this->return_json(['code' => 0, 'msg' => '请拍照上传图片']);
         }
+        $pointInfo = $this->Mhouses_points->get_one('tour_time', ['id' => $point_id]);
+        if(!$pointInfo){
+            $this->return_json(['code' => 0, 'msg' => '点位不存在']);
+        }
+        //计算已巡视的时间隔
+        $trou_time = (time() - strtotime($pointInfo['tour_time']));
+        if($trou_time < $this->time){
+            $this->return_json(['code' => 0, 'msg' => '已巡视，请勿重复提交']);
+        }
         $status = $this->input->get_post('status');
         $create_time = date('Y-m-d H:i:s');
         $add = [

@@ -1155,6 +1155,7 @@ class Housesorders extends MY_Controller{
     }
     
     public function loadAllImgByHouse(){
+        set_time_limit(0);
         $data = $this->data;
         $data['id'] = $id = $this->input->get('id');
         $data['info'] = $this->Mhouses_orders->get_one("*", array('id' => $id));
@@ -1185,7 +1186,6 @@ class Housesorders extends MY_Controller{
             }
         }
         
-        //提取近景图片
         $imgDir = '/mnt/www/advmanage/applications/admin';
         $saveDir = '/mnt/www/advmanage/applications/admin/excel/';
         $tmpDirName = date('Ymd').'/'.$this->data['userInfo']['id'];
@@ -1193,7 +1193,7 @@ class Housesorders extends MY_Controller{
         if(!file_exists($allPath)){
             exec("mkdir -p ".$allPath);
         }
-        //复制并重命名图片
+        //提取近景图片复制并重命名图片
         $num = 0;
         foreach ($data['points'] as $k => $v){
             if(!empty($v['img'])){
