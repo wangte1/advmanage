@@ -254,6 +254,7 @@ class Housesassign extends MY_Controller{
                 $insert_data[$k]['order_code'] = $orderInfo['order_code'];
                 $insert_data[$k]['point_ids'] = implode(',', $v['point_ids']);
                 $insert_data[$k]['group_id'] = $v['id'];
+                $insert_data[$k]['create_time'] = date('Y-n-d H:i:s', time());
             }
             //批量插入
             $res = $tmp_moudle->create_batch($insert_data);
