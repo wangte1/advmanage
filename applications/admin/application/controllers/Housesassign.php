@@ -96,10 +96,12 @@ class Housesassign extends MY_Controller{
             if($orderList){
                 foreach ($orderList  as $k => $v){
                     foreach ($data['list'] as $k1 => $v1){
-                        $data['list'][$k1]['order_type'] = $v['order_type'];
-                        $data['list'][$k1]['release_start_time'] = $v['release_start_time'];
-                        $data['list'][$k1]['release_end_time'] = $v['release_end_time'];
-                        $data['list'][$k1]['total_price'] = $v['total_price'];
+                        if($v['order_code'] == $v1['order_code']){
+                            $data['list'][$k1]['order_type'] = $v['order_type'];
+                            $data['list'][$k1]['release_start_time'] = $v['release_start_time'];
+                            $data['list'][$k1]['release_end_time'] = $v['release_end_time'];
+                            $data['list'][$k1]['total_price'] = $v['total_price'];
+                        }
                     }
                 }
             }
