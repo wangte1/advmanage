@@ -40,7 +40,7 @@
                     <h1>派单详情</h1>
                     <br>
                     <p>
-                    	<a href="/housesconfirm">
+                    	<a onclick="history.back();">
 	                    	<button class="btn btn-warning btn-xs">
 								<i class="ace-icon fa fa-reply icon-only"></i>返回
 							</button>
