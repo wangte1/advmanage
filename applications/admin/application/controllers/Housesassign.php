@@ -79,16 +79,29 @@ class Housesassign extends MY_Controller{
         $data['data_count'] = (int) count($data_count);
         $data['page'] = $page;
         
+        //提取组长id
+        $data['groupList'] = [];
+        $group_id = array_column($data['list'], 'group_id');
+        if(count($group_id)){
+            $group_id = array_unique($group_id);
+            $group_list = $this->Madmins->get_lists('id, fullname', ['in' => ['id' => $group_id]]);
+            if($group_list){
+                $data['groupList'] = $group_list;
+            }
+        }
+        
         if($data['list']){
             $ordercodes = array_column($data['list'], 'order_code');
             $orderList = $this->Mhouses_orders->get_lists('order_code, order_type, release_start_time, release_end_time, total_price', ['in' => ['order_code' => $ordercodes], 'pid' => 0]);
             if($orderList){
                 foreach ($orderList  as $k => $v){
                     foreach ($data['list'] as $k1 => $v1){
-                        $data['list'][$k1]['order_type'] = $v['order_type'];
-                        $data['list'][$k1]['release_start_time'] = $v['release_start_time'];
-                        $data['list'][$k1]['release_end_time'] = $v['release_end_time'];
-                        $data['list'][$k1]['total_price'] = $v['total_price'];
+                        if($v['order_code'] == $v1['order_code']){
+                            $data['list'][$k1]['order_type'] = $v['order_type'];
+                            $data['list'][$k1]['release_start_time'] = $v['release_start_time'];
+                            $data['list'][$k1]['release_end_time'] = $v['release_end_time'];
+                            $data['list'][$k1]['total_price'] = $v['total_price'];
+                        }
                     }
                 }
             }
@@ -243,6 +256,7 @@ class Housesassign extends MY_Controller{
                 $insert_data[$k]['order_code'] = $orderInfo['order_code'];
                 $insert_data[$k]['point_ids'] = implode(',', $v['point_ids']);
                 $insert_data[$k]['group_id'] = $v['id'];
+                $insert_data[$k]['create_time'] = date('Y-m-d H:i:s', time());
             }
             //批量插入
             $res = $tmp_moudle->create_batch($insert_data);

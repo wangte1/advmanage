@@ -423,7 +423,7 @@ class Housesorders extends MY_Controller{
                     $this->Mhouses_points->update_info($update_data, $where_point);
                     
                 }
-                //$this->delWorkerOrderByPointIdAndOrderId($del, $id);
+                $this->delWorkerOrderByPointIdAndOrderId($del, $id);
             }
 
             //占用已选的点位
@@ -1153,6 +1153,62 @@ class Housesorders extends MY_Controller{
         $objWriter->save('php://output');
         
     }
+    
+    public function loadAllImgByHouse(){
+        set_time_limit(0);
+        $data = $this->data;
+        $data['id'] = $id = $this->input->get('id');
+        $data['info'] = $this->Mhouses_orders->get_one("*", array('id' => $id));
+        
+        //查询子订单id
+        $sonOrder = $this->Mhouses_orders->get_lists("id", array('pid' => $id));
+        if($sonOrder){
+            $order_ids = array_column($sonOrder, 'id');
+            $workerOrder = $this->Mhouses_work_order->get_lists("id", ['in' => ['order_id' => $order_ids], 'type' => 1]);
+            //提取所有子详情
+            $pids = array_column($workerOrder, 'id');
+            if($pids){
+                $imglist = $this->Mhouses_work_order_detail->get_lists('point_id,no_img, pano_img', ['in' => ['pid' => $pids]]);
+            }
+        }
+
+        //获取点位列表
+        $where['in'] = array('A.id' => explode(',', $data['info']['point_ids']));
+        $data['points'] = $pointList = $this->Mhouses_points->get_points_lists($where);
+        foreach ($pointList as $k => $v){
+            $data['points'][$k]['img'] = '';
+            if(isset($imglist)){
+                foreach ($imglist as $key => $val){
+                    if($v['id'] == $val['point_id']){
+                        $data['points'][$k]['img'] = $val['no_img'];
+                    }
+                }
+            }
+        }
+        
+        $imgDir = '/mnt/www/advmanage/applications/admin';
+        $saveDir = '/mnt/www/advmanage/applications/admin/excel/';
+        $tmpDirName = date('Ymd').'/'.$this->data['userInfo']['id'];
+        $allPath = $saveDir.$tmpDirName;
+        if(!file_exists($allPath)){
+            exec("mkdir -p ".$allPath);
+        }
+        //提取近景图片复制并重命名图片
+        $num = 0;
+        foreach ($data['points'] as $k => $v){
+            if(!empty($v['img'])){
+                $copyName = $v['houses_name'].'-'.$v['code'].'.jpg';
+                $cmd = 'cp '.$imgDir.$v['img'].' '.$allPath.'/'.$copyName;
+                exec($cmd);
+                $num++;
+            }
+        }
+        if($num){
+            $this->downloadAllImg();
+        }else{
+            echo "暂无验收图片";
+        }
+    }
 
 
     /**
@@ -1408,6 +1464,7 @@ class Housesorders extends MY_Controller{
                     $point_ids_arr = explode(',', $tmp_list['point_ids']);
                     $point_ids_arr = array_unique($point_ids_arr);//去重，防止被多次执行
                     $point_ids_arr = $this->moveOutReportPoint($point_ids_arr);
+
                     //释放锁定的客户和占用数
                     $_result = $this->release($id, $tmp_list['customer_id']);
                     $where_point['in']['id'] = $point_ids_arr;
@@ -1415,6 +1472,10 @@ class Housesorders extends MY_Controller{
                     $update_data['point_status'] = 1;
                     $this->Mhouses_points->update_info($update_data, $where_point);
                     $this->write_log($data['userInfo']['id'], 2, '释放点位：'.$this->db->last_query());
+                    
+                    //移除点位本次的order_id
+                    $res = $this->delOrderIdForPoint($id, $point_ids_arr);
+                    
                     //更新该订单下所有换画订单的状态为已下画
                     $order_code = $this->Mhouses_orders->get_one('order_code', array('id' => $id))['order_code'];
                     $change_count = $this->Mhouses_changepicorders->count(array('order_code' => $order_code));
@@ -2037,6 +2098,89 @@ class Housesorders extends MY_Controller{
     }
     
     /**
+     * 打包并下载图片
+     * @param array $list
+     */
+    private function downloadAllImg(){
+        
+        $downloadName = md5(time()).'.zip';
+        $basedir = '/mnt/www/advmanage/applications/admin/excel/';
+        $allPath = $basedir.date('Ymd')."/".$this->data['userInfo']['id'];
+        
+        $savePath = $basedir.$downloadName;
+
+        $cmd = "zip -j ".$savePath. ' '. $allPath.'/*';
+        
+        exec($cmd);
+        //以只读方式打开文件，并强制使用二进制模式
+        $fileHandle=fopen($savePath,"rb");
+        if($fileHandle===false){
+            exit("文件找不到: $savePath");
+        }
+        //文件类型是二进制流。设置为utf8编码（支持中文文件名称）
+        header('Content-type:application/octet-stream; charset=utf-8');
+        header("Content-Transfer-Encoding: binary");
+        header("Accept-Ranges: bytes");
+        //文件大小
+        header("Content-Length: ".filesize($savePath));
+        //触发浏览器文件下载功能
+        header('Content-Disposition:attachment;filename="'.urlencode($downloadName).'"');
+        //循环读取文件内容，并输出
+        while(!feof($fileHandle)) {
+            //从文件指针 handle 读取最多 length 个字节（每次输出300k）
+            echo fread($fileHandle, 1024*300);
+        }
+        //关闭文件流
+        fclose($fileHandle);
+        unlink($savePath);
+        exec('rm -rf '.$allPath);
+    }
+    
+    /**
+     * 释放订单，点位的order_id去掉本订单的id
+     * @param number $order_id
+     * @param array $point_ids
+     */
+    private function delOrderIdForPoint($order_id = 0, $point_ids = []){
+        $list = [];
+        $where['in'] = ['id' => $point_ids];
+        $point_list = $this->Mhouses_points->get_lists('id, order_id', $where);
+        if($point_list){
+            foreach ($point_list as $k => $v){
+                $list[$k]['id'] = $v['id'];
+                if(empty($v['order_id'])){
+                    $list[$k]['order_id'] = "";
+                }else{
+                    if($v['order_id'] == $order_id){
+                        $list[$k]['order_id'] = "";
+                    }else{
+                        $tmp = explode(',', $v['order_id']);
+                        foreach ($tmp as $key => $val){
+                            if($val == $order_id){
+                                unset($tmp[$key]);
+                                break;
+                            }
+                        }
+                        $list[$k]['order_id'] = implode(',', $tmp);
+                    }
+                }
+            }
+            //数据准备完毕
+            $sql = "update t_houses_points SET order_id = CASE id";
+            foreach ($list as $k => $v){
+                $sql.= " WHEN {$v['id']} THEN '{$v['order_id']}'";
+            }
+            $sql .= " END where id in(";
+            $sql .= implode(',', $point_ids);
+            $sql .= ')';
+
+            $this->db->query($sql);
+            
+            return $this->db->count_all_results();
+        }
+    }
+    
+    /**
      * 移除工单被删除的点位以及对应已生成的工单记录 
      */
     private function delWorkerOrderByPointIdAndOrderId($point_ids = [], $order_id = 0){
@@ -2047,8 +2191,8 @@ class Housesorders extends MY_Controller{
             foreach ($sonList as $k => $v){
                 //查询工单
                 $type = 1;
-                if($v['order_status'] >= 6){$type = 2;}
-                $tmp = $this->Mhouses_work_order->get_one('id', ['order_id' => $v['id'], 'type' => $type]);
+                if($v['order_status'] > 6){$type = 2;}
+                $tmp = $this->Mhouses_work_order->get_one('id,total', ['order_id' => $v['id'], 'type' => $type]);
                 if($tmp){
                     //判断当前工单是否存在被删除的点位
                     $tmpList = $this->Mhouses_work_order_detail->get_lists('id, point_id', ['pid' => $tmp['id']]);
@@ -2083,6 +2227,13 @@ class Housesorders extends MY_Controller{
                             }else{
                                 $this->write_log($data['userInfo']['id'], 3, '更新子订单id: '.$v['id']);
                             }
+                            
+                            //当前的工单id为 tmp['id'], 原数量是tmp['total']
+                            $nowNum = $this->Mhouses_work_order_detail->count(['pid' => $tmp['id']]);
+                            $decr = $tmp['total'] - $nowNum;
+                            $up['decr'] = ['total' => $decr, 'finish' => $decr, 'pano_num' => $decr];
+                            $this->Mhouses_work_order->update_info($up, ['id' => $tmp['id']]);
+                            $this->write_log($data['userInfo']['id'], 3, '减少sql:'.$this->db->last_query());
                         }
                     }
                 }

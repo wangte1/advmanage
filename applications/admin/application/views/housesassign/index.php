@@ -153,7 +153,16 @@
 			                                            <?php foreach ($list as $key => $value) : ?>
 			                                            <tr>
 			                                                <td class="phone-hide">
-			                                                    <a href="/housesassign/order_detail/<?php echo $value['id'];?>/<?php echo $assign_type;?>/<?php echo $value['assign_status'];?>"><?php echo $value['order_code'];?><?php if($value['pid'] != 0){echo ' (组长派单)';}?></a>
+			                                                    <a href="/housesassign/order_detail/<?php echo $value['id'];?>/<?php echo $assign_type;?>/<?php echo $value['assign_status'];?>">
+			                                                    <?php echo $value['order_code'];?>
+			                                                    <?php if($groupList && $value['group_id']):?>
+			                                                    	<?php foreach ($groupList as $k => $v):?>
+			                                                    		<?php if($v['id'] == $value['group_id']):?>
+			                                                    		(组长<?php echo $v['fullname']?>派单)
+			                                                    		<?php endif;?>
+			                                                    	<?php endforeach;?>
+			                                                    <?php endif;?>
+			                                                    </a>
 			                                                </td>
 			                                                <td><?php echo $order_type_text[$value['order_type']];?></td>
 			                                                <td><?php echo $value['point_ids'] ? count(array_unique(explode(',', $value['point_ids']))) : 0;?>个点位</td>
