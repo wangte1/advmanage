@@ -423,7 +423,7 @@ class Housesorders extends MY_Controller{
                     $this->Mhouses_points->update_info($update_data, $where_point);
                     
                 }
-                //$this->delWorkerOrderByPointIdAndOrderId($del, $id);
+                $this->delWorkerOrderByPointIdAndOrderId($del, $id);
             }
 
             //占用已选的点位
@@ -2191,8 +2191,8 @@ class Housesorders extends MY_Controller{
             foreach ($sonList as $k => $v){
                 //查询工单
                 $type = 1;
-                if($v['order_status'] >= 6){$type = 2;}
-                $tmp = $this->Mhouses_work_order->get_one('id', ['order_id' => $v['id'], 'type' => $type]);
+                if($v['order_status'] > 6){$type = 2;}
+                $tmp = $this->Mhouses_work_order->get_one('id,total', ['order_id' => $v['id'], 'type' => $type]);
                 if($tmp){
                     //判断当前工单是否存在被删除的点位
                     $tmpList = $this->Mhouses_work_order_detail->get_lists('id, point_id', ['pid' => $tmp['id']]);
@@ -2227,6 +2227,13 @@ class Housesorders extends MY_Controller{
                             }else{
                                 $this->write_log($data['userInfo']['id'], 3, '更新子订单id: '.$v['id']);
                             }
+                            
+                            //当前的工单id为 tmp['id'], 原数量是tmp['total']
+                            $nowNum = $this->Mhouses_work_order_detail->count(['pid' => $tmp['id']]);
+                            $decr = $tmp['total'] - $nowNum;
+                            $up['decr'] = ['total' => $decr, 'finish' => $decr, 'pano_num' => $decr];
+                            $this->Mhouses_work_order->update_info($up, ['id' => $tmp['id']]);
+                            $this->write_log($data['userInfo']['id'], 3, '减少sql:'.$this->db->last_query());
                         }
                     }
                 }
