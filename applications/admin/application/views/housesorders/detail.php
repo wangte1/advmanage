@@ -949,37 +949,6 @@
             return false;
         }
 
-
-		if(status == 5) {
-			 var d = dialog({
-               title: '提示信息',
-               content: '工程人员上传验收图片中，当工程人员完成验收图片上传此状态自动更新',
-               okValue: '查看上传情况',
-               ok: function () {
-                   
-               },
-           });
-           d.width(320);
-           d.showModal();
-           return false;
-       }
-        
-
-
-        if (status == 6 && inspect_img_count == 0) {
-            var d = dialog({
-                title: '提示信息',
-                content: '您还没有上传验收图片进行验收！',
-                okValue: '立即上传',
-                ok: function () {
-                    window.location.href = '/housesorders/check_upload_img/<?php echo $info["id"];?>';
-                },
-            });
-            d.width(320);
-            d.showModal();
-            return false;
-        }
-
 		//提前主动变为下画派单
 
 		if(status == 7 && !($(this).parent().hasClass('active'))) {
