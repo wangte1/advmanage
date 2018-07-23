@@ -369,61 +369,74 @@ class Housesorders extends MY_Controller{
             }
             //释放删除的点位
             if(count($del)){
+                //首先先移除空闲的点位
+                $canUseList = $this->Mhouses_points->get_lists("id", ['in' => ['id' => $del], 'point_status' => 1]);
+                if($canUseList){
+                    $canUserIds = array_column($canUseList, 'id');
+                    foreach ($del as $k => $v){
+                        if(in_array($v, $canUserIds)){
+                            unset($del[$k]);
+                        }
+                    }
+                }
                 //排除已报损的点位防止点位报损后被更新为可用状态
                 $point_ids_arr =  $this->moveOutReportPoint($del);
-                $list = $this->Mhouses_points->get_lists('id,customer_id', ['in' => ['id' => $point_ids_arr]]);
-                if($list){
-                    $new = [];
-                    //提取所有点位点位占用的客户
-                    foreach ($list as $k => $v){
-                        $tmp = explode(',', $v['customer_id']);
-                        if(is_array($tmp)){
-                            foreach ($tmp as $key => $val){
-                                $new[$v['id']][] = 0;
+                if(!empty($point_ids_arr)){
+                    $list = $this->Mhouses_points->get_lists('id,customer_id', ['in' => ['id' => $point_ids_arr]]);
+                    if($list){
+                        $new = [];
+                        //提取所有点位点位占用的客户
+                        foreach ($list as $k => $v){
+                            $tmp = explode(',', $v['customer_id']);
+                            if(is_array($tmp)){
+                                foreach ($tmp as $key => $val){
+                                    $new[$v['id']][] = 0;
+                                    if($val){
+                                        $new[$v['id']][] = $val;
+                                    }
+                                }
+                            }else{
+                                $new[$v['id']][] = (int) $tmp;
+                            }
+                        }
+                        //操作点位,去除指定占用的客户
+                        foreach ($new as $k => &$v){
+                            foreach ($v as $key => $val){
+                                if($val == $customer_id) unset($v[$key]);
+                            }
+                        }
+                        //准备更新的数据
+                        foreach ($new as $k => &$v){
+                            $tmp = '';
+                            foreach ($v as $key => $val){
                                 if($val){
-                                    $new[$v['id']][] = $val;
+                                    if($key == 0){
+                                        $tmp.= $val;
+                                    }else{
+                                        $tmp.= ','.$val;
+                                    }
                                 }
                             }
-                        }else{
-                            $new[$v['id']][] = (int) $tmp;
+                            $v = $tmp;
                         }
-                    }
-                    //操作点位,去除指定占用的客户
-                    foreach ($new as $k => &$v){
-                        foreach ($v as $key => $val){
-                            if($val == $customer_id) unset($v[$key]);
+                        $sql = "update t_houses_points SET `ad_use_num` = `ad_use_num` -1, customer_id = CASE id";
+                        foreach ($new as $k => $v){
+                            $sql.= " WHEN $k THEN '$v'";
                         }
+                        $sql.= ' END where id in (';
+                        $sql.= implode(',', $point_ids_arr);
+                        $sql.= ')';
+                        $this->db->query($sql);
+                        //更新点位状态
+                        $where_point['in']['id'] = $point_ids_arr;
+                        $where_point['field']['`ad_num` >'] = '`ad_use_num` + `lock_num`';
+                        $update_data['point_status'] = 1;
+                        $this->Mhouses_points->update_info($update_data, $where_point);
+                        
                     }
-                    //准备更新的数据
-                    foreach ($new as $k => &$v){
-                        $tmp = '';
-                        foreach ($v as $key => $val){
-                            if($val){
-                                if($key == 0){
-                                    $tmp.= $val;
-                                }else{
-                                    $tmp.= ','.$val;
-                                }
-                            }
-                        }
-                        $v = $tmp;
-                    }
-                    $sql = "update t_houses_points SET `ad_use_num` = `ad_use_num` -1, customer_id = CASE id";
-                    foreach ($new as $k => $v){
-                        $sql.= " WHEN $k THEN '$v'";
-                    }
-                    $sql.= ' END where id in (';
-                    $sql.= implode(',', $point_ids_arr);
-                    $sql.= ')';
-                    $this->db->query($sql);
-                    //更新点位状态
-                    $where_point['in']['id'] = $point_ids_arr;
-                    $where_point['field']['`ad_num` >'] = '`ad_use_num` + `lock_num`';
-                    $update_data['point_status'] = 1;
-                    $this->Mhouses_points->update_info($update_data, $where_point);
-                    
+                    $this->delWorkerOrderByPointIdAndOrderId($del, $id);
                 }
-                $this->delWorkerOrderByPointIdAndOrderId($del, $id);
+                
             }
 
             //占用已选的点位
