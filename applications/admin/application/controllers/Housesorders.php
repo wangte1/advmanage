@@ -370,7 +370,7 @@ class Housesorders extends MY_Controller{
             //释放删除的点位
             if(count($del)){
                 //针对冷光订单， 首先先移除空闲的点位
-                if($data['order_type'] == 1){
+                if($data['info']['order_type'] == 1){
                     $canUseList = $this->Mhouses_points->get_lists("id", ['in' => ['id' => $del], 'point_status' => 1]);
                     if($canUseList){
                         $canUserIds = array_column($canUseList, 'id');
@@ -381,7 +381,6 @@ class Housesorders extends MY_Controller{
                         }
                     }
                 }
-                
                 //排除已报损的点位防止点位报损后被更新为可用状态
                 $point_ids_arr =  $this->moveOutReportPoint($del);
                 if(!empty($point_ids_arr)){
@@ -426,7 +425,7 @@ class Housesorders extends MY_Controller{
                         foreach ($new as $k => $v){
                             $sql.= " WHEN $k THEN '$v'";
                         }
-                        $sql.= ' END where id in (';
+                        $sql.= ' END where point_status = 3 and id in (';
                         $sql.= implode(',', $point_ids_arr);
                         $sql.= ')';
                         $this->db->query($sql);
