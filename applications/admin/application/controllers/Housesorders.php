@@ -2249,7 +2249,7 @@ class Housesorders extends MY_Controller{
                             
                             $finish = 0;
                             if($tmp['finish'] > 0){
-                                $res1 = $tmp['finish'] - ($tmp['total'] - $nowNum) ;
+                                $res1 = $tmp['finish'] - ($tmp['total'] - $nowNum);
                                 if( $res1 > 0 ){
                                     $finish = $res1;
                                 }
@@ -2257,7 +2257,7 @@ class Housesorders extends MY_Controller{
                             
                             $pano_num = 0;
                             if($tmp['pano_num'] > 0){
-                                $res2 = $tmp['pano_num'] - ($tmp['total'] - $nowNum) ;
+                                $res2 = $tmp['pano_num'] - ($tmp['total'] - $nowNum);
                                 if( $res2 > 0 ){
                                     $pano_num = $res2;
                                 }
