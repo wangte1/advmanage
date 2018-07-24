@@ -2208,7 +2208,7 @@ class Housesorders extends MY_Controller{
                 //查询工单
                 $type = 1;
                 if($v['order_status'] > 6){$type = 2;}
-                $tmp = $this->Mhouses_work_order->get_one('id,total', ['order_id' => $v['id'], 'type' => $type]);
+                $tmp = $this->Mhouses_work_order->get_one('id,total,finish,pano_num', ['order_id' => $v['id'], 'type' => $type]);
                 if($tmp){
                     //判断当前工单是否存在被删除的点位
                     $tmpList = $this->Mhouses_work_order_detail->get_lists('id, point_id', ['pid' => $tmp['id']]);
@@ -2246,9 +2246,26 @@ class Housesorders extends MY_Controller{
                             
                             //当前的工单id为 tmp['id'], 原数量是tmp['total']
                             $nowNum = $this->Mhouses_work_order_detail->count(['pid' => $tmp['id']]);
-                            $decr = $tmp['total'] - $nowNum;
-                            $up['decr'] = ['total' => $decr, 'finish' => $decr, 'pano_num' => $decr];
+                            
+                            $finish = 0;
+                            if($tmp['finish'] > 0){
+                                $res1 = $tmp['finish'] - ($tmp['total'] - $nowNum) ;
+                                if( $res1 > 0 ){
+                                    $finish = $res1;
+                                }
+                            }
+                            
+                            $pano_num = 0;
+                            if($tmp['pano_num'] > 0){
+                                $res2 = $tmp['pano_num'] - ($tmp['total'] - $nowNum) ;
+                                if( $res2 > 0 ){
+                                    $pano_num = $res2;
+                                }
+                            }
+                            
+                            $up = ['total' => $nowNum, 'finish' => $finish, 'pano_num' => $pano_num];
                             $this->Mhouses_work_order->update_info($up, ['id' => $tmp['id']]);
+                            
                             $this->write_log($data['userInfo']['id'], 3, '减少sql:'.$this->db->last_query());
                         }
                     }
