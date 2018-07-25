@@ -1475,10 +1475,25 @@ class Housesorders extends MY_Controller{
             if($status == 8){
                 if($result){
                     //如果订单已经下画则释放所有点位
-                    $tmp_list = $this->Mhouses_orders->get_one('point_ids, customer_id', ["id"=>$id]);
+                    $tmp_list = $this->Mhouses_orders->get_one('point_ids, customer_id, order_type', ["id"=>$id]);
+                    
                     $point_ids_arr = explode(',', $tmp_list['point_ids']);
                     $point_ids_arr = array_unique($point_ids_arr);//去重，防止被多次执行
-                    $point_ids_arr = $this->moveOutReportPoint($point_ids_arr);
+                    
+                    if($tmp_list['order_type'] == 1){
+                        //获取符合条件的点位
+                        $canDoList = $this->Mhouses_points->get_lists("id", ['in' => ['id' => $point_ids_arr], 'point_status' => 3]);
+                        if($canDoList){
+                            $point_ids_arr = array_column($canDoList, 'id');
+                        }
+                    }else{
+                        //获取符合条件的点位
+                        $where = ['in' => ['id' => $point_ids_arr, 'point_status' => [1,3] ], 'ad_use_num>' => 0];
+                        $canDoList = $this->Mhouses_points->get_lists("id", $where);
+                        if($canDoList){
+                            $point_ids_arr = array_column($canDoList, 'id');
+                        }
+                    }
 
                     //释放锁定的客户和占用数
                     $_result = $this->release($id, $tmp_list['customer_id']);
