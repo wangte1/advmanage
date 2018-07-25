@@ -1775,7 +1775,6 @@ class Housesorders extends MY_Controller{
      * @desc 导出Excel
      */
     public function export2() {
-        $arr_id = explode(",",$_GET['id']);
         $fields = array('code','houses_name','area_name','ban','unit','floor','addr');
         $res = $this->Mhouses_points->get_lists($fields,array('in' => array('code' => explode(',', $_GET['id']))));
         foreach ($res as $k => $v){
@@ -1791,15 +1790,6 @@ class Housesorders extends MY_Controller{
                     break;
             }
         }
-//         $rlist = $this->Mhouses_points_report->get_report_listv([], ['num' => 'desc'], 0, 0, ['C.id']);
-//         $total = array_column($rlist, 'num');
-//         $total = array_sum($total);
-//         foreach ($rlist as $k => $v){
-//             $rlist[$k]['v'] = 0.00;
-//             if($v['num'] > 0){
-//                 $rlist[$k]['v'] = sprintf("%.6f", $v['num']/$total) * 100;
-//             }
-//         }
         //加载phpexcel
         $this->load->library("PHPExcel");
         //设置表头

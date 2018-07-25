@@ -837,7 +837,6 @@
 	
     //导出
 	$('.out').click(function(){
-// 		var id = $(this).attr('data-id');
 		var id = $(this).attr('data-id');
 		location.href='/housesorders/export2?id=' + id;
 		return;
