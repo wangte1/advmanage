@@ -1771,6 +1771,75 @@ class Housesorders extends MY_Controller{
     	$this->load->view('housesorders/check_adv_img', $data);
     }
     
+    /**
+     * @desc 导出Excel
+     */
+    public function export2() {
+        $arr_id = explode(",",$_GET['id']);
+        $fields = array('code','houses_name','area_name','ban','unit','floor','addr');
+        $res = $this->Mhouses_points->get_lists($fields,array('in' => array('code' => explode(',', $_GET['id']))));
+        foreach ($res as $k => $v){
+            switch ($v['addr']){
+                case '1':
+                    $res[$k]['addr'] = '门禁';
+                    break;
+                case '2';
+                    $res[$k]['addr'] = '地面电梯前室';
+                    break;
+                case '3':
+                    $res[$k]['addr'] = '地下电梯前室';
+                    break;
+            }
+        }
+//         $rlist = $this->Mhouses_points_report->get_report_listv([], ['num' => 'desc'], 0, 0, ['C.id']);
+//         $total = array_column($rlist, 'num');
+//         $total = array_sum($total);
+//         foreach ($rlist as $k => $v){
+//             $rlist[$k]['v'] = 0.00;
+//             if($v['num'] > 0){
+//                 $rlist[$k]['v'] = sprintf("%.6f", $v['num']/$total) * 100;
+//             }
+//         }
+        //加载phpexcel
+        $this->load->library("PHPExcel");
+        //设置表头
+        $table_header =  array(
+            '点位编号' => "code",
+            '所属楼盘' => "houses_name",
+            '所属组团' => 'area_name',
+            '点位楼栋' => 'ban',
+            '点位单元' => 'unit',
+            '点位楼层' => 'floor',
+            '点位位置' => 'addr'
+        );
+        $i = 0;
+        foreach($table_header as  $k=>$v){
+            $cell = PHPExcel_Cell::stringFromColumnIndex($i).'1';
+            $this->phpexcel->setActiveSheetIndex(0)->setCellValue($cell, $k);
+            $i++;
+        }
+        $h = 2;
+        foreach($res as $key=>$val){
+            $j = 0;
+            foreach($table_header as $k => $v){
+                $cell = PHPExcel_Cell::stringFromColumnIndex($j++).$h;
+                $value = $val[$v];
+                $this->phpexcel->getActiveSheet(0)->setCellValue($cell, $value.' ');
+            }
+            $h++;
+        }
+        
+        $this->phpexcel->setActiveSheetIndex(0);
+        // 输出
+        header('Content-Type: application/vnd.ms-excel');
+        header('Content-Disposition: attachment;filename=订单详情换上点位表.xls');
+        header('Cache-Control: max-age=0');
+        
+        $objWriter = PHPExcel_IOFactory::createWriter($this->phpexcel, 'Excel5');
+        $objWriter->save('php://output');
+        
+    }
+    
     /*
      * 确认上画和下画
      */

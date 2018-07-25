@@ -580,7 +580,13 @@
                                                     <tr>
                                                         <td class="center"><?php echo $value['operate_time'];?></td>
                                                         <td class="center"><?php echo $value['remove_points'];?></td>
-                                                        <td class="center"><?php echo $value['add_points'];?></td>
+                                                        <td class="center"><?php echo $value['add_points'];?>
+                                                        	<?php if($value['add_points']):?>
+                                                        	<a class="green tooltip-info out" data-id="<?php echo $value['add_points'];?>" data-rel="tooltip" data-placement="top" title="" data-original-title="导出点位">
+                                                                <i class="ace-icon glyphicon glyphicon-print bigger-130"></i>
+                                                            </a>
+                                                            <?php endif;?>
+                                                        </td>
                                                         <!--td class="center">
                                                             <a href="/orders/last_confirmation/<?php echo $value['id'];?>" target="_blank">查看</a>
                                                         </td-->
@@ -827,6 +833,14 @@
 			  area: ['60%', '60%'],
 			  content: '/housesassign/show_points?order_id='+order_id+'&houses_id='+houses_id+'&ban='+ban //iframe的url
 			}); 
+	});
+	
+    //导出
+	$('.out').click(function(){
+// 		var id = $(this).attr('data-id');
+		var id = $(this).attr('data-id');
+		location.href='/housesorders/export2?id=' + id;
+		return;
 	});
 
 	$('.m-confirm').click(function(){
