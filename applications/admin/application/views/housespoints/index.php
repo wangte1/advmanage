@@ -322,8 +322,8 @@
 														<?php endif;?>
 													</td>
 													<td>			
-														<?php if(empty($val['tour_img'])):?>					
-														<img alt="" src="<?php echo $val['tour_img']?>" width="20%">
+														<?php if(!empty($val['tour_img'])):?>					
+															<img alt="" src="<?php echo $val['tour_img']?>" width="20%">
 														<?php endif;?>
 													</td>
                                                     <td>
