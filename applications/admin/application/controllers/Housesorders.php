@@ -369,61 +369,76 @@ class Housesorders extends MY_Controller{
             }
             //释放删除的点位
             if(count($del)){
+                //针对冷光订单， 首先先移除空闲的点位
+                if($data['info']['order_type'] == 1){
+                    $canUseList = $this->Mhouses_points->get_lists("id", ['in' => ['id' => $del], 'point_status' => 1]);
+                    if($canUseList){
+                        $canUserIds = array_column($canUseList, 'id');
+                        foreach ($del as $k => $v){
+                            if(in_array($v, $canUserIds)){
+                                unset($del[$k]);
+                            }
+                        }
+                    }
+                }
                 //排除已报损的点位防止点位报损后被更新为可用状态
                 $point_ids_arr =  $this->moveOutReportPoint($del);
-                $list = $this->Mhouses_points->get_lists('id,customer_id', ['in' => ['id' => $point_ids_arr]]);
-                if($list){
-                    $new = [];
-                    //提取所有点位点位占用的客户
-                    foreach ($list as $k => $v){
-                        $tmp = explode(',', $v['customer_id']);
-                        if(is_array($tmp)){
-                            foreach ($tmp as $key => $val){
-                                $new[$v['id']][] = 0;
+                if(!empty($point_ids_arr)){
+                    $list = $this->Mhouses_points->get_lists('id,customer_id', ['in' => ['id' => $point_ids_arr]]);
+                    if($list){
+                        $new = [];
+                        //提取所有点位点位占用的客户
+                        foreach ($list as $k => $v){
+                            $tmp = explode(',', $v['customer_id']);
+                            if(is_array($tmp)){
+                                foreach ($tmp as $key => $val){
+                                    $new[$v['id']][] = 0;
+                                    if($val){
+                                        $new[$v['id']][] = $val;
+                                    }
+                                }
+                            }else{
+                                $new[$v['id']][] = (int) $tmp;
+                            }
+                        }
+                        //操作点位,去除指定占用的客户
+                        foreach ($new as $k => &$v){
+                            foreach ($v as $key => $val){
+                                if($val == $customer_id) unset($v[$key]);
+                            }
+                        }
+                        //准备更新的数据
+                        foreach ($new as $k => &$v){
+                            $tmp = '';
+                            foreach ($v as $key => $val){
                                 if($val){
-                                    $new[$v['id']][] = $val;
+                                    if($key == 0){
+                                        $tmp.= $val;
+                                    }else{
+                                        $tmp.= ','.$val;
+                                    }
                                 }
                             }
-                        }else{
-                            $new[$v['id']][] = (int) $tmp;
+                            $v = $tmp;
                         }
-                    }
-                    //操作点位,去除指定占用的客户
-                    foreach ($new as $k => &$v){
-                        foreach ($v as $key => $val){
-                            if($val == $customer_id) unset($v[$key]);
+                        $sql = "update t_houses_points SET `ad_use_num` = `ad_use_num` -1, customer_id = CASE id";
+                        foreach ($new as $k => $v){
+                            $sql.= " WHEN $k THEN '$v'";
                         }
+                        $sql.= ' END where point_status = 3 and id in (';
+                        $sql.= implode(',', $point_ids_arr);
+                        $sql.= ')';
+                        $this->db->query($sql);
+                        //更新点位状态
+                        $where_point['in']['id'] = $point_ids_arr;
+                        $where_point['field']['`ad_num` >'] = '`ad_use_num` + `lock_num`';
+                        $update_data['point_status'] = 1;
+                        $this->Mhouses_points->update_info($update_data, $where_point);
+                        
                     }
-                    //准备更新的数据
-                    foreach ($new as $k => &$v){
-                        $tmp = '';
-                        foreach ($v as $key => $val){
-                            if($val){
-                                if($key == 0){
-                                    $tmp.= $val;
-                                }else{
-                                    $tmp.= ','.$val;
-                                }
-                            }
-                        }
-                        $v = $tmp;
-                    }
-                    $sql = "update t_houses_points SET `ad_use_num` = `ad_use_num` -1, customer_id = CASE id";
-                    foreach ($new as $k => $v){
-                        $sql.= " WHEN $k THEN '$v'";
-                    }
-                    $sql.= ' END where id in (';
-                    $sql.= implode(',', $point_ids_arr);
-                    $sql.= ')';
-                    $this->db->query($sql);
-                    //更新点位状态
-                    $where_point['in']['id'] = $point_ids_arr;
-                    $where_point['field']['`ad_num` >'] = '`ad_use_num` + `lock_num`';
-                    $update_data['point_status'] = 1;
-                    $this->Mhouses_points->update_info($update_data, $where_point);
-                    
+                    $this->delWorkerOrderByPointIdAndOrderId($del, $id);
                 }
-                $this->delWorkerOrderByPointIdAndOrderId($del, $id);
+                
             }
 
             //占用已选的点位
@@ -1460,27 +1475,43 @@ class Housesorders extends MY_Controller{
             if($status == 8){
                 if($result){
                     //如果订单已经下画则释放所有点位
-                    $tmp_list = $this->Mhouses_orders->get_one('point_ids, customer_id', ["id"=>$id]);
+                    $tmp_list = $this->Mhouses_orders->get_one('point_ids, customer_id, order_type', ["id"=>$id]);
+                    
                     $point_ids_arr = explode(',', $tmp_list['point_ids']);
                     $point_ids_arr = array_unique($point_ids_arr);//去重，防止被多次执行
-                    $point_ids_arr = $this->moveOutReportPoint($point_ids_arr);
-
-                    //释放锁定的客户和占用数
-                    $_result = $this->release($id, $tmp_list['customer_id']);
-                    $where_point['in']['id'] = $point_ids_arr;
-                    $where_point['field']['`ad_num` >'] = '`ad_use_num` + `lock_num`';
-                    $update_data['point_status'] = 1;
-                    $this->Mhouses_points->update_info($update_data, $where_point);
-                    $this->write_log($data['userInfo']['id'], 2, '释放点位：'.$this->db->last_query());
                     
-                    //移除点位本次的order_id
-                    $res = $this->delOrderIdForPoint($id, $point_ids_arr);
-                    
-                    //更新该订单下所有换画订单的状态为已下画
-                    $order_code = $this->Mhouses_orders->get_one('order_code', array('id' => $id))['order_code'];
-                    $change_count = $this->Mhouses_changepicorders->count(array('order_code' => $order_code));
-                    if ($change_count) {
-                        $this->Mhouses_changepicorders->update_info(array('order_status' => 9), array('order_code' => $order_code));
+                    if($tmp_list['order_type'] == 1){
+                        //获取符合条件的点位
+                        $canDoList = $this->Mhouses_points->get_lists("id", ['in' => ['id' => $point_ids_arr], 'point_status' => 3]);
+                        if($canDoList){
+                            $point_ids_arr = array_column($canDoList, 'id');
+                        }
+                    }else{
+                        //获取符合条件的点位
+                        $where = ['in' => ['id' => $point_ids_arr, 'point_status' => [1,3] ], 'ad_use_num>' => 0];
+                        $canDoList = $this->Mhouses_points->get_lists("id", $where);
+                        if($canDoList){
+                            $point_ids_arr = array_column($canDoList, 'id');
+                        }
+                    }
+                    if(count($point_ids_arr)){
+                        //释放锁定的客户和占用数
+                        $_result = $this->release($id, $tmp_list['customer_id']);
+                        $where_point['in']['id'] = $point_ids_arr;
+                        $where_point['field']['`ad_num` >'] = '`ad_use_num` + `lock_num`';
+                        $update_data['point_status'] = 1;
+                        $this->Mhouses_points->update_info($update_data, $where_point);
+                        $this->write_log($data['userInfo']['id'], 2, '释放点位：'.$this->db->last_query());
+                        
+                        //移除点位本次的order_id
+                        $res = $this->delOrderIdForPoint($id, $point_ids_arr);
+                        
+                        //更新该订单下所有换画订单的状态为已下画
+                        $order_code = $this->Mhouses_orders->get_one('order_code', array('id' => $id))['order_code'];
+                        $change_count = $this->Mhouses_changepicorders->count(array('order_code' => $order_code));
+                        if ($change_count) {
+                            $this->Mhouses_changepicorders->update_info(array('order_status' => 9), array('order_code' => $order_code));
+                        }
                     }
                 }
             }
@@ -1756,6 +1787,65 @@ class Housesorders extends MY_Controller{
     	$this->load->view('housesorders/check_adv_img', $data);
     }
     
+    /**
+      * @desc 导出Excel
+      */
+    public function export2() {
+        $fields = array('code','houses_name','area_name','ban','unit','floor','addr');
+        $res = $this->Mhouses_points->get_lists($fields,array('in' => array('code' => explode(',', $_GET['id']))));
+        foreach ($res as $k => $v){
+            switch ($v['addr']){
+                case '1':
+                    $res[$k]['addr'] = '门禁';
+                    break;
+                case '2';
+                    $res[$k]['addr'] = '地面电梯前室';
+                    break;
+                case '3':
+                    $res[$k]['addr'] = '地下电梯前室';
+                    break;
+             }
+        }
+        //加载phpexcel
+        $this->load->library("PHPExcel");
+        //设置表头
+        $table_header =  array(
+                '点位编号' => "code",
+                '所属楼盘' => "houses_name",
+                '所属组团' => 'area_name',
+                '点位楼栋' => 'ban',
+                '点位单元' => 'unit',
+                '点位楼层' => 'floor',
+                '点位位置' => 'addr'
+            );
+        $i = 0;
+        foreach($table_header as  $k=>$v){
+            $cell = PHPExcel_Cell::stringFromColumnIndex($i).'1';
+            $this->phpexcel->setActiveSheetIndex(0)->setCellValue($cell, $k);
+            $i++;
+        }
+        $h = 2;
+        foreach($res as $key=>$val){
+            $j = 0;
+            foreach($table_header as $k => $v){
+                $cell = PHPExcel_Cell::stringFromColumnIndex($j++).$h;
+                $value = $val[$v];
+                $this->phpexcel->getActiveSheet(0)->setCellValue($cell, $value.' ');
+            }
+            $h++;
+        }
+                    
+        $this->phpexcel->setActiveSheetIndex(0);
+        // 输出
+        header('Content-Type: application/vnd.ms-excel');
+        header('Content-Disposition: attachment;filename=订单详情换上点位表.xls');
+        header('Cache-Control: max-age=0');
+
+        $objWriter = PHPExcel_IOFactory::createWriter($this->phpexcel, 'Excel5');
+        $objWriter->save('php://output');
+
+    }
+    
     /*
      * 确认上画和下画
      */
@@ -1985,6 +2075,128 @@ class Housesorders extends MY_Controller{
         return $array;
     }
     
+    public function merge_loads(){
+        $ids = $this->input->get('ids');
+        if(!$ids) $this->return_json(['code' => 0, 'msg' => '参数错误']);
+        $ids = explode(',', $ids);
+        $orderList = $this->Mhouses_orders->get_lists('id as order_id, point_ids,customer_id', ['in' => ['id' => $ids]], [], 0, 0, ['id']);
+        if(!$orderList) $this->return_json(['code' => 0, 'msg' => '暂无数据']);
+        $point_ids = [];
+        foreach ($orderList as $k => $v){
+            if($v['point_ids']){
+                $tmp = explode(',', $v['point_ids']);
+                foreach ($tmp as $key => $val){
+                    array_push($point_ids, $val);
+                }
+            }
+        }
+        $point_ids = array_unique($point_ids);
+        $where['in']['A.id'] = $point_ids;
+        $list = $this->Mhouses_points->get_points_lists_of_merge_load($where);
+        if($list){
+            foreach ($list as $key => $val){
+                if($val['addr'] == 1){
+                    $list[$key]['addr'] = '门禁';
+                }else{
+                    $list[$key]['addr'] = '电梯前室';
+                }
+                if($val['type_id'] == 1){
+                    $list[$key]['type'] = '冷光灯箱';
+                }else{
+                    $list[$key]['type'] = '广告机';
+                }
+            }
+        }
+        //提取所有order_id
+        $order_ids = [];
+        $order_ids_tmp = array_column($list, 'order_id');
+        if($order_ids_tmp){
+            foreach ($order_ids_tmp as $k => $v){
+                if(!empty($v)){
+                    $tmp = explode(',', $v);
+                    foreach ($tmp as $key => $val){
+                        if(!in_array($val, $order_ids)){
+                            array_push($order_ids, $val);
+                        }
+                    }
+                }
+            }
+        }
+        $orderList = $this->Mhouses_orders->get_lists('id, customer_id', ['in' => ['id' => $order_ids]]);
+        if($orderList){
+            //提取客户id
+            $customerids = array_column($orderList, 'customer_id');
+            if(!$customerids){
+                $this->return_json(['code' => 0, 'msg' => '这些订单暂时无法使用此功能']);
+            }
+            $customerList = $this->Mhouses_customers->get_lists("id,name", ['in' => ['id' => $customerids]]);
+            
+            foreach ($orderList as $k => $v){
+                $orderList[$k]['customer_name'] = '';
+                foreach ($customerList as $key => $val){
+                    if($v['customer_id'] == $val['id']){
+                        $orderList[$k]['customer_name'] = $val['name'];
+                    }
+                }
+            }
+            
+            foreach ($list as $k => $v){
+                $list[$k]['customer_list'] = '';
+                if($v['order_id']){
+                    $tmp = explode(',', $v['order_id']);
+                    foreach ($orderList as $key => $val){
+                        if(in_array($val['id'], $tmp)){
+                            $list[$k]['customer_list'] .= $val['customer_name']."、";
+                        }
+                    }
+                }
+            }
+        }
+        //加载phpexcel
+        $this->load->library("PHPExcel");
+        //设置表头
+        $table_header =  array(
+            '序号' => "id",
+            '点位编号'=>"code",
+            '楼盘'=>"houses_name",
+            '组团'=>"houses_area_name",
+            '楼栋'=>"ban",
+            '单元'=>"unit",
+            '楼层'=>"floor",
+            '点位位置'=>"addr",
+            '规格'=>"size",
+            '类型' => 'type',
+            '档期客户'=>"customer_list"
+        );
+        $i = 0;
+        foreach($table_header as  $k=>$v){
+            $cell = PHPExcel_Cell::stringFromColumnIndex($i).'1';
+            $this->phpexcel->setActiveSheetIndex(0)->setCellValue($cell, $k);
+            $i++;
+        }
+        //填充数据
+        $h = 2;
+        foreach($list as $key => $val){
+            $j = 0;
+            foreach($table_header as $k => $v){
+                $cell = PHPExcel_Cell::stringFromColumnIndex($j++).$h;
+                $value = $val[$v];
+                $this->phpexcel->getActiveSheet(0)->setCellValue($cell, $value);
+            }
+            $h++;
+        }
+        
+        $this->phpexcel->setActiveSheetIndex(0);
+        // 输出
+        header('Content-Type: application/vnd.ms-excel');
+        header('Content-Disposition: attachment;filename='.date('Ymd').'合并导出投放点位表.xls');
+        header('Cache-Control: max-age=0');
+        
+        $objWriter = PHPExcel_IOFactory::createWriter($this->phpexcel, 'Excel5');
+        $objWriter->save('php://output');
+
+    }
+    
     public function merge_load(){
         $ids = $this->input->get('ids');
         if(!$ids) $this->return_json(['code' => 0, 'msg' => '参数错误']);
@@ -2064,7 +2276,6 @@ class Housesorders extends MY_Controller{
                 unset($orderList[$k]['point_ids']);
             }
         }
-        
         //数据准备就绪， 绘制表头
         $i = 0;
         foreach($table_header as  $k=>$v){
@@ -2192,7 +2403,7 @@ class Housesorders extends MY_Controller{
                 //查询工单
                 $type = 1;
                 if($v['order_status'] > 6){$type = 2;}
-                $tmp = $this->Mhouses_work_order->get_one('id,total', ['order_id' => $v['id'], 'type' => $type]);
+                $tmp = $this->Mhouses_work_order->get_one('id,total,finish,pano_num', ['order_id' => $v['id'], 'type' => $type]);
                 if($tmp){
                     //判断当前工单是否存在被删除的点位
                     $tmpList = $this->Mhouses_work_order_detail->get_lists('id, point_id', ['pid' => $tmp['id']]);
@@ -2230,9 +2441,26 @@ class Housesorders extends MY_Controller{
                             
                             //当前的工单id为 tmp['id'], 原数量是tmp['total']
                             $nowNum = $this->Mhouses_work_order_detail->count(['pid' => $tmp['id']]);
-                            $decr = $tmp['total'] - $nowNum;
-                            $up['decr'] = ['total' => $decr, 'finish' => $decr, 'pano_num' => $decr];
+                            
+                            $finish = 0;
+                            if($tmp['finish'] > 0){
+                                $res1 = $tmp['finish'] - ($tmp['total'] - $nowNum);
+                                if( $res1 > 0 ){
+                                    $finish = $res1;
+                                }
+                            }
+                            
+                            $pano_num = 0;
+                            if($tmp['pano_num'] > 0){
+                                $res2 = $tmp['pano_num'] - ($tmp['total'] - $nowNum);
+                                if( $res2 > 0 ){
+                                    $pano_num = $res2;
+                                }
+                            }
+                            
+                            $up = ['total' => $nowNum, 'finish' => $finish, 'pano_num' => $pano_num];
                             $this->Mhouses_work_order->update_info($up, ['id' => $tmp['id']]);
+                            
                             $this->write_log($data['userInfo']['id'], 3, '减少sql:'.$this->db->last_query());
                         }
                     }

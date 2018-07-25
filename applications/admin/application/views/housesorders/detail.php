@@ -580,7 +580,13 @@
                                                     <tr>
                                                         <td class="center"><?php echo $value['operate_time'];?></td>
                                                         <td class="center"><?php echo $value['remove_points'];?></td>
-                                                        <td class="center"><?php echo $value['add_points'];?></td>
+                                                        <td class="center"><?php echo $value['add_points'];?>
+                                                        	<?php if($value['add_points']):?>
+                                                        	<a class="green tooltip-info out" data-id="<?php echo $value['add_points'];?>" data-rel="tooltip" data-placement="top" title="" data-original-title="导出点位">
+                                                                <i class="ace-icon glyphicon glyphicon-print bigger-130"></i>
+                                                            </a>
+                                                            <?php endif;?>
+                                                        </td>
                                                         <!--td class="center">
                                                             <a href="/orders/last_confirmation/<?php echo $value['id'];?>" target="_blank">查看</a>
                                                         </td-->
@@ -828,6 +834,13 @@
 			  content: '/housesassign/show_points?order_id='+order_id+'&houses_id='+houses_id+'&ban='+ban //iframe的url
 			}); 
 	});
+	
+    //导出
+	$('.out').click(function(){
+		var id = $(this).attr('data-id');
+		location.href='/housesorders/export2?id=' + id;
+		return;
+	});
 
 	$('.m-confirm').click(function(){
 		var assign_id = $(this).attr('data-id');
@@ -942,37 +955,6 @@
                 okValue: '查看派单情况',
                 ok: function () {
                     
-                },
-            });
-            d.width(320);
-            d.showModal();
-            return false;
-        }
-
-
-		if(status == 5) {
-			 var d = dialog({
-               title: '提示信息',
-               content: '工程人员上传验收图片中，当工程人员完成验收图片上传此状态自动更新',
-               okValue: '查看上传情况',
-               ok: function () {
-                   
-               },
-           });
-           d.width(320);
-           d.showModal();
-           return false;
-       }
-        
-
-
-        if (status == 6 && inspect_img_count == 0) {
-            var d = dialog({
-                title: '提示信息',
-                content: '您还没有上传验收图片进行验收！',
-                okValue: '立即上传',
-                ok: function () {
-                    window.location.href = '/housesorders/check_upload_img/<?php echo $info["id"];?>';
                 },
             });
             d.width(320);

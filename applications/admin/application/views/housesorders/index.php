@@ -35,6 +35,7 @@
                 <div class="page-header">
                     <a href="/housesorders/order_type" class="btn btn-sm btn-primary"><i class="fa fa-plus-square" aria-hidden="true"></i> 新建自有画面订单</a>
                     <a  class="btn btn-sm btn-success loadout"><i class="fa fa-cloud-download"></i> 导出勾选的订单点位</a>
+                    <a  class="btn btn-sm btn-success loadouts"><i class="fa fa-cloud-download"></i> 导出勾选广告机订单点位</a>
                 </div>
 
                 <div class="row">
@@ -427,6 +428,36 @@
 		}
 		var index = layer.alert(msg, function(){
 			var url = '/housesorders/merge_load?ids=';
+			for(var i=0; i<len; i++){
+				if(i == 0){
+					url += arr[i];
+				}else{
+					url += ',' + arr[i];
+				}
+			}
+			layer.close(index);
+			location.href = url;
+		});
+    });
+
+    $('.loadouts').on('click', function(){
+		var arr = [];
+		$('.load_one').each(function(){
+			if($(this).prop('checked')){
+				arr.push($(this).val());
+			}
+		});
+		var len = arr.length;
+		if(len < 1){
+			layer.alert('请至少选择一个订单');
+			return;
+		}
+		var msg = '确认导出此订单的点位吗？';
+		if(len > 1){
+			msg = '确认合并导出已勾选的'+len+'个订单的点位吗？';
+		}
+		var index = layer.alert(msg, function(){
+			var url = '/housesorders/merge_loads?ids=';
 			for(var i=0; i<len; i++){
 				if(i == 0){
 					url += arr[i];

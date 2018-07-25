@@ -241,10 +241,11 @@
                                                 <th>占用客户</th>
                                                 <th>备注</th>
                                                 <th>报损</th>
+                                                <th>巡视照片</th>
                                                 <th>操作</th>
                                             </tr>
                                         </thead>
-                                        <tbody>
+                                        <tbody id="layer-photos-demo" class="layer-photos-demo">
                                         <?php
                                         if($list){
                                             foreach($list as $key=>$val){
@@ -318,6 +319,11 @@
 													<td>
 														<?php if($val['point_status'] == 4):?>
 														<button class="btn-primary see-report">已报损</button>
+														<?php endif;?>
+													</td>
+													<td>			
+														<?php if(!empty($val['tour_img'])):?>					
+															<img alt="点位编号：<?php echo $val['code'];?>" src="<?php echo $val['tour_img']?>" style="width:25px;height:25px;cursor:pointer;">
 														<?php endif;?>
 													</td>
                                                     <td>
@@ -553,6 +559,13 @@
     		  content: '/housespoints/report?id='+id
     	});
     }
+</script>
+<script>
+	//调用示例
+    layer.photos({
+      photos: '#layer-photos-demo'
+      ,anim: 5 //0-6的选择，指定弹出图片动画类型，默认随机（请注意，3.0之前的版本用shift参数）
+    }); 
 </script>
 <!-- 底部 -->
 <?php $this->load->view("common/bottom");?>
