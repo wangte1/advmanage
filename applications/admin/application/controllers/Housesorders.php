@@ -2075,6 +2075,128 @@ class Housesorders extends MY_Controller{
         return $array;
     }
     
+    public function merge_loads(){
+        $ids = $this->input->get('ids');
+        if(!$ids) $this->return_json(['code' => 0, 'msg' => '参数错误']);
+        $ids = explode(',', $ids);
+        $orderList = $this->Mhouses_orders->get_lists('id as order_id, point_ids,customer_id', ['in' => ['id' => $ids]], [], 0, 0, ['id']);
+        if(!$orderList) $this->return_json(['code' => 0, 'msg' => '暂无数据']);
+        $point_ids = [];
+        foreach ($orderList as $k => $v){
+            if($v['point_ids']){
+                $tmp = explode(',', $v['point_ids']);
+                foreach ($tmp as $key => $val){
+                    array_push($point_ids, $val);
+                }
+            }
+        }
+        $point_ids = array_unique($point_ids);
+        $where['in']['A.id'] = $point_ids;
+        $list = $this->Mhouses_points->get_points_lists_of_merge_load($where);
+        if($list){
+            foreach ($list as $key => $val){
+                if($val['addr'] == 1){
+                    $list[$key]['addr'] = '门禁';
+                }else{
+                    $list[$key]['addr'] = '电梯前室';
+                }
+                if($val['type_id'] == 1){
+                    $list[$key]['type'] = '冷光灯箱';
+                }else{
+                    $list[$key]['type'] = '广告机';
+                }
+            }
+        }
+        //提取所有order_id
+        $order_ids = [];
+        $order_ids_tmp = array_column($list, 'order_id');
+        if($order_ids_tmp){
+            foreach ($order_ids_tmp as $k => $v){
+                if(!empty($v)){
+                    $tmp = explode(',', $v);
+                    foreach ($tmp as $key => $val){
+                        if(!in_array($val, $order_ids)){
+                            array_push($order_ids, $val);
+                        }
+                    }
+                }
+            }
+        }
+        $orderList = $this->Mhouses_orders->get_lists('id, customer_id', ['in' => ['id' => $order_ids]]);
+        if($orderList){
+            //提取客户id
+            $customerids = array_column($orderList, 'customer_id');
+            if(!$customerids){
+                $this->return_json(['code' => 0, 'msg' => '这些订单暂时无法使用此功能']);
+            }
+            $customerList = $this->Mhouses_customers->get_lists("id,name", ['in' => ['id' => $customerids]]);
+            
+            foreach ($orderList as $k => $v){
+                $orderList[$k]['customer_name'] = '';
+                foreach ($customerList as $key => $val){
+                    if($v['customer_id'] == $val['id']){
+                        $orderList[$k]['customer_name'] = $val['name'];
+                    }
+                }
+            }
+            
+            foreach ($list as $k => $v){
+                $list[$k]['customer_list'] = '';
+                if($v['order_id']){
+                    $tmp = explode(',', $v['order_id']);
+                    foreach ($orderList as $key => $val){
+                        if(in_array($val['id'], $tmp)){
+                            $list[$k]['customer_list'] .= $val['customer_name']."、";
+                        }
+                    }
+                }
+            }
+        }
+        //加载phpexcel
+        $this->load->library("PHPExcel");
+        //设置表头
+        $table_header =  array(
+            '序号' => "id",
+            '点位编号'=>"code",
+            '楼盘'=>"houses_name",
+            '组团'=>"houses_area_name",
+            '楼栋'=>"ban",
+            '单元'=>"unit",
+            '楼层'=>"floor",
+            '点位位置'=>"addr",
+            '规格'=>"size",
+            '类型' => 'type',
+            '档期客户'=>"customer_list"
+        );
+        $i = 0;
+        foreach($table_header as  $k=>$v){
+            $cell = PHPExcel_Cell::stringFromColumnIndex($i).'1';
+            $this->phpexcel->setActiveSheetIndex(0)->setCellValue($cell, $k);
+            $i++;
+        }
+        //填充数据
+        $h = 2;
+        foreach($list as $key => $val){
+            $j = 0;
+            foreach($table_header as $k => $v){
+                $cell = PHPExcel_Cell::stringFromColumnIndex($j++).$h;
+                $value = $val[$v];
+                $this->phpexcel->getActiveSheet(0)->setCellValue($cell, $value);
+            }
+            $h++;
+        }
+        
+        $this->phpexcel->setActiveSheetIndex(0);
+        // 输出
+        header('Content-Type: application/vnd.ms-excel');
+        header('Content-Disposition: attachment;filename='.date('Ymd').'合并导出投放点位表.xls');
+        header('Cache-Control: max-age=0');
+        
+        $objWriter = PHPExcel_IOFactory::createWriter($this->phpexcel, 'Excel5');
+        $objWriter->save('php://output');
+
+    }
+    
     public function merge_load(){
         $ids = $this->input->get('ids');
         if(!$ids) $this->return_json(['code' => 0, 'msg' => '参数错误']);
