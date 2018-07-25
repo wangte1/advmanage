@@ -2154,7 +2154,6 @@ class Housesorders extends MY_Controller{
                 unset($orderList[$k]['point_ids']);
             }
         }
-        
         //数据准备就绪， 绘制表头
         $i = 0;
         foreach($table_header as  $k=>$v){

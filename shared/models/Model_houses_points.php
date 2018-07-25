@@ -261,7 +261,7 @@ class Model_houses_points extends MY_Model {
             $tmp_count = 'count(0) as count,';
         }
         
-        $this->db->select($tmp_count.'A.id, A.code, A.houses_id, A.ban, A.unit, A.floor, A.area_id,A.type_id, C.name as houses_area_name, A.point_status, B.province, B.city, B.area,B.name AS houses_name, B.put_trade,B.grade,B.is_check_out,C.grade AS area_grade,D.size');
+        $this->db->select($tmp_count.'A.id, A.code, A.order_id, A.houses_id, A.ban, A.unit, A.floor, A.area_id,A.type_id, C.name as houses_area_name, A.point_status, B.province, B.city, B.area,B.name AS houses_name, B.put_trade,B.grade,B.is_check_out,C.grade AS area_grade,D.size');
         $this->db->from('t_houses_points A', 'left');
         $this->db->join('t_houses B', 'A.houses_id = B.id', 'left');
         $this->db->join('t_houses_area C', 'A.area_id = C.id', 'left');
