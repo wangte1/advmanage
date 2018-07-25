@@ -241,6 +241,7 @@
                                                 <th>占用客户</th>
                                                 <th>备注</th>
                                                 <th>报损</th>
+                                                <th>巡视照片</th>
                                                 <th>操作</th>
                                             </tr>
                                         </thead>
@@ -318,6 +319,11 @@
 													<td>
 														<?php if($val['point_status'] == 4):?>
 														<button class="btn-primary see-report">已报损</button>
+														<?php endif;?>
+													</td>
+													<td>			
+														<?php if(empty($val['tour_img'])):?>					
+														<img alt="" src="<?php echo $val['tour_img']?>" width="20%">
 														<?php endif;?>
 													</td>
                                                     <td>

@@ -16,7 +16,8 @@ class Housespoints extends MY_Controller{
         	'Model_houses_points_format' => 'Mhouses_points_format',
         	'Model_houses_customers' => 'Mhouses_customers',
             'Model_houses_points_report' => 'Mhouses_points_report',
-            'Model_houses_diy_area' => 'Mhouses_diy_area'
+            'Model_houses_diy_area' => 'Mhouses_diy_area',
+            'Model_houses_tour_points' => 'Mhouses_tour_points'
          ]);
         $this->data['code'] = 'community_manage';
         $this->data['active'] = 'houses_points_list';
@@ -75,6 +76,9 @@ class Housespoints extends MY_Controller{
         
         //提取本次的点位
         $point_ids = array_column($data['list'], 'id');
+        $tour_ids = array_column($data['list'], "tour_id");
+        $tourList = $this->Mhouses_tour_points->get_lists("id,img", ['in' => ['id' => $tour_ids]]);
+
         //查询报修表是否存在改点位的已报损但可以上画的点位
         $report_list = [];
         if($point_ids){
@@ -91,6 +95,17 @@ class Housespoints extends MY_Controller{
                 foreach ($report_list as $key => $val){
                     if($v['id'] == $val['point_id']){
                         $data['list'][$k]['can_report'] = 0;
+                    }
+                }
+            }
+        }
+        
+        if($tourList){
+            foreach ($data['list'] as $k => $v){
+                $data['list'][$k]['tour_img'] = '';
+                foreach ($tourList as $k2 => $v2){
+                    if($v['tour_id'] == $v2['id']){
+                        $data['list'][$k]['tour_img'] = $v2['img'];
                     }
                 }
             }
