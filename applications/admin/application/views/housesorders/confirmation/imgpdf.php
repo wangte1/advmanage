@@ -103,23 +103,23 @@
         <!-- 验收图片 -->
         <?php foreach ($points_lists as $k => $v):?>
         <?php if($k == ($page-1)):?>
-        <div id="pic-panel" style="background-color:#fff;">
+        <div id="pic-panel" style="background-color:#fff;width: 70%;margin: 0 auto;margin-top: 5%;">
        	<table class="detail-info-print" style="border-top:1px solid;padding-top:50px;">
        		<thead>
-             	<th width="10%">序号</th>
-             	<th width="10%">点位编号</th>
+             	<th width="20%">序号</th>
+             	<th width="20%">点位编号</th>
                	<th width="30%">点位地址</th>
-               	<th width="50%">广告图</th>
+               	<th width="30%">广告图</th>
 			</thead>
            	<tbody>
            		<?php $num = ($k*80)+1;?>
      			<?php foreach($v as $key => $value):?>
                	<tr>
-            		<td width="10%"><?php echo $num ++;?></td>
-            		<td width="10%"><?php  echo $value['code'];?></td>
+            		<td width="20%"><?php echo $num ++;?></td>
+            		<td width="20%"><?php  echo $value['code'];?></td>
            			<td width="30%"><?php echo $value['houses_name'].$value['houses_area_name'].$value['ban'].$value['unit'].$value['floor']?></td>
          			<?php if(!empty($value['img'])):?>
-         			<td width="50%"><img style="width:100%;" src="<?php echo $value['img'];?>"></td>
+         			<td width="30%"><img style="width:100%;" src="<?php echo $value['img'];?>"></td>
            			<?php else:?>
            			<td width="50%"></td>
            			<?php endif;?>
