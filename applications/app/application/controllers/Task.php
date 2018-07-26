@@ -327,7 +327,7 @@ class Task extends MY_Controller {
      * @param number $order_id
      * @param number $type
      */
-    public function checkDoAllHasFinish($order_id= 0, $type = 1){
+    private function checkDoAllHasFinish($order_id= 0, $type = 1){
         //根据当前的orderid找到父orderid
         if($type == 3) {
             $tmp_moudle = $this->Mhouses_changepicorders;
@@ -342,7 +342,9 @@ class Task extends MY_Controller {
             if($SlibingList){
                 //提取ids
                 $ids = array_column($SlibingList, 'id');
-                $count = $this->Mhouses_work_order_detail->count(['in' => ['pid' => $ids], 'status' => 0]);
+                $tmp = $this->Mhouses_work_order->get_lists('id', ['in' =>['order_id'=> $ids], 'type' => $type]);
+                $_ids = array_column($tmp, 'id');
+                $count = $this->Mhouses_work_order_detail->count(['in' => ['pid' => $_ids], 'status' => 0]);
                 //获取主订单状态
                 if(!$count){
                     //获取主订单状态
