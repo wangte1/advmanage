@@ -103,6 +103,9 @@ class Report_list extends MY_Controller{
                         if($v['create_id'] == $val['id']){
                             $list[$k]['fullname'] = $val['fullname'];
                         }
+                        if($v['repair_id'] == $val['id']){
+                            $list[$k]['repair_name'] = $val['fullname'];
+                        }
                     }
                 }
             }
