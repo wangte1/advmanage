@@ -77,8 +77,9 @@ class Housespoints extends MY_Controller{
         //提取本次的点位
         $point_ids = array_column($data['list'], 'id');
         $tour_ids = array_column($data['list'], "tour_id");
-        $tourList = $this->Mhouses_tour_points->get_lists("id,img", ['in' => ['id' => $tour_ids]]);
-
+        if(!empty($tour_ids)){
+            $tourList = $this->Mhouses_tour_points->get_lists("id,img", ['in' => ['id' => $tour_ids]]);
+        }
         //查询报修表是否存在改点位的已报损但可以上画的点位
         $report_list = [];
         if($point_ids){

@@ -327,31 +327,37 @@ class Task extends MY_Controller {
      * @param number $order_id
      * @param number $type
      */
-    private function checkDoAllHasFinish($order_id= 0, $type = 0){
+    public function checkDoAllHasFinish($order_id= 0, $type = 1){
         //根据当前的orderid找到父orderid
         if($type == 3) {
             $tmp_moudle = $this->Mhouses_changepicorders;
         }else {
             $tmp_moudle = $this->Mhouses_orders;
         }
-        $fatherOrder = $tmp_moudle->get_one('pid,order_status', ['id' => $order_id]);
-        if($fatherOrder){
-            //统计所有子订单id
-            $sonList = $tmp_moudle->get_one('id', ['pid' => $fatherOrder['pid']]);
-            if($sonList){
+        //获取此工单对应订单的子订单
+        $THisOrder = $tmp_moudle->get_one('pid', ['id' => $order_id]);
+        if($THisOrder){
+            //获取所有同胞订单id
+            $SlibingList = $tmp_moudle->get_lists('id', ['pid' => $THisOrder['pid']]);
+            if($SlibingList){
                 //提取ids
-                $ids = array_column($sonList, 'id');
+                $ids = array_column($SlibingList, 'id');
                 $count = $this->Mhouses_work_order_detail->count(['in' => ['pid' => $ids], 'status' => 0]);
+                //获取主订单状态
                 if(!$count){
+                    //获取主订单状态
+                    $father = $this->Mhouses_orders->get_one('id,order_status', ['id' => $THisOrder['pid']]);
                     //表示全部都已经完成上传，需要更订单状态
-                    $order_status = $fatherOrder['order_status'];
+                    $order_status = $father['order_status'];
                     //如果是下画则派单更新订单为已下画,改为7
                     $up['order_status'] = 7;
                     $up['draw_finish_time'] = date('Y-m-d');
                     //如果是上画则更新订单为投放中
-                    if($order_status == 4) $up['order_status'] = 6;
+                    if($order_status == 4 ) {
+                        $up['order_status'] = 6;
+                    }
                     //更新父订单
-                    $tmp_moudle->update_info($up, ['id' => $fatherOrder['pid']]);
+                    $tmp_moudle->update_info($up, ['id' => $father['id']]);
                     //更新子订单
                     $tmp_moudle->update_info($up, ['in' => ['id' => $ids] ]);
                 }
