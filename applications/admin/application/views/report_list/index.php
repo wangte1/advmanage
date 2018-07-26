@@ -197,6 +197,7 @@
                                                 <th>报损日期</th>
                                                 <th>操作</th>
                                                 <?php else :?>
+                                                <th>修复人</th>
                                                 <th>修复日期</th>
                                                 <th>修复备注</th>
                                                 <?php endif;?>
@@ -260,6 +261,7 @@
                                                         <button class="btn btn-primary report" data-id="<?php echo $val['id']?>" data-code="<?php echo $val['point']['code'];?>">修复</button>
                                                     </td>
                                                     <?php else :?>
+                                                    <td><?php echo $val['repair_name'];?></td>
                                                     <td><?php echo date('Y-m-d', $val['repair_time']);?></td>
                                                     <td><?php echo $val['remarks']?></td>
                                                     <?php endif;?>
