@@ -1,5 +1,8 @@
 <!-- 加载公用css -->
 <?php $this->load->view('common/header');?>
+<style>
+    td{vertical-align: middle!important;}
+</style>
 
 <!-- 头部 -->
 <?php $this->load->view('common/top');?>
@@ -106,6 +109,7 @@
                                                 <th>工程人员</th>
                                                 <th>巡视日期</th>
                                                 <th>巡视个数</th>
+                                                <th>楼盘</th>
                                                 <th>详情</th>
                                             </tr>
                                         </thead>
@@ -117,6 +121,7 @@
                                                 <td><?php echo $v['fullname']?></td>
                                                 <td><?php echo $create_time?></td>
                                                 <td><?php echo $v['num']?></td>
+                                                <td><?php echo $v['houses_name']?></td>
                                                 <td>
                                                     <button class="btn btn-primary detail" data-id="<?php echo $v['id']?>" data-date="<?php echo $create_time?>">详情</button>
                                                 </td>

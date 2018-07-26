@@ -39,8 +39,20 @@ class Housestour extends MY_Controller{
         $where['A.create_time <'] = date("Y-m-d 00:00:00", strtotime(date("Y-m-d", strtotime($create_time)))+(24*3600));
         
         $list = $this->Mhouses_tour_points->get_tour_list($where, ['num' => 'desc'], $size, ($page-1)*$size, ['B.id']);
-
+        //统计该时间段每个人都分布巡视那些楼盘
+        $hlist = $this->Mhouses_tour_points->get_houses_lists($where);
+        
         $data['list'] = $list;
+        if($hlist){
+            foreach ($list as $k => $v){
+                $data['list'][$k]['houses_name'] = "";
+                foreach ($hlist as $key => $val){
+                    if($v['id'] == $val['id']){
+                        $data['list'][$k]['houses_name'] .= $val['name']."、";
+                    }
+                }
+            }
+        }
         $adminList = $this->Madmins->get_lists('id, fullname', ['in' => ['group_id' => [4,6]]]);
         $data['adminList'] = $adminList;
         $count = $this->Mhouses_tour_points->get_tour_list($where, [], 0, 0, ['B.id']);
