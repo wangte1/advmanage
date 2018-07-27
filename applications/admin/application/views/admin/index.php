@@ -152,6 +152,11 @@
                                                         <a class="green" href="/admin/purview/<?php echo $val['id'];?>" title="分配权限">
                                                             <i class="icon-cog bigger-130"></i>
                                                         </a>
+                                                        <?php if(in_array($val['group_id'], [4,6])):?>
+                                                        <a class="green" href="/admin/seeworkerinfo?id=<?php echo $val['id'];?>" target="_blank" title="今日定位">
+                                                            <i class="glyphicon glyphicon-map-marker bigger-130"></i>
+                                                        </a>
+                                                        <?php endif;?>
                                                         <a class="red" href="/admin/del/<?php echo $val['id'];?>" title="删除">
                                                             <i class="icon-trash bigger-130"></i>
                                                         </a>

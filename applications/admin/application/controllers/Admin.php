@@ -436,8 +436,8 @@ class Admin extends MY_Controller{
         $list = $query->result_array();
         $tmp = [];
         if($list){
-            foreach ($list as $k => &$v){
-                $v['create_time'] = date("y-m-d H:s:i", $v['create_time']);
+            foreach ($list as $k => $v){
+                $list[$k]['create_time'] = date("y-m-d H:s:i", $v['create_time']);
             }
             foreach ($list as $k => $v){
                 if(in_array($v['user_id'], $tmp)){
@@ -460,6 +460,35 @@ class Admin extends MY_Controller{
         $data['list'] = $list;
         $this->load->view('admin/seeworker', $data);
     }
-
+    
+    public function seeWorkerInfo(){
+        $data = $this->data;
+        $id = $this->input->get('id');
+        $sql = "SELECT * FROM t_app_location WHERE user_id = '%s' AND date = '%s'";
+        $sql = sprintf($sql,$id,date("Y/m/d"));
+        $res = $this->db->query($sql);
+        $list = $res->result_array();
+        
+        
+        
+        //admin
+        $admin = $this->Madmins->get_lists('id,fullname', ['in' => ['group_id' => [4,6]]]);
+        foreach ($list as $k => $v){
+            $list[$k]['fullname'] = '';
+            foreach ($admin as $key => $val){
+                if($val['id'] == $v['user_id']){
+                    $list[$k]['fullname'] = $val['fullname'];
+                }
+            }
+        }
+        
+        $data['list'] = $list;
+        
+        foreach ($list as $k => $v){
+            $data['list'][$k]['create_time'] = date("Y-m-d H:i:s", $v['create_time']);
+        }
+        
+        $this->load->view('admin/seeworkerinfo', $data);
+    }
 }
 
