@@ -39,8 +39,8 @@ class App extends MY_Controller {
             $nowId = $thisInfo['id'];
         }
         if($nowId < $id){
-            $max = $this->Mhouses_app->get_one('id, version', ['id' => $id]);
-            $this->return_json(['code' => 1, 'url' => $max['version']]);
+            $max = $this->Mhouses_app->get_one('id, version, url', ['id' => $id]);
+            $this->return_json(['code' => 1, 'url' => $max['url']]);
         }
         $this->return_json(['code' => 0, 'url' => '']);
     }
