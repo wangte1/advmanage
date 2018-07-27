@@ -19,11 +19,28 @@ class App extends MY_Controller {
         ]);
     }
     
+    /**
+     * 检查app版本
+     * @desc 如果版本过低则code 返回1，url为最新的下载地址， 反之则code = 0 无需任何操作；
+     * @param version 版本 
+     */
     public function checkVersion(){
-        $v = $this->input->get_post('version');
-        $info = $this->Mhouses_app->get_lists("*", ['is_del' => 0], ['version' => 'desc'], 1)[0];
-        if($v < $info['version']){
-            $this->return_json(['code' => 1, 'url' => $info['url']]);
+        $version= $this->input->get_post('version');
+        if(empty($version)) $this->return_json(['code' => 0, 'url' => ""]);
+        
+        $info = $this->Mhouses_app->get_one("MAX(`id`) as id", ['is_del' => 0]);
+        if(!$info) $this->return_json(['code' => 0, 'url' => '']);
+        //最大版本id
+        $id = $info['id'];
+        //获取当前版本id
+        $nowId = 0;
+        $thisInfo = $this->Mhouses_app->get_one('id', ['version' => $version]);
+        if($thisInfo) {
+            $nowId = $thisInfo['id'];
+        }
+        if($nowId < $id){
+            $max = $this->Mhouses_app->get_one('id, version', ['id' => $id]);
+            $this->return_json(['code' => 1, 'url' => $max['version']]);
         }
         $this->return_json(['code' => 0, 'url' => '']);
     }
