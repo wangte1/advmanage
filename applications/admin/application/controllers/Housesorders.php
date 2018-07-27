@@ -445,6 +445,7 @@ class Housesorders extends MY_Controller{
             if(count($add)){
                 //下单成功把选择的点增加占用客户，和增加上画次数
                 $update_data['joint']['`customer_id`'] = ','.$post_data['customer_id'];
+                $update_data['joint']['`order_id`'] = ','.$id;//给点位添加本次订单id
                 //增加投放总量，一天为一次
                 $update_data['incr']['used_num'] = ceil( ( strtotime($post_data['release_end_time']) - strtotime($post_data['release_start_time'])) / (24*3600) );
                 //增加点位可使用量1次，表示该点位少一次可放。
