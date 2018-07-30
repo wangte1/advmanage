@@ -45,6 +45,8 @@ class Report_list extends MY_Controller{
         }elseif ($repair_time == "0"){
             $where['A.repair_time'] = 0;
             $data['repair_time'] = 0;
+        }else{
+            $data['repair_time'] = 2;
         }
         if($report)$where['like'] = ['report' => $report . ','];
         if($houses_id) {
@@ -81,7 +83,6 @@ class Report_list extends MY_Controller{
             $data['rcode'] = $rcode;
         }
         $data['report_id'] = $report;
-        $data['repair_time'] = $repair_time;
         $data['report'] = C('housespoint.report');
         $data['hlist'] = $this->Mhouses->get_lists();
 
