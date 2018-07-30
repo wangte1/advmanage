@@ -491,4 +491,3 @@ class Admin extends MY_Controller{
         $this->load->view('admin/seeworkerinfo', $data);
     }
 }
-

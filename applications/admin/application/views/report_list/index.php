@@ -83,7 +83,8 @@
                                                 <label class="col-sm-3 control-label no-padding-right" for="form-field-1"> 修复状态： </label>
                                                 <div class="col-sm-9">
                                                     <select class="select2" name="repair_time" >
-                                                        <option value="0">未修复</option>
+                                                    	<option value="2">全部</option>
+                                                        <option value="0"<?php if($repair_time == '0') { echo "selected"; }?>>未修复</option>
                                                         <option value="1"<?php if($repair_time == '1') { echo "selected"; }?>>已修复</option>
                                                     </select>
                                                 </div>
