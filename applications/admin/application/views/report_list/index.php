@@ -229,9 +229,15 @@
                                                     	<?php endif;?>
                                                     </td>
                                                     <?php if($repair_time == '1' || $repair_time == '2'):?>
+                                                    
+                                                    <?php if(empty($val['repair_img'])):?>
+                                                    <td></td>
+                                                    <?php else:?>
                                                     <td>
                                                     	<img style="width:25px;height:25px;cursor:pointer;" src="<?php echo $val['repair_img']?>" />
                                                     </td>
+                                                    <?php endif;?>
+                                                    
                                                     <?php endif;?>
                                                     <td>
                                                     	<?php echo $val['fullname'];?>
