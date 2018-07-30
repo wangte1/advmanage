@@ -45,8 +45,6 @@ class Report_list extends MY_Controller{
         }elseif ($repair_time == "0"){
             $where['A.repair_time'] = 0;
             $data['repair_time'] = 0;
-        }else{
-            
         }
         if($report)$where['like'] = ['report' => $report . ','];
         if($houses_id) {
