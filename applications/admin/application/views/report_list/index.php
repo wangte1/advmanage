@@ -225,13 +225,19 @@
                                                     </td>
                                                     <td>
                                                     	<?php if($val['report_img'] != ""):?>
-                                                    	<img style="width:100px;" src="<?php echo $val['report_img']?>" layer-src="<?php echo $val['report_img']?>" src="<?php echo $val['report_img']?>" alt="点位编号：<?php echo $val['point']['code'];?>"/>
+                                                    	<img style="width:25px;height:25px;cursor:pointer;" src="<?php echo $val['report_img']?>" layer-src="<?php echo $val['report_img']?>" src="<?php echo $val['report_img']?>" alt="点位编号：<?php echo $val['point']['code'];?>"/>
                                                     	<?php endif;?>
                                                     </td>
                                                     <?php if($repair_time == '1' || $repair_time == '2'):?>
+                                                    
+                                                    <?php if(empty($val['repair_img'])):?>
+                                                    <td></td>
+                                                    <?php else:?>
                                                     <td>
-                                                    	<img style="width:100px;" src="<?php echo $val['repair_img']?>" />
+                                                    	<img style="width:25px;height:25px;cursor:pointer;" src="<?php echo $val['repair_img']?>" />
                                                     </td>
+                                                    <?php endif;?>
+                                                    
                                                     <?php endif;?>
                                                     <td>
                                                     	<?php echo $val['fullname'];?>
