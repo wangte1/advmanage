@@ -37,12 +37,16 @@ class Report_list extends MY_Controller{
         $create_id = $this->input->get('create_id');
         $rcode = trim($this->input->get('rcode'));
         $install_id = $this->input->get('install');
-        if($repair_time){
+        if($repair_time == "1"){
             $where['A.repair_time >'] = 0;
             $data['repair_time'] = $repair_time;
-        }else{
+        }elseif ($repair_time == "2"){
+            $data['repair_time'] = $repair_time;
+        }elseif ($repair_time == "0"){
             $where['A.repair_time'] = 0;
             $data['repair_time'] = 0;
+        }else{
+            $data['repair_time'] = 2;
         }
         if($report)$where['like'] = ['report' => $report . ','];
         if($houses_id) {
@@ -79,7 +83,6 @@ class Report_list extends MY_Controller{
             $data['rcode'] = $rcode;
         }
         $data['report_id'] = $report;
-        $data['repair_time'] = $repair_time;
         $data['report'] = C('housespoint.report');
         $data['hlist'] = $this->Mhouses->get_lists();
 
@@ -217,12 +220,16 @@ class Report_list extends MY_Controller{
         $create_id = $this->input->get('create_id');
         $rcode = trim($this->input->get('rcode'));
         $install_id = $this->input->get('install');
-        if($repair_time){
+        if($repair_time == "1"){
             $where['A.repair_time >'] = 0;
             $data['repair_time'] = $repair_time;
-        }else{
+        }elseif ($repair_time == "2"){
+            $data['repair_time'] = $repair_time;
+        }elseif ($repair_time == "0"){
             $where['A.repair_time'] = 0;
             $data['repair_time'] = 0;
+        }else{
+            
         }
         if($report)$where['like'] = ['report' => $report . ','];
         if($houses_id) {
@@ -328,7 +335,8 @@ class Report_list extends MY_Controller{
             '修复时间' => 'repair_time',
             '报损类型' => "report",
             '报损描述' => "report_msg",
-            '安装公司'=>"install_id"
+            '安装公司'=>"install_id",
+            '备注' => 'remarks'
         );
         
         
@@ -356,6 +364,8 @@ class Report_list extends MY_Controller{
                         }
                     }else if($v == 'create_time'){
                         $value = date('Y-m-d', $val[$v]);
+                    }else if ($v == 'repair_time'){
+                        $value = date('Y-m-d',$val[$v]);
                     }else{
                         $value = $val[$v];
                     }

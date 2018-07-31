@@ -585,6 +585,12 @@ class Task extends MY_Controller {
         $report = $this->input->get_post('report');
         if(!$report) $this->return_json(['code' => 0, 'msg' => '请选择异常选项']);
         $report_msg = $this->input->get_post('report_msg');
+        $report_msg = $report_msg ? $report_msg : "";
+        if($report == 14){
+            if(empty($report_msg)){
+                $this->return_json(['code' => 0, 'msg' => '您勾选了其他，请填写对应的说明']);
+            }
+        }
         $usable = (int) $this->input->get_post('usable');
         
         $info = $this->Mhouses_work_order_detail->get_one('*', ['id' => $id]);

@@ -72,7 +72,9 @@
 			layer.alert('请至少选一个选项');return;
 		}
 		var report_img = $('input[name="cover_img[]"]').val();
-		if(report_img == "undefined" || report_img =="") {report_img = ''}
+		if(!report_img || report_img =="") {
+			layer.alert('请上传报损图');return;
+		}
 		for(var i = 0; i < report.length; i++){
 			if(report[i] == 14){
 				if(report_msg == ''){
@@ -81,6 +83,7 @@
 				}
 			}
 		}
+		
 		var usable = -1;
 		$('.usable').each(function(){
 			if($(this).prop('checked')){

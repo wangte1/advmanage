@@ -172,7 +172,7 @@ class Tour extends MY_Controller {
         $page = (int) $this->input->get_post('page') ? : '1';
         $size = (int) $this->input->get_post('size');
         
-        $where = ['is_del' => 0, 'diy_area_id' => $diy_area_id];
+        $where = ['is_del' => 0];
         $where['houses_id'] = $houses_id;
         //获取这个楼盘、和用户所关联的组团
         $areaInfo = $this->Mhouses_diy_area->get_lists('area_id', ['houses_id' => $houses_id, 'diy_area_id' => $diy_area_id]);
@@ -368,6 +368,12 @@ class Tour extends MY_Controller {
         if(!$report) $this->return_json(['code' => 0, 'msg' => '请选择异常选项']);
         $report_msg = $this->input->get_post('report_msg');
         $report_msg = $report_msg ? $report_msg : "";
+        if($report == 14){
+            if(empty($report_msg)){
+                $this->return_json(['code' => 0, 'msg' => '您勾选了其他，请填写对应的说明']);
+            }
+        }
+        
         $usable = (int) $this->input->get_post('usable');
         
         $up = [
