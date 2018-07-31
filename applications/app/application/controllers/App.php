@@ -72,7 +72,7 @@ class App extends MY_Controller {
      * 记录app操作日志
      */
     public function actions(){
-        $user = encrypt($this->token);
+        $user = decrypt($this->token);
         $url = trim($this->input->get_post('url'));
         $content = trim($this->input->get_post('content'));
         $add = [
