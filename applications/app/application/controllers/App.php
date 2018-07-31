@@ -15,7 +15,8 @@ class App extends MY_Controller {
         
         $this->load->model([
             'Model_houses_app' => 'Mhouses_app',
-            'Model_app_location' => 'Mapp_location'
+            'Model_app_location' => 'Mapp_location',
+            'Model_app_actions' => 'Mapp_actions'
         ]);
     }
     
@@ -63,6 +64,28 @@ class App extends MY_Controller {
             'date' => date('Y-m-d'),
         ];
         $res = $this->Mapp_location->create($up);
+        if(!$res) $this->return_json(['code' => 0, 'msg' => '提交失败']);
+        $this->return_json(['code' => 1, 'msg' => '操作成功']);
+    }
+    
+    /**
+     * 记录app操作日志
+     */
+    public function actions(){
+        $user = encrypt($this->token);
+        $url = trim($this->input->get_post('url'));
+        $content = trim($this->input->get_post('content'));
+        $add = [
+            'user_id' => $user['user_id'],
+            'token' => $this->token,
+            'url' => $url,
+            'content' => $content,
+            'year' => date('Y'),
+            'month' => date('m'),
+            'day' => date('d'),
+            'create_time' => time()
+        ];
+        $res = $this->Mapp_actions->create($add);
         if(!$res) $this->return_json(['code' => 0, 'msg' => '提交失败']);
         $this->return_json(['code' => 1, 'msg' => '操作成功']);
     }
