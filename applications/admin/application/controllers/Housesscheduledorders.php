@@ -1162,7 +1162,7 @@ class Housesscheduledorders extends MY_Controller{
             $post_data['creator'] =  $data['userInfo']['id'];
             $post_data['create_time'] =  date('Y-m-d H:i:s');
             unset($post_data['houses_id'], $post_data['area_id'],$post_data['ban'],$post_data['unit'],$post_data['floor'],$post_data['addr'], $post_data['hour'], $post_data['minute'], $post_data['second']);
-            unset($post_data['point_ids_old']);
+            unset($post_data['point_ids_old'], $post_data['id']);
 
             $order_id = $this->Mhouses_orders->create($post_data);
             if ($order_id) {
