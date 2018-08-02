@@ -60,18 +60,15 @@
                 </div>
                 <div class="row">
                     <div class="col-xs-12">
-                        <div class="">
-                          
-                            <div class="">
-                                <div class="widget-main">
+                        <div class="widget-main">
                                     <form class="form-horizontal" role="form" method="post" action="">
                                         <div class="space-4"></div>
 										<?php if(isset($info)):?>
                                         <input type="hidden" name="id" value="<?php echo $info['id']?>" />
                                         <?php endif;?>
                                         <div class="form-group">
-                                            <label class="col-sm-2 control-label no-padding-right" for="form-field-2"> 广告客户： </label>
-                                            <div class="col-sm-4">
+                                            <label class="col-sm-1 control-label no-padding-right" for="form-field-2"> 广告客户： </label>
+                                            <div class="col-sm-3">
                                                 <select id="customer_id" name="customer_id" class="select2" required>
                                                     <option value="">请选择客户</option>
                                                     <?php foreach($customers as $val):?>
@@ -84,12 +81,12 @@
                                                 </span>
                                             </div>
                                             
-                                            <label class="col-sm-2 control-label no-padding-right" for="form-field-2"> 预定点位数量（个）： </label>
-                                            <div class="col-sm-4">
+                                            <label class="col-sm-1 control-label no-padding-right" for="form-field-2"> 预定数量： </label>
+                                            <div class="col-sm-3">
                                                 
                                                 <input type="text" name="points_count" required>
                                                 <span class="help-inline form-field-description-block">
-                                                   <span class="middle" style="color: red">*</span>
+                                                   <span class="middle" style="color: red">*（个）</span>
                                                 </span>
                                             </div>
                                         </div>
@@ -102,7 +99,7 @@
                                         <div class="space-4"></div>
 
                                         <div class="form-group">
-                                            <label class="col-sm-2 control-label no-padding-right" for="form-input-readonly"> 模糊条件： </label>
+                                            <label class="col-sm-1 control-label no-padding-right" for="form-input-readonly"> 模糊条件： </label>
                                             <div class="col-sm-8">
                                                 <div class="">
                                                     <div class="widget-header">
@@ -111,12 +108,12 @@
                                                             共<span id="all_points_num">0</span>个点位
                                                         </span>
                                                     </div>
-                                                    <div class="widget-body" style="height:580px">
+                                                    <div class="widget-body" style="height:650px">
                                                         <div class="widget-main">
                                                             <div class="form-group">
                                                             	<div class="row">
                                                             		<div class="col-sm-12">
-	                                                                    <label class="col-sm-2 control-label" for="form-field-1"> 行政区域： </label>
+	                                                                    <label class="col-sm-1 control-label" for="form-field-1"> 行政区域： </label>
 	                                                                    <div class="col-sm-10" style="padding:0">
 	                                                                        <div id="distpicker1">
 																			  	<select name="province" id="province"></select>
@@ -206,7 +203,7 @@
                                         </div>
 
                                         <div class="form-group">
-                                            <label class="col-sm-2 control-label no-padding-right" for="form-field-2"> 备注： </label>
+                                            <label class="col-sm-1 control-label no-padding-right" for="form-field-2"> 备注： </label>
                                             <div class="col-sm-8">
                                                 <textarea class="form-control" name="remark" rows="5" placeholder="备注信息，最多300个字"><?php if(isset($info['remark'])) { echo $info['remark'];}?></textarea>
                                             </div>
@@ -226,11 +223,7 @@
                                         </div>
                                     </form>
                                 </div>
-                            </div>
-                        </div>
                     </div>
-
-                    
                 </div>
             </div>
         </div>
@@ -269,7 +262,7 @@ window.onload=function(){
 	} 
 
 	$('#begin_year option').each(function(){
-		if($(this).text() == year-10) {
+		if($(this).text() == year-20) {
 			$(this).attr('selected', 'selected');
 		}
 	});

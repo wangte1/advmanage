@@ -45,6 +45,7 @@
 		}
     
     	function IsPC() {
+          return true;
     	  var userAgentInfo = navigator.userAgent;
     	  var Agents = ["Android", "iPhone",
     	        "SymbianOS", "Windows Phone",
