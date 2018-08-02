@@ -269,6 +269,11 @@ $config = array(
                     'name' => '操作日志',
                     'active' => 'login_operate_list'
                 ),
+                array(
+                    'url' => '/operatelog/androidlog',
+                    'name' => '安卓日志',
+                    'active' => 'login_android_list'
+                )
             ) 
         )
 
