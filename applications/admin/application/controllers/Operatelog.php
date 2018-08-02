@@ -160,7 +160,8 @@ class Operatelog extends MY_Controller{
         $end_time = $this->input->get("end_time");
         $operate_id = $this->input->get('operate_id');
         $token = trim($this->input->get('token'));
-        
+        //content
+        $content = trim($this->input->get('content'));
         $data['start_time'] = $start_time;
         $data['end_time'] = $end_time;
         
@@ -185,6 +186,10 @@ class Operatelog extends MY_Controller{
         if($token){
             $data['token'] = $token;
             $where['token'] = $token;
+        }
+        if($content){
+            $data['content'] = $content;
+            $where['like'] = ['content' => $content];
         }
         $list = $this->Mandroid_log->get_lists('*',$where,array("id"=>"desc"),$size,($page-1)*$size);
         $admin = $this->Madmins->get_lists();
