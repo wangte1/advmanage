@@ -282,6 +282,7 @@ class Housesscheduledorders extends MY_Controller{
                     'is_confirm' => 0,
                     'bm_agree' => 0,
                     'mm_agree' => 0,
+                    'confirm_point_ids' => "",
                 ];
                 $result = $this->Mhouses_scheduled_orders->update_info($posttemp, array('id' => $id));
                 $this->write_log($data['userInfo']['id'], 2, "编辑".$data['order_type_text'][$post_data['order_type']]."订单,订单id【".$id."】");
