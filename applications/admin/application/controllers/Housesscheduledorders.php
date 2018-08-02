@@ -1245,7 +1245,7 @@ class Housesscheduledorders extends MY_Controller{
                 $this->write_log($data['userInfo']['id'], 1, "社区资源管理转预定订单".$data['order_type_text'][$post_data['order_type']]."为订单,订单id【".$id."】");
                 $this->success("预定订单转订单成功！","/confirm_reserve");
             } else {
-                $this->success("预定订单转订单失败！","/confirm_reserve");
+                $this->success("预定订单转订单失败！");
             }
         }
         
