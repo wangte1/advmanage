@@ -127,7 +127,7 @@ class Report_list extends MY_Controller{
         }
         $data['list'] = $list;
         //获取分页
-        $data_count = $this->Mhouses_points_report->get_report_list($where);
+        $data_count = $this->Mhouses_points_report->get_report_list($where, ['A.create_time' => 'desc', 'A.id' => 'desc'], 0, 0, ['A.point_id']);
         $data_count = count($data_count);
         $data['data_count'] = $data_count;
         $pageconfig['base_url'] = "/report_list/index";
