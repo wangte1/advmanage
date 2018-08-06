@@ -7,7 +7,7 @@
 
 class Tour extends MY_Controller {
     private $token;
-    private $time = 14*24*3600;
+    private $time = 7*24*3600;
     public function __construct() {
         parent::__construct();
         
