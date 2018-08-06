@@ -70,7 +70,6 @@ class Housesinstall extends MY_Controller{
         
         $this->load->view("housesinstall/index",$data);
     }
-
     
     /*
      * 编辑
@@ -166,7 +165,7 @@ class Housesinstall extends MY_Controller{
     	$this->phpexcel->setActiveSheetIndex(0);
     	// 输出
     	header('Content-Type: application/vnd.ms-excel');
-    	header('Content-Disposition: attachment;filename=社区楼盘表.xls');
+    	header('Content-Disposition: attachment;filename=社区楼盘安装表.xls');
     	header('Cache-Control: max-age=0');
     
     	$objWriter = PHPExcel_IOFactory::createWriter($this->phpexcel, 'Excel5');
