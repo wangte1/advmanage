@@ -147,6 +147,11 @@ $config = array(
 	    			'name'=> '楼盘管理',
 	    			'active'=> 'houses_list'
     			),
+    		    array(
+    		        'url'=>'/housesinstall',
+    		        'name'=> '楼盘安装管理',
+    		        'active'=> 'houses_install_list'
+    		    ),
     			array(
     				'url'=>'/housesarea',
     				'name'=> '组团管理',
