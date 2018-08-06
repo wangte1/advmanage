@@ -38,6 +38,6 @@
         <link href="<?php echo css_js_url('public.css', 'admin');?>" rel="stylesheet" />
     </head>
     <style>
-        body{zoom:0.7;}
+        html{zoom:0.7;}
     </style>
     <body>

@@ -250,7 +250,7 @@ class Tour extends MY_Controller {
         $page = (int) $this->input->get_post('page') ? : '1';
         $size = (int) $this->input->get_post('size');
         
-        $where = ['is_del' => 0, 'diy_area_id' => $diy_area_id];
+        $where = ['is_del' => 0];
         $where['houses_id'] = $houses_id;
         $where['area_id'] = $area_id;
         
