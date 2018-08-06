@@ -142,6 +142,11 @@ $config = array(
     				'name'=> '点位规格管理',
     				'active'=> 'points_type_list'
     			),
+    		    array(
+    		        'url'=>'/housesagree',
+    		        'name'=> '合同管理',
+    		        'active'=> 'houses_agree_list'
+    		    ),
     			array(
 	    			'url'=>'/houses',
 	    			'name'=> '楼盘管理',
