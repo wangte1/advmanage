@@ -138,6 +138,7 @@ class Tour extends MY_Controller {
             $this->return_json(['code' => 0, 'data' => [], 'msg' => '您所负责的区域暂无分配组团']);
         }
         $area_ids = array_unique($area_ids);
+        $where['is_del'] = 0;
         $where['houses_id'] = $houses_id;
         $where['in'] = ['area_id' => $area_ids];
         $group_by = ['houses_id', 'area_id'];
