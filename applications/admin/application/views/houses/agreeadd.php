@@ -143,7 +143,7 @@
                                 	<select id="select" class="select2" data-placeholder="Click to Choose..." name="">
                                 		<option value="0">全部</option>
                                 		<?php foreach ($hlist as $k => $v) {?>
-                                    		<option value="<?php echo $v['id'];?>" <?php if($v['id'] == $name) {?>selected="selected"<?php }?>><?php echo $v['name'];?></option>
+                                    		<option value="<?php echo $v['id'];?>"><?php echo $v['name'];?></option>
                                     	<?php }?>
                                     </select>
                                 </div>
