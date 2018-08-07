@@ -130,9 +130,6 @@
                                                     <td><?php echo $val['create_time']?></td>
                                                     <td>
                                                         <div class="visible-md visible-lg hidden-sm hidden-xs action-buttons">
-                                                            <a class="green tooltip-info" href="/housesagree/edit/<?php echo $val['id'];?>" data-rel="tooltip" data-placement="top" data-original-title="修改">
-                                                                <i class="icon-pencil bigger-130"></i>
-                                                            </a>
                                                            <a class="red tooltip-info delagree" data-id="<?php echo $val['id'];?>" data-rel="tooltip" data-placement="top" data-original-title="删除">
                                                                 <i class="icon-trash bigger-130"></i>
                                                             </a>

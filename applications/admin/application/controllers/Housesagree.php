@@ -65,6 +65,39 @@ class Housesagree extends MY_Controller{
         $this->load->view('houses/agree', $data);
     }
     
+    public function  add(){
+        $data = $this->data;
+        $data['title'] = array("合同管理","添加合同");
+        
+        $houses = $this->Mhouses->get_lists('id,name,agree_id', ['is_del' => 0]);
+        $data['hlist'] = $houses;
+        if(IS_POST){
+            $post = $this->input->post();
+            if(!isset($post['housesarr'])){
+                $this->error('添加失败，请选择签约的楼盘');
+            }
+            $housesarr = $post['housesarr'];
+            unset($post['housesarr']);
+            $post['create_user'] = $data['userInfo']['id'];
+            $post['create_time'] = date("Y-m-d H:i:s");
+            
+            $result = $this->Mhouses_agree->create($post);
+            if($result){
+                $ret = $this->Mhouses->update_info(['agree_id' => $result], ['in' => ['id'=> $housesarr]]);
+                if(!$ret){
+                    $this->error("添加失败");
+                }
+                $this->write_log($data['userInfo']['id'],1,"新增合同：".$post['name']);
+                $this->success("添加成功","/housesagree");
+            }else{
+                $this->error("添加失败");
+            }
+            
+        }
+        
+        $this->load->view('houses/agreeadd',$data);
+    }
+    
     /**
      * 删除合同
      */
