@@ -172,8 +172,8 @@ class Report extends MY_Controller {
         if($config){
             $data = [];
             foreach ($config as $k => $v){
-                $data[$k]['index'] = $k;
-                $data[$k]['reason'] = $v;
+                $arr = ['index' => $k, 'reason' => $v];
+                $data[] = $arr;
             }
             $this->return_json(['code' => 1, 'data' => $data, "msg" => "ok"]);
         }
