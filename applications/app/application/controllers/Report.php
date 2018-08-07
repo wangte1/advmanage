@@ -170,7 +170,12 @@ class Report extends MY_Controller {
     public function getConfig(){
         $config = C('housespoint.report');
         if($config){
-            $this->return_json(['code' => 1, 'data' => $config, "msg" => "ok"]);
+            $data = [];
+            foreach ($config as $k => $v){
+                $data[$k]['index'] = $k;
+                $data[$k]['reason'] = $v;
+            }
+            $this->return_json(['code' => 1, 'data' => $data, "msg" => "ok"]);
         }
         $this->return_json(['code' => 0, 'data' => [], "msg" => "无法读取配置文件"]);
     }
