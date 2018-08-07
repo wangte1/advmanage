@@ -11,7 +11,8 @@ class Operatelog extends MY_Controller{
         $this->load->model([
             'Model_login_log' => 'Mlogin_log',
             'Model_admins_operate_log' => 'Moperate_log',
-            'Model_admins' => 'Madmins'
+            'Model_admins' => 'Madmins',
+            'Model_admins_android_log' => 'Mandroid_log'
         ]);
         $this->pageconfig = C('page.page_lists');
         $this->load->library('pagination');
@@ -142,8 +143,79 @@ class Operatelog extends MY_Controller{
         
         $this->load->view("log/operate",$data);
     }
-
-
-
+    
+    public function androidlog(){
+        $data = $this->data;
+        $data['title'] = array("操作日志","安卓日志");
+        
+        //分页
+        $pageconfig = C('page.page_lists');
+        $install = C('install.install');
+        $this->load->library('pagination');
+        $page =  intval($this->input->get("per_page",true)) ?  : 1;
+        $size = $pageconfig['per_page'];
+        $where[1] = 1;
+        
+        $start_time = $this->input->get("start_time");
+        $end_time = $this->input->get("end_time");
+        $operate_id = $this->input->get('operate_id');
+        $token = trim($this->input->get('token'));
+        //content
+        $content = trim($this->input->get('content'));
+        $data['start_time'] = $start_time;
+        $data['end_time'] = $end_time;
+        
+        if(!empty($start_time) && empty($end_time)){
+            $where['create_time>='] = strtotime($start_time);
+        }
+        if(empty($start_time) && !empty($end_time)){
+            $where['create_time<='] = strtotime($end_time." 23:59:59");
+            
+        }
+        if(!empty($start_time) && !empty($end_time)){
+            if(strtotime($start_time)>strtotime($end_time)){
+                $this->error("开始时间不能大于结束时间");
+            }
+            $where['create_time>='] = strtotime($start_time);
+            $where['create_time<='] = strtotime($end_time." 23:59:59");
+        }
+        if($operate_id) {
+            $data['operate_id'] = $operate_id;
+            $where['user_id'] = $operate_id;
+        }
+        if($token){
+            $data['token'] = $token;
+            $where['token'] = $token;
+        }
+        if($content){
+            $data['content'] = $content;
+            $where['like'] = ['content' => $content];
+        }
+        $list = $this->Mandroid_log->get_lists('*',$where,array("id"=>"desc"),$size,($page-1)*$size);
+        $admin = $this->Madmins->get_lists();
+        foreach ($list as $k => $v){
+            $list[$k]['fullname'] = '';
+            foreach ($admin as $k2 => $v2){
+                if($v['user_id'] == $v2['id']){
+                    $list[$k]['fullname'] = $v2['fullname'];
+                    break;
+                }
+            }
+        }
+        $data['log_list'] = $list;
+        $data['admin'] = $admin;
+        //获取分页
+        $data_count = $this->Mandroid_log->count($where);
+        $data['page'] = $page;
+        $data['data_count'] = $data_count;
+        $pageconfig['base_url'] = "/operatelog/androidlog";
+        $pageconfig['total_rows'] = $data_count;
+        $this->pagination->initialize($pageconfig);
+        $data['pagestr'] = $this->pagination->create_links(); // 分页信息
+        
+        $data['active'] = 'login_android_list';
+        
+        $this->load->view("log/android",$data);
+    }
 }
 ?>

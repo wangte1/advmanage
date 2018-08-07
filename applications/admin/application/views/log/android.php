@@ -19,7 +19,7 @@
                     <li>
                         <a href="#">操作日志</a>
                     </li>
-                    <li class="active">登录</li>
+                    <li class="active">安卓日志</li>
                 </ul>
 
                 <div class="nav-search" id="nav-search">
@@ -33,43 +33,6 @@
             </div>
 
             <div class="page-content">
-                <!-- <div class="widget-box-suaxuan">
-                    <form action="#" method="get">
-
-                        <div class="col-sm-4">
-                            <label class="col-sm-3 control-label no-padding-right" for="form-field-1"> 开始时间： </label>
-                            <div class="col-sm-9">
-                                <div class="input-group date datepicker">
-                                    <input class="form-control date-picker" value="<?php echo $start_time;?>" name="start_time" id="id-date-picker-1" type="text" data-date-format="dd-mm-yyyy">
-                                            <span class="input-group-addon">
-                                                <i class="icon-calendar bigger-110"></i>
-                                            </span>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="col-sm-4">
-                            <label class="col-sm-3 control-label no-padding-right" for="form-field-1"> 结束时间： </label>
-                            <div class="col-sm-9">
-                                <div class="input-group date datepicker">
-                                    <input class="form-control date-picker"  value="<?php echo $end_time;?>" name="end_time" id="id-date-picker-1" type="text" data-date-format="dd-mm-yyyy">
-                                                        <span class="input-group-addon">
-                                                            <i class="icon-calendar bigger-110"></i>
-                                                        </span>
-                                </div>
-                            </div>
-                        </div>
-
-                        <div class="col-xs-12 widget-box-suaxuan-btm">
-                            <button class="btn btn-sm btn-primary" type="submit" id="sub_serach" style=" line-height: 50%">搜索</button>
-                            <a href="javacript:;" class="btn btn-sm btn-primary" id="cancel" style="text-decoration: none; margin-left: 20px; line-height: 50%">取消</a>
-                        </div>
-                    </form>
-                </div>
-                <div class="col-xs-12 header-zdy header-zdy-bg">
-                    <a href="javascript:;">删除</a>
-                    <a href="javascript:;" id="serach_shuaixuan">筛选</a>
-                </div> -->
-
                 <div class="row">
                     <div class="col-xs-12">
                         <div class="widget-box">
@@ -81,7 +44,6 @@
                                     </a>
                                 </div>
                             </div>
-
                             <div class="widget-body">
                                 <div class="widget-main">
                                     <form class="form-horizontal" role="form">
@@ -91,8 +53,8 @@
                                                 <div class="col-sm-9">
                                                     <select class="select2" name="operate_id" id="form-field-select-1">
                                                         <option value="">全部</option>
-                                                        <?php foreach($operate_id as $k => $v){ ?>
-                                                            <option <?php if($admin_id2 == $v['id']){echo "selected";}?>  value="<?php echo $v['id'];?>"><?php echo $v['fullname'];?></option>
+                                                        <?php foreach($admin as $k => $v){ ?>
+                                                            <option <?php if($operate_id == $v['id']){echo "selected";}?>  value="<?php echo $v['id'];?>"><?php echo $v['fullname'];?></option>
                                                         <?php } ?>
                                                     </select>
                                                 </div>
@@ -122,6 +84,20 @@
                                                 </div>
                                             </div>
                                         </div>
+                                         <div class="form-group">
+                                         	<div class="col-sm-4">
+                                                <label class="col-sm-3 control-label no-padding-right" for="form-field-1"> token </label>
+                                                <div class="col-sm-9">
+                                                    <input type="text" id="form-field-1" name="token" value="<?php echo $token;?>" class="col-xs-10 col-sm-12">
+                                                </div>
+                                            </div>
+                                            <div class="col-sm-4">
+                                                <label class="col-sm-3 control-label no-padding-right" for="form-field-1"> 操作内容 </label>
+                                                <div class="col-sm-9">
+                                                    <input type="text" id="form-field-1" name="content" value="<?php if(isset($content)){echo $content;}?>" class="col-xs-10 col-sm-12">
+                                                </div>
+                                            </div>
+                                         </div>
                                         <div class="clearfix form-actions">
                                             <div class="col-md-offset-3 col-md-9">
                                                 <button class="btn btn-info" type="submit">
@@ -147,20 +123,14 @@
                                     <table style="word-break: break-all;" id="sample-table-2" class="table table-striped table-bordered table-hover">
                                         <thead>
                                         <tr>
-
-                                            <th>编号</th>
-                                            <th>登录账号</th>
-                                            <th>登录时间</th>
-                                            <th class="hidden-480">登录IP</th>
-
-                                            <th>
-                                                <i class="icon-time bigger-110 hidden-480"></i>
-                                                登录状态
-                                            </th>
-
+                                            <th width="5%">编号</th>
+                                            <th width="5%">操作人</th>
+                                            <th width="20%">token</th>
+                                            <th width="20%">url</th>
+                                            <th width="40%">内容</th>
+                                            <th width="10%">时间</th>
                                         </tr>
                                         </thead>
-
                                         <tbody>
                                         <?php
                                         if($log_list){
@@ -170,28 +140,13 @@
                                            <td>
                                                 <a href="#"><?php echo $val['id'];?></a>
                                             </td>
-                                            <td><?php echo $val['login_name'];?></td>
-                                            <td><?php echo $val['login_time'];?></td>
-                                            <td><?php echo $val['login_ip'];?></td>
-                                            <td class="hidden-480">
-                                               <?php 
-                                                    switch ($val['login_status']){
-                                                        case 1:
-                                                            echo '成功';
-                                                            break;
-                                                        case 2:
-                                                            echo '失败，密码错误';
-                                                            break;
-                                                        case 3:
-                                                            echo '失败，用户名不存在';
-                                                            break;
-                                                    }
-                                                ?>
-                                            </td>
-
+                                            <td><?php echo $val['fullname'];?></td>
+                                            <td><?php echo $val['token'];?></td>
+                                            <td><?php echo $val['url'];?></td>
+                                            <td><?php echo $val['content'];?></td>
+											<td><?php echo date("Y-m-d H:i:s",$val['create_time']);?></td>
                                         </tr>
                                         <?php } }?>
-
 										</tbody>
                                     </table>
 									<!--分页start-->

@@ -159,12 +159,13 @@ class Houseswantorders extends MY_Controller{
     		$post_data['create_time'] = $post_data['update_time'] = date('Y-m-d H:i:s');
     		$post_data['point_ids'] = implode(',', array_unique(explode(',', $post_data['point_ids'])));
     		$post_data['confirm_point_ids'] = '';
-    		unset($post_data['s_houses_type']);
-    		$id = $this->Mhouses_scheduled_orders->create($post_data);
+    		$wid = $post_data['id'];//意向单id
+    		unset($post_data['s_houses_type'], $post_data['id']);
+    		$id = $this->Mhouses_scheduled_orders->create($post_data);//返回预定单id
     		if ($id) {
     			//意向订单
     			$update_data['status'] = 3;
-    			$this->Mhouses_want_orders->update_info($update_data, ['id' => $id]);
+    			$this->Mhouses_want_orders->update_info($update_data, ['id' => $wid]);
     			
     			//decr
     			$update_data = [];

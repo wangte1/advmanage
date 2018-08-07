@@ -142,11 +142,21 @@ $config = array(
     				'name'=> '点位规格管理',
     				'active'=> 'points_type_list'
     			),
+    		    array(
+    		        'url'=>'/housesagree',
+    		        'name'=> '合同管理',
+    		        'active'=> 'houses_agree_list'
+    		    ),
     			array(
 	    			'url'=>'/houses',
 	    			'name'=> '楼盘管理',
 	    			'active'=> 'houses_list'
     			),
+    		    array(
+    		        'url'=>'/housesinstall',
+    		        'name'=> '楼盘安装管理',
+    		        'active'=> 'houses_install_list'
+    		    ),
     			array(
     				'url'=>'/housesarea',
     				'name'=> '组团管理',
@@ -269,6 +279,11 @@ $config = array(
                     'name' => '操作日志',
                     'active' => 'login_operate_list'
                 ),
+                array(
+                    'url' => '/operatelog/androidlog',
+                    'name' => '安卓日志',
+                    'active' => 'login_android_list'
+                )
             ) 
         )
 

@@ -7,7 +7,7 @@
 
 class Tour extends MY_Controller {
     private $token;
-    private $time = 14*24*3600;
+    private $time = 7*24*3600;
     public function __construct() {
         parent::__construct();
         
@@ -138,6 +138,7 @@ class Tour extends MY_Controller {
             $this->return_json(['code' => 0, 'data' => [], 'msg' => '您所负责的区域暂无分配组团']);
         }
         $area_ids = array_unique($area_ids);
+        $where['is_del'] = 0;
         $where['houses_id'] = $houses_id;
         $where['in'] = ['area_id' => $area_ids];
         $group_by = ['houses_id', 'area_id'];
@@ -250,7 +251,7 @@ class Tour extends MY_Controller {
         $page = (int) $this->input->get_post('page') ? : '1';
         $size = (int) $this->input->get_post('size');
         
-        $where = ['is_del' => 0, 'diy_area_id' => $diy_area_id];
+        $where = ['is_del' => 0];
         $where['houses_id'] = $houses_id;
         $where['area_id'] = $area_id;
         

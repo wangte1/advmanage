@@ -282,6 +282,7 @@ class Housesscheduledorders extends MY_Controller{
                     'is_confirm' => 0,
                     'bm_agree' => 0,
                     'mm_agree' => 0,
+                    'confirm_point_ids' => "",
                 ];
                 $result = $this->Mhouses_scheduled_orders->update_info($posttemp, array('id' => $id));
                 $this->write_log($data['userInfo']['id'], 2, "编辑".$data['order_type_text'][$post_data['order_type']]."订单,订单id【".$id."】");
@@ -812,7 +813,7 @@ class Housesscheduledorders extends MY_Controller{
         if(!empty($this->input->post('houses_id'))) {
             //临时限制不让选花果园和山水黔城
             $houses_id = $this->input->post('houses_id');
-            if(in_array($houses_id, [167, 168])){
+            if(in_array($houses_id, [168])){
                $this->return_json(array('flag' => true, 'points_lists' => [], 'count' => 0, 'area_list' => []));
             }else{
                $where['houses_id'] = $houses_id;
@@ -831,7 +832,7 @@ class Housesscheduledorders extends MY_Controller{
         $where['is_del'] = 0;
         $where['`lock_num` >='] = 0; //防止出现多次选择
         $where['point_status'] = 1;
-        $where['not_in'] = ['houses_id' => [167, 168]];
+        $where['not_in'] = ['houses_id' => [168]];
         
         $fields = 'id,code,houses_id,area_id,ban,unit,floor,addr,type_id,ad_num, ad_use_num, lock_num,point_status';
         $points_lists = $this->Mhouses_points->get_usable_point($fields, $where, $order_id, $type);
@@ -1162,7 +1163,7 @@ class Housesscheduledorders extends MY_Controller{
             $post_data['creator'] =  $data['userInfo']['id'];
             $post_data['create_time'] =  date('Y-m-d H:i:s');
             unset($post_data['houses_id'], $post_data['area_id'],$post_data['ban'],$post_data['unit'],$post_data['floor'],$post_data['addr'], $post_data['hour'], $post_data['minute'], $post_data['second']);
-            unset($post_data['point_ids_old']);
+            unset($post_data['point_ids_old'], $post_data['id']);
 
             $order_id = $this->Mhouses_orders->create($post_data);
             if ($order_id) {
@@ -1245,7 +1246,7 @@ class Housesscheduledorders extends MY_Controller{
                 $this->write_log($data['userInfo']['id'], 1, "社区资源管理转预定订单".$data['order_type_text'][$post_data['order_type']]."为订单,订单id【".$id."】");
                 $this->success("预定订单转订单成功！","/confirm_reserve");
             } else {
-                $this->success("预定订单转订单失败！","/confirm_reserve");
+                $this->success("预定订单转订单失败！");
             }
         }
         

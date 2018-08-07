@@ -27,7 +27,7 @@ class Report_list extends MY_Controller{
         $this->load->library('pagination');
         $page =  intval($this->input->get("per_page",true)) ?  : 1;
         $size = $pageconfig['per_page'];
-        $where = [];
+        $where = ['B.is_del' => 0];
         $repair_time= $this->input->get('repair_time');
         $houses_id = $this->input->get('houses_id');
         $usable = $this->input->get('usable');
@@ -127,7 +127,7 @@ class Report_list extends MY_Controller{
         }
         $data['list'] = $list;
         //获取分页
-        $data_count = $this->Mhouses_points_report->get_report_list($where);
+        $data_count = $this->Mhouses_points_report->get_report_list($where, ['A.create_time' => 'desc', 'A.id' => 'desc'], 0, 0, ['A.point_id']);
         $data_count = count($data_count);
         $data['data_count'] = $data_count;
         $pageconfig['base_url'] = "/report_list/index";
