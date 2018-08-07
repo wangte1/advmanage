@@ -138,7 +138,7 @@
                             </div>
                             
                             <div class="form-group">
-                                <label class="col-sm-3 control-label no-padding-right" for="form-field-1"> 楼盘名称：</label>
+                                <label class="col-sm-3 control-label no-padding-right" for="form-field-1"> 请选择签约楼盘：</label>
                                 <div class="col-sm-9">
                                 	<select id="select" class="select2" data-placeholder="Click to Choose..." name="">
                                 		<option value="0">全部</option>

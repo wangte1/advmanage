@@ -73,6 +73,9 @@ class Housesagree extends MY_Controller{
         $data['hlist'] = $houses;
         if(IS_POST){
             $post = $this->input->post();
+            if(!isset($post['housesarr'])){
+                $this->error('添加失败，请选择签约的楼盘');
+            }
             $housesarr = $post['housesarr'];
             unset($post['sub_put_trade']);
             unset($post['housesarr']);
