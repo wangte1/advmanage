@@ -77,7 +77,6 @@ class Housesagree extends MY_Controller{
                 $this->error('添加失败，请选择签约的楼盘');
             }
             $housesarr = $post['housesarr'];
-            unset($post['sub_put_trade']);
             unset($post['housesarr']);
             $post['create_user'] = $data['userInfo']['id'];
             $post['create_time'] = date("Y-m-d H:i:s");
