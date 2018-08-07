@@ -163,5 +163,16 @@ class Report extends MY_Controller {
         }
         $this->return_json(['code' => 1, 'msg' => '操作成功']);
     }
+    
+    /**
+     * 返回报损数据
+     */
+    public function getConfig(){
+        $config = C('housespoint.report');
+        if($config){
+            $this->return_json(['code' => 1, 'data' => $config, "msg" => "ok"]);
+        }
+        $this->return_json(['code' => 0, 'data' => [], "msg" => "无法读取配置文件"]);
+    }
 
 }
