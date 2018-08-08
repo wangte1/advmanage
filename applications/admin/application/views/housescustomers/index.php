@@ -110,7 +110,7 @@
                                                 <th>城市</th>
                                                 <th>区域</th>
                                                 <th>业务负责人</th>
-                                                <th>审核人ID</th>
+                                                <th>审核人</th>
                                                 <th>审核结果</th>
                                                 <th>说明</th>
                                                 <th>操作</th>
@@ -138,11 +138,8 @@
                                                     <td><?php echo $val['city']?></td>
                                                     <td><?php echo $val['area']?></td>
                                                     <td><?php echo $val['salesman_fullname']?></td>
-                                                    <td><?php echo $val['check_id']?></td>
-                                                    <td><?php echo $val['is_check']?></td>
-                                                    <td>
-                                                        <?php echo $val['addr'];?>
-                                                    </td>
+                                                    <td><?php echo $val['check_name']?></td>
+                                                    <td><?php if($val['is_check'] == '1'){echo '是';}else {echo '否';}?></td>
                                                     <td>
                                                         <?php echo $val['remarks'];?>
                                                     </td>
