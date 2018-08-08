@@ -129,8 +129,8 @@
                                                     <td><?php echo $val['agree_end_date']?></td>
                                                     <td><?php echo $val['develer']?></td>
                                                     <td><?php echo $val['property_owner']?></td>
-                                                    <td><?php echo $val['principal_tel']?></td>
                                                     <td><?php echo $val['principal_duty']?></td>
+                                                    <td><?php echo $val['principal_tel']?></td>
                                                     <td><?php echo $val['sign_date']?></td>
                                                     <td><?php echo $val['house_list']?></td>
                                                     <td><?php echo $val['up_price']?></td>
