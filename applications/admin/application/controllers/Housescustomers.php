@@ -10,6 +10,7 @@ class Housescustomers extends MY_Controller{
         parent::__construct();
         $this->load->model([
             'Model_houses_customers' => 'Mhouses_customers',
+            'Model_admins' => 'Madmin',
          ]);
         $this->pageconfig = C('page.page_lists');
         $this->load->library('pagination');
@@ -46,6 +47,8 @@ class Housescustomers extends MY_Controller{
 
         $data['list'] = $this->Mhouses_customers->get_lists('*',$where,array("id"=>"desc"),$size,($page-1)*$size);
         $data_count = $this->Mhouses_customers->count($where);
+        $res = $this->Madmin->get_lists('*',['group_id' => '2','is_del' => 1]);
+        $data['admin'] = $res;
 
         //获取分页
         $data['pagestr'] = "";
@@ -59,6 +62,28 @@ class Housescustomers extends MY_Controller{
         $data['data_count'] = $data_count;
 
         $data['customer_type'] = C("public.houses_customer_type");
+        $data['enterprise_type'] = C('public.enterprise_type');
+        $data['customer_type2'] = C('public.customer_type2');
+        foreach ($data['list'] as $k => $v){
+            foreach ($data['enterprise_type'] as $k1 => $v1){
+                if($v['enterprise_type'] == $k1){
+                    $data['list'][$k]['enterprise_type'] = $v1;
+                }
+            }
+            foreach ($data['customer_type'] as $k2 => $v2){
+                if($v['customer_type'] == $k2){
+                    $data['list'][$k]['customer_type'] = $v2;
+                }
+            }
+            foreach ($data['admin'] as $k3 => $v3){
+                $data['list'][$k]['salesman_fullname'] = '';
+                if($v['salesman_id'] == $v3['id']){
+                    //                     $data['list'][$k]['salesman_id'] = $v3['fullname'];
+                    $data['list'][$k]['salesman_fullname'] = $v3['fullname'];
+                    break;
+                }
+            }
+        }
 
         $this->load->view("housescustomers/index",$data);
     }
@@ -90,8 +115,11 @@ class Housescustomers extends MY_Controller{
             }
 
         }
-
+        $res = $this->Madmin->get_lists('*',['group_id' => '2','is_del' => 1]);
+        $data['admin'] = $res;
         $data['customer_type'] = C("public.houses_customer_type");
+        $data['enterprise_type'] = C('public.enterprise_type');
+        $data['customer_type2'] = C('public.customer_type2');
         $this->load->view("housescustomers/add",$data);
     }
 
@@ -124,10 +152,14 @@ class Housescustomers extends MY_Controller{
         if(empty($info) || !isset($info)){
             die("非法参数");
         }
+        $res = $this->Madmin->get_lists('*',['group_id' => '2','is_del' => 1]);
+        $data['admin'] = $res;
 
         $data['info'] = $info;
 
         $data['customer_type'] = C("public.houses_customer_type");
+        $data['enterprise_type'] = C('public.enterprise_type');
+        $data['customer_type2'] = C('public.customer_type2');
         $this->load->view("housescustomers/edit",$data);
     }
 

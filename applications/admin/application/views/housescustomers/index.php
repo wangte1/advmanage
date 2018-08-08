@@ -105,6 +105,13 @@
                                                 <th>联系人email</th>
                                                 <th>类型</th>
                                                 <th>客户地址</th>
+                                                <th>企业性质</th>
+                                                <th>客户种类</th>
+                                                <th>城市</th>
+                                                <th>区域</th>
+                                                <th>业务负责人</th>
+                                                <th>审核人ID</th>
+                                                <th>审核结果</th>
                                                 <th>说明</th>
                                                 <th>操作</th>
                                             </tr>
@@ -125,6 +132,14 @@
                                                     <td><?php echo $val['qq'];?></td>
                                                     <td><?php echo $val['email'];?></td>
                                                     <td><?php echo $customer_type[$val['type']];?></td>
+                                                    <td><?php echo $val['addr'];?></td>
+                                                    <td><?php echo $val['enterprise_type']?></td>
+                                                    <td><?php echo $val['customer_type']?></td>
+                                                    <td><?php echo $val['city']?></td>
+                                                    <td><?php echo $val['area']?></td>
+                                                    <td><?php echo $val['salesman_fullname']?></td>
+                                                    <td><?php echo $val['check_id']?></td>
+                                                    <td><?php echo $val['is_check']?></td>
                                                     <td>
                                                         <?php echo $val['addr'];?>
                                                     </td>

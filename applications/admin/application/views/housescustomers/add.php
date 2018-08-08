@@ -122,7 +122,57 @@
                                 </div>
                             </div>
                             
-
+                            <div class="form-group">
+                                <label class="col-sm-3 control-label no-padding-right" for="form-field-1"> 企业性质：</label>
+                                <div class="col-sm-9">
+                                	<select name="enterprise_type">
+                                		<?php foreach ($enterprise_type as $k => $v):?>
+                                			<option value="<?php echo $k;?>"><?php echo $v;?></option>
+                                		<?php endforeach;?>
+                                    </select>
+                                </div>
+                            </div>
+                            
+                            <div class="form-group">
+                                <label class="col-sm-3 control-label no-padding-right" for="form-field-1"> 客户种类：</label>
+                                <div class="col-sm-9">
+                                	<select name="customer_type">
+                                		<?php foreach ($customer_type2 as $k => $v):?>
+                                			<option value="<?php echo $k;?>"><?php echo $v;?></option>
+                                		<?php endforeach;?>
+                                    </select>
+                                </div>
+                            </div>
+                            
+                            <div class="form-group">
+                                <label class="col-sm-3 control-label no-padding-right" for="form-field-1">  城市： </label>
+                                <div class="col-sm-9">
+                                    <input type="text" name="city"  id="form-field-1" placeholder="" class="col-xs-10 col-sm-5">
+                                    <span class="help-inline col-xs-12 col-sm-7 form-field-description-block">
+									</span>
+                                </div>
+                            </div>
+                            
+                            <div class="form-group">
+                                <label class="col-sm-3 control-label no-padding-right" for="form-field-1">  区域： </label>
+                                <div class="col-sm-9">
+                                    <input type="text" name="area"  id="form-field-1" placeholder="" class="col-xs-10 col-sm-5">
+                                    <span class="help-inline col-xs-12 col-sm-7 form-field-description-block">
+									</span>
+                                </div>
+                            </div>
+                            
+                            <div class="form-group">
+                                <label class="col-sm-3 control-label no-padding-right" for="form-field-1"> 业务负责人：</label>
+                                <div class="col-sm-9">
+                                	<select name="salesman_id">
+                                		<?php foreach ($admin as $k => $v):?>
+                                			<option value="<?php echo $v['id']?>"><?php echo $v['fullname'];?></option>
+                                		<?php endforeach;?>
+                                    </select>
+                                </div>
+                            </div>
+                            
                             <div class="form-group">
                                 <label class="col-sm-3 control-label no-padding-right" for="form-field-1">  备注： </label>
                                 <div class="col-sm-9">
