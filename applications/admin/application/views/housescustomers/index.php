@@ -141,9 +141,6 @@
                                                     <td><?php echo $val['check_id']?></td>
                                                     <td><?php echo $val['is_check']?></td>
                                                     <td>
-                                                        <?php echo $val['addr'];?>
-                                                    </td>
-                                                    <td>
                                                         <?php echo $val['remarks'];?>
                                                     </td>
                                                     <td>
