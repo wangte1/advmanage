@@ -102,6 +102,13 @@
                                                 <th>负责人电话 </th>
                                                 <th>签约日期 </th>
                                                 <th>签约楼盘 </th>
+                                                <th>地面单价 </th>
+                                                <th>地下单价 </th>
+                                                <th>合同金额 </th>
+                                                <th>支付方式</th>
+                                                <th>开票类型 </th>
+                                                <th>递增方式 </th>
+                                                <th>备注 </th>
                                                 <th>录入人 </th>
                                                 <th>录入日期 </th>
                                                 <th>操作</th>
@@ -122,10 +129,17 @@
                                                     <td><?php echo $val['agree_end_date']?></td>
                                                     <td><?php echo $val['develer']?></td>
                                                     <td><?php echo $val['property_owner']?></td>
-                                                    <td><?php echo $val['principal_tel']?></td>
                                                     <td><?php echo $val['principal_duty']?></td>
+                                                    <td><?php echo $val['principal_tel']?></td>
                                                     <td><?php echo $val['sign_date']?></td>
                                                     <td><?php echo $val['house_list']?></td>
+                                                    <td><?php echo $val['up_price']?></td>
+                                                    <td><?php echo $val['down_price']?></td>
+                                                    <td><?php echo $val['agree_price']?></td>
+                                                    <td><?php echo $val['pay_method']?></td>
+                                                    <td><?php echo $val['invoice_type']?></td>
+                                                    <td><?php echo $val['incr_type']?></td>
+                                                    <td><?php echo $val['remak']?></td>
                                                     <td><?php echo $val['create_user_name']?></td>
                                                     <td><?php echo $val['create_time']?></td>
                                                     <td>
