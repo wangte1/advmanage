@@ -49,6 +49,8 @@ class Housescustomers extends MY_Controller{
         $data_count = $this->Mhouses_customers->count($where);
         $res = $this->Madmin->get_lists('*',['group_id' => '2','is_del' => 1]);
         $data['admin'] = $res;
+        $res1 = $this->Madmin->get_lists('*',['is_del' => 1]);
+        $data['sadmin'] = $res1;
 
         //获取分页
         $data['pagestr'] = "";
@@ -78,8 +80,14 @@ class Housescustomers extends MY_Controller{
             foreach ($data['admin'] as $k3 => $v3){
                 $data['list'][$k]['salesman_fullname'] = '';
                 if($v['salesman_id'] == $v3['id']){
-                    //                     $data['list'][$k]['salesman_id'] = $v3['fullname'];
                     $data['list'][$k]['salesman_fullname'] = $v3['fullname'];
+                    break;
+                }
+            }
+            foreach ($data['sadmin'] as $k4 => $v4){
+                $data['list'][$k]['check_name'] = '';
+                if($v['check_id'] == $v4['id']){
+                    $data['list'][$k]['check_name'] = $v4['fullname'];
                     break;
                 }
             }
