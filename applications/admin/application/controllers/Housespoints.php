@@ -535,21 +535,8 @@ class Housespoints extends MY_Controller{
      * 1034487709@qq.com
      */
     public function out_excel(){
-        ini_set('memory_limit', '250M');
         set_time_limit(0);
-//     	if ($this->input->get('type_id')) $where['A.type_id'] = $this->input->get('type_id');
-//         if ($this->input->get('province')) $where['B.province'] = $this->input->get('province');
-//         if ($this->input->get('city')) $where['B.city'] = $this->input->get('city');
-//         if ($this->input->get('area')) $where['B.area'] = $this->input->get('area');
-//         if ($this->input->get('houses_id')) $where['A.houses_id'] = $this->input->get('houses_id');
-//         if ($this->input->get('area_id')) $where['A.area_id'] = $this->input->get('area_id');
-//         if ($this->input->get('ban')) $where['A.ban'] = $this->input->get('ban');
-//         if ($this->input->get('unit')) $where['A.area_id'] = $this->input->get('unit');
-//         if ($this->input->get('floor')) $where['A.area_id'] = $this->input->get('floor');
-//         if ($this->input->get('addr')) $where['A.addr'] = $this->input->get('addr');
-//         if ($this->input->get('point_status')) $where['A.point_status'] = $this->input->get('point_status');
-//         if ($this->input->get('customer_id')) $where['like']['A.customer_id'] = $this->input->get('customer_id');
-//         if ($this->input->get('code')) $where['like']['A.code'] = $this->input->get('code');
+
         if ($this->input->get('type_id')) $where['A.type_id'] = $this->input->get('type_id');
         if ($this->input->get('province')) $where['B.province'] = $this->input->get('province');
         if ($this->input->get('city')) $where['B.city'] = $this->input->get('city');
@@ -571,6 +558,8 @@ class Housespoints extends MY_Controller{
     		'点位编号'=>"code",
     		'行政区域'=>"admin_area",
     		'所属楼盘'=>"houses_name",
+    	    '楼盘入住率' => 'occ_rate',
+    	    '楼盘等级' => 'grade',
     		'所属组团'=>"houses_area_name",
     		'楼栋'=>"ban",
     		'单元'=>"unit",
@@ -592,10 +581,12 @@ class Housespoints extends MY_Controller{
     	$customerList = $this->Mhouses_customers->get_lists('id,name', ['is_del' => 0]);
     	$h = 2;
     	$addrList = C('housespoint.point_addr');
+    	$grade = C('public.houses_grade');
     	foreach($list as $key=> &$val){
     	    foreach ($addrList as $k => $v){
     	        if($val['addr'] == $k) $val['addr'] = $v;
     	    }
+    	    
     	    //拼接占用客户
     	    if(!empty($val['customer_id'] && $val['customer_id'])){
     	        $thisCustomer = explode(',', $val['customer_id']);
@@ -621,40 +612,20 @@ class Housespoints extends MY_Controller{
     		foreach($table_header as $k => $v){
     		$cell = PHPExcel_Cell::stringFromColumnIndex($j++).$h;
     
-    		if($v == "code") {
-    			$value = $val['code'];
-    		}
+    		$value = $val[$v];
     		
     		if($v == "admin_area") {
     			$value = $val['province'].'-'.$val['city'].'-'.$val['area'];
     		}
     		
-    		if($v == "houses_name") {
-    			$value = $val['houses_name'];
+    		if($v == "grade"){
+    		    $value = $grade[$val['grade']];
     		}
     		
-    		if($v == "houses_area_name") {
-    			$value = $val['houses_area_name'];
+    		if($v == "occ_rate"){
+    		    $value = sprintf('%.2f', 100*$val['occ_rate']);
     		}
     		
-    		if($v == "ban") {
-    			$value = $val['ban'];
-    		}
-    		
-    		if($v == "unit") {
-    			$value = $val['unit'];
-    		}
-    		
-    		if($v == "floor") {
-    			$value = $val['floor'];
-    		}
-    		
-    		if($v == "addr") {
-    			$value = $val['addr'];
-    		}
-    		if($v == "point_status") {
-    		    $value = $val['point_status'];
-    		}
     		if($v == "customer_id") {
     		    $value = '';
     		    if($val['customer_id']){
