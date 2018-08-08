@@ -27,6 +27,7 @@ class Housesagree extends MY_Controller{
         $list = $this->Mhouses_agree->get_lists('*',$where,[],$size,($page-1)*$size);
         $data['list'] = [];
         $data['hlist'] = [];
+        $data['agree'] = C("agree");
         if($list){
             $data['list'] = $list;
             $admin = $this->Madmins->get_lists('id,fullname',['is_del' => 1]);
@@ -37,6 +38,16 @@ class Housesagree extends MY_Controller{
                     foreach ($admin as $key => $val){
                         if($val['id'] == $v['create_user']){
                             $data['list'][$k]['create_user_name'] = $val['fullname'];break;
+                        }
+                    }
+                    foreach ($data['agree']['pay_method'] as $k1 => $v1){
+                        if($v['pay_method'] == $k1){
+                            $data['list'][$k]['pay_method'] = $v1;
+                        }
+                    }
+                    foreach ($data['agree']['invoice_type'] as $k2 => $v2){
+                        if($v['invoice_type'] == $k2){
+                            $data['list'][$k]['invoice_type'] = $v2;
                         }
                     }
                 }
@@ -52,6 +63,15 @@ class Housesagree extends MY_Controller{
                     }
                 }
             }
+//             foreach ($data['list'] as $k => $v){
+//                 foreach ($data['agree']['pay_method'] as $k1 => $v1){
+//                     if($v['pay_method'] == $k){
+//                         $data['list'][$k]['pay_method'] = $v1;
+//                         return ;
+//                     }
+//                 }
+//                 foreach ($)
+//             }
             
             $data_count = $this->Mhouses_agree->count($where);
             $data['data_count'] = $data_count;
@@ -68,6 +88,7 @@ class Housesagree extends MY_Controller{
     public function  add(){
         $data = $this->data;
         $data['title'] = array("合同管理","添加合同");
+        $data['agree'] = C("agree");
         
         $houses = $this->Mhouses->get_lists('id,name,agree_id', ['is_del' => 0]);
         $data['hlist'] = $houses;

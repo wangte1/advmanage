@@ -74,6 +74,56 @@
                             </div>
                             
                             <div class="form-group">
+                                <label class="col-sm-3 control-label no-padding-right" for="form-field-1"> 地面单价： </label>
+                                <div class="col-sm-9">
+                                    <input type="number" name="up_price">
+                                </div>
+                            </div>
+                            
+                            <div class="form-group">
+                                <label class="col-sm-3 control-label no-padding-right" for="form-field-1"> 地下单价： </label>
+                                <div class="col-sm-9">
+                                    <input type="number" name="down_price">
+                                </div>
+                            </div>
+                            
+                            <div class="form-group">
+                                <label class="col-sm-3 control-label no-padding-right" for="form-field-1"> 合同金额： </label>
+                                <div class="col-sm-9">
+                                    <input type="number" name="agree_price">
+                                </div>
+                            </div>
+                            
+                            <div class="form-group">
+                                <label class="col-sm-3 control-label no-padding-right" for="form-field-1"> 支付方式：</label>
+                                <div class="col-sm-9">
+                                	<select name="pay_method">
+                                		<?php foreach ($agree['pay_method'] as $k => $v):?>
+                                			<option value="<?php echo $k;?>"><?php echo $v;?></option>
+                                		<?php endforeach;?>
+                                    </select>
+                                </div>
+                            </div>
+                            
+                            <div class="form-group">
+                                <label class="col-sm-3 control-label no-padding-right" for="form-field-1"> 开票类型：</label>
+                                <div class="col-sm-9">
+                                	<select name="invoice_type">
+                                		<?php foreach ($agree['invoice_type'] as $k => $v):?>
+                                			<option value="<?php echo $k;?>"><?php echo $v;?></option>
+                                		<?php endforeach;?>
+                                    </select>
+                                </div>
+                            </div>
+                            
+                            <div class="form-group">
+                                <label class="col-sm-3 control-label no-padding-right" for="form-field-1"> 递增方式： </label>
+                                <div class="col-sm-9">
+                                    <input type="text" name="incr_type">
+                                </div>
+                            </div>
+                            
+                            <div class="form-group">
                                 <label class="col-sm-3 control-label no-padding-right" for="form-input-readonly"> 合同开始时间： </label>
                                 <div class="col-sm-9" style="width: 15%";>
                                     <div class="input-group date datepicker">
@@ -134,6 +184,13 @@
                                             <i class="icon-calendar bigger-110"></i>
                                         </span>
                                     </div>
+                                </div>
+                            </div>
+                            
+                            <div class="form-group">
+                                <label class="col-sm-3 control-label no-padding-right" for="form-field-1">  备注： </label>
+                                <div class="col-sm-9">
+                                    <textarea id="form-field-11" rows="5" name="remak" placeholder="（选填）备注信息。最多200个字。" class="autosize-transition col-xs-6 col-sm-3" style="overflow: hidden; word-wrap: break-word; resize: horizontal;"></textarea>
                                 </div>
                             </div>
                             
