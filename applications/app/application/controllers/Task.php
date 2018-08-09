@@ -176,7 +176,9 @@ class Task extends MY_Controller {
         $this->load->library('pagination');
         $page = intval($this->input->get_post("page",true)) ?  : 1;
         $size = (int) $this->input->get_post('size');
-        if(!$size){$size = $pageconfig['page'];}
+        if(!$size){
+            $size = $pageconfig['per_page'];
+        }
         //获取这个工单的点位列表
         $workOrderPoint = $this->Mhouses_work_order_detail->get_lists('id,pid,point_id,status,no_img,pano_img,pano_status', ['pid' => $id], [], $size, ($page-1)*$size);
         if(!$workOrderPoint) $this->return_json(['code' => 0, 'data' => [], 'page' => $page]);
@@ -186,6 +188,7 @@ class Task extends MY_Controller {
         $code = 0;
         if(count($selected_points)) $code = 1;
     	foreach ($workOrderPoint as $k => &$v){
+    	    $v['can_report'] = 1;//默认可以报损
     	    foreach ($selected_points as $key => $val){
     	        if($val['id'] == $v['point_id']){
     	            foreach ($val as $key1 => $val1){
@@ -197,6 +200,18 @@ class Task extends MY_Controller {
     	    }
     	}
     	unset($selected_points);
+    	//查询这些点位的报损情况
+    	$ids = array_column($workOrderPoint, 'point_id');
+    	$badList = $this->Mhouses_points_report->get_lists('point_id', ['in' => ['point_id' => $ids], 'repair_time' => 0]);
+    	if($badList){
+    	    //提取id
+    	    $bad_point_ids = array_column($badList, 'point_id');
+    	    foreach ($workOrderPoint as $k => $v){
+    	        if(in_array($v['point_id'], $bad_point_ids)){
+    	            $workOrderPoint[$k]['can_report'] = 0;
+    	        }
+    	    }
+    	}
     	$this->return_json(['code' => 1, 'data' => $workOrderPoint, 'page' => $page]);
     }
     

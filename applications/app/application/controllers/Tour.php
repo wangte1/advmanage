@@ -299,6 +299,18 @@ class Tour extends MY_Controller {
                 }
             }
         }
+        //提取所有id
+        $ids = array_column($list, 'id');
+        $badList = $this->Mhouses_points_report->get_lists('point_id', ['in' => ['point_id' => $ids], 'repair_time' => 0]);
+        if($badList){
+            foreach ($list as $k => $v){
+                //提取id
+                $bad_point_ids = array_column($badList, 'point_id');
+                if(in_array($v['id'], $bad_point_ids)){
+                    $list[$k]['can_report'] = 0;
+                }
+            }
+        }
         $this->return_json(['code' => 1, 'data' => $list, 'page' => $page, 'time' => $this->time]);
     }
     
