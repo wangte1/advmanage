@@ -258,7 +258,7 @@ class Tour extends MY_Controller {
         if(!$size) $size = $pageconfig['per_page'];
         
         $orderBy = ['area_id' => 'asc', 'ban' => 'asc'];
-        $list = $this->Mhouses_points->get_lists("id,code,houses_id,area_id,ban,unit,floor,addr,point_status", $where, $orderBy, $size, ($page-1)*$size);
+        $list = $this->Mhouses_points->get_lists("id,code,houses_id,area_id,ban,unit,floor,addr,point_status,tour_time", $where, $orderBy, $size, ($page-1)*$size);
         if(!$list){
             $this->return_json(['code' => 0, 'msg' => '暂无数据']);
         }
