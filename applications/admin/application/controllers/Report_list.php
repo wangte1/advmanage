@@ -252,13 +252,17 @@ class Report_list extends MY_Controller{
         $where = [];
         $repair_time= $this->input->get('repair_time');
         $houses_id = $this->input->get('houses_id');
+        $area_id = $this->input->get('area_id');
         $usable = $this->input->get('usable');
         $report = $this->input->get('report');
         $start_time = $this->input->get('start_time');
         $end_time = $this->input->get('end_time');
+        $r_start_time = $this->input->get('r_start_time');
+        $r_end_time = $this->input->get('r_end_time');
         $create_id = $this->input->get('create_id');
         $rcode = trim($this->input->get('rcode'));
         $install_id = $this->input->get('install');
+        $addr = $this->input->get('addr');
         if($repair_time == "1"){
             $where['A.repair_time >'] = 0;
             $data['repair_time'] = $repair_time;
@@ -274,6 +278,10 @@ class Report_list extends MY_Controller{
         if($houses_id) {
             $where['B.houses_id'] = $houses_id;
             $data['houses_id'] = $houses_id;
+        }
+        if($area_id) {
+            $where['B.area_id'] = $area_id;
+            $data['area_id'] = $area_id;
         }
         if($usable != '-1' && $usable != null){
             $where['usable'] = $usable;
@@ -292,6 +300,19 @@ class Report_list extends MY_Controller{
             $where['A.create_time<='] = strtotime($end_time);
             $data['end_time'] = $end_time;
         }
+        if($r_start_time){
+            if($r_end_time){
+                $where['A.repair_time>='] = strtotime($r_start_time);
+                $data['r_start_time'] = $r_start_time;
+            }else{
+                $where['A.repair_time'] = strtotime($r_start_time);
+                $data['r_start_time'] = $r_start_time;
+            }
+        }
+        if($r_end_time){
+            $where['A.repair_time<='] = strtotime($r_end_time);
+            $data['r_end_time'] = $r_end_time;
+        }
         if($create_id){
             $where['A.create_id'] = $create_id;
             $data['create_id'] = $create_id;
@@ -303,6 +324,10 @@ class Report_list extends MY_Controller{
         if($rcode){
             $where['B.code'] = $rcode;
             $data['rcode'] = $rcode;
+        }
+        if($addr){
+            $where['B.addr'] = $addr;
+            $data['addr'] = $addr;
         }
         $data['report_id'] = $report;
         $data['repair_time'] = $repair_time;
