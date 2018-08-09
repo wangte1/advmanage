@@ -258,7 +258,7 @@ class Tour extends MY_Controller {
         if(!$size) $size = $pageconfig['per_page'];
         
         $orderBy = ['area_id' => 'asc', 'ban' => 'asc'];
-        $list = $this->Mhouses_points->get_lists("*", $where, $orderBy, $size, ($page-1)*$size);
+        $list = $this->Mhouses_points->get_lists("id,code,houses_id,area_id,ban,unit,floor,addr,point_status", $where, $orderBy, $size, ($page-1)*$size);
         if(!$list){
             $this->return_json(['code' => 0, 'msg' => '暂无数据']);
         }
@@ -306,7 +306,7 @@ class Tour extends MY_Controller {
             foreach ($list as $k => $v){
                 //提取id
                 $bad_point_ids = array_column($badList, 'point_id');
-                if(in_array($v['point_id'], $bad_point_ids)){
+                if(in_array($v['id'], $bad_point_ids)){
                     $list[$k]['can_report'] = 0;
                 }
             }

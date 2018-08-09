@@ -89,7 +89,7 @@ class Point extends MY_Controller {
             foreach ($list as $k => $v){
                 //提取id
                 $bad_point_ids = array_column($badList, 'point_id');
-                if(in_array($v['point_id'], $bad_point_ids)){
+                if(in_array($v['id'], $bad_point_ids)){
                     $list[$k]['can_report'] = 0;
                 }
             }
