@@ -18,6 +18,7 @@ class Point extends MY_Controller {
             'Model_houses_points' => 'Mhouses_points',
             'Model_houses_area' => 'Mhouses_area',
             'Model_houses' => 'Mhouses',
+            'Model_houses_points_report' => 'Mhouses_points_report',
             'Model_houses_tour_points' => 'Mhouses_tour_points'
         ]);
     }
@@ -38,10 +39,11 @@ class Point extends MY_Controller {
         if(!$size) $size = $pageconfig['per_page'];
         
         $orderBy = ['houses_id' => 'asc'];
-        $list = $this->Mhouses_points->get_lists("*", $where, $orderBy, $size, ($page-1)*$size);
+        $list = $this->Mhouses_points->get_lists("id,code,houses_id,area_id,ban,unit,floor,addr,point_status", $where, $orderBy, $size, ($page-1)*$size);
         if(!$list){
             $this->return_json(['code' => 0, 'msg' => '暂无数据']);
         }
+       
         //获取所有楼盘id
         $houses_ids = array_column($list, 'houses_id');
         if(count($houses_ids) > 1){
@@ -57,6 +59,7 @@ class Point extends MY_Controller {
         if($houses_list){
             foreach ($list as $k => &$v){
                 $v['houses_name'] = '';
+                $v['can_report'] = 1;
                 foreach ($houses_list as $key => $val){
                     if($v['houses_id'] == $val['id']){
                         $v['houses_name'] = $val['name'];
@@ -76,6 +79,18 @@ class Point extends MY_Controller {
                         $v['houses_area_name'] = $val['name'];
                         break;
                     }
+                }
+            }
+        }
+        //提取所有id
+        $ids = array_column($list, 'id');
+        $badList = $this->Mhouses_points_report->get_lists('point_id', ['in' => ['point_id' => $ids], 'repair_time' => 0]);
+        if($badList){
+            foreach ($list as $k => $v){
+                //提取id
+                $bad_point_ids = array_column($badList, 'point_id');
+                if(in_array($v['point_id'], $bad_point_ids)){
+                    $workOrderPoint[$k]['can_report'] = 0;
                 }
             }
         }
