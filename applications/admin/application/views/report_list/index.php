@@ -64,21 +64,21 @@
 				                                    </select>
                                                 </div>
                                             </div>
-                                    	
-                                    	
+                                            
                                             <div class="col-sm-4">
-                                                <label class="col-sm-3 control-label no-padding-right" for="form-field-1"> 报损类型： </label>
+                                                <label class="col-sm-3 control-label no-padding-right" for="form-field-1"> 所属组团 </label>
                                                 <div class="col-sm-9">
-                                                    <select class="select2" name="report" >
-                                                        <option value="0">全部</option>
-                                                        <?php foreach ($report as $k => $v) {?>
-			                                    		<option value="<?php echo $k;?>" <?php if($k == $report_id) {?>selected="selected"<?php }?>><?php echo $v;?></option>
-				                                    	<?php }?>
-                                                    </select>
+                                                	<select id="area" class="select2" data-placeholder="Click to Choose..." name="area_id" onchange="get_buf_info();">
+                                                		<option value="">全部</option>
+                                                		<?php if(isset($houses_id) && isset($area_list)):?>
+                                                		<?php foreach ($area_list as $k => $v):?>
+                                                		<option value="<?php echo $v['id'];?>" <?php if(isset($area_id) && $area_id == $v['id']){echo 'selected="selected"';}?>><?php echo $v['name'];?></option>
+				                                    	<?php endforeach;?>
+				                                    	<?php endif;?>
+				                                    </select>
                                                 </div>
                                             </div>
-                                        
-                                    
+                                    	
                                             <div class="col-sm-4">
                                                 <label class="col-sm-3 control-label no-padding-right" for="form-field-1"> 修复状态： </label>
                                                 <div class="col-sm-9">
@@ -102,7 +102,7 @@
                                                 </div>
                                             </div>
                                             <div class="col-sm-4">
-                                                <label class="col-sm-3 control-label no-padding-right" for="form-input-readonly"> 开始时间： </label>
+                                                <label class="col-sm-3 control-label no-padding-right" for="form-input-readonly"> 报损开始时间： </label>
                                                 <div class="col-sm-9">
                                                     <div class="input-group date datepicker">
                                                         <input class="form-control date-picker" type="text" name="start_time" value="<?php if(isset($start_time)){ echo $start_time;}?>" >
@@ -113,7 +113,7 @@
                                                 </div>
                                             </div>
                                             <div class="col-sm-4">
-                                                <label class="col-sm-3 control-label no-padding-right" for="form-input-readonly"> 结束时间： </label>
+                                                <label class="col-sm-3 control-label no-padding-right" for="form-input-readonly"> 报损结束时间： </label>
                                                 <div class="col-sm-9">
                                                     <div class="input-group date datepicker">
                                                         <input class="form-control date-picker" type="text" name="end_time" value="<?php if(isset($end_time)){ echo $end_time;}?>" >
@@ -152,6 +152,54 @@
                                                         <option <?php if(isset($create_id) && $create_id == $v['id']){echo "selected";}?>  value="<?php echo $v['id']?>"><?php echo $v['fullname']?></option>
                                                         <?php endforeach;?>
                                                         <?php endif;?>
+                                                    </select>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="form-group">
+                                        	<div class="col-sm-3">
+                                                <label class="col-sm-3 control-label no-padding-right" for="form-input-readonly"> 修复开始时间： </label>
+                                                <div class="col-sm-9">
+                                                    <div class="input-group date datepicker">
+                                                        <input class="form-control date-picker" type="text" name="r_start_time" value="<?php if(isset($r_start_time)){ echo $r_start_time;}?>" >
+                                                        <span class="input-group-addon">
+                                                            <i class="icon-calendar bigger-110"></i>
+                                                        </span>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="col-sm-4">
+                                                <label class="col-sm-3 control-label no-padding-right" for="form-input-readonly"> 修复结束时间： </label>
+                                                <div class="col-sm-9">
+                                                    <div class="input-group date datepicker">
+                                                        <input class="form-control date-picker" type="text" name="r_end_time" value="<?php if(isset($r_end_time)){ echo $r_end_time;}?>" >
+                                                        <span class="input-group-addon">
+                                                            <i class="icon-calendar bigger-110"></i>
+                                                        </span>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="col-sm-4">
+                                                <label class="col-sm-3 control-label no-padding-right" for="form-field-1"> 报损类型： </label>
+                                                <div class="col-sm-9">
+                                                    <select class="select2" name="report" >
+                                                        <option value="0">全部</option>
+                                                        <?php foreach ($report as $k => $v) {?>
+			                                    		<option value="<?php echo $k;?>" <?php if($k == $report_id) {?>selected="selected"<?php }?>><?php echo $v;?></option>
+				                                    	<?php }?>
+                                                    </select>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="form-group">
+                                        	<div class="col-sm-3">
+                                                <label class="col-sm-3 control-label no-padding-right" for="form-field-1"> 点位位置： </label>
+                                                <div class="col-sm-9">
+                                                    <select class="select2" name="addr">
+                                                        <option value="0">全部</option>
+                                                        <option value="1"<?php if($addr == '1') { echo "selected"; }?>>门禁</option>
+                                                        <option value="2"<?php if($addr == '2') { echo "selected"; }?>>地面电梯前室</option>
+                                                        <option value="3"<?php if($addr == '3') { echo "selected"; }?>>地下电梯前室</option>
                                                     </select>
                                                 </div>
                                             </div>
@@ -309,6 +357,22 @@
 <script src="<?php echo css_js_url('select2.min.js','admin');?>"></script>
 <script type="text/javascript">
 $(".select2").css('width','230px').select2({allowClear:true});
+$('#houses').change(function(){
+    $('#area').html();
+    $('#s2id_area,#s2id_ban-sel,#s2id_unit-sel,#s2id_floor-sel').find('.select2-chosen').text('全部');
+    var areaStr = '<option value="">全部</option>';
+	var houses_id = $(this).val();
+	$.post('/housespoints/get_area', {'houses_id':houses_id}, function(data){
+		if(data.code == 1){
+			for(var i=0; i < data.list.length; i++){
+				areaStr += '<option value="'+data.list[i]["id"]+'">'+data.list[i]["name"]+'</option>';
+			}
+    	}
+		$("#area").html(areaStr);
+
+		get_buf_info();
+	});
+});
 var baseUrl = "<?php echo $domain['admin']['url'];?>";
 // $('img').on('click', function(){
 // 	url = $(this).attr('src');
