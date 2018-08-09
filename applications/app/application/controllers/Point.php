@@ -90,7 +90,7 @@ class Point extends MY_Controller {
                 //提取id
                 $bad_point_ids = array_column($badList, 'point_id');
                 if(in_array($v['point_id'], $bad_point_ids)){
-                    $workOrderPoint[$k]['can_report'] = 0;
+                    $list[$k]['can_report'] = 0;
                 }
             }
         }
