@@ -29,7 +29,7 @@ class Task extends MY_Controller {
         	'Model_houses_order_inspect_images' => 'Mhouses_order_inspect_images',
         ]);
         $this->load->library([
-            //'MyRedis' => 'redis'
+            'MyRedis' => 'redis'
         ]);
     }
     
