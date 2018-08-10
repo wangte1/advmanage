@@ -141,7 +141,7 @@ class Customer extends MY_Controller {
         if(!empty($post['name'])){
             $this->return_json(['code' => 0, 'msg' => '客户名称不能为空']);
         }
-        $post['creator'] = $token['user_id'];
+        $post['creator'] = $post['salesman_id'] = $token['user_id'];
         $post['create_time'] = date('Y-m-d H:i:s');
         $res = $this->Mhouses_customers->create($post);
         if($res) $this->return_json(['code' => 0, 'msg' => '添加失败']);
