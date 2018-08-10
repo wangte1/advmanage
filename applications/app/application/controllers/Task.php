@@ -44,7 +44,7 @@ class Task extends MY_Controller {
         $this->load->library('pagination');
         $page = intval($this->input->get_post("page",true)) ?  : 1;
         $size = (int) $this->input->get_post('size');
-        if(!$size){$size = $pageconfig['page'];}
+        if(!$size){$size = $pageconfig['per_page'];}
         $data['assign_type'] = $assign_type = $this->input->get_post('assign_type') ? : 1;
         $where['type'] = $assign_type;
         
