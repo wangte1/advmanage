@@ -128,4 +128,23 @@ class Customer extends MY_Controller {
         }
         $this->return_json(['code' => 0, 'data' => [], "msg" => "无法读取配置文件"]);
     }
+    
+    /**
+     * 添加客户接口
+     */
+    public function addCustomer(){
+        $post = $this->input->get_post();
+        $token = decrypt($this->token);
+        if(!isset($post['name'])){
+            $this->return_json(['code' => 0, 'msg' => '客户名称必填']);
+        }
+        if(!empty($post['name'])){
+            $this->return_json(['code' => 0, 'msg' => '客户名称不能为空']);
+        }
+        $post['creator'] = $token['user_id'];
+        $post['create_time'] = date('Y-m-d H:i:s');
+        $res = $this->Mhouses_customers->create($post);
+        if($res) $this->return_json(['code' => 0, 'msg' => '添加失败']);
+        $this->return_json(['code' => 1, 'msg' => '操作成功']);
+    }
 }
