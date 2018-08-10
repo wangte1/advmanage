@@ -105,7 +105,24 @@ class Customer extends MY_Controller {
             $data = [];
             foreach ($config as $k => $v){
                 $arr = ['index' => $k, 'reason' => $v];
-                $data[] = $arr;
+                $data['type'][] = $arr;
+            }
+            $enterprise_type = [
+                '1' => '私企',
+                '2' => '国企',
+                '3' => '央企',
+            ];
+            foreach ($enterprise_type as $k => $v){
+                $arr = ['index' => $k, 'reason' => $v];
+                $data['enterprise_type'][] = $arr;
+            }
+            $customer_type = [
+                '1' => '普通用户',
+                '2' => '重点用户',
+            ];
+            foreach ($customer_type as $k => $v){
+                $arr = ['index' => $k, 'reason' => $v];
+                $data['customer_type'][] = $arr;
             }
             $this->return_json(['code' => 1, 'data' => $data, "msg" => "ok"]);
         }
