@@ -187,15 +187,15 @@ class Task extends MY_Controller {
         $selected_points = $this->Mhouses_points->get_points_lists($where_p);
         $code = 0;
         if(count($selected_points)) $code = 1;
-    	foreach ($workOrderPoint as $k => &$v){
-    	    $v['can_report'] = 1;//默认可以报损
+    	foreach ($workOrderPoint as $k => $v){
+    	    $workOrderPoint[$k]['can_report'] = 1;//默认可以报损
     	    foreach ($selected_points as $key => $val){
     	        if($val['id'] == $v['point_id']){
+    	            unset($val['id']);
     	            foreach ($val as $key1 => $val1){
-    	                if($key1 != 'id'){
-    	                   $v[$key1] = $val1;
-    	                }
+    	                $workOrderPoint[$k][$key1] = $val1;
     	            }
+    	            break;
     	        }
     	    }
     	}
