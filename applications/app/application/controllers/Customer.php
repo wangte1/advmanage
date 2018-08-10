@@ -93,7 +93,7 @@ class Customer extends MY_Controller {
                 }
             }
         }
-        $this->return_json(['code' => 1, 'data' => $list, 'msg' => 'ok']);
+        $this->return_json(['code' => 1, 'data' => $list, 'msg' => 'ok', 'page' => $page]);
     }
     
     /**
