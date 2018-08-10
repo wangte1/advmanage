@@ -95,4 +95,20 @@ class Customer extends MY_Controller {
         }
         $this->return_json(['code' => 1, 'data' => $list, 'msg' => 'ok']);
     }
+    
+    /**
+     * 返回客户类型配置文件
+     */
+    public function getConfig(){
+        $config = C('public.houses_customer_type');
+        if($config){
+            $data = [];
+            foreach ($config as $k => $v){
+                $arr = ['index' => $k, 'reason' => $v];
+                $data[] = $arr;
+            }
+            $this->return_json(['code' => 1, 'data' => $data, "msg" => "ok"]);
+        }
+        $this->return_json(['code' => 0, 'data' => [], "msg" => "无法读取配置文件"]);
+    }
 }
