@@ -51,6 +51,7 @@
                         <th style="text-align: center;width:10%;">序号</th>
                         <th style="text-align: center;width:10%;">姓名</th>
                         <th style="text-align: center;width:10%;">自定义区域</th>
+                        <th style="text-align: center;width:10%;">总计点位数</th>
                         <th style="text-align: center;width:60%;">包含的区域</th>
                     </tr>
                     </thead>
@@ -69,6 +70,7 @@
                             	</select>
                             	
                             </td>
+                            <td><?php echo $v['number']?></td>
                             <td style="text-align:left;">
                             	<?php if(count($v['list'])):?>
                             	<?php foreach ($v['list'] as $key => $val):?>
