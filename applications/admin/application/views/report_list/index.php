@@ -65,7 +65,7 @@
                                                 </div>
                                             </div>
                                             
-                                            <div class="col-sm-4">
+                                            <div class="col-sm-3">
                                                 <label class="col-sm-3 control-label no-padding-right" for="form-field-1"> 所属组团 </label>
                                                 <div class="col-sm-9">
                                                 	<select id="area" class="select2" data-placeholder="Click to Choose..." name="area_id" onchange="get_buf_info();">
@@ -79,7 +79,7 @@
                                                 </div>
                                             </div>
                                     	
-                                            <div class="col-sm-4">
+                                            <div class="col-sm-3">
                                                 <label class="col-sm-3 control-label no-padding-right" for="form-field-1"> 修复状态： </label>
                                                 <div class="col-sm-9">
                                                     <select class="select2" name="repair_time" >
@@ -89,8 +89,6 @@
                                                     </select>
                                                 </div>
                                             </div>
-                                        </div>
-                                        <div class="form-group">
                                             <div class="col-sm-3">
                                                 <label class="col-sm-3 control-label no-padding-right" for="form-field-1"> 是否可上画： </label>
                                                 <div class="col-sm-9">
@@ -101,7 +99,9 @@
                                                     </select>
                                                 </div>
                                             </div>
-                                            <div class="col-sm-4">
+                                        </div>
+                                        <div class="form-group">
+                                            <div class="col-sm-3">
                                                 <label class="col-sm-3 control-label no-padding-right" for="form-input-readonly"> 报损开始时间： </label>
                                                 <div class="col-sm-9">
                                                     <div class="input-group date datepicker">
@@ -112,7 +112,7 @@
                                                     </div>
                                                 </div>
                                             </div>
-                                            <div class="col-sm-4">
+                                            <div class="col-sm-3">
                                                 <label class="col-sm-3 control-label no-padding-right" for="form-input-readonly"> 报损结束时间： </label>
                                                 <div class="col-sm-9">
                                                     <div class="input-group date datepicker">
@@ -123,26 +123,7 @@
                                                     </div>
                                                 </div>
                                             </div>
-                                        </div>
-                                        <div class="form-group">
-                                        	<div class="col-sm-3">
-                                                <label class="col-sm-3 control-label no-padding-right" for="form-field-1"> 安装公司： </label>
-                                                <div class="col-sm-9">
-                                                    <select class="select2" name="install">
-                                                        <option value="0">全部</option>
-                                                        <?php foreach (C('install.install') as $k => $v):?>
-                                                        <option <?php if(isset($install) && $install== $k){echo "selected";}?>  value="<?php echo $k;?>"><?php echo $v?></option>
-                                                        <?php endforeach;?>
-                                                    </select>
-                                                </div>
-                                            </div>
-                                            <div class="col-sm-4">
-                                                <label class="col-sm-3 control-label no-padding-right" for="form-field-1"> 点位编号： </label>
-                                                <div class="col-sm-9">
-                                                    <input type="text" name="rcode" value="<?php if(isset($rcode)){echo $rcode;}?>" />
-                                                </div>
-                                            </div>
-                                            <div class="col-sm-4">
+                                            <div class="col-sm-3">
                                                 <label class="col-sm-3 control-label no-padding-right" for="form-field-1"> 报损人： </label>
                                                 <div class="col-sm-9">
                                                     <select class="select2" name="create_id">
@@ -152,6 +133,17 @@
                                                         <option <?php if(isset($create_id) && $create_id == $v['id']){echo "selected";}?>  value="<?php echo $v['id']?>"><?php echo $v['fullname']?></option>
                                                         <?php endforeach;?>
                                                         <?php endif;?>
+                                                    </select>
+                                                </div>
+                                            </div>
+                                            <div class="col-sm-3">
+                                                <label class="col-sm-3 control-label no-padding-right" for="form-field-1"> 报损类型： </label>
+                                                <div class="col-sm-9">
+                                                    <select class="select2" name="report" >
+                                                        <option value="0">全部</option>
+                                                        <?php foreach ($report as $k => $v) {?>
+			                                    		<option value="<?php echo $k;?>" <?php if($k == $report_id) {?>selected="selected"<?php }?>><?php echo $v;?></option>
+				                                    	<?php }?>
                                                     </select>
                                                 </div>
                                             </div>
@@ -168,7 +160,7 @@
                                                     </div>
                                                 </div>
                                             </div>
-                                            <div class="col-sm-4">
+                                            <div class="col-sm-3">
                                                 <label class="col-sm-3 control-label no-padding-right" for="form-input-readonly"> 修复结束时间： </label>
                                                 <div class="col-sm-9">
                                                     <div class="input-group date datepicker">
@@ -179,20 +171,18 @@
                                                     </div>
                                                 </div>
                                             </div>
-                                            <div class="col-sm-4">
-                                                <label class="col-sm-3 control-label no-padding-right" for="form-field-1"> 报损类型： </label>
+                                        	<div class="col-sm-3">
+                                                <label class="col-sm-3 control-label no-padding-right" for="form-field-1"> 安装公司： </label>
                                                 <div class="col-sm-9">
-                                                    <select class="select2" name="report" >
+                                                    <select class="select2" name="install">
                                                         <option value="0">全部</option>
-                                                        <?php foreach ($report as $k => $v) {?>
-			                                    		<option value="<?php echo $k;?>" <?php if($k == $report_id) {?>selected="selected"<?php }?>><?php echo $v;?></option>
-				                                    	<?php }?>
+                                                        <?php foreach (C('install.install') as $k => $v):?>
+                                                        <option <?php if(isset($install) && $install== $k){echo "selected";}?>  value="<?php echo $k;?>"><?php echo $v?></option>
+                                                        <?php endforeach;?>
                                                     </select>
                                                 </div>
                                             </div>
-                                        </div>
-                                        <div class="form-group">
-                                        	<div class="col-sm-3">
+                                            <div class="col-sm-3">
                                                 <label class="col-sm-3 control-label no-padding-right" for="form-field-1"> 点位位置： </label>
                                                 <div class="col-sm-9">
                                                     <select class="select2" name="addr">
@@ -201,6 +191,14 @@
                                                         <option value="2"<?php if($addr == '2') { echo "selected"; }?>>地面电梯前室</option>
                                                         <option value="3"<?php if($addr == '3') { echo "selected"; }?>>地下电梯前室</option>
                                                     </select>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="form-group">
+                                        	<div class="col-sm-3">
+                                                <label class="col-sm-3 control-label no-padding-right" for="form-field-1"> 点位编号： </label>
+                                                <div class="col-sm-9">
+                                                    <input type="text" class="col-sm-10" name="rcode" value="<?php if(isset($rcode)){echo $rcode;}?>" />
                                                 </div>
                                             </div>
                                         </div>
