@@ -17,6 +17,7 @@ class Admin extends MY_Controller{
             'Model_houses_diy_area' => 'Mhouses_diy_area',
             'Model_houses' => 'Mhouses',
             'Model_houses_area' => 'Mhouses_area',
+            'Model_houses_points' => 'Mhouses_points',
         ]);
         $this->pageconfig = C('page.page_lists');
         $this->load->library('pagination');
@@ -308,6 +309,7 @@ class Admin extends MY_Controller{
     
     public function partition(){
         $data = $this->data;
+        $this->set_diy_area_id();
         $this->Mhouses_user_diy_area->get_lists('*');
         //获取工程人员
         $userList = $this->Madmins->get_lists('id,pid,fullname,diy_area_id',['in' => ['group_id' => [4,6]], 'is_del' => 1], ['diy_area_id'=> 'asc']);
@@ -332,7 +334,7 @@ class Admin extends MY_Controller{
                 }
             }
         }
-        
+//         var_dump($userList);exit;
         //提取楼盘ids;
         $houses_ids = array_unique(array_column($areaList, 'houses_id'));
         if($houses_ids){
@@ -346,8 +348,18 @@ class Admin extends MY_Controller{
             //获取所有组团
             $areaList = $this->Mhouses_area->get_lists('id,name', ['in' => ['id' =>$area_ids]]);
         }
+        $this->db->from('t_houses_points');
+        $this->db->select('diy_area_id, count(`diy_area_id`) as number');
+        $this->db->group_by('diy_area_id');
+        
+        $result = $this->db->get();
+        $_list = [];
+        if($result){
+            $_list = $result->result_array();
+        }
         //组装数据
         foreach ($userList as $k => $v){
+            $userList[$k]['number'] = 0;
             if(count($v['list'])){
                 foreach ($v['list'] as $k1 => $v1){
                     foreach ($housesList as $k2 => $v2){
@@ -363,10 +375,31 @@ class Admin extends MY_Controller{
                 }
             }
         }
+        if($_list){
+            foreach ($userList as $k => $v){
+                foreach ($_list as $key => $val){
+                    if($v['diy_area_id'] == $val['diy_area_id']){
+                        $userList[$k]['number'] = $val['number'];
+                    }
+                }
+            }
+        }
         //提取区域ids
         $data['userList'] = $userList;
         unset($userList);
         $this->load->view("admin/partition", $data);
+    }
+    /**
+     * @desc 同步点位自定义区域
+     */
+    private function set_diy_area_id(){
+        $list = $this->Mhouses_diy_area->get_lists();
+        foreach ($list as $k => $v){
+            $where['houses_id'] = $v['houses_id'];
+            $where['area_id'] = $v['area_id'];
+            $where['diy_area_id'] = 0;
+            $this->Mhouses_points->update_info(['diy_area_id' => $v['diy_area_id']],$where);
+        }
     }
     
     /**
