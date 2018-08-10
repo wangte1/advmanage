@@ -275,25 +275,25 @@ class Tour extends MY_Controller {
         $houses_list = $this->Mhouses->get_lists('id, name, province, city, area', ['in' => ['id' => $houses_ids ]]);
         $area_list = $this->Mhouses_area->get_lists('id, name', ['in' => ['id' => $area_ids ]]);
         if($houses_list){
-            foreach ($list as $k => &$v){
-                $v['houses_name'] = '';
-                $v['houses_area_name'] = '无组团';
+            foreach ($list as $k => $v){
+                $list[$k]['houses_name'] = '';
+                $list[$k]['houses_area_name'] = '无组团';
                 foreach ($houses_list as $key => $val){
                     if($v['houses_id'] == $val['id']){
-                        $v['houses_name'] = $val['name'];
-                        $v['province'] = $val['province'];
-                        $v['city'] = $val['city'];
-                        $v['area'] = $val['area'];
+                        $list[$k]['houses_name'] = $val['name'];
+                        $list[$k]['province'] = $val['province'];
+                        $list[$k]['city'] = $val['city'];
+                        $list[$k]['area'] = $val['area'];
                         break;
                     }
                 }
             }
         }
         if($area_list){
-            foreach ($list as $k => &$v){
+            foreach ($list as $k => $v){
                 foreach ($area_list as $key => $val){
                     if($v['area_id'] == $val['id']){
-                        $v['houses_area_name'] = $val['name'];
+                        $list[$k]['houses_area_name'] = $val['name'];
                         break;
                     }
                 }
