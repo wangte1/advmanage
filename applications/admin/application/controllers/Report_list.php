@@ -249,7 +249,7 @@ class Report_list extends MY_Controller{
         $this->load->library('pagination');
         $page =  intval($this->input->get("per_page",true)) ?  : 1;
         $size = $pageconfig['per_page'];
-        $where = [];
+        $where = ['B.is_del' => 0];
         $repair_time= $this->input->get('repair_time');
         $houses_id = $this->input->get('houses_id');
         $area_id = $this->input->get('area_id');
