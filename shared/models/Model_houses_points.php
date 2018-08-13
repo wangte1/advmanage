@@ -622,8 +622,52 @@ class Model_houses_points extends MY_Model {
      * @return :|array
      */
     public function get_usable_point($fields='*', $where=[], $order_id=0, $type=0){
+        $this->db->select($fields);
+        $this->db->from('t_houses_points A');
+        $this->db->join('t_houses_area B','A.area_id = B.id');
         
-        $list = $this->get_lists($fields, $where);
+        if(isset($where['like'])) {
+            foreach($where['like'] as $k => $v) {
+                $this->db->like($k, $v);
+            }
+            unset($where['like']);
+        }
+        
+        if(isset($where['or_like'])) {
+            foreach($where['or_like'] as $k => $v) {
+                $this->db->or_like($k, $v);
+            }
+            unset($where['or_like']);
+        }
+        
+        if(isset($where['in'])) {
+            foreach($where['in'] as $k => $v) {
+                $this->db->where_in($k, $v);
+            }
+            unset($where['in']);
+        }
+        if(isset($where['not_in'])) {
+            foreach($where['not_in'] as $k => $v) {
+                $this->db->where_not_in($k, $v);
+            }
+            unset($where['not_in']);
+        }
+        
+        if(isset($where['or'])) {
+            $this->db->group_start();
+            foreach($where['or'] as $k => $v) {
+                $this->db->or_where($k, $v);
+            }
+            unset($where['or']);
+            $this->db->group_end();
+        }
+        if($where){
+            $this->db->where($where);
+        }
+        $result = $this->db->get();
+        
+        $list = $result->result_array();
+ 
         if($list){
             if(!$type) return $list;
             if($type == 1) return $list; //如果是不是广告机

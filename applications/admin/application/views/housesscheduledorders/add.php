@@ -188,7 +188,7 @@
                                                                     <label class="col-sm-4 control-label" for="form-field-1"> 组团： </label>
                                                                     <div class="col-sm-8" style="padding:0">
                                                                         <select name="area_id" id="area_id" class="select2">
-                                                                            <option value="">请选择楼组团</option>
+                                                                            <option value="">请选择组团</option>
                                                                         </select>
                                                                     </div>
                                                                 </div>
@@ -243,6 +243,15 @@
                                                                             <option value="">请选择位置</option>
                                                                             <option value="1">门禁</option>
                                                                             <option value="2">电梯前室</option>
+                                                                        </select>
+                                                                    </div>
+                                                                </div>
+                                                                <div class="col-sm-6">
+                                                                	<br/>
+                                                                    <label class="col-sm-4 control-label" for="form-field-1"> 置业类型： </label>
+                                                                    <div class="col-sm-8" style="padding:0">
+                                                                        <select name="zhiye_id" id="zhiye_id" class="select2">
+                                                                            <option value="">请选择置业类型</option>
                                                                         </select>
                                                                     </div>
                                                                 </div>
@@ -458,7 +467,7 @@ $(function(){
     	p_area_id = $(this).val();
     });
 	
-	$('body').on('change', '#houses_id,#area_id,#ban,#unit,#floor,#addr', function(){
+	$('body').on('change', '#houses_id,#area_id,#ban,#unit,#floor,#addr,#zhiye_id', function(){
 		var order_id = "<?php echo $info['id']?>";
 		var index = layer.load(0, {shade: true});
 		var houses_id = $('#houses_id').val();
@@ -471,10 +480,12 @@ $(function(){
 		var floor = $('#floor').val();
 		var addr = $('#addr').val();
 		var lock_start_time = $('#lock_start_time').val();
-		var postData = {order_id:order_id,order_type:order_type, put_trade:put_trade, houses_id:houses_id, area_id:area_id, ban:ban, unit:unit, floor:floor, lock_start_time:lock_start_time,addr:addr};
+		var zhiye_id = $('#zhiye_id').val();
+		var postData = {order_id:order_id,order_type:order_type, put_trade:put_trade, houses_id:houses_id, area_id:area_id, ban:ban, unit:unit, floor:floor, lock_start_time:lock_start_time,addr:addr,zhiye_id:zhiye_id};
 		$.post('/housesscheduledorders/get_points', postData, function(data){
 			var pointStr =  '';
 			var areaStr = '<option value="">请选择组团</option>'; 
+			var zhiyeStr = '<option value="">请选择置业类型</option>'; 
 			if(data.flag == true && data.count > 0) {
 				$("#all_points_num").text(data.count);
 				var tmpList = data.points_lists
@@ -514,11 +525,18 @@ $(function(){
 				for(var j = 0; j < data.area_list.length; j++) {
 					areaStr += "<option value="+data.area_list[j]['id']+">"+data.area_list[j]['name']+"</option>";
 				}
+				$('#zhiye_id').html();
+				for(var j = 0; j < data.area_list.length; j++) {
+					if(data.area_list[j]['zhiye_id'] != 0){
+						zhiyeStr += "<option value="+data.area_list[j]['zhiye_id']+">"+data.area_list[j]['zhiye_name']+"</option>";
+					}
+				}
 			}else{
 				alert('暂无可预约 <?php echo $order_type_text[$order_type];?> 点位');
 			}
 			$("#points_lists").html(pointStr);
 			$("#area_id").html(areaStr);
+			$('#zhiye_id').html(zhiyeStr);
 		});
 		layer.close(index);
 	});
