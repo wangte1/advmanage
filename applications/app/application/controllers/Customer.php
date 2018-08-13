@@ -133,7 +133,11 @@ class Customer extends MY_Controller {
      * 添加客户接口
      */
     public function addCustomer(){
-        $post = $this->input->get_post();
+        if(IS_POST){
+            $post = $this->input->post();
+        }else{
+            $post = $this->input->post();
+        }
         $token = decrypt($this->token);
         if(!isset($post['name'])){
             $this->return_json(['code' => 0, 'msg' => '客户名称必填']);
