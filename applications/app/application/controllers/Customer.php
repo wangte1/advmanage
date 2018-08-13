@@ -152,7 +152,6 @@ class Customer extends MY_Controller {
             $post['remarks'] = "";
         }
         $res = $this->Mhouses_customers->create($post);
-        echo $this->db->last_query();exit;
         if(!$res) $this->return_json(['code' => 0, 'msg' => '添加失败']);
         $this->return_json(['code' => 1, 'msg' => '操作成功']);
     }
