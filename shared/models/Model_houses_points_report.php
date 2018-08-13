@@ -12,7 +12,6 @@ class Model_houses_points_report extends MY_Model {
      * 统计楼盘报损数接口
      */
     public function get_report_houses_list($where = []){
-        $this->db->distinct();
         $this->db->select("C.id,C.name, count(B.houses_id) as num");
         $this->db->from("t_houses_points_report A");
         $this->db->join("t_houses_points B", "A.point_id = B.id", "left");
