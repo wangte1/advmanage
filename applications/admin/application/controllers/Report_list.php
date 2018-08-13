@@ -116,7 +116,7 @@ class Report_list extends MY_Controller{
         }
         $adminList = $this->Madmins->get_lists('id, fullname');
         $data['adminList'] = $adminList;
-        $list = $this->Mhouses_points_report->get_report_list($where, ['A.create_time' => 'desc', 'A.id' => 'desc'], $size, ($page-1)*$size, ['A.point_id']);
+        $list = $this->Mhouses_points_report->get_report_list($where, ['A.create_time' => 'desc', 'A.id' => 'desc'], $size, ($page-1)*$size);
         if($list){
             foreach ($list as $k => $v){
                 $list[$k]['fullname'] = '';
@@ -155,7 +155,7 @@ class Report_list extends MY_Controller{
         }
         $data['list'] = $list;
         //获取分页
-        $data_count = $this->Mhouses_points_report->get_report_list($where, ['A.create_time' => 'desc', 'A.id' => 'desc'], 0, 0, ['A.point_id']);
+        $data_count = $this->Mhouses_points_report->get_report_list($where, ['A.create_time' => 'desc', 'A.id' => 'desc'], 0, 0);
         $data_count = count($data_count);
         $data['data_count'] = $data_count;
         $pageconfig['base_url'] = "/report_list/index";
@@ -249,7 +249,7 @@ class Report_list extends MY_Controller{
         $this->load->library('pagination');
         $page =  intval($this->input->get("per_page",true)) ?  : 1;
         $size = $pageconfig['per_page'];
-        $where = [];
+        $where = ['B.is_del' => 0];
         $repair_time= $this->input->get('repair_time');
         $houses_id = $this->input->get('houses_id');
         $area_id = $this->input->get('area_id');
@@ -334,7 +334,7 @@ class Report_list extends MY_Controller{
         $data['report'] = C('housespoint.report');
 
         $data['hlist'] = $this->Mhouses->get_lists();
-        $list = $this->Mhouses_points_report->get_report_list($where, ['A.create_time' => 'desc', 'A.id' => 'desc'], 0, 0, ['A.point_id']);
+        $list = $this->Mhouses_points_report->get_report_list($where, ['A.create_time' => 'desc', 'A.id' => 'desc'], 0, 0);
         if($list){
             foreach ($list as $k => $v){
                 $list[$k]['fullname'] = '';

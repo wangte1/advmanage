@@ -218,6 +218,7 @@ class Housesscheduledorders extends MY_Controller{
             $post_data['update_user'] = $data['userInfo']['id'];
             $post_data['update_time'] = date('Y-m-d H:i:s');
             $id = $post_data['id'];
+//             $data['customer_type2'] = C('public.customer_type2');
             if (isset($post_data['addr'])) unset($post_data['addr']);
             unset($post_data['id'], $post_data['ban'], $post_data['unit'], $post_data['floor']);
             
@@ -330,7 +331,24 @@ class Housesscheduledorders extends MY_Controller{
                 $where['in']['A.id'] = explode(',', $data['info']['point_ids']);
                 $data['selected_points'] = $this->Mhouses_points->get_points_lists($where);
             }
-            
+            $areaList = $this->Mhouses_area->get_lists();
+            $zhiye_name = C('zhiye');
+            foreach ($data['selected_points'] as $k => $v){
+                $data['selected_points'][$k]['zhiye_id'] = '';
+                foreach ($areaList as $k1 => $v1){
+                    if($v['area_id'] == $v1['id']){
+                        $data['selected_points'][$k]['zhiye_id'] = $v1['zhiye_id'];
+                    }
+                }
+            }
+            foreach ($data['selected_points'] as $k => $v){
+                $data['selected_points'][$k]['zhiye_name'] = '';
+                foreach ($zhiye_name as $k1 => $v1){
+                    if($v['zhiye_id'] == $k1){
+                        $data['selected_points'][$k]['zhiye_name'] = $v1;
+                    }
+                }
+            }
             $this->load->view("housesscheduledorders/add", $data);
         }
     }
@@ -888,7 +906,24 @@ class Housesscheduledorders extends MY_Controller{
         }
         $areaList = [];
         if($houses_id){
-            $areaList = $this->Mhouses_area->get_lists('id, name', ['houses_id' => $houses_id]);
+            $areaList = $this->Mhouses_area->get_lists('id, name, zhiye_id', ['houses_id' => $houses_id]);
+        }
+        $zhiye_name = C('zhiye');
+        foreach ($points_lists as $k => $v){
+            $points_lists[$k]['zhiye_id'] = '';
+            foreach ($areaList as $k1 => $v1){
+                if($v['area_id'] == $v1['id']){
+                    $points_lists[$k]['zhiye_id'] = $v1['zhiye_id'];
+                }
+            }
+        }
+        foreach ($points_lists as $k => $v){
+            $points_lists[$k]['zhiye_name'] = '';
+            foreach ($zhiye_name as $k1 => $v1){
+                if($v['zhiye_id'] == $k1){
+                    $points_lists[$k]['zhiye_name'] = $v1;
+                }
+            }
         }
         //获取去重的组团区域
         $this->return_json(array('flag' => true, 'points_lists' => $points_lists, 'count' => count($points_lists), 'area_list' => $areaList));

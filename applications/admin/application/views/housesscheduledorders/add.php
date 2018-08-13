@@ -258,6 +258,7 @@
                                                                                 <th width="10%">楼栋</th>
                                                                                 <th width="10%">单元</th>
                                                                                 <th width="10%">楼层</th>
+                                                                                <th width="10%">置业类型</th>
                                                                                 <th width="10%">位置</th>
                                                                                 <th width="10%">可投放数</th>
                                                                                 <th width="10%">状态</th>
@@ -277,12 +278,13 @@
                                                                                 <td width="10%"><?php echo $v['houses_area_name'];?></td>
                                                                                 <td width="10%"><?php echo $v['ban']?></td>
                                                                                 <td width="10%"><?php echo $v['unit']?></td>
-                                                                                <td width="10%"><?php echo $v['floor']?></td>
+                                                                                <td width="5%"><?php echo $v['floor']?></td>
+                                                                                <td width="10">1232123</td>
                                                                                 <td width="10%">
                                                                                     <?php if(isset($point_addr[$v['addr']])) echo $point_addr[$v['addr']];?>
                                                                                 </td>
                                                                                 <td width="10%"><?php echo $v['ad_num'] - $v['ad_use_num']?></td>
-                                                                                <td width="10%">
+                                                                                <td width="5%">
                                                                                     <?php if($v['point_status'] == 1) {?>
                                                                                 	<span class="badge badge-success">空闲</span>
                                                                                 	<?php }else if($v['point_status'] == 3) {?>
@@ -363,6 +365,7 @@
                                                         <th width="10%">楼栋</th>
                                                         <th width="10%">单元</th>
                                                         <th width="10%">楼层</th>
+                                                        <th width="10%">置业类型</th>
                                                         <th width="10%">位置</th>
                                                         <th width="10%">可投放数</th>
                                                         <th width="10%">状态</th>
@@ -383,6 +386,7 @@
                                                             <td width="10%"><?php echo $value['ban'];?></td>
                                                             <td width="10%"><?php echo $value['unit'];?></td>
                                                             <td width="10%"><?php echo $value['floor'];?></td>
+                                                            <td width="10%"><?php if(!empty($value['zhiye_name'])){echo $value['zhiye_name'];}else{echo '无';}?></td>
                                                             <?php if($value['addr'] == 1):?>
                                                             <td width="10%">门禁</td>
                                                             <?php else:?>
@@ -474,6 +478,8 @@ $(function(){
 			if(data.flag == true && data.count > 0) {
 				$("#all_points_num").text(data.count);
 				var tmpList = data.points_lists
+				console.log(tmpList);
+				console.log(data.area_list);
 				for(var i = 0; i < data.points_lists.length; i++) {
 					pointStr += "<tr class='point' id='point_"+tmpList[i]['id']+"' point-id='"+tmpList[i]['id']+"'><td width='10%'>"+tmpList[i]['code']+"</td>";
 					pointStr += "<td width='10%'>"+tmpList[i]['houses_name']+"</td>";
@@ -481,6 +487,11 @@ $(function(){
 					pointStr += "<td width='10%'>"+tmpList[i]['ban']+"</td>";
 					pointStr += "<td width='10%'>"+tmpList[i]['unit']+"</td>";
 					pointStr += "<td width='10%'>"+tmpList[i]['floor']+"</td>";
+					if(tmpList[i]['zhiye_name'] == ''){
+						pointStr += "<td width='10%'>无</td>";
+					}else{
+						pointStr += "<td width='10%'>"+tmpList[i]['zhiye_name']+"</td>";
+					}
 					if(tmpList[i]['addr'] == 1){
 						pointStr += "<td width='10%'>门禁</td>";
 					}else{
