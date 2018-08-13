@@ -334,7 +334,7 @@ class Report_list extends MY_Controller{
         $data['report'] = C('housespoint.report');
 
         $data['hlist'] = $this->Mhouses->get_lists();
-        $list = $this->Mhouses_points_report->get_report_list($where, ['A.create_time' => 'desc', 'A.id' => 'desc'], 0, 0, ['A.point_id']);
+        $list = $this->Mhouses_points_report->get_report_list($where, ['A.create_time' => 'desc', 'A.id' => 'desc'], 0, 0);
         if($list){
             foreach ($list as $k => $v){
                 $list[$k]['fullname'] = '';
