@@ -148,8 +148,12 @@ class Customer extends MY_Controller {
         $post['creator'] = $post['salesman_id'] = $token['user_id'];
         $post['create_time'] = date('Y-m-d H:i:s');
         unset($post['token']);
+        if(!isset($post['remarks'])){
+            $post['remarks'] = "";
+        }
         $res = $this->Mhouses_customers->create($post);
-        if($res) $this->return_json(['code' => 0, 'msg' => '添加失败']);
+        echo $this->db->last_query();exit;
+        if(!$res) $this->return_json(['code' => 0, 'msg' => '添加失败']);
         $this->return_json(['code' => 1, 'msg' => '操作成功']);
     }
 }
