@@ -331,7 +331,7 @@ class Housesscheduledorders extends MY_Controller{
                 $where['in']['A.id'] = explode(',', $data['info']['point_ids']);
                 $data['selected_points'] = $this->Mhouses_points->get_points_lists($where);
             }
-            $areaList = $this->Mhouses_area->get_lists("id, name", $wherea);
+            $areaList = $this->Mhouses_area->get_lists();
             $zhiye_name = C('zhiye');
             foreach ($data['selected_points'] as $k => $v){
                 $data['selected_points'][$k]['zhiye_id'] = '';
