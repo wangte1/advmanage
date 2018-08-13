@@ -142,7 +142,7 @@ class Customer extends MY_Controller {
         if(!isset($post['name'])){
             $this->return_json(['code' => 0, 'msg' => '客户名称必填']);
         }
-        if(!empty($post['name'])){
+        if(empty($post['name'])){
             $this->return_json(['code' => 0, 'msg' => '客户名称不能为空']);
         }
         $post['creator'] = $post['salesman_id'] = $token['user_id'];
