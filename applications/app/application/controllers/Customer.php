@@ -15,6 +15,8 @@ class Customer extends MY_Controller {
         
         $this->load->model([
             'Model_admins' => 'Madmins',
+            'Model_houses' => 'Mhouses',
+            'Model_houses_points' => 'Mhouses_points',
             'Model_houses_customers' => 'Mhouses_customers',
             'Model_houses_customers_linkman' => 'Mhouses_customers_linkman',
             'Model_houses_customers_linkman_log' => 'Mhouses_customers_linkman_log',
@@ -201,6 +203,38 @@ class Customer extends MY_Controller {
                 }
             }
             unset($list[$k]['point_ids']);
+        }
+        $this->return_json(['code' => 1, 'data' => $list, 'msg' => "ok"]);
+    }
+    
+    public function pre_order_houses_list(){
+        $id = (int) $this->input->get_post('id');
+        $info = $this->Mhouses_scheduled_orders->get_one('point_ids', ['id' => $id]);
+        if(!$info){
+            $this->return_json(['code' => 0, 'data' => [], 'msg' => "暂无数据"]);
+        }
+        //提取点位id
+        $point_ids = explode(',', $info['point_ids']);
+        $fields = "houses_id, count(`id`) as num";
+        $where['in']['id'] = $point_ids;
+        $list = $this->Mhouses_points->get_lists($fields , $where, [], 0, 0, 'houses_id');
+        if(!$list){
+            $this->return_json(['code' => 0, 'data' => [], 'msg' => "暂无数据"]);
+        }
+        foreach ($list as $k => $v){
+            $list[$k]['houses_name'] = "";
+        }
+        //提取楼盘ids
+        $houses_ids = array_unique(array_column($list, 'houses_id'));
+        $houses_list = $this->Mhouses->get_lists("id, name", ['in' => ['id' => $houses_ids]]);
+        if($houses_list){
+            foreach ($list as $k => $v){
+                foreach ($houses_list as $key => $val){
+                    if($v['houses_id'] == $val['id']){
+                        $list[$k]['houses_name'] = $val['name'];break;
+                    }
+                }
+            }
         }
         $this->return_json(['code' => 1, 'data' => $list, 'msg' => "ok"]);
     }
