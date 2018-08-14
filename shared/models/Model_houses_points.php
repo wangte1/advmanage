@@ -624,7 +624,7 @@ class Model_houses_points extends MY_Model {
     public function get_usable_point($fields='*', $where=[], $order_id=0, $type=0){
         $this->db->select($fields);
         $this->db->from('t_houses_points A');
-        $this->db->join('t_houses_area B','A.area_id = B.id');
+        $this->db->join('t_houses_area B','A.area_id = B.id','left');
         
         if(isset($where['like'])) {
             foreach($where['like'] as $k => $v) {

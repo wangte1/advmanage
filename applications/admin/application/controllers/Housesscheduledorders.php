@@ -333,6 +333,7 @@ class Housesscheduledorders extends MY_Controller{
             }
             $areaList = $this->Mhouses_area->get_lists();
             $zhiye_name = C('zhiye');
+            $data['zhiye_name'] = $zhiye_name;
             foreach ($data['selected_points'] as $k => $v){
                 $data['selected_points'][$k]['zhiye_id'] = '';
                 foreach ($areaList as $k1 => $v1){
@@ -911,14 +912,15 @@ class Housesscheduledorders extends MY_Controller{
             $areaList = $this->Mhouses_area->get_lists('id, name, zhiye_id', ['houses_id' => $houses_id]);
         }
         $zhiye_name = C('zhiye');
-        foreach ($points_lists as $k => $v){
-            $points_lists[$k]['zhiye_id'] = '';
-            foreach ($areaList as $k1 => $v1){
-                if($v['area_id'] == $v1['id']){
-                    $points_lists[$k]['zhiye_id'] = $v1['zhiye_id'];
-                }
-            }
-        }
+        
+//         foreach ($points_lists as $k => $v){
+//             $points_lists[$k]['zhiye_id'] = '';
+//             foreach ($areaList as $k1 => $v1){
+//                 if($v['area_id'] == $v1['id']){
+//                     $points_lists[$k]['zhiye_id'] = $v1['zhiye_id'];
+//                 }
+//             }
+//         }
         foreach ($points_lists as $k => $v){
             $points_lists[$k]['zhiye_name'] = '';
             foreach ($zhiye_name as $k1 => $v1){
@@ -935,6 +937,7 @@ class Housesscheduledorders extends MY_Controller{
                 }
             }
         }
+        
         //获取去重的组团区域
         $this->return_json(array('flag' => true, 'points_lists' => $points_lists, 'count' => count($points_lists), 'area_list' => $areaList));
     }

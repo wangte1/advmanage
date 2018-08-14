@@ -162,7 +162,7 @@
 
                                         <div class="form-group">
                                             <label class="col-sm-2 control-label no-padding-right" for="form-input-readonly"> 投放点位： </label>
-                                            <div class="col-sm-10">
+                                            <div style="width:100%" class="col-sm-10">
                                                 <div class="widget-box" style="overflow: hidden;">
                                                     <div class="widget-header">
                                                         <h4>选择点位</h4>
@@ -251,7 +251,10 @@
                                                                     <label class="col-sm-4 control-label" for="form-field-1"> 置业类型： </label>
                                                                     <div class="col-sm-8" style="padding:0">
                                                                         <select name="zhiye_id" id="zhiye_id" class="select2">
-                                                                            <option value="">请选择置业类型</option>
+                                                                        	<option value="">请选择楼盘</option>
+                                                                            <?php foreach($zhiye_name as $k => $v):?>
+                                                                            <option value="<?php echo $k;?>" <?php if(isset($info['zhiye_name']) && $k == $info['zhiye_name']){ echo "selected"; }?>><?php echo $v;?></option>
+                                                                            <?php endforeach;?>
                                                                         </select>
                                                                     </div>
                                                                 </div>
@@ -485,21 +488,23 @@ $(function(){
 		$.post('/housesscheduledorders/get_points', postData, function(data){
 			var pointStr =  '';
 			var areaStr = '<option value="">请选择组团</option>'; 
-			var zhiyeStr = '<option value="">请选择置业类型</option>'; 
 			if(data.flag == true && data.count > 0) {
 				$("#all_points_num").text(data.count);
 				var tmpList = data.points_lists
 				console.log(tmpList);
-				console.log(data.area_list);
 				for(var i = 0; i < data.points_lists.length; i++) {
 					pointStr += "<tr class='point' id='point_"+tmpList[i]['id']+"' point-id='"+tmpList[i]['id']+"'><td width='10%'>"+tmpList[i]['code']+"</td>";
 					pointStr += "<td width='10%'>"+tmpList[i]['houses_name']+"</td>";
-					pointStr += "<td width='10%'>"+tmpList[i]['area_name']+"</td>";
+					if(typeof tmpList[i]['area_name'] === 'undefined'){
+						pointStr += "<td width='10%'></td>";
+					}else{
+						pointStr += "<td width='10%'>"+tmpList[i]['area_name']+"</td>";
+					}
 					pointStr += "<td width='10%'>"+tmpList[i]['ban']+"</td>";
 					pointStr += "<td width='10%'>"+tmpList[i]['unit']+"</td>";
 					pointStr += "<td width='10%'>"+tmpList[i]['floor']+"</td>";
 					if(tmpList[i]['zhiye_name'] == ''){
-						pointStr += "<td width='10%'>无</td>";
+						pointStr += "<td width='10%'></td>";
 					}else{
 						pointStr += "<td width='10%'>"+tmpList[i]['zhiye_name']+"</td>";
 					}
@@ -525,18 +530,11 @@ $(function(){
 				for(var j = 0; j < data.area_list.length; j++) {
 					areaStr += "<option value="+data.area_list[j]['id']+">"+data.area_list[j]['name']+"</option>";
 				}
-				$('#zhiye_id').html();
-				for(var j = 0; j < data.area_list.length; j++) {
-					if(data.area_list[j]['zhiye_id'] != 0){
-						zhiyeStr += "<option value="+data.area_list[j]['zhiye_id']+">"+data.area_list[j]['zhiye_name']+"</option>";
-					}
-				}
 			}else{
 				alert('暂无可预约 <?php echo $order_type_text[$order_type];?> 点位');
 			}
 			$("#points_lists").html(pointStr);
 			$("#area_id").html(areaStr);
-			$('#zhiye_id').html(zhiyeStr);
 		});
 		layer.close(index);
 	});
