@@ -709,7 +709,8 @@ function load_houses(num1, num2) {
 				if(i == 1500) {
 					break;
 				}
-				pointStr += "<tr class='point' id='point_"+(data.points_lists)[i]['id']+"'  point-id='"+(data.points_lists)[i]['id']+"' grade='"+(data.points_lists)[i]['grade']+"' area_grade='"+(data.points_lists)[i]['area_grade']+"'><td width='10%'>"+(data.points_lists)[i]['code']+"</td>";
+				pointStr += "<tr class='point' id='point_"+(data.points_lists)[i]['id']+"'  point-id='"+(data.points_lists)[i]['id']+"' grade='"+(data.points_lists)[i]['grade']+"' area_grade='"+(data.points_lists)[i]['area_grade']+"'>";
+				pointStr += "<td width='10%' id='code_"+(data.points_lists)[i]['code']+"'>"+(data.points_lists)[i]['code']+"</td>";
 				pointStr += "<td width='10%'>"+(data.points_lists)[i]['houses_name']+"</td>";
 				pointStr += "<td width='10%'>"+(data.points_lists)[i]['houses_area_name']+"</td>";
 				pointStr += "<td width='10%'>"+(data.points_lists)[i]['ban']+"</td>";
@@ -802,11 +803,11 @@ $(function(){
 
   	//选择全部
     $(".select-all").click(function(){
-        $("#points_lists tr").each(function(inde){
-        	var id=$(this).attr('id');
-        	           
+        $("#points_lists tr").each(function(){
+        	var id=$(this).attr('id');       	
+        	var code=$("#"+id).children(':first').text();       	           
             //查找是否已经存在
-            if($('#selected_points').find('#'+id).length>0){layer.msg('请勿重复选择');return;}       
+            if($('#selected_points').find('#'+id).length>0){layer.msg('请勿重复选择编号:'+code);return;}       
             $(this).appendTo($("#selected_points"));
             $("#selected_points_num").html(Number($("#selected_points_num").text()) + 1);  
 
