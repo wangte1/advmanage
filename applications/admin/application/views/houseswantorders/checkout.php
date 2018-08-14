@@ -805,7 +805,7 @@ $(function(){
         $("#points_lists tr").each(function(inde){
         	var id=$(this).attr('id');
         	           
-            //查找是否已经存在sdfsf
+            //查找是否已经存在
             if($('#selected_points').find('#'+id).length>0){layer.msg('请勿重复选择');return;}       
             $(this).appendTo($("#selected_points"));
             $("#selected_points_num").html(Number($("#selected_points_num").text()) + 1);  
