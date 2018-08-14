@@ -94,6 +94,24 @@ class Customer extends MY_Controller {
                 }
             }
         }
+        //提取客户ids
+        $customer_ids = array_column($list, 'id');
+        if($customer_ids){
+            $customer_ids = array_unique($customer_ids);
+            $where = [];
+            $where = ['is_del' => 0, 'lock_customer_id' => $customer_id];
+            $where['in']['order_status'] = [1, 2];
+            $preOrderList = $this->Mhouses_scheduled_orders->get_lists('lock_customer_id', $where);
+            if($preOrderList){
+                foreach ($list as $k => $v){
+                    foreach ($preOrderList as $key => $val){
+                        if($v['id'] == $val['lock_customer_id']){
+                            $list[$k]['pre_order_num'] += 1;
+                        }
+                    }
+                }
+            }
+        }
         $this->return_json(['code' => 1, 'data' => $list, 'msg' => 'ok', 'page' => $page]);
     }
     
