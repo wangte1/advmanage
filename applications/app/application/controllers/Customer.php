@@ -17,7 +17,8 @@ class Customer extends MY_Controller {
             'Model_admins' => 'Madmins',
             'Model_houses_customers' => 'Mhouses_customers',
             'Model_houses_customers_linkman' => 'Mhouses_customers_linkman',
-            'Model_houses_customers_linkman_log' => 'Mhouses_customers_linkman_log'
+            'Model_houses_customers_linkman_log' => 'Mhouses_customers_linkman_log',
+            'Model_houses_scheduled_orders' => 'Mhouses_scheduled_orders'
         ]);
     }
     
@@ -154,5 +155,34 @@ class Customer extends MY_Controller {
         $res = $this->Mhouses_customers->create($post);
         if(!$res) $this->return_json(['code' => 0, 'msg' => '添加失败']);
         $this->return_json(['code' => 1, 'msg' => '操作成功']);
+    }
+    
+    /**
+     * 预定单列表
+     */
+    public function preOrder(){
+        $customer_id = (int) $this->input->get_post('customer_id');
+        $fields = "id, order_type, is_confirm, lock_start_time , lock_end_time, point_ids";
+        $where = ['is_del' => 0, 'lock_customer_id' => $customer_id];
+        $where['in']['order_status'] = [1, 2];
+        $order_by = ['create_time' => 'asc'];
+        $list = $this->Mhouses_scheduled_orders->get_lists($fields, $where, $order_by);
+        if(!$list){
+            $this->return_json(['code' => 0, 'data' => [], 'msg' => "暂无数据"]);
+        }
+        foreach ($list as $k => $v){
+            $list[$k]['order_type_text'] = "冷光订单";
+            if($v['order_type'] == 2){
+                $list[$k]['order_type_text'] = "广告机订单";
+            }
+            $list[$k]['lock_num'] = 0;
+            if(!empty($v['point_ids'])){
+                $tmp = explode(',', $v['point_ids']);
+                if(is_array($tmp)){
+                    $list[$k]['lock_num'] = count(array_unique($tmp));
+                }
+            }
+        }
+        $this->return_json(['code' => 1, 'data' => $list, 'msg' => "ok"]);
     }
 }
