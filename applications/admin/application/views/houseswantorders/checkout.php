@@ -806,7 +806,7 @@ $(function(){
         $("#points_lists tr").each(function(){
         	var id=$(this).attr('id');       	
         	var code=$("#"+id).children(':first').text();       	           
-            //查找是否已经存在
+            //查找是否已经存在编号
             if($('#selected_points').find('#'+id).length>0){layer.msg('请勿重复选择编号:'+code);return;}       
             $(this).appendTo($("#selected_points"));
             $("#selected_points_num").html(Number($("#selected_points_num").text()) + 1);  
