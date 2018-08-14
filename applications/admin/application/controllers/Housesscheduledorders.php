@@ -218,10 +218,8 @@ class Housesscheduledorders extends MY_Controller{
             $post_data['update_user'] = $data['userInfo']['id'];
             $post_data['update_time'] = date('Y-m-d H:i:s');
             $id = $post_data['id'];
-//             $data['customer_type2'] = C('public.customer_type2');
             if (isset($post_data['addr'])) unset($post_data['addr']);
-            unset($post_data['id'], $post_data['ban'], $post_data['unit'], $post_data['floor']);
-            
+            unset($post_data['id'], $post_data['ban'], $post_data['unit'], $post_data['floor'], $post_data['zhiye_id']);
             //定义已新增和被删除
             $add = $del = [];
             
