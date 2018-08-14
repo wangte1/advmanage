@@ -182,6 +182,7 @@ class Customer extends MY_Controller {
                     $list[$k]['lock_num'] = count(array_unique($tmp));
                 }
             }
+            unset($list[$k]['point_ids']);
         }
         $this->return_json(['code' => 1, 'data' => $list, 'msg' => "ok"]);
     }
