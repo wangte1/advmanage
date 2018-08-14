@@ -339,6 +339,7 @@ class Housesscheduledorders extends MY_Controller{
                 foreach ($areaList as $k1 => $v1){
                     if($v['area_id'] == $v1['id']){
                         $data['selected_points'][$k]['zhiye_id'] = $v1['zhiye_id'];
+                        break;
                     }
                 }
             }
@@ -347,6 +348,7 @@ class Housesscheduledorders extends MY_Controller{
                 foreach ($zhiye_name as $k1 => $v1){
                     if($v['zhiye_id'] == $k1){
                         $data['selected_points'][$k]['zhiye_name'] = $v1;
+                        break;
                     }
                 }
             }
