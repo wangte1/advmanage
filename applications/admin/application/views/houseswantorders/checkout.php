@@ -784,7 +784,7 @@ $(function(){
         $("input[name='point_ids']").val(point_ids);
         count_percent();
     });
-
+          
   	//移除点位
     $('#selected_points').on('click', '.do-sel', function(){
         $(this).parent().parent().appendTo($("#points_lists"));
@@ -802,7 +802,11 @@ $(function(){
 
   	//选择全部
     $(".select-all").click(function(){
-        $("#points_lists tr").each(function(){
+        $("#points_lists tr").each(function(inde){
+        	var id=$(this).attr('id');
+        	           
+            //查找是否已经存在sdfsf
+            if($('#selected_points').find('#'+id).length>0){layer.msg('请勿重复选择');return;}       
             $(this).appendTo($("#selected_points"));
             $("#selected_points_num").html(Number($("#selected_points_num").text()) + 1);  
 
