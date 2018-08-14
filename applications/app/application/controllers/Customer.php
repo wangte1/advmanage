@@ -99,7 +99,7 @@ class Customer extends MY_Controller {
         if($customer_ids){
             $customer_ids = array_unique($customer_ids);
             $where = [];
-            $where = ['is_del' => 0, 'lock_customer_id' => $customer_id];
+            $where = ['is_del' => 0, 'in' => ['lock_customer_id' => $customer_ids]];
             $where['in']['order_status'] = [1, 2];
             $preOrderList = $this->Mhouses_scheduled_orders->get_lists('lock_customer_id', $where);
             if($preOrderList){
