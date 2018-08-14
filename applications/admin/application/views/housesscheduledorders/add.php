@@ -162,7 +162,7 @@
 
                                         <div class="form-group">
                                             <label class="col-sm-2 control-label no-padding-right" for="form-input-readonly"> 投放点位： </label>
-                                            <div class="col-sm-10">
+                                            <div style="width:100%" class="col-sm-10">
                                                 <div class="widget-box" style="overflow: hidden;">
                                                     <div class="widget-header">
                                                         <h4>选择点位</h4>
@@ -188,7 +188,7 @@
                                                                     <label class="col-sm-4 control-label" for="form-field-1"> 组团： </label>
                                                                     <div class="col-sm-8" style="padding:0">
                                                                         <select name="area_id" id="area_id" class="select2">
-                                                                            <option value="">请选择楼组团</option>
+                                                                            <option value="">请选择组团</option>
                                                                         </select>
                                                                     </div>
                                                                 </div>
@@ -243,6 +243,18 @@
                                                                             <option value="">请选择位置</option>
                                                                             <option value="1">门禁</option>
                                                                             <option value="2">电梯前室</option>
+                                                                        </select>
+                                                                    </div>
+                                                                </div>
+                                                                <div class="col-sm-6">
+                                                                	<br/>
+                                                                    <label class="col-sm-4 control-label" for="form-field-1"> 置业类型： </label>
+                                                                    <div class="col-sm-8" style="padding:0">
+                                                                        <select name="zhiye_id" id="zhiye_id" class="select2">
+                                                                        	<option value="">请选择楼盘</option>
+                                                                            <?php foreach($zhiye_name as $k => $v):?>
+                                                                            <option value="<?php echo $k;?>" <?php if(isset($info['zhiye_name']) && $k == $info['zhiye_name']){ echo "selected"; }?>><?php echo $v;?></option>
+                                                                            <?php endforeach;?>
                                                                         </select>
                                                                     </div>
                                                                 </div>
@@ -458,7 +470,7 @@ $(function(){
     	p_area_id = $(this).val();
     });
 	
-	$('body').on('change', '#houses_id,#area_id,#ban,#unit,#floor,#addr', function(){
+	$('body').on('change', '#houses_id,#area_id,#ban,#unit,#floor,#addr,#zhiye_id', function(){
 		var order_id = "<?php echo $info['id']?>";
 		var index = layer.load(0, {shade: true});
 		var houses_id = $('#houses_id').val();
@@ -471,7 +483,8 @@ $(function(){
 		var floor = $('#floor').val();
 		var addr = $('#addr').val();
 		var lock_start_time = $('#lock_start_time').val();
-		var postData = {order_id:order_id,order_type:order_type, put_trade:put_trade, houses_id:houses_id, area_id:area_id, ban:ban, unit:unit, floor:floor, lock_start_time:lock_start_time,addr:addr};
+		var zhiye_id = $('#zhiye_id').val();
+		var postData = {order_id:order_id,order_type:order_type, put_trade:put_trade, houses_id:houses_id, area_id:area_id, ban:ban, unit:unit, floor:floor, lock_start_time:lock_start_time,addr:addr,zhiye_id:zhiye_id};
 		$.post('/housesscheduledorders/get_points', postData, function(data){
 			var pointStr =  '';
 			var areaStr = '<option value="">请选择组团</option>'; 
@@ -479,16 +492,19 @@ $(function(){
 				$("#all_points_num").text(data.count);
 				var tmpList = data.points_lists
 				console.log(tmpList);
-				console.log(data.area_list);
 				for(var i = 0; i < data.points_lists.length; i++) {
 					pointStr += "<tr class='point' id='point_"+tmpList[i]['id']+"' point-id='"+tmpList[i]['id']+"'><td width='10%'>"+tmpList[i]['code']+"</td>";
 					pointStr += "<td width='10%'>"+tmpList[i]['houses_name']+"</td>";
-					pointStr += "<td width='10%'>"+tmpList[i]['area_name']+"</td>";
+					if(typeof tmpList[i]['area_name'] === 'undefined'){
+						pointStr += "<td width='10%'></td>";
+					}else{
+						pointStr += "<td width='10%'>"+tmpList[i]['area_name']+"</td>";
+					}
 					pointStr += "<td width='10%'>"+tmpList[i]['ban']+"</td>";
 					pointStr += "<td width='10%'>"+tmpList[i]['unit']+"</td>";
 					pointStr += "<td width='10%'>"+tmpList[i]['floor']+"</td>";
 					if(tmpList[i]['zhiye_name'] == ''){
-						pointStr += "<td width='10%'>无</td>";
+						pointStr += "<td width='10%'></td>";
 					}else{
 						pointStr += "<td width='10%'>"+tmpList[i]['zhiye_name']+"</td>";
 					}
