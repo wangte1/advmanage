@@ -133,18 +133,26 @@ class Customer extends MY_Controller {
      * 添加客户接口
      */
     public function addCustomer(){
-        $post = $this->input->get_post();
+        if(IS_POST){
+            $post = $this->input->post();
+        }else{
+            $post = $this->input->post();
+        }
         $token = decrypt($this->token);
         if(!isset($post['name'])){
             $this->return_json(['code' => 0, 'msg' => '客户名称必填']);
         }
-        if(!empty($post['name'])){
+        if(empty($post['name'])){
             $this->return_json(['code' => 0, 'msg' => '客户名称不能为空']);
         }
         $post['creator'] = $post['salesman_id'] = $token['user_id'];
         $post['create_time'] = date('Y-m-d H:i:s');
+        unset($post['token']);
+        if(!isset($post['remarks'])){
+            $post['remarks'] = "";
+        }
         $res = $this->Mhouses_customers->create($post);
-        if($res) $this->return_json(['code' => 0, 'msg' => '添加失败']);
+        if(!$res) $this->return_json(['code' => 0, 'msg' => '添加失败']);
         $this->return_json(['code' => 1, 'msg' => '操作成功']);
     }
 }
