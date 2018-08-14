@@ -183,7 +183,7 @@ class Customer extends MY_Controller {
      */
     public function preOrder(){
         $customer_id = (int) $this->input->get_post('customer_id');
-        $fields = "id, order_type, is_confirm, lock_start_time , lock_end_time, point_ids";
+        $fields = "id, order_type, is_confirm, lock_start_time , lock_end_time, point_ids, confirm_point_ids";
         $where = ['is_del' => 0, 'lock_customer_id' => $customer_id];
         $where['in']['order_status'] = [1, 2];
         $order_by = ['create_time' => 'asc'];
@@ -197,20 +197,27 @@ class Customer extends MY_Controller {
                 $list[$k]['order_type_text'] = "广告机订单";
             }
             $list[$k]['lock_num'] = 0;
+            $list[$k]['confirm_num'] = 0;
             if(!empty($v['point_ids'])){
                 $tmp = explode(',', $v['point_ids']);
                 if(is_array($tmp)){
                     $list[$k]['lock_num'] = count(array_unique($tmp));
                 }
             }
-            unset($list[$k]['point_ids']);
+            if(!empty($v['confirm_point_ids'])){
+                $tmp = explode(',', $v['confirm_point_ids']);
+                if(is_array($tmp)){
+                    $list[$k]['confirm_num'] = count(array_unique($tmp));
+                }
+            }
+            unset($list[$k]['point_ids'], $list[$k]['confirm_point_ids']);
         }
         $this->return_json(['code' => 1, 'data' => $list, 'msg' => "ok"]);
     }
     
     public function pre_order_houses_list(){
         $id = (int) $this->input->get_post('id');
-        $info = $this->Mhouses_scheduled_orders->get_one('point_ids', ['id' => $id]);
+        $info = $this->Mhouses_scheduled_orders->get_one('point_ids,confirm_point_ids', ['id' => $id]);
         if(!$info){
             $this->return_json(['code' => 0, 'data' => [], 'msg' => "暂无数据"]);
         }
@@ -224,6 +231,24 @@ class Customer extends MY_Controller {
         }
         foreach ($list as $k => $v){
             $list[$k]['houses_name'] = "";
+            $list[$k]['confirm_num'] = 0;
+        }
+        //统计已经确认的
+        if(!empty($info['confirm_point_ids'])){
+            $confirm_point_ids = explode(',', $info['confirm_point_ids']);
+            $fields = "houses_id, count(`id`) as confirm_num";
+            $where = [];
+            $where['in']['id'] = $confirm_point_ids;
+            $confirm_list = $this->Mhouses_points->get_lists($fields , $where, [], 0, 0, 'houses_id');
+            if($confirm_list){
+                foreach ($list as $k => $v){
+                    foreach ($confirm_list as $key => $val){
+                        if($v['houses_id'] == $val['houses_id']){
+                            $list[$k]['confirm_num'] = $val['confirm_num'];break;
+                        }
+                    }
+                }
+            }
         }
         //提取楼盘ids
         $houses_ids = array_unique(array_column($list, 'houses_id'));
@@ -243,7 +268,7 @@ class Customer extends MY_Controller {
     public function pre_order_area_list(){
         $id = (int) $this->input->get_post('id');
         $houses_id = (int) $this->input->get_post('houses_id');
-        $info = $this->Mhouses_scheduled_orders->get_one('point_ids', ['id' => $id]);
+        $info = $this->Mhouses_scheduled_orders->get_one('point_ids,confirm_point_ids', ['id' => $id]);
         if(!$info){
             $this->return_json(['code' => 0, 'data' => [], 'msg' => "暂无数据"]);
         }
@@ -252,13 +277,31 @@ class Customer extends MY_Controller {
         $fields = "area_id, count(`id`) as num";
         $where['houses_id'] = $houses_id;
         $where['in']['id'] = $point_ids;
-        
         $list = $this->Mhouses_points->get_lists($fields , $where, [], 0, 0, 'area_id');
         if(!$list){
             $this->return_json(['code' => 0, 'data' => [], 'msg' => "暂无数据"]);
         }
         foreach ($list as $k => $v){
             $list[$k]['area_name'] = "无组团";
+            $list[$k]['confirm_num'] = 0;
+        }
+        //统计已经确认的
+        if(!empty($info['confirm_point_ids'])){
+            $confirm_point_ids = explode(',', $info['confirm_point_ids']);
+            $fields = "area_id, count(`id`) as confirm_num";
+            $where = [];
+            $where['houses_id'] = $houses_id;
+            $where['in']['id'] = $confirm_point_ids;
+            $confirm_list = $this->Mhouses_points->get_lists($fields , $where, [], 0, 0, 'area_id');
+            if($confirm_list){
+                foreach ($list as $k => $v){
+                    foreach ($confirm_list as $key => $val){
+                        if($v['area_id'] == $val['area_id']){
+                            $list[$k]['confirm_num'] = $val['confirm_num'];break;
+                        }
+                    }
+                }
+            }
         }
         //提取组团ids
         $area_ids = array_unique(array_column($list, 'area_id'));
