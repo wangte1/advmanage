@@ -16,6 +16,7 @@ class Customer extends MY_Controller {
         $this->load->model([
             'Model_admins' => 'Madmins',
             'Model_houses' => 'Mhouses',
+            "Model_houses_area" => 'Mhouses_area',
             'Model_houses_points' => 'Mhouses_points',
             'Model_houses_customers' => 'Mhouses_customers',
             'Model_houses_customers_linkman' => 'Mhouses_customers_linkman',
@@ -232,6 +233,41 @@ class Customer extends MY_Controller {
                 foreach ($houses_list as $key => $val){
                     if($v['houses_id'] == $val['id']){
                         $list[$k]['houses_name'] = $val['name'];break;
+                    }
+                }
+            }
+        }
+        $this->return_json(['code' => 1, 'data' => $list, 'msg' => "ok"]);
+    }
+    
+    public function pre_order_area_list(){
+        $id = (int) $this->input->get_post('id');
+        $houses_id = (int) $this->input->get_post('houses_id');
+        $info = $this->Mhouses_scheduled_orders->get_one('point_ids', ['id' => $id]);
+        if(!$info){
+            $this->return_json(['code' => 0, 'data' => [], 'msg' => "暂无数据"]);
+        }
+        //提取点位id
+        $point_ids = explode(',', $info['point_ids']);
+        $fields = "area_id, count(`id`) as num";
+        $where['houses_id'] = $houses_id;
+        $where['in']['id'] = $point_ids;
+        
+        $list = $this->Mhouses_points->get_lists($fields , $where, [], 0, 0, 'area_id');
+        if(!$list){
+            $this->return_json(['code' => 0, 'data' => [], 'msg' => "暂无数据"]);
+        }
+        foreach ($list as $k => $v){
+            $list[$k]['area_name'] = "无组团";
+        }
+        //提取组团ids
+        $area_ids = array_unique(array_column($list, 'area_id'));
+        $area_list = $this->Mhouses_area->get_lists("id, name", ['in' => ['id' => $area_ids]]);
+        if($area_list){
+            foreach ($list as $k => $v){
+                foreach ($area_list as $key => $val){
+                    if($v['area_id'] == $val['id']){
+                        $list[$k]['area_name'] = $val['name'];break;
                     }
                 }
             }
