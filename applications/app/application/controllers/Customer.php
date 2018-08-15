@@ -420,7 +420,7 @@ class Customer extends MY_Controller {
         $where = ['customer_id' => $customer_id];
         $order_by = ['follow_date' => 'desc'];
         $list = $this->Mhouses_customers_linkman_log->get_lists($fields, $where, $order_by, $size, ($page-1)*$size);
-        if(!$list) $this->return_json(['code' => 0, 'data' => [], 'msg' => "暂无数据"]);
+        if(!$list) $this->return_json(['code' => 0, 'data' => [], 'msg' => "暂无数据", 'page' => $page]);
         //提取联系人列表
         $fields = "id, name";
         $where = ['customer_id' => $customer_id];
