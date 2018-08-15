@@ -356,6 +356,10 @@ class Customer extends MY_Controller {
         if(empty($post['name'])){
             $this->return_json(['code' => 0, 'msg' => '联系人名字不能为空']);
         }
+        if(isset($post['birth']) && !empty($post['birth'])){
+            $time = $post['birth'];
+            list($post['birth_month'], $post['birth_day']) = explode('-', $time);
+        }
         $post['create_time'] = date('Y-m-d H:i:s');
         $post['create_id'] = $token['user_id'];
         unset($post['token']);
