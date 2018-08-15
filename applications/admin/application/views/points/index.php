@@ -45,6 +45,19 @@
                                 <div class="widget-main">
                                     <form id="search-form" class="form-horizontal" role="form" method="get" action="">
                                         <div class="form-group">
+                                        
+                                        	<div class="col-sm-4">
+                                                <label class="col-sm-3 control-label no-padding-right" for="form-field-1"> 行政区域 </label>
+                                                <div class="col-sm-9">
+                                                    <select id="district2" name="district2"  class="select2" data-placeholder="Click to Choose...">
+                                                    	<option value="0">全部</option>
+                                                    	<?php foreach ($district as $k => $v):?>
+                                                    		<option value="<?php echo $v?>"<?php if($district2 == $v){echo "selected";}?>><?php echo $v;?></option>
+                                                    	<?php endforeach;?>
+                                                    </select>
+                                                </div>
+                                            </div>
+                                        	
                                             <div class="col-sm-4">
                                                 <label class="col-sm-3 control-label no-padding-right" for="form-field-1"> 媒体类型 </label>
                                                 <div class="col-sm-9">
@@ -69,7 +82,10 @@
                                                 </div>
                                             </div>
 
-                                            <div class="col-sm-4">
+                                        </div>
+                                        <div class="form-group">
+                                        
+                                        	<div class="col-sm-4">
                                                 <label class="col-sm-3 control-label no-padding-right" for="form-field-1"> 规格 </label>
                                                 <div class="col-sm-9">
                                                     <select multiple="" id="spec_id" name="spec_id[]" class="width-60 chosen-select tag-input-style"  data-placeholder="请选择规格">
@@ -80,8 +96,7 @@
                                                     </select>
                                                 </div>
                                             </div>
-                                        </div>
-                                        <div class="form-group">
+                                            
                                             <div class="col-sm-4">
                                                 <label class="col-sm-3 control-label no-padding-right" for="form-field-1"> 占用客户 </label>
                                                 <div class="col-sm-9">
@@ -108,7 +123,11 @@
                                                 </div>
                                             </div>
 
-                                            <div class="col-sm-4">
+                                        </div>
+
+                                        <div class="form-group">
+                                        
+                                        	<div class="col-sm-4">
                                                 <label class="col-sm-3 control-label no-padding-right" for="form-field-1"> 锁定状态 </label>
                                                 <div class="col-sm-9">
                                                     <select name="is_lock" class="select2">
@@ -118,9 +137,7 @@
                                                     </select>
                                                 </div>
                                             </div>
-                                        </div>
-
-                                        <div class="form-group">
+                                            
                                             <div class="col-sm-4 lock-customer" style="<?php if(!isset($_GET['is_lock']) || $_GET['is_lock'] != '1'):?>display:none<?php endif;?>">
                                                 <label class="col-sm-3 control-label no-padding-right" for="form-field-1"> 锁定客户 </label>
                                                 <div class="col-sm-9">

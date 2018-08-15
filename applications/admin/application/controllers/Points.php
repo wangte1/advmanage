@@ -44,6 +44,7 @@ class Points extends MY_Controller{
         if ($this->input->get('is_lock') != '') $where['A.is_lock'] = $this->input->get('is_lock');
         if ($this->input->get('lock_customer_id')) $where['A.lock_customer_id'] = $this->input->get('lock_customer_id');
         if ($this->input->get('address')) $where['like']['A.address'] = $this->input->get('address');
+        if ($this->input->get('district2')) $where['like']['A.address'] = $this->input->get('district2');
 
         //即将到期
         $data['expire_time'] = $this->input->get("expire_time");
@@ -61,11 +62,13 @@ class Points extends MY_Controller{
         $data['is_lock'] = $this->input->get('is_lock');
         $data['lock_customer_id'] = $this->input->get('lock_customer_id');
         $data['address'] = $this->input->get('address');
+        $data['district2'] = $this->input->get('district2');
 
         $data['list'] = $this->Mpoints->lists($where, ($page-1)*$pageconfig['per_page'], $pageconfig['per_page']);
         $data_count = $this->Mpoints->get_point_count($where);
         $data['data_count'] = $data_count;
         $data['page'] = $page;
+        $data['district'] = C('public.district');
 
         //获取分页
         $pageconfig['base_url'] = "/points";
@@ -456,6 +459,7 @@ class Points extends MY_Controller{
             if ($this->input->get('is_lock') != '') $where['A.is_lock'] = $this->input->get('is_lock');
             if ($this->input->get('lock_customer_id')) $where['A.lock_customer_id'] = $this->input->get('lock_customer_id');
             if ($this->input->get('address')) $where['like']['A.address'] = $this->input->get('address');
+            if ($this->input->get('district2')) $where['like']['A.address'] = $this->input->get('district2');
 
             //即将到期
             if($this->input->get("expire_time")) {
