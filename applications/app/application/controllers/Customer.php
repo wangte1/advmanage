@@ -342,7 +342,23 @@ class Customer extends MY_Controller {
      * 添加客户联系人
      */
     public function add_linkman(){
-        
+        if(IS_POST){
+            $post = $this->input->post();
+        }else{
+            $post = $this->input->post();
+        }
+        $token = decrypt($this->token);
+        if(!isset($post['name'])){
+            $this->return_json(['code' => 0, 'msg' => '联系人必填']);
+        }
+        if(empty($post['name'])){
+            $this->return_json(['code' => 0, 'msg' => '联系人名字不能为空']);
+        }
+        $post['create_time'] = date('Y-m-d H:i:s');
+        $post['create_id'] = $token['user_id'];
+        $res = $this->Mhouses_customers_linkman->create($post);
+        if(!$res) $this->return_json(['code' => 0, 'msg' => '添加失败']);
+        $this->return_json(['code' => 1, 'msg' => '操作成功']);
     }
     
     /**
