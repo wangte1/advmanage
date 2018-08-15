@@ -432,7 +432,7 @@ class Customer extends MY_Controller {
             }
         }
         //获取负责该客户的业务员id
-        $customer = $this->Mcustomers->get_one('salesman_id', ['id' => $customer_id]);
+        $customer = $this->Mhouses_customers->get_one('salesman_id', ['id' => $customer_id]);
         if($customer){
             $info = $this->Madmins->get_one('fullname', ['id' => $customer['salesman_id']]);
             if($info){
