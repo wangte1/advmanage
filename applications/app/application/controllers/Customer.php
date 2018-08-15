@@ -409,12 +409,17 @@ class Customer extends MY_Controller {
      * 客户跟进记录
      */
     public function follow(){
+        $pageconfig = C('page.page_lists');
+        $this->load->library('pagination');
+        $page = (int) $this->input->get_post('page') ? : '1';
+        $size = (int) $this->input->get_post('size');
+        if(!$size) $size = $pageconfig['per_page'];
         $customer_id = (int) $this->input->get_post('customer_id');
         if(!$customer_id) $this->return_json(['code' => 0, 'data' => [], 'msg' => "客户id不能为空"]);
         $fields = "*";
         $where = ['customer_id' => $customer_id];
         $order_by = ['follow_date' => 'desc'];
-        $list = $this->Mhouses_customers_linkman_log->get_lists($fields, $where, $order_by);
+        $list = $this->Mhouses_customers_linkman_log->get_lists($fields, $where, $order_by, $size, ($page-1)*$size);
         if(!$list) $this->return_json(['code' => 0, 'data' => [], 'msg' => "暂无数据"]);
         //提取联系人列表
         $fields = "id, name";
@@ -441,6 +446,6 @@ class Customer extends MY_Controller {
                 }
             }
         }
-        $this->return_json(['code' => 1, 'data' => $list, 'msg' => "ok"]);
+        $this->return_json(['code' => 1, 'data' => $list, 'msg' => "ok", 'page' => $page]);
     }
 }
