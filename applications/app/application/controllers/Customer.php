@@ -215,6 +215,9 @@ class Customer extends MY_Controller {
         $this->return_json(['code' => 1, 'data' => $list, 'msg' => "ok"]);
     }
     
+    /**
+     * 预定单楼盘详情
+     */
     public function pre_order_houses_list(){
         $id = (int) $this->input->get_post('id');
         $info = $this->Mhouses_scheduled_orders->get_one('point_ids,confirm_point_ids', ['id' => $id]);
@@ -265,6 +268,9 @@ class Customer extends MY_Controller {
         $this->return_json(['code' => 1, 'data' => $list, 'msg' => "ok"]);
     }
     
+    /**
+     * 预定单楼盘下组团详情
+     */
     public function pre_order_area_list(){
         $id = (int) $this->input->get_post('id');
         $houses_id = (int) $this->input->get_post('houses_id');
@@ -316,5 +322,33 @@ class Customer extends MY_Controller {
             }
         }
         $this->return_json(['code' => 1, 'data' => $list, 'msg' => "ok"]);
+    }
+    
+    /**
+     * 客户联系人
+     */
+    public function linkman(){
+        $customer_id = (int) $this->input->get_post('customer_id');
+        if(!$customer_id) $this->return_json(['code' => 0, 'data' => [], 'msg' => "客户id不能为空"]);
+        $fields = "id, name, gender, position, tel, is_del";
+        $where = ['customer_id' => $customer_id];
+        $order_by = ['is_del' => 'asc', 'create_time' => 'asc'];
+        $list = $this->Mhouses_customers_linkman->get_lists($fields, $where, $order_by);
+        if(!$list) $this->return_json(['code' => 0, 'data' => [], 'msg' => "暂无数据"]);
+        $this->return_json(['code' => 1, 'data' => $list, 'msg' => "ok"]);
+    }
+    
+    /**
+     * 添加客户联系人
+     */
+    public function add_linkman(){
+        
+    }
+    
+    /**
+     * 编辑客户联系人
+     */
+    public function edit_linkman(){
+        
     }
 }
