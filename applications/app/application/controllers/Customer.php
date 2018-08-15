@@ -359,6 +359,7 @@ class Customer extends MY_Controller {
         if(isset($post['birth']) && !empty($post['birth'])){
             $time = $post['birth'];
             list($post['birth_month'], $post['birth_day']) = explode('-', $time);
+            unset($post['birth']);
         }
         $post['create_time'] = date('Y-m-d H:i:s');
         $post['create_id'] = $token['user_id'];
