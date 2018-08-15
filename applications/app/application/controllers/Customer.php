@@ -347,6 +347,8 @@ class Customer extends MY_Controller {
         }else{
             $post = $this->input->post();
         }
+        $customer_id = (int) $this->input->get_post('customer_id');
+        if(!$customer_id) $this->return_json(['code' => 0, 'data' => [], 'msg' => "客户id不能为空"]);
         $token = decrypt($this->token);
         if(!isset($post['name'])){
             $this->return_json(['code' => 0, 'msg' => '联系人必填']);
