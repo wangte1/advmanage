@@ -397,4 +397,50 @@ class Customer extends MY_Controller {
         if(!$res) $this->return_json(['code' => 0, 'msg' => '编辑失败']);
         $this->return_json(['code' => 1, 'msg' => '操作成功']);
     }
+    
+    /**
+     * 新增跟进记录
+     */
+    public function add_follow(){
+        
+    }
+    
+    /**
+     * 客户跟进记录
+     */
+    public function follow(){
+        $customer_id = (int) $this->input->get_post('customer_id');
+        if(!$customer_id) $this->return_json(['code' => 0, 'data' => [], 'msg' => "客户id不能为空"]);
+        $fields = "*";
+        $where = ['customer_id' => $customer_id];
+        $order_by = ['follow_date' => 'desc'];
+        $list = $this->Mhouses_customers_linkman_log->get_lists($fields, $where, $order_by);
+        if(!$list) $this->return_json(['code' => 0, 'data' => [], 'msg' => "暂无数据"]);
+        //提取联系人列表
+        $fields = "id, name";
+        $where = ['customer_id' => $customer_id];
+        $link_list = $this->Mhouses_customers_linkman->get_lists($fields, $where);
+        if($link_list){
+            foreach ($list as $k => $v){
+                $list[$k]['respondents_name'] = "";
+                $list[$k]['salesman_name'] = "";
+                foreach ($link_list as $key => $val){
+                    if($v['respondents_id'] == $val['id']){
+                        $list[$k]['respondents_name'] = $val['name']; 
+                    }
+                }
+            }
+        }
+        //获取负责该客户的业务员id
+        $customer = $this->Mcustomers->get_one('salesman_id', ['id' => $customer_id]);
+        if($customer){
+            $info = $this->Madmins->get_one('fullname', ['id' => $customer['salesman_id']]);
+            if($info){
+                foreach ($list as $k => $v){
+                    $list[$k]['salesman_name'] = $info['fullname'];
+                }
+            }
+        }
+        $this->return_json(['code' => 1, 'data' => $list, 'msg' => "ok"]);
+    }
 }
