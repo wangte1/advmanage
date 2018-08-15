@@ -392,7 +392,7 @@ class Customer extends MY_Controller {
             list($post['birth_month'], $post['birth_day']) = explode('-', $time);
             unset($post['birth']);
         }
-        unset($post['id']);
+        unset($post['id'], $post['token']);
         $res = $this->Mhouses_customers_linkman->update_info($post, ['id' => $id]);
         if(!$res) $this->return_json(['code' => 0, 'msg' => '编辑失败']);
         $this->return_json(['code' => 1, 'msg' => '操作成功']);
