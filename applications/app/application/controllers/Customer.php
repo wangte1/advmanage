@@ -373,6 +373,28 @@ class Customer extends MY_Controller {
      * 编辑客户联系人
      */
     public function edit_linkman(){
+        if(IS_POST){
+            $post = $this->input->post();
+        }else{
+            $post = $this->input->post();
+        }
+        $id = (int) $this->input->get_post('id');
+        if(!$id) $this->return_json(['code' => 0, 'data' => [], 'msg' => "id不能为空"]);
         
+        if(!isset($post['name'])){
+            $this->return_json(['code' => 0, 'msg' => '联系人必填']);
+        }
+        if(empty($post['name'])){
+            $this->return_json(['code' => 0, 'msg' => '联系人名字不能为空']);
+        }
+        if(isset($post['birth']) && !empty($post['birth'])){
+            $time = $post['birth'];
+            list($post['birth_month'], $post['birth_day']) = explode('-', $time);
+            unset($post['birth']);
+        }
+        unset($post['id']);
+        $res = $this->Mhouses_customers_linkman->update_info($post, ['id' => $id]);
+        if(!$res) $this->return_json(['code' => 0, 'msg' => '编辑失败']);
+        $this->return_json(['code' => 1, 'msg' => '操作成功']);
     }
 }
