@@ -402,7 +402,45 @@ class Customer extends MY_Controller {
      * 新增跟进记录
      */
     public function add_follow(){
-        
+        if(IS_POST){
+            $post = $this->input->post();
+        }else{
+            $post = $this->input->post();
+        }
+        $customer_id = (int) $this->input->get_post('customer_id');
+        if(!$customer_id) $this->return_json(['code' => 0, 'data' => [], 'msg' => "客户id不能为空"]);
+        $token = decrypt($this->token);
+        if(empty($post['flollow_content'])){
+            $this->return_json(['code' => 0, 'msg' => '洽谈内容不能为空']);
+        }
+        unset($post['token']);
+        $post['create_time'] = date('Y-m-d H:i:s');
+        $post['follow_id'] = $token['user_id'];//拜访人
+        $res = $this->Mhouses_customers_linkman_log->create($post);
+        if(!$res) $this->return_json(['code' => 0, 'msg' => '添加失败']);
+        $this->return_json(['code' => 1, 'msg' => '操作成功']);
+    }
+    
+    /**
+     * 添加回访记录时的配置接口
+     */
+    public function get_follow_config(){
+        $fields = "id, name";
+        $customer_id = (int) $this->input->get_post('customer_id');
+        if(!$customer_id) $this->return_json(['code' => 0, 'data' => [], 'msg' => "客户id不能为空"]);
+        $where = ['customer_id' => $customer_id];
+        $order_by = ['create_time' => 'asc'];
+        $list = $this->Mhouses_customers_linkman->get_lists($fields, $where, $order_by);
+        foreach ($list as $k => $v){
+            $data['linkman'][$k]['index'] = $v['id'];
+            $data['linkman'][$k]['reason'] = $v['name'];
+        }
+        $arr = ['面谈','电话','微信','短信'];
+        foreach ($arr as $k => $v){
+            $data['follow_type'][$k]['index'] = $k;
+            $data['follow_type'][$k]['reason'] = $v;
+        }
+        $this->return_json(['code' => 1, 'data' => $data, 'msg' => "ok"]);
     }
     
     /**
