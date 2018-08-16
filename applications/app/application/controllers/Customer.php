@@ -345,7 +345,7 @@ class Customer extends MY_Controller {
         if(IS_POST){
             $post = $this->input->post();
         }else{
-            $post = $this->input->post();
+            $post = $this->input->get();
         }
         $customer_id = (int) $this->input->get_post('customer_id');
         if(!$customer_id) $this->return_json(['code' => 0, 'data' => [], 'msg' => "客户id不能为空"]);
@@ -376,7 +376,7 @@ class Customer extends MY_Controller {
         if(IS_POST){
             $post = $this->input->post();
         }else{
-            $post = $this->input->post();
+            $post = $this->input->get();
         }
         $id = (int) $this->input->get_post('id');
         if(!$id) $this->return_json(['code' => 0, 'data' => [], 'msg' => "id不能为空"]);
@@ -405,7 +405,7 @@ class Customer extends MY_Controller {
         if(IS_POST){
             $post = $this->input->post();
         }else{
-            $post = $this->input->post();
+            $post = $this->input->get();
         }
         $customer_id = (int) $this->input->get_post('customer_id');
         if(!$customer_id) $this->return_json(['code' => 0, 'data' => [], 'msg' => "客户id不能为空"]);
