@@ -137,7 +137,7 @@
 
                                         <div class="form-group">
                                             <label class="col-sm-2 control-label no-padding-right" for="form-input-readonly"> 投放点位： </label>
-                                            <div class="col-sm-10">
+                                            <div style="width:100%" class="col-sm-10">
                                                 <div class="widget-box" style="overflow: hidden;">
                                                     <div class="widget-header">
                                                         <h4>选择点位</h4>
@@ -221,6 +221,18 @@
                                                                         </select>
                                                                     </div>
                                                                 </div>
+                                                                <div class="col-sm-6">
+                                                                	<br/>
+                                                                    <label class="col-sm-4 control-label" for="form-field-1"> 置业类型： </label>
+                                                                    <div class="col-sm-8" style="padding:0">
+                                                                        <select name="zhiye_id" id="zhiye_id" class="select2">
+                                                                        	<option value="">请选择楼盘</option>
+                                                                            <?php foreach($zhiye_name as $k => $v):?>
+                                                                            <option value="<?php echo $k;?>" <?php if(isset($info['zhiye_name']) && $k == $info['zhiye_name']){ echo "selected"; }?>><?php echo $v;?></option>
+                                                                            <?php endforeach;?>
+                                                                        </select>
+                                                                    </div>
+                                                                </div>
                                                             </div>
                                                             <div id="scrollTable">
                                                                 <div class="div-thead">
@@ -233,6 +245,7 @@
                                                                                 <th width="10%">楼栋</th>
                                                                                 <th width="10%">单元</th>
                                                                                 <th width="10%">楼层</th>
+                                                                                <th width="10%">置业类型</th>
                                                                                 <th width="10%">位置</th>
                                                                                 <th width="10%">可投放数</th>
                                                                                 <th width="10%">状态</th>
@@ -253,6 +266,7 @@
                                                                                 <td width="10%"><?php echo $v['ban']?></td>
                                                                                 <td width="10%"><?php echo $v['unit']?></td>
                                                                                 <td width="10%"><?php echo $v['floor']?></td>
+                                                                                <td width="10%">2233</td>
                                                                                 <td width="10%">
                                                                                     <?php if(isset($point_addr[$v['addr']])) echo $point_addr[$v['addr']];?>
                                                                                 </td>
@@ -337,10 +351,11 @@
                                                         <th width="10%">组团</th>
                                                         <th width="10%">楼栋</th>
                                                         <th width="10%">单元</th>
-                                                        <th width="10%">楼层</th>
+                                                        <th width="5%">楼层</th>
+                                                        <th width="10%">置业类型</th>
                                                         <th width="10%">位置</th>
                                                         <th width="10%">可投放数</th>
-                                                        <th width="10%">状态</th>
+                                                        <th width="5%">状态</th>
                                                         <th width="10%"><button class="btn btn-xs btn-info remove-all" type="button">移除全部<i class="fa fa-remove" aria-hidden="true"></i></button></th>
                                                     </tr>
                                                 </thead>
@@ -357,14 +372,15 @@
                                                             <td width="10%"><?php echo $value['houses_area_name'];?></td>
                                                             <td width="10%"><?php echo $value['ban'];?></td>
                                                             <td width="10%"><?php echo $value['unit'];?></td>
-                                                            <td width="10%"><?php echo $value['floor'];?></td>
+                                                            <td width="5%"><?php echo $value['floor'];?></td>
+                                                            <td width="10%"><?php if(!empty($value['zhiye_name'])){echo $value['zhiye_name'];}else{echo '无';}?></td>
                                                             <?php if($value['addr'] == 1):?>
                                                             <td width="10%">门禁</td>
                                                             <?php else:?>
                                                             <td width="10%">电梯前室</td>
                                                             <?php endif;?>
                                                             <td width="10%"><?php echo $value['ad_num'] - $value['ad_use_num'];?></td>
-                                                            <td width="10%">
+                                                            <td width="5%">
                                                             	<?php 
                                                                     switch ($value['point_status']) {
                                                                         case '1':
@@ -429,7 +445,7 @@ $(function(){
     	p_area_id = $(this).val();
     });
 	
-	$('body').on('change', '#houses_id,#area_id,#ban,#unit,#floor,#addr', function(){
+	$('body').on('change', '#houses_id,#area_id,#ban,#unit,#floor,#addr,#zhiye_id', function(){
 		var index = layer.load(0, {shade: true});
 		var houses_id = $('#houses_id').val();
 		var area_id = $('#area_id').val();
@@ -441,8 +457,9 @@ $(function(){
 		var floor = $('#floor').val();
 		var addr = $('#addr').val();
 		var lock_start_time = $('#lock_start_time').val();
+		var zhiye_id = $('#zhiye_id').val();
 		var order_id = "<?php echo $info['id']?>";
-		var postData = {order_id:order_id,order_type:order_type, put_trade:put_trade, houses_id:houses_id, area_id:area_id, ban:ban, unit:unit, floor:floor, lock_start_time:lock_start_time,addr:addr};
+		var postData = {order_id:order_id,order_type:order_type, put_trade:put_trade, houses_id:houses_id, area_id:area_id, ban:ban, unit:unit, floor:floor, lock_start_time:lock_start_time,addr:addr,zhiye_id:zhiye_id};
 		$.post('/housesorders/get_points', postData, function(data){
 			var pointStr =  '';
 			var areaStr = '<option value="">请选择组团</option>'; 
@@ -452,10 +469,19 @@ $(function(){
 				for(var i = 0; i < data.points_lists.length; i++) {
 					pointStr += "<tr class='point' id='point_"+tmpList[i]['id']+"' point-id='"+tmpList[i]['id']+"'><td width='10%'>"+tmpList[i]['code']+"</td>";
 					pointStr += "<td width='10%'>"+tmpList[i]['houses_name']+"</td>";
-					pointStr += "<td width='10%'>"+tmpList[i]['area_name']+"</td>";
+					if(typeof tmpList[i]['area_name'] === 'undefined'){
+						pointStr += "<td width='10%'></td>";
+					}else{
+						pointStr += "<td width='10%'>"+tmpList[i]['area_name']+"</td>";
+					}
 					pointStr += "<td width='10%'>"+tmpList[i]['ban']+"</td>";
 					pointStr += "<td width='10%'>"+tmpList[i]['unit']+"</td>";
 					pointStr += "<td width='10%'>"+tmpList[i]['floor']+"</td>";
+					if(tmpList[i]['zhiye_name'] == ''){
+						pointStr += "<td width='10%'></td>";
+					}else{
+						pointStr += "<td width='10%'>"+tmpList[i]['zhiye_name']+"</td>";
+					}
 					if(tmpList[i]['addr'] == 1){
 						pointStr += "<td width='10%'>门禁</td>";
 					}else{
