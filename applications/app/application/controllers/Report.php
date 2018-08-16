@@ -42,7 +42,7 @@ class Report extends MY_Controller {
             foreach ($list as $k => $v){
                 //获取保修人的名称
                 $createName = $this->Madmins->get_one("fullname",['id' =>$v['create_id']]);
-                $list[$k]['createname']=$createName['fullname'];
+                $list[$k]['create_name']=$createName['fullname'];
                 
                 if($v['addr'] == 1){
                     $list[$k]['addr'] = "门禁";
