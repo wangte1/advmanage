@@ -252,22 +252,23 @@ class Housesorders extends MY_Controller{
      */
     public function get_points() {
         
-        if($this->input->post('order_type')) $where['type_id'] = $this->input->post('order_type');
-        if(!empty($this->input->post('houses_id'))) {$houses_id = $where['houses_id'] = $this->input->post('houses_id');}
-        if(!empty($this->input->post('area_id'))) {$where['area_id'] = $this->input->post('area_id');}
-        if(!empty($this->input->post('ban'))) $where['ban'] = $this->input->post('ban');
-        if(!empty($this->input->post('unit'))) $where['unit'] = $this->input->post('unit');
-        if(!empty($this->input->post('floor'))) $where['floor'] = $this->input->post('floor');
-        if(!empty($this->input->post('addr'))) $where['addr'] = $this->input->post('addr');
+        if($this->input->post('order_type')) $where['A.type_id'] = $this->input->post('order_type');
+        if(!empty($this->input->post('houses_id'))) {$houses_id = $where['A.houses_id'] = $this->input->post('houses_id');}
+        if(!empty($this->input->post('area_id'))) {$where['A.area_id'] = $this->input->post('area_id');}
+        if(!empty($this->input->post('ban'))) $where['A.ban'] = $this->input->post('ban');
+        if(!empty($this->input->post('unit'))) $where['A.unit'] = $this->input->post('unit');
+        if(!empty($this->input->post('floor'))) $where['A.floor'] = $this->input->post('floor');
+        if(!empty($this->input->post('addr'))) $where['A.addr'] = $this->input->post('addr');
+        if(!empty($this->input->post('zhiye_id'))) $where['B.zhiye_id'] = $this->input->post('zhiye_id');
         $lock_start_time = $this->input->post('lock_start_time');
         
         $order_id = $this->input->post('order_id');
         $type = $this->input->post('order_type');
         
-        $where['is_del'] = 0;
-        $where['`lock_num` >='] = 0; //防止出现多次选择
-        $where['point_status'] = 1;
-        $fields = 'id,code,houses_id,area_id,ban,unit,floor,addr,type_id,ad_num, ad_use_num, lock_num,point_status';
+        $where['A.is_del'] = 0;
+        $where['A.`lock_num` >='] = 0; //防止出现多次选择
+        $where['A.point_status'] = 1;
+        $fields = 'A.id,A.code,A.houses_id,A.area_id,A.ban,A.unit,A.floor,A.addr,A.type_id,A.ad_num, A.ad_use_num, A.lock_num,A.point_status,B.zhiye_id';
         $points_lists = $this->Mhouses_points->get_usable_points($fields, $where, $order_id, $type);
         if(count($points_lists) > 0) {
             $housesid = array_unique(array_column($points_lists, 'houses_id'));
@@ -323,6 +324,24 @@ class Housesorders extends MY_Controller{
         if($houses_id){
             $areaList = $this->Mhouses_area->get_lists('id, name', ['houses_id' => $houses_id]);
         }
+        $zhiye_name = C('zhiye');
+        
+        foreach ($points_lists as $k => $v){
+            $points_lists[$k]['zhiye_name'] = '';
+            foreach ($zhiye_name as $k1 => $v1){
+                if($v['zhiye_id'] == $k1){
+                    $points_lists[$k]['zhiye_name'] = $v1;
+                }
+            }
+        }
+        foreach ($areaList as $k => $v){
+            $areaList[$k]['zhiye_name'] = '';
+            foreach ($zhiye_name as $k1 => $v1){
+                if($v['zhiye_id'] == $k1){
+                    $areaList[$k]['zhiye_name'] = $v1;
+                }
+            }
+        }
         //获取去重的组团区域
         $this->return_json(array('flag' => true, 'points_lists' => $points_lists, 'count' => count($points_lists), 'area_list' => $areaList));
     }
@@ -340,7 +359,7 @@ class Housesorders extends MY_Controller{
             $post_data['update_user'] = $data['userInfo']['id'];
             $post_data['update_time'] = date('Y-m-d H:i:s');
             $id = $post_data['id'];
-            unset($post_data['id'], $post_data['ban'], $post_data['unit'],$post_data['area_id'],$post_data['floor'], $post_data['addr']);
+            unset($post_data['id'], $post_data['ban'], $post_data['unit'],$post_data['area_id'],$post_data['floor'], $post_data['addr'],$post_data['zhiye_id']);
             
             //定义已新增和被删除
             $add = $del = [];
@@ -512,6 +531,27 @@ class Housesorders extends MY_Controller{
             }else{
                 $where['in']['A.id'] = explode(',', $data['info']['point_ids']);
                 $data['selected_points'] = $this->Mhouses_points->get_points_lists($where);
+            }
+            $areaList = $this->Mhouses_area->get_lists();
+            $zhiye_name = C('zhiye');
+            $data['zhiye_name'] = $zhiye_name;
+            foreach ($data['selected_points'] as $k => $v){
+                $data['selected_points'][$k]['zhiye_id'] = '';
+                foreach ($areaList as $k1 => $v1){
+                    if($v['area_id'] == $v1['id']){
+                        $data['selected_points'][$k]['zhiye_id'] = $v1['zhiye_id'];
+                        break;
+                    }
+                }
+            }
+            foreach ($data['selected_points'] as $k => $v){
+                $data['selected_points'][$k]['zhiye_name'] = '';
+                foreach ($zhiye_name as $k1 => $v1){
+                    if($v['zhiye_id'] == $k1){
+                        $data['selected_points'][$k]['zhiye_name'] = $v1;
+                        break;
+                    }
+                }
             }
             $this->load->view('housesorders/customer_order/add', $data);
         }
