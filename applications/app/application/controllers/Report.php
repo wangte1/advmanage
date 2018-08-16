@@ -47,7 +47,7 @@ class Report extends MY_Controller {
                 {
                     if($m['id']==$v['create_id'])
                     {
-                        $list[$k]['create_name'] = $m['fullname'];
+                        $list[$k]['create_name'] = $m['fullname'];break;
                     }
                 }
                 
