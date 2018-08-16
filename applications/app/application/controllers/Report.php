@@ -9,7 +9,6 @@ class Report extends MY_Controller {
 
     public function __construct() {
         parent::__construct();
-        
         $this->token = trim($this->input->get_post('token'));
         $this->doCheckToken($this->token);
         
@@ -41,9 +40,12 @@ class Report extends MY_Controller {
         $list = $this->Mhouses_points_report->get_report_list(['A.repair_time' => 0, 'C.id' => $houses_id]);
         if($list){
             foreach ($list as $k => $v){
+                //获取保修人的名称
+                $createName = $this->Madmins->get_one("fullname",['id' =>$v['create_id']]);
+                $list[$k]['createname']=$createName['fullname'];
+                
                 if($v['addr'] == 1){
                     $list[$k]['addr'] = "门禁";
-                }else if($v['addr'] == 2){
                     $list[$k]['addr'] = "地面电梯前室";
                 }else{
                     $list[$k]['addr'] = "地下电梯前室";
