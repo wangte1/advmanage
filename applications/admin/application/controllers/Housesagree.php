@@ -128,4 +128,100 @@ class Housesagree extends MY_Controller{
         if(!$res) $this->return_json(['code' => 0, 'msg' => "删除失败"]);
         $this->return_json(['code' => 1, 'msg' => "操作成功"]);
     }
+    public function out_excel(){
+        $data = $this->data;
+        $where['is_del'] = 0;
+        //if ($this->input->get('name')) $where['id'] = $this->input->get('name');
+        //print_r($where);exit;
+        //加载phpexcel
+        $this->load->library("PHPExcel");
+        
+        $table_header =  array(
+            'ID'=>"id",
+            '存档编号'=>"doc_num",
+            '物业公司'=>"pm_company",
+            '合同开始时间'=>"agree_start_date",
+            '合同结束时间'=>"agree_end_date",
+            '开发负责人'=>"develer",
+            '物业负责人'=>"property_owner",
+            '负责人职务'=>"principal_duty",
+            '负责人电话'=>"principal_tel",
+            '签约日期'=>"sign_date",
+            '签约楼盘'=>"house_list",
+            '合同金额'=>"agree_price",
+            '支付方式'=>"pay_method",
+            '已付金额'=>"paid_money",
+            '开票类型'=>"invoice_type",
+            '已收发票金额'=>"received_invoice",
+            '递增方式'=>"incr_type",
+            '咨询费'=>"consult_cost",
+            '备注'=>"remak",
+            '录入人'=>"create_user_name",
+            '录入日期'=>"create_time"
+        );
+        
+        
+        $i = 0;
+        foreach($table_header as  $k=>$v){
+            $cell = PHPExcel_Cell::stringFromColumnIndex($i).'1';
+            $this->phpexcel->setActiveSheetIndex(0)->setCellValue($cell, $k);
+            $i++;
+        }
+        
+        $tmpList = $this->Mhouses_agree->get_lists('*',$where);
+        
+        if(count($tmpList) > 0) {
+            $admin = $this->Madmins->get_lists('id,fullname',['is_del' => 1]);
+            $houses = $this->Mhouses->get_lists('id,name,agree_id', ['is_del' => 0]);
+            if($admin){
+                foreach ($tmpList as $k => $v){
+                    $tmpList[$k]['create_user_name'] = "";
+                    foreach ($admin as $key => $val){
+                        if($val['id'] == $v['create_user']){
+                            $tmpList[$k]['create_user_name'] = $val['fullname'];break;
+                        }
+                    }
+                    foreach ($data['agree']['pay_method'] as $k1 => $v1){
+                        if($v['pay_method'] == $k1){
+                            $tmpList[$k]['pay_method'] = $v1;
+                        }
+                    }
+                    
+                    foreach ($data['agree']['invoice_type'] as $k2 => $v2){
+                        if($v['invoice_type'] == $k2){
+                            $tmpList[$k]['invoice_type'] = $v2;
+                        }
+                    }
+                    
+                    $tmpList[$k]['house_list'] = "";
+                    foreach ($houses as $key => $val){
+                        if($v['id'] == $val['agree_id']){
+                            $tmpList[$k]['house_list'] .= $val['name']."、";
+                        }
+                    }
+                }
+            }
+            
+            
+        }
+        $h = 2;
+        foreach($tmpList as $key=>$val){    
+            $j = 0;
+            foreach($table_header as $k1 => $v1){
+                $cell = PHPExcel_Cell::stringFromColumnIndex($j++).$h;
+                $value = $val[$v1];               
+                $this->phpexcel->getActiveSheet(0)->setCellValue($cell, $value.' ');
+            }
+            $h++;
+        }
+        
+        $this->phpexcel->setActiveSheetIndex(0);
+        // 输出
+        header('Content-Type: application/vnd.ms-excel');
+        header('Content-Disposition: attachment;filename=社区合同表.xls');
+        header('Cache-Control: max-age=0');
+        
+        $objWriter = PHPExcel_IOFactory::createWriter($this->phpexcel, 'Excel5');
+        $objWriter->save('php://output');
+    }
 }

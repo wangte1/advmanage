@@ -90,10 +90,8 @@
                                         <thead>
                                             <tr>
                                             	<th>ID</th>
+                                            	<th>存档编号</th>
                                                 <th>物业公司 </th>
-                                                <th>点位总数 </th>
-                                                <th>地面点位数 </th>
-                                                <th>地下点位数 </th>
                                                 <th>合同开始时间 </th>
                                                 <th>合同结束时间 </th>
                                                 <th>开发负责人 </th>
@@ -102,12 +100,13 @@
                                                 <th>负责人电话 </th>
                                                 <th>签约日期 </th>
                                                 <th>签约楼盘 </th>
-                                                <th>地面单价 </th>
-                                                <th>地下单价 </th>
                                                 <th>合同金额 </th>
                                                 <th>支付方式</th>
+                                                <th>已付金额</th>
                                                 <th>开票类型 </th>
+                                                <th>已收发票金额</th>
                                                 <th>递增方式 </th>
+                                                <th>咨询费</th>
                                                 <th>备注 </th>
                                                 <th>录入人 </th>
                                                 <th>录入日期 </th>
@@ -120,11 +119,9 @@
                                             foreach($list as $key=>$val){
                                                 ?>
                                                 <tr id="tr_<?php echo $val['id']?>">
-                                                	<td><?php echo $val['id']?></td>
+                                                   	<td><?php echo $val['id']?></td>
+                                                   	<td><?php echo $val['doc_num']?></td>
                                                 	<td><?php echo $val['pm_company']?></td>
-                                                    <td><?php echo $val['point_num']?></td>
-                                                    <td><?php echo $val['up_num']?></td>
-                                                    <td><?php echo $val['down_num']?></td>
                                                     <td><?php echo $val['agree_start_date']?></td>
                                                     <td><?php echo $val['agree_end_date']?></td>
                                                     <td><?php echo $val['develer']?></td>
@@ -133,17 +130,21 @@
                                                     <td><?php echo $val['principal_tel']?></td>
                                                     <td><?php echo $val['sign_date']?></td>
                                                     <td><?php echo $val['house_list']?></td>
-                                                    <td><?php echo $val['up_price']?></td>
-                                                    <td><?php echo $val['down_price']?></td>
                                                     <td><?php echo $val['agree_price']?></td>
                                                     <td><?php echo $val['pay_method']?></td>
+                                                    <td><?php echo $val['paid_money']?></td>
                                                     <td><?php echo $val['invoice_type']?></td>
+                                                    <td><?php echo $val['received_invoice']?></td>
                                                     <td><?php echo $val['incr_type']?></td>
+                                                    <td><?php echo $val['consult_cost']?></td>
                                                     <td><?php echo $val['remak']?></td>
                                                     <td><?php echo $val['create_user_name']?></td>
                                                     <td><?php echo $val['create_time']?></td>
                                                     <td>
                                                         <div class="visible-md visible-lg hidden-sm hidden-xs action-buttons">
+                                                           <a class="green tooltip-info" href="/housesagree/edit/<?php echo $val['id']?>" data-rel="tooltip" data-placement="top" data-original-title="修改">
+                                                                <i class="icon-pencil bigger-130"></i>
+                                                           </a>
                                                            <a class="red tooltip-info delagree" data-id="<?php echo $val['id'];?>" data-rel="tooltip" data-placement="top" data-original-title="删除">
                                                                 <i class="icon-trash bigger-130"></i>
                                                             </a>
@@ -183,7 +184,7 @@ $(".select2").css('width','230px').select2({allowClear:true});
 
 	$(function(){
 		$(".btn-export").click(function(){
-        	$("#search-form").attr('action', '/houses/out_excel');
+        	$("#search-form").attr('action', '/housesagree/out_excel');
             $("#search-form").submit();
             $("#search-form").attr('action', '');
        });
