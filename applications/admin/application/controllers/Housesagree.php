@@ -85,7 +85,7 @@ class Housesagree extends MY_Controller{
         $this->load->view('houses/agree', $data);
     }
     
-    public function  add(){
+    public function add(){
         $data = $this->data;
         $data['title'] = array("合同管理","添加合同");
         $data['agree'] = C("agree");
@@ -117,6 +117,42 @@ class Housesagree extends MY_Controller{
         }
         
         $this->load->view('houses/agreeadd',$data);
+    }
+    
+    public function edit($id = 0){
+        $data = $this->data;
+        $data['title'] = array("合同管理","编辑合同");
+        $data['agree'] = C("agree");
+        $houses = $this->Mhouses->get_lists('id,name,agree_id', ['is_del' => 0]);
+        $data['hlist'] = $houses;
+        if(IS_POST){
+            $post = $this->input->post();
+            if(!isset($post['housesarr'])){
+                $this->error('添加失败，请选择签约的楼盘');
+            }
+            $housesarr = $post['housesarr'];
+            unset($post['housesarr']);
+            $post['create_user'] = $data['userInfo']['id'];
+            $post['create_time'] = date("Y-m-d H:i:s");
+            $result = $this->Mhouses_agree->update_info($post,['id' => $id]);
+            if($result){
+                $ret = $this->Mhouses->update_info(['agree_id' => $result],['in' => ['id' => $housesarr]]);
+                if(!$ret){
+                    $this->error('添加失败');
+                }
+                $this->write_log($data['userInfo']['id'],2,"编辑合同：".$post['name']);
+                $this->success("编辑成功","/housesagree");
+            }else{
+                $this->error("编辑失败");
+            }
+            
+        }
+        $info = $this->Mhouses_agree->get_one("*",array("id"=>$id));
+        if(empty($info) || !isset($info)){
+            die("非法参数");
+        }
+        $data['info'] = $info;
+        $this->load->view("houses/agreeedit",$data);
     }
     
     /**
