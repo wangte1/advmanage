@@ -2385,8 +2385,6 @@ class Housesorders extends MY_Controller{
         //关闭文件流
         fclose($fileHandle);
         
-        $this->add_to_swoole($savePath);
-        $this->add_to_swoole($allPath);
     }
     
     public function add_to_swoole($fileName = ""){
