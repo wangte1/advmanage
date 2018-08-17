@@ -205,95 +205,11 @@ class Housesagree extends MY_Controller{
             
         }
         $h = 2;
-        foreach($tmpList as $key=>$val){
-            
+        foreach($tmpList as $key=>$val){    
             $j = 0;
             foreach($table_header as $k1 => $v1){
                 $cell = PHPExcel_Cell::stringFromColumnIndex($j++).$h;
-                
-                if($v1 == "id") {
-                    $value = $val['id'];
-                }
-                
-                if($v1 == "doc_num") {
-                    $value = $val['doc_num'];
-                }
-                
-                if($v1 == "pm_company") {
-                    $value = $val['pm_company'];
-                }
-                
-                if($v1 == "agree_start_date") {
-                    $value = $val['agree_start_date'];
-                }
-                
-                if($v1 == "agree_end_date") {
-                    $value = $val['agree_end_date'];
-                }
-                
-                if($v1 == "develer") {
-                    $value = $val['develer'];
-                }
-                
-                if($v1 == "property_owner") {
-                    $value = $val['property_owner'];
-                }
-                
-                if($v1 == "principal_duty") {
-                    $value = $val['principal_duty'];
-                }
-                
-                if($v1 == "principal_tel") {
-                    $value = $val['principal_tel'];
-                }
-                
-                if($v1 == "sign_date") {
-                    $value = $val['sign_date'];
-                }
-                
-                if($v1 == "house_list") {
-                    $value = $val['house_list'];
-                }
-                
-                if($v1 == "agree_price") {
-                    $value = $val['agree_price'];
-                }
-  
-                if($v1 == "pay_method") {
-                    $value = $val['pay_method'];
-                }
-                if($v1 == "paid_money") {
-                    $value = $val['paid_money'];
-                }
-                
-                if($v1 == "invoice_type") {
-                    $value = $val['invoice_type'];
-                }
-                
-                if($v1 == "received_invoice") {
-                    $value = $val['received_invoice'];
-                }
-                
-                if($v1 == "incr_type") {
-                    $value = $val['incr_type'];
-                }
-                
-                if($v1 == "consult_cost") {
-                    $value = $val['consult_cost'];
-                }
-                
-                if($v1 == "remak") {
-                    $value = $val['remak'];
-                }
-                
-                if($v1 == "create_user_name") {
-                    $value = $val['create_user_name'];
-                }
-
-                if($v1 == "create_time") {
-                    $value = $val['create_time'];
-                }
-                
+                $value = $val[$v1];               
                 $this->phpexcel->getActiveSheet(0)->setCellValue($cell, $value.' ');
             }
             $h++;
