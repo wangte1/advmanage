@@ -198,7 +198,6 @@
                                 <label class="col-sm-3 control-label no-padding-right" for="form-field-1"> 请选择签约楼盘：</label>
                                 <div class="col-sm-9">
                                 	<select id="select" class="select2" data-placeholder="Click to Choose..." name="">
-                                		<option value="0">全部</option>
                                 		<?php foreach ($hlist as $k => $v) {?>
                                     		<option value="<?php echo $v['id'];?>"><?php echo $v['name'];?></option>
                                     	<?php }?>
