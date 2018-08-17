@@ -2344,8 +2344,26 @@ class Housesorders extends MY_Controller{
         }
         //关闭文件流
         fclose($fileHandle);
-        unlink($savePath);
-        exec('rm -rf '.$allPath);
+        
+        $this->add_to_swoole($savePath);
+        $this->add_to_swoole($allPath);
+    }
+    
+    public function add_to_swoole($fileName = ""){
+        $client= new swoole_client(SWOOLE_SOCK_TCP);
+        if(!$client->connect('127.0.0.1', 9503, 1)){
+            throw new Exception(sprintf('Swoole Error: %s', $client->errCode));
+        }
+        if($client->isConnected()){
+            $data = json_encode(['fileName' => $fileName]);
+            if($client->doDel($data)){
+                $client->close();
+            }else{
+                throw new Exception(sprintf('Swoole Error: %s', $client->errCode));
+            }
+        }else{
+            throw new Exception('Swoole Server does not connected.');
+        }
     }
     
     /**
