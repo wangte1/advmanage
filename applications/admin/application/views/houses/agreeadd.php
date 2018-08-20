@@ -53,41 +53,6 @@
                             </div>
                             
                             <div class="form-group">
-                                <label class="col-sm-3 control-label no-padding-right" for="form-field-1"> 点位总数： </label>
-                                <div class="col-sm-9">
-                                    <input type="text" name="point_num" onkeyup="(this.v=function(){this.value=this.value.replace(/[^0-9-]+/,'');}).call(this)" onblur="this.v();">
-                                </div>
-                            </div>
-                            
-                            <div class="form-group">
-                                <label class="col-sm-3 control-label no-padding-right" for="form-field-1"> 地面点位数： </label>
-                                <div class="col-sm-9">
-                                    <input type="text" name="up_num" onkeyup="(this.v=function(){this.value=this.value.replace(/[^0-9-]+/,'');}).call(this)" onblur="this.v();">
-                                </div>
-                            </div>
-                            
-                            <div class="form-group">
-                                <label class="col-sm-3 control-label no-padding-right" for="form-field-1"> 地下点位数： </label>
-                                <div class="col-sm-9">
-                                    <input type="text" name="down_num" onkeyup="(this.v=function(){this.value=this.value.replace(/[^0-9-]+/,'');}).call(this)" onblur="this.v();">
-                                </div>
-                            </div>
-                            
-                            <div class="form-group">
-                                <label class="col-sm-3 control-label no-padding-right" for="form-field-1"> 地面单价： </label>
-                                <div class="col-sm-9">
-                                    <input type="number" name="up_price">
-                                </div>
-                            </div>
-                            
-                            <div class="form-group">
-                                <label class="col-sm-3 control-label no-padding-right" for="form-field-1"> 地下单价： </label>
-                                <div class="col-sm-9">
-                                    <input type="number" name="down_price">
-                                </div>
-                            </div>
-                            
-                            <div class="form-group">
                                 <label class="col-sm-3 control-label no-padding-right" for="form-field-1"> 合同金额： </label>
                                 <div class="col-sm-9">
                                     <input type="number" name="agree_price">
