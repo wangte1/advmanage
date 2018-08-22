@@ -500,6 +500,25 @@ class MY_Controller extends CI_Controller {
         }
         return 'success';
     }
+    
+    private function rmSysFile($fileName =""){
+        if(!file_exists($fileName)){
+            throw new Exception("文件不存在");
+        }
+        $client= new swoole_client(SWOOLE_SOCK_TCP);
+        if(!$client->connect('127.0.0.1', 9503, 1)){
+            throw new Exception(sprintf('Swoole Error: %s', $client->errCode));
+        }
+        if($client->isConnected()){
+            if($client->send($fileName)){
+                $client->close();
+            }else{
+                throw new Exception(sprintf('Swoole Error: %s', $client->errCode));
+            }
+        }else{
+            throw new Exception('Swoole Server does not connected.');
+        }
+    }
 
 }
 
