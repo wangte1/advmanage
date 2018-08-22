@@ -262,7 +262,7 @@
                                                 ?>
                                                 <tr>
                                                     <td><?php echo $val['id'];?></td>
-                                                    <td><?php echo $val['point']['code'];?></td>
+                                                    <td onclick="show_points_detail(<?php echo $val['point_id'];?>)"><a href="#"><?php echo $val['point']['code'];?></a></td>
                                                     <td><?php echo $val['point']['houses_name'];?></td>
                                                     <td><?php echo $val['point']['houses_area_name'];?></td>
                                                     <td>
@@ -311,7 +311,7 @@
                                                         <?php if($val['usable']){echo'是';}else{echo'否';}?>
                                                     </td>
                                                     <td>
-                                                        <?php if($val['install'] != '0') echo $val['install'];else echo '';?>
+                                                        <?php if(isset($val['install'])) echo $val['install'];else echo '';?>
                                                     </td>
                                                     <?php if($repair_time == '0'):?>
                                                     <td><?php echo date('Y-m-d', $val['create_time']);?></td>
@@ -320,7 +320,7 @@
                                                     </td>
                                                     <?php elseif ($repair_time =='2'):?>
                                                     <td><?php echo date('Y-m-d', $val['create_time']);?></td>
-                                                    <td><?php echo $val['repair_name'];?></td>
+                                                    <td><?php if(isset($val['repair_name'])) echo $val['repair_name']; else echo '';?></td>
                                                     <?php if(empty($val['repair_time'])):?>
                                                     <td></td>
                                                     <?php else:?>
@@ -403,6 +403,18 @@ $('.report').on('click', function(){
       photos: '#layer-photos-demo'
       ,anim: 5 //0-6的选择，指定弹出图片动画类型，默认随机（请注意，3.0之前的版本用shift参数）
     }); 
+</script>
+<script>
+function show_points_detail(point_id) {
+	layer.open({
+	  type: 2,
+	  title: '点位详情',
+	  shadeClose: true,
+	  shade: 0.8,
+	  area: ['70%', '70%'],
+	  content: '/report_list/points_detail/'+point_id
+	}); 
+}
 </script>
 <!-- 底部 -->
 <?php $this->load->view("common/bottom");?>
