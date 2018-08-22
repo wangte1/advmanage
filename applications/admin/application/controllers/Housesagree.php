@@ -24,6 +24,7 @@ class Housesagree extends MY_Controller{
         $page =  intval($this->input->get("per_page",true)) ?  : 1;
         $size = $pageconfig['per_page'];
         $where = ['is_del' => 0];
+//         $doc_num = $this->input->get()
         $list = $this->Mhouses_agree->get_lists('*',$where,[],$size,($page-1)*$size);
         $data['list'] = [];
         $data['hlist'] = [];
