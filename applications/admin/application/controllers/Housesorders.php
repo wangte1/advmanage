@@ -284,14 +284,14 @@ class Housesorders extends MY_Controller{
             $areaList = $this->Mhouses_area->get_lists("id, name", $wherea);
             //获取规格列表
             $size_list = $this->Mhouses_points_format->get_lists('id,type,size', ['is_del' => 0]);
-            foreach ($points_lists as $k => &$v) {
+            foreach ($points_lists as $k => $v) {
                 //设置状态
-                $v['point_status_txt'] = C('public.points_status')[$v['point_status']];
+                $points_lists[$k]['point_status_txt'] = C('public.points_status')[$v['point_status']];
                 
                 $mark = false;
                 foreach($housesList as $k1 => $v1) {
                     if($v['houses_id'] == $v1['id']) {
-                        $v['houses_name'] = $v1['name'];
+                        $points_lists[$k]['houses_name'] = $v1['name'];
                         $mark = true;
                         break;
                     }
@@ -304,16 +304,16 @@ class Housesorders extends MY_Controller{
                 
                 foreach($areaList as $k2 => $v2) {
                     if($v['area_id'] == $v2['id']) {
-                        $v['area_name'] = $v2['name'];
+                        $points_lists[$k]['area_name'] = $v2['name'];
                         break;
                     }
                 }
                 
-                $v['size'] = '';
+                $points_lists[$k]['size'] = '';
                 if($size_list){
                     foreach ($size_list as $key => $val){
                         if($val['type'] == $v['type_id']){
-                            $v['size'] = $val['size'];break;
+                            $points_lists[$k]['size'] = $val['size'];break;
                         }
                     }
                 }
@@ -334,6 +334,7 @@ class Housesorders extends MY_Controller{
                 }
             }
         }
+        
         foreach ($areaList as $k => $v){
             $areaList[$k]['zhiye_name'] = '';
             foreach ($zhiye_name as $k1 => $v1){
