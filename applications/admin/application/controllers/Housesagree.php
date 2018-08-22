@@ -24,7 +24,18 @@ class Housesagree extends MY_Controller{
         $page =  intval($this->input->get("per_page",true)) ?  : 1;
         $size = $pageconfig['per_page'];
         $where = ['is_del' => 0];
-//         $doc_num = $this->input->get()
+        if($this->input->get('doc_num')){
+            $where['doc_num'] = $this->input->get('doc_num');
+            $data['doc_num'] = $this->input->get('doc_num');
+        }
+        if($this->input->get('pm_company')){
+            $where['like']['pm_company'] = $this->input->get('pm_company');
+            $data['pm_company'] = $this->input->get('pm_company');
+        }
+        if($this->input->get('develer')){
+            $where['like']['develer'] = $this->input->get('develer');
+            $data['develer'] = $this->input->get('develer');
+        }
         $list = $this->Mhouses_agree->get_lists('*',$where,[],$size,($page-1)*$size);
         $data['list'] = [];
         $data['hlist'] = [];
