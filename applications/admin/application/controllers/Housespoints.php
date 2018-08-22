@@ -284,7 +284,7 @@ class Housespoints extends MY_Controller{
     public function partition(){
         $data = $this->data;
         //提取楼盘、组团 
-        $where = [];
+        $where = ['is_del' => 0];
         $diy_area_id = (int) $this->input->get('diy_area_id');
         if($diy_area_id){
             $where['diy_area_id'] = $diy_area_id;
@@ -307,6 +307,8 @@ class Housespoints extends MY_Controller{
             }
             //行政区域
             $areaList = $this->Mhouses->get_lists('id,city,area', ['in' => ['id' => $houses_ids]]);
+            //组团
+            $housesAreaList = $this->Mhouses_area->get_lists('id,name', ['is_del' => 0]);
             if($areaList){
                 foreach ($listData as $k => $v){
                     foreach ($areaList as $key => $val){
@@ -338,6 +340,22 @@ class Housespoints extends MY_Controller{
         }
         unset($list);
         
+        //为解决数据不同步问题
+        if($housesAreaList){
+            foreach ($listData as $k => $v){
+                if(count($v['area'])){
+                    foreach ($v['area'] as $key => $val){
+                        foreach ($housesAreaList as $keys => $vals){
+                            if($val['id'] == $vals['id']){
+                                $listData[$k]['area'][$key]['area_name'] = $vals['name'];
+                                break;
+                            }
+                        }
+                    }
+                }
+            }
+        }
+        
         //查询已分配的情况
         $diyList = $this->Mhouses_diy_area->get_lists('*');
         
@@ -355,6 +373,7 @@ class Housespoints extends MY_Controller{
             }
         }
         $data['list'] = $listData;
+        var_dump($data['list']);exit;
         $this->load->view("housespoints/partition", $data);
     }
     
