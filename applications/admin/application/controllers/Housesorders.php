@@ -2385,9 +2385,7 @@ class Housesorders extends MY_Controller{
         }
         //关闭文件流
         fclose($fileHandle);
-        //异步执行删除文件操作
-        $this->rmSysFile($savePath);
-        $this->rmSysFile($allPath);
+        
     }
     
     /**
