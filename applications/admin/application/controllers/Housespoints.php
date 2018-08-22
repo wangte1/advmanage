@@ -373,7 +373,6 @@ class Housespoints extends MY_Controller{
             }
         }
         $data['list'] = $listData;
-        var_dump($data['list']);exit;
         $this->load->view("housespoints/partition", $data);
     }
     
