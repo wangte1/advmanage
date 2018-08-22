@@ -52,7 +52,7 @@
                                 <div class="widget-main">
                                     <form id="search-form" class="form-horizontal" role="form">
                                         <div class="form-group">
-                                            <div class="col-sm-4">
+                                            <div class="col-sm-3">
                                                 <label class="col-sm-3 control-label no-padding-right" for="form-field-1"> 楼盘名称</label>
                                                 <div class="col-sm-9">
                                                 	<select class="select2" data-placeholder="Click to Choose..." name="name">
@@ -61,6 +61,24 @@
 				                                    		<option value="<?php echo $v['id'];?>" <?php if($v['id'] == $name) {?>selected="selected"<?php }?>><?php echo $v['name'];?></option>
 				                                    	<?php }?>
 				                                    </select>
+                                                </div>
+                                            </div>
+                                        	<div class="col-sm-3">
+                                                <label class="col-sm-3 control-label no-padding-right" for="form-field-1"> 存档编号： </label>
+                                                <div class="col-sm-9">
+                                                    <input type="text" class="col-sm-10" name="doc_num" value="<?php if(isset($doc_num)){echo $doc_num;}?>" />
+                                                </div>
+                                            </div>
+                                            <div class="col-sm-3">
+                                                <label class="col-sm-3 control-label no-padding-right" for="form-field-1"> 物业公司： </label>
+                                                <div class="col-sm-9">
+                                                    <input type="text" class="col-sm-10" name="pm_company" value="<?php if(isset($pm_company)){echo $pm_company;}?>" />
+                                                </div>
+                                            </div>
+                                            <div class="col-sm-3">
+                                                <label class="col-sm-3 control-label no-padding-right" for="form-field-1"> 开发负责人： </label>
+                                                <div class="col-sm-9">
+                                                    <input type="text" class="col-sm-10" name="develer" value="<?php if(isset($develer)){echo $develer;}?>" />
                                                 </div>
                                             </div>
                                         </div>
