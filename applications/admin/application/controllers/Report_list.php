@@ -166,6 +166,73 @@ class Report_list extends MY_Controller{
     }
     
     /**
+     * 点位表按行政区域、楼盘分组详情
+     */
+    public function points_detail($point_id) {
+        $data = $this->data;
+        $pageconfig = C('page.page_lists');
+        $install = C('install.install');
+        $this->load->library('pagination');
+        $page =  intval($this->input->get("per_page",true)) ?  : 1;
+        $size = $pageconfig['per_page'];
+        $where['point_id'] = $point_id;
+        
+        $adminList = $this->Madmins->get_lists('id, fullname');
+        $data['adminList'] = $adminList;
+        $list = $this->Mhouses_points_report->get_report_list($where, ['A.create_time' => 'desc', 'A.id' => 'desc'], $size, ($page-1)*$size);
+        if($list){
+            foreach ($list as $k => $v){
+                $list[$k]['fullname'] = '';
+                $list[$k]['point'] = '';
+                foreach ($install as $k2 => $v2){
+                    if($list[$k]['install_id'] == $k2){
+                        $list[$k]['install'] = $v2;
+                    }
+                }
+            }
+            
+            if($adminList){
+                foreach ($list as $k => $v){
+                    foreach ($adminList as $key => $val){
+                        if($v['create_id'] == $val['id']){
+                            $list[$k]['fullname'] = $val['fullname'];
+                        }
+                        if($v['repair_id'] == $val['id']){
+                            $list[$k]['repair_name'] = $val['fullname'];
+                        }
+                    }
+                }
+            }
+            //提取点位ids
+            $point_ids = array_unique(array_column($list, 'point_id'));
+            $pointList = $this->Mhouses_points->get_points_lists(['in' => ['A.id' => $point_ids]]);
+            if($pointList){
+                foreach ($list as $k => $v){
+                    foreach ($pointList as $key => $val){
+                        if($v['point_id'] == $val['id']){
+                            $list[$k]['point'] = $val;
+                        }
+                    }
+                }
+            }
+        }
+        $data['list'] = $list;
+        
+//         $data['list'] = $this->Mhouses_points_report->get_lists('*',$where);
+        $data_count = count($data['list']);
+        $data['page'] = $page;
+        $data['data_count'] = count($data_count);
+        
+        //获取分页
+        $pageconfig['base_url'] = "/report_list/points_detail/{$point_id}";
+        $pageconfig['total_rows'] = $data['data_count'];
+        $this->pagination->initialize($pageconfig);
+        $data['pagestr'] = $this->pagination->create_links(); // 分页信息
+        
+        $this->load->view('report_list/points_detail', $data);
+    }
+    
+    /**
      * 点位报修
      */
     public function report(){
