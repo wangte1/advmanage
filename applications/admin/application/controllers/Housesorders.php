@@ -430,14 +430,26 @@ class Housesorders extends MY_Controller{
                             }
                             $v = $tmp;
                         }
-                        $sql = "update t_houses_points SET `ad_use_num` = `ad_use_num` -1, customer_id = CASE id";
-                        foreach ($new as $k => $v){
-                            $sql.= " WHEN $k THEN '$v'";
+                        if($data['info']['order_type'] == 1){
+                            $sql = "update t_houses_points SET `order_id` = '', `ad_use_num` = `ad_use_num` -1, customer_id = CASE id";
+                            foreach ($new as $k => $v){
+                                $sql.= " WHEN $k THEN '$v'";
+                            }
+                            $sql.= ' END where point_status = 3 and id in (';
+                            $sql.= implode(',', $point_ids_arr);
+                            $sql.= ')';
+                            $this->db->query($sql);
+                        }else{
+                            $sql = "update t_houses_points SET `ad_use_num` = `ad_use_num` -1, customer_id = CASE id";
+                            foreach ($new as $k => $v){
+                                $sql.= " WHEN $k THEN '$v'";
+                            }
+                            $sql.= ' END where point_status = 3 and id in (';
+                            $sql.= implode(',', $point_ids_arr);
+                            $sql.= ')';
+                            $this->db->query($sql);
                         }
-                        $sql.= ' END where point_status = 3 and id in (';
-                        $sql.= implode(',', $point_ids_arr);
-                        $sql.= ')';
-                        $this->db->query($sql);
+                        
                         //更新点位状态
                         $where_point['in']['id'] = $point_ids_arr;
                         $where_point['field']['`ad_num` >'] = '`ad_use_num` + `lock_num`';
