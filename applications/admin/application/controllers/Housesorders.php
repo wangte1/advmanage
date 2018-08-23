@@ -1615,14 +1615,26 @@ class Housesorders extends MY_Controller{
                     }
                     $v = $tmp;
                 }
-                $sql = "update t_houses_points SET `ad_use_num` = `ad_use_num` -1, customer_id = CASE id";
-                foreach ($new as $k => $v){
-                    $sql.= " WHEN $k THEN '$v'";
+                if($tmp_list['order_type'] == 1){
+                    $sql = "update t_houses_points `order_id` = '', SET `ad_use_num` = `ad_use_num` -1, customer_id = CASE id";
+                    foreach ($new as $k => $v){
+                        $sql.= " WHEN $k THEN '$v'";
+                    }
+                    $sql.= ' END where id in (';
+                    $sql.= implode(',', $point_ids_arr);
+                    $sql.= ') and ad_use_num > 0';
+                    $this->db->query($sql);
+                }else{
+                    $sql = "update t_houses_points SET `ad_use_num` = `ad_use_num` -1, customer_id = CASE id";
+                    foreach ($new as $k => $v){
+                        $sql.= " WHEN $k THEN '$v'";
+                    }
+                    $sql.= ' END where id in (';
+                    $sql.= implode(',', $point_ids_arr);
+                    $sql.= ') and ad_use_num > 0';
+                    $this->db->query($sql);
                 }
-                $sql.= ' END where id in (';
-                $sql.= implode(',', $point_ids_arr);
-                $sql.= ') and ad_use_num > 0';
-                $this->db->query($sql);
+                
                 $this->write_log($data['userInfo']['id'], 2, '释放点位移出客户：'.$sql);
                 return $this->db->count_all_results();
             }
