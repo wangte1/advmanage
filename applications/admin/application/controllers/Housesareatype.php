@@ -12,7 +12,6 @@ class Housesareatype extends MY_Controller{
         	'Model_houses' => 'Mhouses',
             'Model_houses_area' => 'Mhouses_area',
         	'Model_houses_points' => 'Mhouses_points',
-        	'Model_houses_group' => 'Mhouses_group',
             'Model_houses_area_type' => 'Mhouses_area_type'
          ]);
         $this->data['code'] = 'community_manage';
@@ -28,11 +27,6 @@ class Housesareatype extends MY_Controller{
         $data = $this->data;
         //提取楼盘、组团
         $where = ['is_del' => 0];
-        $diy_area_id = (int) $this->input->get('diy_area_id');
-        if($diy_area_id){
-            $where['diy_area_id'] = $diy_area_id;
-            $data['diy_area_id'] = $diy_area_id;
-        }
         $group_by = ['houses_id', 'area_id'];
         $list = $this->Mhouses_points->get_lists('houses_id, houses_name, area_id, houses_type, count(id) as num,area_name', $where, ['houses_id' => 'asc'], 0, 0, $group_by);
         //提取楼盘ids
@@ -74,7 +68,6 @@ class Housesareatype extends MY_Controller{
         $houses_area_type = $this->Mhouses_area_type->get_lists();
         foreach ($listData as $k => $v){
             foreach ($houses_area_type as $k1 => $v1){
-//                 var_dump($v['houses_id'],$v1['houses_id'],$listData[$k]['area'][$k1]['id'],$v1['area_id']);exit;
                 if($v['houses_id'] == $v1['houses_id'] && $listData[$k]['area'][$k1]['id'] == $v1['area_id']){
                     $listData[$k]['area'][$k1]['houses_type_id'] = $v1['houses_type'];
                 }
@@ -124,7 +117,7 @@ class Housesareatype extends MY_Controller{
             $count = $this->Mhouses_points->count(['houses_id' => $houses_id, 'area_id' => $area_id]);
             if($count){
                 //批量更新点位
-                $res = $this->Mhouses_points->update_info(['houses_type' => $houses_type],['houses_id' => $houses_id, 'area_id' => $area_id]);
+                $res = $this->Mhouses_points->update_info(['houses_type' => $houses_type],['houses_id' => $houses_id, 'area_id' => $area_id, 'is_del' => 0]);
             }
             if(!$res){
                 $this->return_json(['code' => 0, 'msg' => '点位更新失败']);
