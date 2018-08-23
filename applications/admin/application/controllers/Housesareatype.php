@@ -114,7 +114,7 @@ class Housesareatype extends MY_Controller{
             if(!$res){
                 $this->return_json(['code' => 0, 'msg' => '操作失败']);
             }
-            $count = $this->Mhouses_points->count(['houses_id' => $houses_id, 'area_id' => $area_id]);
+            $count = $this->Mhouses_points->count(['houses_id' => $houses_id, 'area_id' => $area_id, 'is_del' => 0]);
             if($count){
                 //批量更新点位
                 $res = $this->Mhouses_points->update_info(['houses_type' => $houses_type],['houses_id' => $houses_id, 'area_id' => $area_id, 'is_del' => 0]);
