@@ -100,10 +100,6 @@
 			layer.msg(data.msg);
 		});
 	});
-	function tt(id) {
-		  var aa = document.getElementById(id);
-		   window.location.href="?diy_area_id="+ aa.value;
-		}
 </script>
 <!-- 底部 -->
 <?php $this->load->view("common/bottom");?>
