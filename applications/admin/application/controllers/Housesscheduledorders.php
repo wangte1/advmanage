@@ -905,7 +905,7 @@ class Housesscheduledorders extends MY_Controller{
                     }
                 }
             }
-            
+            unset($v);
         }
         $areaList = [];
         if($houses_id){
@@ -913,14 +913,6 @@ class Housesscheduledorders extends MY_Controller{
         }
         $zhiye_name = C('zhiye');
         
-//         foreach ($points_lists as $k => $v){
-//             $points_lists[$k]['zhiye_id'] = '';
-//             foreach ($areaList as $k1 => $v1){
-//                 if($v['area_id'] == $v1['id']){
-//                     $points_lists[$k]['zhiye_id'] = $v1['zhiye_id'];
-//                 }
-//             }
-//         }
         foreach ($points_lists as $k => $v){
             $points_lists[$k]['zhiye_name'] = '';
             foreach ($zhiye_name as $k1 => $v1){
