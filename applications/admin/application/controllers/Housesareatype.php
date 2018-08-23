@@ -67,12 +67,24 @@ class Housesareatype extends MY_Controller{
         unset($list);
         $houses_area_type = $this->Mhouses_area_type->get_lists();
         foreach ($listData as $k => $v){
-            foreach ($houses_area_type as $k1 => $v1){
-                if($v['houses_id'] == $v1['houses_id'] && $listData[$k]['area'][$k1]['id'] == $v1['area_id']){
-                    $listData[$k]['area'][$k1]['houses_type_id'] = $v1['houses_type'];
+            foreach ($v['area'] as $key => $val){
+                foreach ($houses_area_type as $keys => $vals){
+                    if($v['houses_id'] == $vals['houses_id'] && $val['id'] == $vals['area_id']){
+                        $listData[$k]['area'][$key]['houses_type_id'] = $vals['houses_type'];
+                    }
                 }
             }
         }
+        
+//         foreach ($listData as $k => $v){
+//             foreach ($houses_area_type as $k1 => $v1){
+//                 if($v['houses_id'] == $v1['houses_id']){
+//                     if($listData[$k]['area'][$k1]['id'] == $v1['area_id']){
+//                         $listData[$k]['area'][$k1]['houses_type_id'] = $v1['houses_type'];
+//                     }
+//                 }
+//             }
+//         }
         //为解决数据不同步问题
         if($housesAreaList){
             foreach ($listData as $k => $v){
