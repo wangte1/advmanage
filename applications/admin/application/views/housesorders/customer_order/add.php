@@ -225,10 +225,10 @@
                                                                 	<br/>
                                                                     <label class="col-sm-4 control-label" for="form-field-1"> 置业类型： </label>
                                                                     <div class="col-sm-8" style="padding:0">
-                                                                        <select name="zhiye_id" id="zhiye_id" class="select2">
-                                                                        	<option value="">请选择楼盘</option>
-                                                                            <?php foreach($zhiye_name as $k => $v):?>
-                                                                            <option value="<?php echo $k;?>" <?php if(isset($info['zhiye_name']) && $k == $info['zhiye_name']){ echo "selected"; }?>><?php echo $v;?></option>
+                                                                        <select name="houses_type" id="houses_type" class="select2">
+                                                                        	<option value="">请选择置业类型</option>
+                                                                            <?php foreach(C('zhiye') as $k => $v):?>
+                                                                            <option value="<?php echo $k;?>" <?php if(isset($info['houses_type']) && $k == $info['houses_type']){ echo "selected"; }?>><?php echo $v;?></option>
                                                                             <?php endforeach;?>
                                                                         </select>
                                                                     </div>
@@ -373,7 +373,7 @@
                                                             <td width="10%"><?php echo $value['ban'];?></td>
                                                             <td width="10%"><?php echo $value['unit'];?></td>
                                                             <td width="5%"><?php echo $value['floor'];?></td>
-                                                            <td width="10%"><?php if(!empty($value['zhiye_name'])){echo $value['zhiye_name'];}else{echo '无';}?></td>
+                                                            <td width="10%"><?php if(!empty($value['houses_type_name'])){echo $value['houses_type_name'];}else{echo '无';}?></td>
                                                             <?php if($value['addr'] == 1):?>
                                                             <td width="10%">门禁</td>
                                                             <?php else:?>
@@ -445,7 +445,7 @@ $(function(){
     	p_area_id = $(this).val();
     });
 	
-	$('body').on('change', '#houses_id,#area_id,#ban,#unit,#floor,#addr,#zhiye_id', function(){
+	$('body').on('change', '#houses_id,#area_id,#ban,#unit,#floor,#addr,#houses_type', function(){
 		var index = layer.load(0, {shade: true});
 		var houses_id = $('#houses_id').val();
 		var area_id = $('#area_id').val();
@@ -457,9 +457,9 @@ $(function(){
 		var floor = $('#floor').val();
 		var addr = $('#addr').val();
 		var lock_start_time = $('#lock_start_time').val();
-		var zhiye_id = $('#zhiye_id').val();
+		var houses_type = $('#houses_type').val();
 		var order_id = "<?php echo $info['id']?>";
-		var postData = {order_id:order_id,order_type:order_type, put_trade:put_trade, houses_id:houses_id, area_id:area_id, ban:ban, unit:unit, floor:floor, lock_start_time:lock_start_time,addr:addr,zhiye_id:zhiye_id};
+		var postData = {order_id:order_id,order_type:order_type, put_trade:put_trade, houses_id:houses_id, area_id:area_id, ban:ban, unit:unit, floor:floor, lock_start_time:lock_start_time,addr:addr,houses_type:houses_type};
 		$.post('/housesorders/get_points', postData, function(data){
 			var pointStr =  '';
 			var areaStr = '<option value="">请选择组团</option>'; 
@@ -477,10 +477,10 @@ $(function(){
 					pointStr += "<td width='10%'>"+tmpList[i]['ban']+"</td>";
 					pointStr += "<td width='10%'>"+tmpList[i]['unit']+"</td>";
 					pointStr += "<td width='10%'>"+tmpList[i]['floor']+"</td>";
-					if(tmpList[i]['zhiye_name'] == ''){
+					if(tmpList[i]['houses_type_name'] == ''){
 						pointStr += "<td width='10%'></td>";
 					}else{
-						pointStr += "<td width='10%'>"+tmpList[i]['zhiye_name']+"</td>";
+						pointStr += "<td width='10%'>"+tmpList[i]['houses_type_name']+"</td>";
 					}
 					if(tmpList[i]['addr'] == 1){
 						pointStr += "<td width='10%'>门禁</td>";

@@ -176,6 +176,11 @@ $config = array(
     		        'url'=>'/housestour',
     		        'name'=> '巡视记录',
     		        'active'=> 'tour_lists'
+    		    ),
+    		    array(
+    		        'url'=>'/housesareatype',
+    		        'name'=> '楼盘组团置业类型管理',
+    		        'active'=> 'houses_area_type_list'
     		    )
     		)
     	),
