@@ -217,6 +217,7 @@ class Tour extends MY_Controller {
                     }
                 }
             }
+            unset($v);
         }
         if($area_list){
             foreach ($list as $k => &$v){
@@ -227,6 +228,7 @@ class Tour extends MY_Controller {
                     }
                 }
             }
+            unset($v);
         }
         $this->return_json(['code' => 1, 'data' => $list, 'page' => $page, 'time' => $this->time]);
     }
