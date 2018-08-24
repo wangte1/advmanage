@@ -36,6 +36,14 @@ class Housesagree extends MY_Controller{
             $where['like']['develer'] = $this->input->get('develer');
             $data['develer'] = $this->input->get('develer');
         }
+        if($this->input->get('agree_start_date')){
+            $where['agree_start_date'] = $this->input->get('agree_start_date');
+            $data['agree_start_date'] = $this->input->get('agree_start_date');
+        }
+        if($this->input->get('agree_end_date')){
+            $where['agree_end_date'] = $this->input->get('agree_end_date');
+            $data['agree_end_date'] = $this->input->get('agree_end_date');
+        }
         $list = $this->Mhouses_agree->get_lists('*',$where,[],$size,($page-1)*$size);
         $data['list'] = [];
         $data['hlist'] = [];

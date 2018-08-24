@@ -82,6 +82,30 @@
                                                 </div>
                                             </div>
                                         </div>
+                                        <div class="form-group">
+                                        	<div class="col-sm-3">
+                                                <label class="col-sm-3 control-label no-padding-right" for="form-input-readonly"> 合同开始时间： </label>
+                                                <div class="col-sm-9">
+                                                    <div class="input-group date datepicker">
+                                                        <input class="form-control date-picker" type="text" name="agree_start_date" value="<?php if(isset($agree_start_date)){ echo $agree_start_date;}?>" >
+                                                        <span class="input-group-addon">
+                                                            <i class="icon-calendar bigger-110"></i>
+                                                        </span>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="col-sm-3">
+                                                <label class="col-sm-3 control-label no-padding-right" for="form-input-readonly"> 合同结束时间： </label>
+                                                <div class="col-sm-9">
+                                                    <div class="input-group date datepicker">
+                                                        <input class="form-control date-picker" type="text" name="agree_end_date" value="<?php if(isset($agree_end_date)){ echo $agree_end_date;}?>" >
+                                                        <span class="input-group-addon">
+                                                            <i class="icon-calendar bigger-110"></i>
+                                                        </span>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
 
                                         <div class="clearfix form-actions">
                                             <div class="col-md-offset-3 col-md-9">
