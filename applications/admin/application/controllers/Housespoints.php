@@ -608,12 +608,12 @@ class Housespoints extends MY_Controller{
     	    //拼接占用客户
     	    if(!empty($val['customer_id'] && $val['customer_id'])){
     	        $thisCustomer = explode(',', $val['customer_id']);
+    	        $val['customer_id'] = '';
     	        foreach ($thisCustomer as $k => $v){
     	            if($v){
-    	                $val['customer_id'] = '';
         	            foreach ($customerList as $k1 => $v1){
         	                if($v == $v1['id']){
-        	                    $val['customer_id'] .= $v1['name'];
+        	                    $val['customer_id'] .= $v1['name'] .',';
         	                }
         	            }
     	            }
@@ -654,7 +654,7 @@ class Housespoints extends MY_Controller{
     		}
     		$h++;
     	}
-    
+    	
     	$this->phpexcel->setActiveSheetIndex(0);
     	// 输出
     	header('Content-Type: application/vnd.ms-excel');
