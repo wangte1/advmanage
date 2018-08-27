@@ -115,7 +115,7 @@ class Housesscheduledorders extends MY_Controller{
         $data = $this->data;
         if(IS_POST){
             $post_data = $this->input->post();
-            unset($post_data['ban'], $post_data['unit'], $post_data['floor']);
+            unset($post_data['ban'], $post_data['unit'], $post_data['floor'], $post_data['zhiye_id']);
             if (isset($post_data['area_id'])) unset($post_data['area_id']);
             if (isset($post_data['addr'])) unset($post_data['addr']);
             
