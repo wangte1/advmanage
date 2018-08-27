@@ -799,8 +799,20 @@ if(!function_exists('replace_links')){
           return ($second1 - $second2) / 86400;
         }
     }
-
-
+    
+    /**
+     * @desc 获取oss图片地址
+     */
+    if(!function_exists('get_adv_img')){
+        function get_adv_img($url, $style){
+            $base = C('aliyunoss.bucket_domain');
+            $url = $base.$url;
+            if($style){
+                $url .= '?x-oss-process=style/'.$style; 
+            }
+            return $url;
+        }
+    }
 
     /**
      * 多维数组排序
