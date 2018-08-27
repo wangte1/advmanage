@@ -808,7 +808,7 @@ if(!function_exists('replace_links')){
             $base = C('aliyunoss.bucket_domain');
             $url = $base.$url;
             if($style){
-                $url .= 'x-oss-process=style/'.$style; 
+                $url .= '?x-oss-process=style/'.$style; 
             }
             return $url;
         }
