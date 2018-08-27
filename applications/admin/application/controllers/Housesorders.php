@@ -812,7 +812,11 @@ class Housesorders extends MY_Controller{
         $sonOrder = $this->Mhouses_orders->get_lists("id", array('pid' => $id));
         if($sonOrder){
             $order_ids = array_column($sonOrder, 'id');
-            $workerOrder = $this->Mhouses_work_order->get_lists("id", ['in' => ['order_id' => $order_ids], 'type' => 1]);
+            $type = 1;
+            if($data['info']['order_status'] >=7){
+                $type = 2;
+            }
+            $workerOrder = $this->Mhouses_work_order->get_lists("id", ['in' => ['order_id' => $order_ids], 'type' => $type]);
             //提取所有子详情
             $pids = array_column($workerOrder, 'id');
             if($pids){
@@ -907,7 +911,11 @@ class Housesorders extends MY_Controller{
         $sonOrder = $this->Mhouses_orders->get_lists("id", array('pid' => $id));
         if($sonOrder){
             $order_ids = array_column($sonOrder, 'id');
-            $workerOrder = $this->Mhouses_work_order->get_lists("id", ['in' => ['order_id' => $order_ids], 'type' => 1]);
+            $type = 1;
+            if($data['info']['order_status'] >=7){
+                $type = 2;
+            }
+            $workerOrder = $this->Mhouses_work_order->get_lists("id", ['in' => ['order_id' => $order_ids], 'type' => $type]);
             //提取所有子详情
             $pids = array_column($workerOrder, 'id');
             if($pids){
@@ -1047,7 +1055,11 @@ class Housesorders extends MY_Controller{
         $sonOrder = $this->Mhouses_orders->get_lists("id", array('pid' => $id));
         if($sonOrder){
             $order_ids = array_column($sonOrder, 'id');
-            $workerOrder = $this->Mhouses_work_order->get_lists("id", ['in' => ['order_id' => $order_ids], 'type' => 1]);
+            $type = 1;
+            if($data['info']['order_status'] >=7){
+                $type = 2;
+            }
+            $workerOrder = $this->Mhouses_work_order->get_lists("id", ['in' => ['order_id' => $order_ids], 'type' => $type]);
             //提取所有子详情
             $pids = array_column($workerOrder, 'id');
             if($pids){
@@ -1220,7 +1232,11 @@ class Housesorders extends MY_Controller{
         $sonOrder = $this->Mhouses_orders->get_lists("id", array('pid' => $id));
         if($sonOrder){
             $order_ids = array_column($sonOrder, 'id');
-            $workerOrder = $this->Mhouses_work_order->get_lists("id", ['in' => ['order_id' => $order_ids], 'type' => 1]);
+            $type = 1;
+            if($data['info']['order_status'] >=7){
+                $type = 2;
+            }
+            $workerOrder = $this->Mhouses_work_order->get_lists("id", ['in' => ['order_id' => $order_ids], 'type' => $type]);
             //提取所有子详情
             $pids = array_column($workerOrder, 'id');
             if($pids){
