@@ -413,9 +413,13 @@ class Housesorders extends MY_Controller{
                         //操作点位,去除指定占用的客户
                         foreach ($new as $k => &$v){
                             foreach ($v as $key => $val){
-                                if($val == $customer_id) unset($v[$key]);
+                                if($val == $customer_id){
+                                    unset($v[$key]);
+                                    break;
+                                }
                             }
                         }
+                        unset($v);
                         //准备更新的数据
                         foreach ($new as $k => &$v){
                             $tmp = '';
@@ -430,6 +434,7 @@ class Housesorders extends MY_Controller{
                             }
                             $v = $tmp;
                         }
+                        unset($v);
                         if($data['info']['order_type'] == 1){
                             $sql = "update t_houses_points SET `order_id` = '', `ad_use_num` = `ad_use_num` -1, customer_id = CASE id";
                             foreach ($new as $k => $v){
@@ -444,10 +449,11 @@ class Housesorders extends MY_Controller{
                             foreach ($new as $k => $v){
                                 $sql.= " WHEN $k THEN '$v'";
                             }
-                            $sql.= ' END where point_status = 3 and id in (';
+                            $sql.= ' END where id in (';
                             $sql.= implode(',', $point_ids_arr);
                             $sql.= ')';
                             $this->db->query($sql);
+                            $this->moveOutOrderId($point_ids_arr, $id);
                         }
                         
                         //更新点位状态
@@ -459,7 +465,6 @@ class Housesorders extends MY_Controller{
                     }
                     $this->delWorkerOrderByPointIdAndOrderId($del, $id);
                 }
-                
             }
 
             //占用已选的点位
@@ -1600,7 +1605,7 @@ class Housesorders extends MY_Controller{
                         }
                     }
                 }
-                
+                unset($v);
                 //准备更新的数据
                 foreach ($new as $k => &$v){
                     $tmp = '';
@@ -1615,6 +1620,7 @@ class Housesorders extends MY_Controller{
                     }
                     $v = $tmp;
                 }
+                unset($v);
                 if($tmp_list['order_type'] == 1){
                     $sql = "update t_houses_points `order_id` = '', SET `ad_use_num` = `ad_use_num` -1, customer_id = CASE id";
                     foreach ($new as $k => $v){
@@ -1633,12 +1639,61 @@ class Housesorders extends MY_Controller{
                     $sql.= implode(',', $point_ids_arr);
                     $sql.= ') and ad_use_num > 0';
                     $this->db->query($sql);
+                    
+                    $this->moveOutOrderId($point_ids_arr, $id);
                 }
                 
                 $this->write_log($data['userInfo']['id'], 2, '释放点位移出客户：'.$sql);
                 return $this->db->count_all_results();
             }
         }
+    }
+    
+    /**
+     * @desc 根据订单和点位移除点位order_id
+     * @param array $point_ids
+     * @param unknown $order_id
+     */
+    private function moveOutOrderId($point_ids = [], $order_id){
+        $sql = "update t_houses_points SET order_id = CASE id";
+        $list = $this->Mhouses_points->get_lists('id, order_id', ['in' => ['id' => $point_ids] ]);
+        $new = [];
+        foreach ($list as $k => $v){
+            if($v['order_id']){
+                $tmp = explode(',', $v['order_id']);
+                foreach ($tmp as $key => $val){
+                    if($val != $order_id){
+                        $new[$v['id']][] = $val;
+                    }
+                }
+            }else{
+                $new[$v['id']][] = '';
+            }
+        }
+        
+        //准备更新的数据
+        foreach ($new as $k => &$v){
+            $tmp = '';
+            foreach ($v as $key => $val){
+                if($val){
+                    if($key == 0){
+                        $tmp.= $val;
+                    }else{
+                        $tmp.= ','.$val;
+                    }
+                }
+            }
+            $v = $tmp;
+        }
+        unset($v);
+        
+        foreach ($new as $k => $v){
+            $sql.= " WHEN $k THEN '$v'";
+        }
+        $sql.= ' END where id in (';
+        $sql.= implode(',', $point_ids);
+        $sql.= ')';
+        $this->db->query($sql);
     }
     
     /**
