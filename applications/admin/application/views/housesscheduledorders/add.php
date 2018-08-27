@@ -60,7 +60,7 @@
                     </h1>
                 </div>
                 <div class="row">
-                    <div class="col-xs-7">
+                    <div class="col-xs-12">
                         <div class="widget-box">
                             <div class="widget-header">
                                 <h4>基本信息</h4>
@@ -355,7 +355,7 @@
                         </div>
                     </div>
 
-                    <div class="col-xs-5">
+                    <div class="col-xs-12">
                         <div class="widget-box">
                             <div class="widget-header">
                                 <h4>已选择点位</h4>
