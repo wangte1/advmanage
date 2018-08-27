@@ -1,5 +1,6 @@
 <?php  if ( ! defined('BASEPATH')) exit('No direct script access allowed');
-
+use OSS\OssClient;
+use OSS\Core\OssException;
 /**
  * Cookie 加密
  */
@@ -811,6 +812,38 @@ if(!function_exists('replace_links')){
                 $url .= '?x-oss-process=style/'.$style; 
             }
             return $url;
+        }
+    }
+    
+    /**
+     * @desc 上传文件到oss
+     * @param $bucket 
+     * @param $loclFileName 文件所在路径
+     * @param $ossFileName 上传oss后的路径与名称
+     */
+    if(!function_exists('upToOss')){
+        function upToOss($bucket, $ossFileName, $loclFileName){
+            if(empty($bucket)){
+                return ['code' => 0, 'msg' => 'bucket不能为空'];
+            }
+            if(empty($ossFileName)){
+                return ['code' => 0, 'msg' => '存储名称不能为空'];
+            }
+            if(!file_exists($loclFileName)){
+                return ['code' => 0, 'msg' => '文件不存在'];
+            }
+            try {
+                $config = C('aliyunoss');
+                $ossclient = new OssClient($config['accessKeyId'], $config['accessKeySecret'], $config['endpoint_out']);
+                try{
+                    $ossclient->uploadFile($bucket, $ossFileName, $loclFileName);
+                    return ['code' => 1, 'msg' => 'ok'];
+                }catch (OssException $e){
+                    return ['code' => 0, 'msg' => $e->getErrorMessage()];
+                }
+            }catch (OssException $e){
+                return ['code' => 0, 'msg' => $e->getErrorMessage()];
+            }
         }
     }
 
