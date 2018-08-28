@@ -42,6 +42,7 @@ class Report_list extends MY_Controller{
         $rcode = trim($this->input->get('rcode'));
         $install_id = $this->input->get('install');
         $addr = $this->input->get('addr');
+        $format = $this->input->get('format');
         if($repair_time == "1"){
             $where['A.repair_time >'] = 0;
             $data['repair_time'] = $repair_time;
@@ -107,6 +108,10 @@ class Report_list extends MY_Controller{
         if($addr){
             $where['B.addr'] = $addr;
             $data['addr'] = $addr;
+        }
+        if($format){
+            $where['B.type_id'] = $format;
+            $data['format'] = $format;
         }
         $data['report_id'] = $report;
         $data['report'] = C('housespoint.report');
@@ -330,6 +335,7 @@ class Report_list extends MY_Controller{
         $rcode = trim($this->input->get('rcode'));
         $install_id = $this->input->get('install');
         $addr = $this->input->get('addr');
+        $format = $this->input->get('format');
         if($repair_time == "1"){
             $where['A.repair_time >'] = 0;
             $data['repair_time'] = $repair_time;
@@ -395,6 +401,10 @@ class Report_list extends MY_Controller{
         if($addr){
             $where['B.addr'] = $addr;
             $data['addr'] = $addr;
+        }
+        if($format){
+            $where['B.type_id'] = $format;
+            $data['format'] = $format;
         }
         $data['report_id'] = $report;
         $data['repair_time'] = $repair_time;
