@@ -94,6 +94,7 @@ class Operatelog extends MY_Controller{
         $start_time = $this->input->get("start_time");
         $end_time = $this->input->get("end_time");
         $operate_id = $this->input->get('operate_id');
+        $operate_content = $this->input->get('operate_content');
         $data['start_time'] = $start_time;
         $data['end_time'] = $end_time;
 
@@ -117,6 +118,10 @@ class Operatelog extends MY_Controller{
         if($operate_id) {
             $data['admin_id'] = $operate_id;
             $where['operate_id'] = $operate_id;
+        }
+        if($operate_content){
+            $where['like'] = ['operate_content' => $operate_content];
+            $data['operate_content'] = $operate_content;
         }
 
         $data['log_list'] = $this->Moperate_log->get_lists('*',$where,array("id"=>"desc"),$size,($page-1)*$size);
