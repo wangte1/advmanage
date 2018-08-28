@@ -1,4 +1,6 @@
 <?php if ( ! defined('BASEPATH')) exit('No direct script access allowed');
+use OSS\OssClient;
+use OSS\Core\OssException;
 /*
  * @author yonghua
  */
@@ -269,8 +271,49 @@ class Task extends MY_Controller {
     		$this->return_json(array('code' => 0, 'message' => '上传错误！'.$error));
     	} else {
     		$data = $this->upload->data();
-    		$this->return_json(array('code' => 1, 'url' => '/uploads/'.$file_dir.$data['file_name']));
+    		$name = $file_dir.$data['file_name'];
+    		$this->moveToOss($name);
+    		$this->return_json(array('code' => 1, 'url' => '/uploads/'.$name));
     	}
+    }
+    
+    /**
+     * 移动至oss
+     * @param unknown $path
+     */
+    private function moveToOss($path){
+        $loclFileName = '../../admin/uploads/'.$path;
+        $bucket = "timedia";
+        $ossFileName = 'uploads/'.$path;
+        $res = $this->upToOss($bucket, $ossFileName, $loclFileName);
+        if($res['code'] != 1){
+            $token = decrypt($this->token);
+            $this->write_log($token['user_id'], 1, '文件：'.$ossFileName.'上传oss失败！原因：'.$res['msg']);
+        }
+    }
+    
+    function upToOss($bucket, $ossFileName, $loclFileName){
+        if(empty($bucket)){
+            return ['code' => 0, 'msg' => 'bucket不能为空'];
+        }
+        if(empty($ossFileName)){
+            return ['code' => 0, 'msg' => '存储名称不能为空'];
+        }
+        if(!file_exists($loclFileName)){
+            return ['code' => 0, 'msg' => '文件不存在'];
+        }
+        try {
+            $config = C('aliyunoss');
+            $ossclient = new OssClient($config['accessKeyId'], $config['accessKeySecret'], $config['endpoint_out']);
+            try{
+                $ossclient->uploadFile($bucket, $ossFileName, $loclFileName);
+                return ['code' => 1, 'msg' => 'ok'];
+            }catch (OssException $e){
+                return ['code' => 0, 'msg' => $e->getErrorMessage()];
+            }
+        }catch (OssException $e){
+            return ['code' => 0, 'msg' => $e->getErrorMessage()];
+        }
     }
     
     /**
