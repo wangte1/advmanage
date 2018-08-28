@@ -1406,25 +1406,29 @@ class Housesscheduledorders extends MY_Controller{
         if($pointList){
             foreach ($pointList as $k => $v){
                 if($v['point_status'] == 4){
-                    $this->write_log($data['userInfo'], 4, '转订单包含已报损点位 编号：'.$v['code']);
+                    $this->write_log($data['userInfo']['id'], 4, '转订单包含已报损点位 编号：'.$v['code']);
                     $msg = '包含已报损点位，无法转订单，请管理员解决';
                 }
                 if($v['point_status'] == 1 && $v['type_id'] == 1){
+                    $this->write_log($data['userInfo']['id'], 1, '转订单包含空闲点位：'.$v['code']);
                     $msg = '包含空闲点位，无法转订单，请重新编辑';
                     break;
                 }
                 if($v['ad_num'] < ($v['ad_use_num'] + $v['lock_num'])){
+                    $this->write_log($data['userInfo']['id'], 1, '转订单包含包含异常数据点位：'.$v['code']);
                     $msg = '包含异常数据点位，无法转订单，请管理员解决';
                     break;
                 }
                 if($v['ad_use_num'] > 0 && $v['type_id'] == 1){
-                    $this->write_log($data['userInfo'], 4, '转订单包含已上画的点位编号：'.$v['code']);
+                    $this->write_log($data['userInfo']['id'], 4, '转订单包含已上画的点位编号：'.$v['code']);
                     $msg = '包含已上画点位，无法转订单，请管理员解决';
                     break;
                 }
             }
         }
-        if(!empty($msg)) $this->backAlert($msg);
+        if(!empty($msg)) {
+            $this->backAlert($msg);
+        }
     }
     
     private function backAlert($msg = ''){
