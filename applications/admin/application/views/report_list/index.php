@@ -201,6 +201,17 @@
                                                     <input type="text" class="col-sm-10" name="rcode" value="<?php if(isset($rcode)){echo $rcode;}?>" />
                                                 </div>
                                             </div>
+                                            <div class="col-sm-3">
+                                                <label class="col-sm-3 control-label no-padding-right" for="form-field-1"> 点位类型： </label>
+                                                <div class="col-sm-9">
+                                                    <select class="select2" name="format">
+                                                        <option value="0">全部</option>
+                                                        <?php foreach (C('order.houses_order_type') as $k => $v):?>
+                                                        <option <?php if(isset($format) && $format == $k){echo "selected";}?>  value="<?php echo $k;?>"><?php echo $v?></option>
+                                                        <?php endforeach;?>
+                                                    </select>
+                                                </div>
+                                            </div>
                                         </div>
                                         <div class="clearfix form-actions">
                                             <div class="col-md-offset-3 col-md-9">
