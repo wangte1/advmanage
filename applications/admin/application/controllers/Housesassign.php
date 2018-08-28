@@ -119,9 +119,17 @@ class Housesassign extends MY_Controller{
         
 
         //未确认派单的数量
-        $data['no_confirm_count1'] = $this->Mhouses_orders->get_order_count(['A.order_status'=> 3, 'A.assign_status'=>1]);
-        $data['no_confirm_count2'] = $this->Mhouses_orders->get_order_count(['A.order_status'=> 7, 'A.assign_status'=>1]);
-        $data['no_confirm_count3'] = $this->Mhouses_changepicorders->get_order_count(['A.order_status'=> 3, 'A.assign_status'=>1]);
+        $where1 = $where2 = $where3 = [];
+        $where1 = ['A.order_status'=> 3, 'A.assign_status'=>1];
+        $where2 = ['A.order_status'=> 7, 'A.assign_status'=>1];
+        $where3 = ['A.order_status'=> 3, 'A.assign_status'=>1];
+        if($data['userInfo']['group_id'] == C('group.gc')){
+            $where1['A.group_id'] = $where2['A.group_id'] = $where3['A.group_id'] = $data['userInfo']['id'];
+        }
+        
+        $data['no_confirm_count1'] = $this->Mhouses_orders->get_order_count($where1);
+        $data['no_confirm_count2'] = $this->Mhouses_orders->get_order_count($where2);
+        $data['no_confirm_count3'] = $this->Mhouses_changepicorders->get_order_count($where3);
 
         $this->load->view("housesassign/index", $data);
     }

@@ -79,8 +79,8 @@ class Model_houses_orders extends MY_Model {
      */
     public function get_order_count($where = array()) {
         $this->db->from('t_houses_orders A');
-		$this->db->join('t_houses_customers B', 'A.customer_id = B.id');
-        $this->db->join('t_salesman C', 'A.sales_id = C.id');
+		$this->db->join('t_houses_customers B', 'A.customer_id = B.id', "left");
+		$this->db->join('t_salesman C', 'A.sales_id = C.id', "left");
         
     	if(isset($where['like'])) {
             foreach($where['like'] as $k => $v) {
