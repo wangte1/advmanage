@@ -35,6 +35,7 @@
                 <div class="page-header">
                     <a href="/houses/add" class="btn btn-sm btn-primary"><i class="fa fa-plus-square" aria-hidden="true"></i> 添加楼盘</a>
                 	<a href="javascript:;" class="btn btn-sm btn-primary btn-export"><i class="fa fa-download out_excel" aria-hidden="true"></i> 导出</a>
+                	<a href="javascript:;" class="btn btn-sm btn-primary btn-export-one"><i class="fa fa-download out_excel" aria-hidden="true"></i> 导出验收数据</a>
                 </div>
                 <div class="row">
                     <div class="col-xs-12">
@@ -235,6 +236,15 @@ $(".select2").css('width','230px').select2({allowClear:true});
             $("#search-form").submit();
             $("#search-form").attr('action', '');
        });
+	   $(".btn-export-one").click(function(){
+        	var houses_id = $('select[name="name"]').val();
+            if(houses_id==""){
+				layer.alert("请选择楼盘");
+				return;
+            }
+            location.href="/houses/load_accept?houses_id="+houses_id;
+       });
+	   
 	});
 </script>
 

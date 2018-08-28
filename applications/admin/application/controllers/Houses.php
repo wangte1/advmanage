@@ -418,5 +418,156 @@ class Houses extends MY_Controller{
     	$objWriter = PHPExcel_IOFactory::createWriter($this->phpexcel, 'Excel5');
     	$objWriter->save('php://output');
     }
+    
+    public function load_accept(){
+        $houses_id = $this->input->get('houses_id');
+        if(!$houses_id){
+            $this->error("请选择楼盘");
+        }
+        $list = $this->Mhouses_points->get_points_lists(['A.houses_id' => $houses_id]);
+        //加载phpexcel
+        $this->load->library("PHPExcel");
+        
+        $table_header =  array(
+            '点位编号'=>"code",
+            '所属楼盘'=>"houses_name",
+            '所属组团'=>"houses_area_name",
+            '楼栋'=>"ban",
+            '单元'=>"unit",
+            "楼层" =>"floor",
+            '位置'=>"addr",
+            '室内机①室外机②' => "out_in",
+            "验收结果√或×" => 'res',
+            "验收备注" => 'remark'
+        );
+        //设置行高
+        $this->phpexcel->getActiveSheet()->getDefaultRowDimension()->setRowHeight(20);
+        
+        $this->phpexcel->getActiveSheet()->getColumnDimension('A')->setWidth(10);
+        $this->phpexcel->getActiveSheet()->getColumnDimension('B')->setWidth(17);
+        $this->phpexcel->getActiveSheet()->getColumnDimension('C')->setWidth(17);
+        $this->phpexcel->getActiveSheet()->getColumnDimension('G')->setWidth(20);
+        $this->phpexcel->getActiveSheet()->getColumnDimension('H')->setWidth(20);
+        $this->phpexcel->getActiveSheet()->getColumnDimension('I')->setWidth(20);
+        $this->phpexcel->getActiveSheet()->getColumnDimension('J')->setWidth(18);
+        
+        $housesName = $list[0]['houses_name'];
+        //绘制第一行,合并单元格A1-J1
+        $this->phpexcel->getActiveSheet(0)->mergeCells("A1:J1"); 
+        //设置第一行内容
+        $cell = PHPExcel_Cell::stringFromColumnIndex(0).'1';
+        $this->phpexcel->setActiveSheetIndex(0)->setCellValue($cell, $housesName);
+        //设置第二行内容， 合并B2:H2,I2:J2
+        $cell = PHPExcel_Cell::stringFromColumnIndex(0).'2';
+        $this->phpexcel->setActiveSheetIndex(0)->setCellValue($cell, '工程部');
+        $this->phpexcel->getActiveSheet(0)->mergeCells("B2:H2"); 
+        $cell = PHPExcel_Cell::stringFromColumnIndex(1).'2';
+        $this->phpexcel->setActiveSheetIndex(0)->setCellValue($cell, '验收人/日期：'); 
+        $cell = PHPExcel_Cell::stringFromColumnIndex(8).'2';
+        $this->phpexcel->getActiveSheet(0)->mergeCells("I2:J2"); 
+        $this->phpexcel->setActiveSheetIndex(0)->setCellValue($cell, '验收表审核/日期：');
+        
+        //设置第三行内容， 合并B3:H3,I3:J3
+        $cell = PHPExcel_Cell::stringFromColumnIndex(0).'3';
+        $this->phpexcel->setActiveSheetIndex(0)->setCellValue($cell, '客服部');
+        $this->phpexcel->getActiveSheet(0)->mergeCells("B3:H3");
+        $cell = PHPExcel_Cell::stringFromColumnIndex(1).'3';
+        $this->phpexcel->setActiveSheetIndex(0)->setCellValue($cell, '媒介录入/日期：'); 
+        $cell = PHPExcel_Cell::stringFromColumnIndex(8).'3';
+        $this->phpexcel->getActiveSheet(0)->mergeCells("I3:J3"); 
+        $this->phpexcel->setActiveSheetIndex(0)->setCellValue($cell, '客服主任审核/日期：');
+        
+        $this->phpexcel->getActiveSheet(0)->getRowDimension(4)->setRowHeight(40);
+        $i = 0;
+        foreach($table_header as  $k=>$v){
+            $cell = PHPExcel_Cell::stringFromColumnIndex($i).'4';
+            $this->phpexcel->setActiveSheetIndex(0)->setCellValue($cell, $k);
+            $i++;
+        }
+        $h = 5;
+        //填充数据
+        foreach ($list as $k => $v){
+            $j = 0;
+            foreach ($table_header as $key => $val){
+                $value = "";
+                if(isset($v[$val]) && !empty($v[$val])){
+                    $value = $v[$val];
+                    if($val == "addr"){
+                        switch ($value){
+                            case 1:
+                                $value = "门禁";
+                                break;
+                            case 2:
+                                $value = "地面电梯前室";
+                                break;
+                            case 3:
+                                $value = "地下电梯前室";
+                                break;
+                            default:
+                                $value = "";
+                        }
+                    }
+                }
+                $cell = PHPExcel_Cell::stringFromColumnIndex($j++).$h;
+                $this->phpexcel->setActiveSheetIndex(0)->setCellValue($cell, $value);
+            }
+            $h++;
+        }
+        
+        //绘制表尾
+        //合并单元格A$h:B$h
+        $this->phpexcel->getActiveSheet(0)->mergeCells("A{$h}:B{$h}");
+        $cell = PHPExcel_Cell::stringFromColumnIndex(0).$h;
+        $this->phpexcel->setActiveSheetIndex(0)->setCellValue($cell, "合计");
+        
+        $this->phpexcel->getActiveSheet(0)->mergeCells("C{$h}:E{$h}");
+        //填充安装报备总数：
+        $cell = PHPExcel_Cell::stringFromColumnIndex(2).$h;
+        $this->phpexcel->setActiveSheetIndex(0)->setCellValue($cell, "安装报备总数：");
+        
+        $this->phpexcel->getActiveSheet(0)->mergeCells("F{$h}:H{$h}");
+        //室内报备总数：
+        $cell = PHPExcel_Cell::stringFromColumnIndex(5).$h;
+        $this->phpexcel->setActiveSheetIndex(0)->setCellValue($cell, "室内报备总数：");
+        
+        $this->phpexcel->getActiveSheet(0)->mergeCells("I{$h}:J{$h}");
+        //室外报备总数：
+        $cell = PHPExcel_Cell::stringFromColumnIndex(8).$h;
+        $this->phpexcel->setActiveSheetIndex(0)->setCellValue($cell, "室外报备总数：");
+        
+        $h++;
+        $this->phpexcel->getActiveSheet(0)->mergeCells("A{$h}:B{$h}");
+        
+        $this->phpexcel->getActiveSheet(0)->mergeCells("C{$h}:E{$h}");
+        //填充安装报备总数：
+        $cell = PHPExcel_Cell::stringFromColumnIndex(2).$h;
+        $this->phpexcel->setActiveSheetIndex(0)->setCellValue($cell, "实装总数：");
+        
+        $this->phpexcel->getActiveSheet(0)->mergeCells("F{$h}:H{$h}");
+        //室内报备总数：
+        $cell = PHPExcel_Cell::stringFromColumnIndex(5).$h;
+        $this->phpexcel->setActiveSheetIndex(0)->setCellValue($cell, "室内实装总数：");
+        
+        $this->phpexcel->getActiveSheet(0)->mergeCells("I{$h}:J{$h}");
+        //室外报备总数：
+        $cell = PHPExcel_Cell::stringFromColumnIndex(8).$h;
+        $this->phpexcel->setActiveSheetIndex(0)->setCellValue($cell, "室外实装总数：");
+        
+        $this->phpexcel->getActiveSheet(0)->mergeCells('A'.($h-1).':A'.($h));
+        $h++;
+        
+        $this->phpexcel->getActiveSheet(0)->mergeCells("A{$h}:B{$h}"); 
+        $this->phpexcel->getActiveSheet(0)->mergeCells("C{$h}:J{$h}"); 
+        $cell = PHPExcel_Cell::stringFromColumnIndex(0).$h;
+        $this->phpexcel->setActiveSheetIndex(0)->setCellValue($cell, "差额说明:");
+        $this->phpexcel->getActiveSheet(0)->getRowDimension($h)->setRowHeight(40);
+        // 输出
+        header('Content-Type: application/vnd.ms-excel');
+        header('Content-Disposition: attachment;filename='.$housesName.'验收表.xls');
+        header('Cache-Control: max-age=0');
+        
+        $objWriter = PHPExcel_IOFactory::createWriter($this->phpexcel, 'Excel5');
+        $objWriter->save('php://output');
+    }
 
 }
