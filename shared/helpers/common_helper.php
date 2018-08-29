@@ -846,6 +846,24 @@ if(!function_exists('replace_links')){
             }
         }
     }
+    
+    /**
+     * 返回配置文件一个固定格式的键值对数组
+     */
+    if(!function_exists('getConfig')){
+        function getConfig($array){
+            $data = [];
+            if(empty($array)){
+                return $data;
+            }
+            foreach ($array as $k => $v){
+                $arr = ['index' => $k, 'reason' => $v];
+                $data[] = $arr;
+            }
+            return $data;
+        }
+    }
+    
 
     /**
      * 多维数组排序
