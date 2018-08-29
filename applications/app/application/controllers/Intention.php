@@ -37,9 +37,9 @@ class Intention extends MY_Controller {
         if(!$points_count) {
             $this->return_json(['code'=> 0, 'msg' => "请填写点位数"]);
         }
-        unset($post_data['s_houses_type']);
         $post_data['create_user'] = $token['user_id'];
         $post_data['create_time'] = date('Y-m-d H:i:s');
+        unset($post_data['token']);
         $id = $this->Mhouses_want_orders->create($post_data);
         if ($id) {
             $this->write_log($token['user_id'], 1, "app 新增意向订单,订单id【".$id."】");
