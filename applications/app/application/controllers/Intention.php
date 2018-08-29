@@ -20,6 +20,39 @@ class Intention extends MY_Controller {
         ]);
     }
     
+    public function index(){
+        $data = $this->data;
+        $pageconfig = C('page.page_lists');
+        $this->load->library('pagination');
+        $page = (int) $this->input->get_post("page");
+        if(!$page) $page = 1;
+        $size = (int) $this->input->get_post("size");
+        if(!$size) $size = $pageconfig['per_page'];
+        $where = ['is_del' => 0, 'status' => "1"];
+        $field = "id, customer_id, points_count, order_type";
+        $order_by = ['create_time' => 'desc'];
+        $list = $this->Mhouses_want_orders->get_lists($field, $where, $order_by, $size, ($page-1)*$size);
+        if(!$list){
+            $this->return_json(['code'=> 0, 'msg' => "暂无数据"]);
+        }
+        //提取客户id
+        $customer_ids = array_column($list, 'customer_id');
+        $customer_list = $this->Mhouses_customers->get_lists(['id, name'], ['in' => ['id' => $customer_ids]]);
+        foreach ($list as $k => $v){
+            $list[$k]['customer_name'] = "";
+            $list[$k]['order_type'] = "冷光灯箱";
+            if($v['order_type'] == 2){
+                $list[$k]['order_type'] = "广告机";
+            }
+            foreach ($customer_list as $key => $val){
+                if($v['customer_id'] == $val['id']){
+                    $list[$k]['customer_name'] = $val['name'];
+                }
+            }
+        }
+        $this->return_json(['code' => 1, 'data'=> $list, 'msg' => "ok"]);
+    }
+    
     /**
      * 添加意向单
      */
