@@ -54,6 +54,20 @@ class Intention extends MY_Controller {
     }
     
     /**
+     * 审核意向单
+     */
+    public function check(){
+        $id = (int) $this->input->get_post('id');
+        $status = (int) $this->input->get_post('status');
+        $count = $this->Mhouses_want_orders->count(['id' => $id, 'is_del' => 0, 'status' => 1]);
+        $res = $this->Mhouses_want_orders->update(['status' => $status], ['id' => $id, 'is_del' => 0]);
+        if(!$res){
+            $this->return_json(['code' => 0, 'msg' => "操作失败"]);
+        }
+        $this->return_json(['code' => 0, 'msg' => "执行成功"]);
+    }
+    
+    /**
      * 添加意向单
      */
     public function add(){
