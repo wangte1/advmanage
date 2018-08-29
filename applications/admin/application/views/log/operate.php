@@ -87,6 +87,12 @@
                                                     </select>
                                                 </div>
                                             </div>
+                                            <div class="col-sm-4">
+                                                <label class="col-sm-3 control-label no-padding-right" for="form-field-1"> 操作内容 </label>
+                                                <div class="col-sm-9">
+                                                    <input type="text" id="form-field-1" name="operate_content" value="<?php if(isset($operate_content)){echo $operate_content;}?>" class="col-xs-10 col-sm-12">
+                                                </div>
+                                            </div>
                                         </div>
                                         <div class="clearfix form-actions">
                                             <div class="col-md-offset-3 col-md-9">
