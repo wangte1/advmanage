@@ -425,6 +425,27 @@ class Houses extends MY_Controller{
             $this->error("请选择楼盘");
         }
         $list = $this->Mhouses_points->get_points_lists(['A.houses_id' => $houses_id]);
+        $total = count($list);
+        $indoor = 0;
+        $outdoor = 0;
+        foreach ($list as $k => $v){
+            $temp = substr($v['code'], 0,1);
+            //1,2室内，3，5室外
+            switch ($temp){
+                case 1:
+                    $indoor++;
+                    break;
+                case 2:
+                    $indoor++;
+                    break;
+                case 3:
+                    $outdoor++;
+                    break;
+                case 5:
+                    $outdoor++;
+                    break;
+            }
+        }
         //加载phpexcel
         $this->load->library("PHPExcel");
         
@@ -523,17 +544,17 @@ class Houses extends MY_Controller{
         $this->phpexcel->getActiveSheet(0)->mergeCells("C{$h}:E{$h}");
         //填充安装报备总数：
         $cell = PHPExcel_Cell::stringFromColumnIndex(2).$h;
-        $this->phpexcel->setActiveSheetIndex(0)->setCellValue($cell, "安装报备总数：");
+        $this->phpexcel->setActiveSheetIndex(0)->setCellValue($cell, "安装报备总数：{$total}" ."个");
         
         $this->phpexcel->getActiveSheet(0)->mergeCells("F{$h}:H{$h}");
         //室内报备总数：
         $cell = PHPExcel_Cell::stringFromColumnIndex(5).$h;
-        $this->phpexcel->setActiveSheetIndex(0)->setCellValue($cell, "室内报备总数：");
+        $this->phpexcel->setActiveSheetIndex(0)->setCellValue($cell, "室内报备总数：".$indoor."个");
         
         $this->phpexcel->getActiveSheet(0)->mergeCells("I{$h}:J{$h}");
         //室外报备总数：
         $cell = PHPExcel_Cell::stringFromColumnIndex(8).$h;
-        $this->phpexcel->setActiveSheetIndex(0)->setCellValue($cell, "室外报备总数：");
+        $this->phpexcel->setActiveSheetIndex(0)->setCellValue($cell, "室外报备总数：".$outdoor."个");
         
         $h++;
         $this->phpexcel->getActiveSheet(0)->mergeCells("A{$h}:B{$h}");
