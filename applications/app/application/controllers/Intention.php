@@ -60,11 +60,14 @@ class Intention extends MY_Controller {
         $id = (int) $this->input->get_post('id');
         $status = (int) $this->input->get_post('status');
         $count = $this->Mhouses_want_orders->count(['id' => $id, 'is_del' => 0, 'status' => 1]);
+        if(!$count){
+            $this->return_json(['code' => 0, 'msg' => "数据不存在"]);
+        }
         $res = $this->Mhouses_want_orders->update(['status' => $status], ['id' => $id, 'is_del' => 0]);
         if(!$res){
             $this->return_json(['code' => 0, 'msg' => "操作失败"]);
         }
-        $this->return_json(['code' => 0, 'msg' => "执行成功"]);
+        $this->return_json(['code' => 1, 'msg' => "执行成功"]);
     }
     
     /**
@@ -90,7 +93,7 @@ class Intention extends MY_Controller {
         $id = $this->Mhouses_want_orders->create($post_data);
         if ($id) {
             $this->write_log($token['user_id'], 1, "app 新增意向订单,订单id【".$id."】");
-            $this->return_json(['code'=> 0, 'msg' => "添加成功"]);
+            $this->return_json(['code'=> 1, 'msg' => "添加成功"]);
         } else {
             $this->return_json(['code'=> 0, 'msg' => "添加失败"]);
         }
