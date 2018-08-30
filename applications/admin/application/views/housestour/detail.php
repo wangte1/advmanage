@@ -120,7 +120,7 @@
                                                     <?php echo $v['houses_name'].$v['area_name'].$v['unit'].$v['floor'].$v['addr'];?>
                                                 </td>
                                                 <td>
-                                                    <img style="width:100px;" alt="点位编号：<?php echo $v['code']?>" src="<?php echo $v['img']?>" />
+                                                    <img style="width:100px;" alt="点位编号：<?php echo $v['code']?>" layer-src="<?php echo get_adv_img($v['img']);?>"  src="<?php echo get_adv_img($v['img'], 'thumb');?>" />
                                                 </td>
                                             </tr>
                                             <?php endforeach;?>
