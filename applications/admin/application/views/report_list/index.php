@@ -282,7 +282,7 @@
                                                     </td>
                                                     <td>
                                                     	<?php if($val['report_img'] != ""):?>
-                                                    	<img style="width:25px;height:25px;cursor:pointer;" src="<?php echo $val['report_img']?>" layer-src="<?php echo $val['report_img']?>" src="<?php echo $val['report_img']?>" alt="点位编号：<?php echo $val['point']['code'];?>"/>
+                                                    	<img style="width:25px;height:25px;cursor:pointer;" layer-src="<?php echo get_adv_img($val['report_img'])?>" src="<?php echo get_adv_img($val['report_img'], "thumb")?>" alt="点位编号：<?php echo $val['point']['code'];?>"/>
                                                     	<?php endif;?>
                                                     </td>
                                                     <?php if($repair_time == '1' || $repair_time == '2'):?>
@@ -291,7 +291,7 @@
                                                     <td></td>
                                                     <?php else:?>
                                                     <td>
-                                                    	<img style="width:25px;height:25px;cursor:pointer;" src="<?php echo $val['repair_img']?>" />
+                                                    	<img style="width:25px;height:25px;cursor:pointer;" layer-src="<?php echo get_adv_img($val['repair_img'])?>" src="<?php echo get_adv_img($val['repair_img'], 'thumb')?>" />
                                                     </td>
                                                     <?php endif;?>
                                                     

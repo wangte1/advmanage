@@ -175,18 +175,6 @@ class Houseschangepicorders extends MY_Controller{
             $post_data['update_user'] = $data['userInfo']['id'];
             $post_data['update_time'] = date('Y-m-d H:i:s');
 
-            //先清空点位制作张数表t_points_make_num，再添加进去
-//             if ($post_data['order_type'] == 1 || $post_data['order_type'] == 2) {
-//                 $this->Mpoints_make_num->delete(array('order_id' => $id, 'type' => 2));
-//                 foreach ($post_data['make_num'] as $key => $value) {
-//                     $make_num_data['order_id'] = $id;
-//                     $make_num_data['point_id'] = $key;
-//                     $make_num_data['make_num'] = $value;
-//                     $make_num_data['type'] = 2;
-//                     $this->Mpoints_make_num->create($make_num_data);
-//                 }
-//             }
-
             unset($post_data['order_type'], $post_data['make_num'], $post_data['make_num'], $post_data['hour'], $post_data['minute'], $post_data['second']);
             $id = $this->Mhouses_changepicorders->update_info($post_data, array('id' => $id));
             if ($id) {
@@ -218,27 +206,6 @@ class Houseschangepicorders extends MY_Controller{
             //已选择的点位列表
             $data['selected_points'] = $this->Mhouses_points->get_points_lists(array('in' => array('A.id' => $change_point)));
 
-            if ($data['order_type'] == 1 || $data['order_type'] == 2) {
-                //主订单点位制作张数（灯箱和高杆）
-//                 $data['points_make_num'] = $this->Mpoints_make_num->get_lists('order_id, point_id, make_num', array('order_id' => $data['order']['id'], 'type' => 1));
-//                 foreach ($data['points_lists'] as $key => $value) {
-//                     foreach ($data['points_make_num'] as $k => $v) {
-//                         if ($value['id'] == $v['point_id']) {
-//                             $data['points_lists'][$key]['make_num'] = $data['points_make_num'][$k]['make_num'];
-//                         }
-//                     }
-//                 }
-
-                //已选择换画点位制作张数（灯箱和高杆）
-//                 $data['points_make_num'] = $this->Mpoints_make_num->get_lists('order_id, point_id, make_num', array('order_id' => $data['info']['id'], 'type' => 2));
-//                 foreach ($data['selected_points'] as $key => $value) {
-//                     foreach ($data['points_make_num'] as $k => $v) {
-//                         if ($value['id'] == $v['point_id']) {
-//                             $data['selected_points'][$key]['make_num'] = $data['points_make_num'][$k]['make_num'];
-//                         }
-//                     }
-//                 }
-            }
             $this->load->view("housesorders/change_pic/add", $data);
         }
     }
