@@ -62,6 +62,7 @@
                                             </div>
                                             <div class="col-sm-4">
                                             	<input type="hidden" name="create_time" value="<?php echo $create_time?>">
+                                            	<input type="hidden" name="create_time_end" value="<?php echo $create_time_end?>">
                                                 <label class="col-sm-3 control-label no-padding-right" for="form-field-1"> 楼盘： </label>
                                                 <div class="col-sm-9">
                                                     <select class="select2" name="houses_id">

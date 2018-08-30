@@ -56,10 +56,21 @@
                                         <div class="form-group">
                                             
                                             <div class="col-sm-4">
-                                                <label class="col-sm-3 control-label no-padding-right" for="form-input-readonly"> 巡视日期： </label>
+                                                <label class="col-sm-3 control-label no-padding-right" for="form-input-readonly"> 巡视日期开始： </label>
                                                 <div class="col-sm-9">
                                                     <div class="input-group date datepicker">
                                                         <input class="form-control date-picker" type="text" name="create_time" value="<?php if(isset($create_time)){ echo $create_time;}?>" >
+                                                        <span class="input-group-addon">
+                                                            <i class="icon-calendar bigger-110"></i>
+                                                        </span>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="col-sm-4">
+                                                <label class="col-sm-3 control-label no-padding-right" for="form-input-readonly"> 巡视日期结束： </label>
+                                                <div class="col-sm-9">
+                                                    <div class="input-group date datepicker">
+                                                        <input class="form-control date-picker" type="text" name="create_time_end" value="<?php if(isset($create_time_end)){ echo $create_time_end;}?>" >
                                                         <span class="input-group-addon">
                                                             <i class="icon-calendar bigger-110"></i>
                                                         </span>
@@ -119,7 +130,7 @@
                                             <tr>
                                                 <td><?php echo $k+1;?></td>
                                                 <td><?php echo $v['fullname']?></td>
-                                                <td><?php echo $create_time?></td>
+                                                <td><?php echo $create_time?> 至  <?php echo $create_time_end;?></td>
                                                 <td><?php echo $v['num']?></td>
                                                 <td><?php echo $v['houses_name']?></td>
                                                 <td>
@@ -155,7 +166,8 @@ var baseUrl = "<?php echo $domain['admin']['url'];?>";
 $('.detail').on('click', function(){
 	var user_id = $(this).attr('data-id');
 	var date = $(this).attr('data-date');
-	window.location.href = '/housestour/detail?user_id='+user_id+'&create_time='+date;
+	var date_end = "<?php echo $create_time_end?>";
+	window.location.href = '/housestour/detail?user_id='+user_id+'&create_time='+date+'&create_time_end='+date_end;
 });
 </script>
 

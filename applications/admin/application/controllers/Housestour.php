@@ -29,15 +29,22 @@ class Housestour extends MY_Controller{
             $create_time .= ' 00:00:00';
         }
         $data['create_time'] = date("Y-m-d", strtotime($create_time));
-        
+        $create_time_end = $this->input->get('create_time_end');
+        if(empty($create_time_end)){
+            $time = date("Y-m-d 00:00:00", strtotime($create_time)+(24*3600));
+            $create_time_end = $time;
+        }else{
+            $create_time_end .= ' 00:00:00';
+        }
+        $data['create_time_end'] = date("Y-m-d", strtotime($create_time_end));
         $principal_id = $this->input->get('principal_id');
         if($principal_id) {
             $where['B.id'] = $principal_id;
             $data['principal_id'] =$principal_id;
         }
         $where['A.create_time >'] = $create_time;
-        $where['A.create_time <'] = date("Y-m-d 00:00:00", strtotime(date("Y-m-d", strtotime($create_time)))+(24*3600));
-        
+        $where['A.create_time <'] = $create_time_end;
+
         $list = $this->Mhouses_tour_points->get_tour_list($where, ['num' => 'desc'], $size, ($page-1)*$size, ['B.id']);
         //统计该时间段每个人都分布巡视那些楼盘
         $hlist = $this->Mhouses_tour_points->get_houses_lists($where);
@@ -75,7 +82,6 @@ class Housestour extends MY_Controller{
         if($user_id){
             $where['A.principal_id'] = $user_id;
         }
-        $date = $this->input->get('create_time');
         $houses_id = $this->input->get('houses_id');
         if($houses_id){
             $where['D.id'] = $data['houses_id'] = $houses_id;
@@ -84,16 +90,24 @@ class Housestour extends MY_Controller{
         if($point_code){
             $where['C.code'] = $data['point_code'] = $point_code;
         }
-        if(empty($date)){
+        $create_time = $this->input->get('create_time');
+        if(empty($create_time)){
             $where['A.create_time >=']= date('Y-m-d 00:00:00', time());
-            $where['A.create_time <']= date("Y-m-d 00:00:00", strtotime(date("Y-m-d", time()))+(24*3600));
         }else{
-            $data['create_time'] = $date;
-            $where['A.create_time >'] = $date.' 00:00:00';
-            $where['A.create_time <']= date("Y-m-d 00:00:00", strtotime(date("Y-m-d", strtotime($date)))+(24*3600));
+            $data['create_time'] = $create_time;
+            $where['A.create_time >'] = $create_time.' 00:00:00';
         }
+        $create_time_end = $this->input->get('create_time_end');
+        if(empty($create_time_end)){
+            $time = date("Y-m-d 00:00:00", strtotime($create_time)+(24*3600));
+            $create_time_end = $time;
+        }else{
+            $create_time_end .= ' 00:00:00';
+        }
+        $data['create_time_end'] = date("Y-m-d", strtotime($create_time_end));
+        $where['A.create_time <'] = $create_time_end;
+        
         $list = $this->Mhouses_tour_points->get_user_all($where, ['A.create_time' => 'desc'], $size, ($page-1)*$size, []);
-
         if($list){
             foreach ($list as $k => $v){
                 switch ($v['addr']){
