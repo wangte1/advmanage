@@ -323,7 +323,7 @@
 													</td>
 													<td>			
 														<?php if(!empty($val['tour_img'])):?>					
-															<img alt="点位编号：<?php echo $val['code'];?>" src="<?php echo $val['tour_img']?>" style="width:25px;height:25px;cursor:pointer;">
+															<img alt="点位编号：<?php echo $val['code'];?>" layer-src="<?php echo get_adv_img($val['tour_img'])?>" src="<?php echo get_adv_img($val['tour_img'], 'thumb')?>" style="width:25px;height:25px;cursor:pointer;">
 														<?php endif;?>
 													</td>
                                                     <td>
