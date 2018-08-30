@@ -54,7 +54,7 @@ class Report_list extends MY_Controller{
         }else{
             $data['repair_time'] = 2;
         }
-        if($report)$where['like'] = ['report' => $report];
+        if($report)$where['report'] = $report;
         if($houses_id) {
             $where['B.houses_id'] = $houses_id;
             $data['houses_id'] = $houses_id;
@@ -347,7 +347,7 @@ class Report_list extends MY_Controller{
         }else{
             
         }
-        if($report)$where['like'] = ['report' => $report . ','];
+        if($report)$where['report'] = $report;
         if($houses_id) {
             $where['B.houses_id'] = $houses_id;
             $data['houses_id'] = $houses_id;
