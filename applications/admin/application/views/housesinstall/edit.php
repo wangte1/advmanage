@@ -78,20 +78,6 @@
                         </div>
                         
                         <div class="form-group">
-                            <label class="col-sm-3 control-label no-padding-right" for="form-field-1"> 签约室内数量： </label>
-                            <div class="col-sm-9">
-                                <input type="text" name="sign_in_num" value="<?php echo $info['sign_in_num'];?>" onkeyup="(this.v=function(){this.value=this.value.replace(/[^0-9-]+/,'');}).call(this)" onblur="this.v();">
-                            </div>
-                        </div>
-                        
-                        <div class="form-group">
-                            <label class="col-sm-3 control-label no-padding-right" for="form-field-1"> 签约室外数量： </label>
-                            <div class="col-sm-9">
-                                <input type="text" name="sign_out_num" value="<?php echo $info['sign_out_num'];?>" onkeyup="(this.v=function(){this.value=this.value.replace(/[^0-9-]+/,'');}).call(this)" onblur="this.v();">
-                            </div>
-                        </div>
-                        
-                        <div class="form-group">
                             <label class="col-sm-3 control-label no-padding-right" for="form-input-readonly"> 完工日期： </label>
                             <div class="col-sm-9" style="width: 15%";>
                                 <div class="input-group date datepicker">
@@ -111,20 +97,6 @@
                         </div>
                         
                         <div class="form-group">
-                            <label class="col-sm-3 control-label no-padding-right" for="form-field-1"> 安装室内数量： </label>
-                            <div class="col-sm-9">
-                                <input type="text" name="install_in_num" value="<?php echo $info['install_in_num'];?>" onkeyup="(this.v=function(){this.value=this.value.replace(/[^0-9-]+/,'');}).call(this)" onblur="this.v();">
-                            </div>
-                        </div>
-                        
-                        <div class="form-group">
-                            <label class="col-sm-3 control-label no-padding-right" for="form-field-1"> 安装室外数量： </label>
-                            <div class="col-sm-9">
-                                <input type="text" name="install_out_num" value="<?php echo $info['install_out_num'];?>" onkeyup="(this.v=function(){this.value=this.value.replace(/[^0-9-]+/,'');}).call(this)" onblur="this.v();">
-                            </div>
-                        </div>
-                        
-                        <div class="form-group">
                             <label class="col-sm-3 control-label no-padding-right" for="form-field-1"> 安装结算数量： </label>
                             <div class="col-sm-9">
                                 <input type="text" name="install_account_num" value="<?php echo $info['install_account_num'];?>" onkeyup="(this.v=function(){this.value=this.value.replace(/[^0-9-]+/,'');}).call(this)" onblur="this.v();">
@@ -137,16 +109,6 @@
                                     <textarea name="install_remake" rows="2" class="autosize-transition col-xs-10 col-sm-3"><?php echo $info['install_remake'];?></textarea>
                                 </div>
                         </div>
-                        
-                        <div class="form-group">
-                            <label class="col-sm-3 control-label no-padding-right" for="form-field-1"> 是否验收： </label>
-                            <div class="col-sm-9">
-                                <select class="col-xs-2 " name="is_check" id="select-font-size " >
-                                	<option value="1" <?php if($info['is_check'] == '1') {?>selected="selected"<?php }?>>是</option>
-                                	<option value="0" <?php if($info['is_check'] == '0') {?>selected="selected"<?php }?>>否</option>
-                                </select>
-                            </div>
-                        </div> 
                         
                         <div class="form-group">
                             <label class="col-sm-3 control-label no-padding-right" for="form-field-1"> 验收人： </label>
@@ -183,16 +145,6 @@
                         </div>
                         
                         <div class="form-group">
-                            <label class="col-sm-3 control-label no-padding-right" for="form-field-1"> 是否结算： </label>
-                            <div class="col-sm-9">
-                                <select class="col-xs-2 " name="is_account" id="select-font-size " >
-                                	<option value="1" <?php if($info['is_account'] == '1') {?>selected="selected"<?php }?>>是</option>
-                                	<option value="0" <?php if($info['is_account'] == '0') {?>selected="selected"<?php }?>>否</option>
-                                </select>
-                            </div>
-                        </div> 
-                        
-                        <div class="form-group">
                             <label class="col-sm-3 control-label no-padding-right" for="form-input-readonly"> 结算日期： </label>
                             <div class="col-sm-9" style="width: 15%";>
                                 <div class="input-group date datepicker">
@@ -203,16 +155,6 @@
                                 </div>
                             </div>
                         </div>
-                        
-                        <div class="form-group">
-                            <label class="col-sm-3 control-label no-padding-right" for="form-field-1"> 是否提成： </label>
-                            <div class="col-sm-9">
-                                <select class="col-xs-2 " name="is_push" id="select-font-size " >
-                                	<option value="1" <?php if($info['is_push'] == '1') {?>selected="selected"<?php }?>>是</option>
-                                	<option value="0" <?php if($info['is_push'] == '0') {?>selected="selected"<?php }?>>否</option>
-                                </select>
-                            </div>
-                        </div> 
                         
                         <div class="form-group">
                             <label class="col-sm-3 control-label no-padding-right" for="form-field-1"> 提成数量： </label>

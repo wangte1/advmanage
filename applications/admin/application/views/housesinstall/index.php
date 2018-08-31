@@ -94,21 +94,14 @@
                                                 <th>联系人职务</th>
                                                 <th>联系人电话</th>
                                                 <th>签约数量</th>
-                                                <th>签约室内数量</th>
-                                                <th>签约室外数量</th>
                                                 <th>完工日期</th>
                                                 <th>安装数量</th>
-                                                <th>安装室内数量</th>
-                                                <th>安装室外数量</th>
                                                 <th>安装结算数量</th>
                                                 <th>安装备注</th>
-                                                <th>是否验收</th>
                                                 <th>验收人</th>
                                                 <th>验收日期</th>
                                                 <th>验收图片</th>
-                                                <th>是否结算</th>
                                                 <th>结算日期</th>
-                                                <th>是否提成</th>
                                                 <th>提成数量</th>
                                                 <th>提成日期</th>
                                                 <th>操作</th>
@@ -126,24 +119,17 @@
                                                     <td><?php echo $val['linkman_duty'];?></td>
                                                     <td><?php echo $val['linkman_tel'];?></td>
                                                     <td><?php echo $val['sign_num'];?></td>
-                                                    <td><?php echo $val['sign_in_num'];?></td>
-                                                    <td><?php echo $val['sign_out_num'];?></td>
                                                     <td><?php echo $val['finish_date'];?></td>
                                                     <td><?php echo $val['install_num'];?></td>
-                                                    <td><?php echo $val['install_in_num'];?></td>
-                                                    <td><?php echo $val['install_out_num'];?></td>
                                                     <td><?php echo $val['install_account_num'];?></td>
                                                     <td><?php echo $val['install_remake'];?></td>
-                                                    <td><?php if($val['is_check']){echo '是';}else{echo '否';};?></td>
                                                     <td><?php echo $val['fullname'];?></td>
                                                     <td><?php echo $val['check_date'];?></td>
                                                     <td><?php if(!empty($val['check_img'])):?>
                                                     	<img src="<?php echo $val['check_img']?>" style="width:25px;height:25px;cursor:pointer;">
                                                     	<?php endif;?>
                                                 	</td>
-                                                    <td><?php if($val['is_account']){echo '是';}else{echo '否';};?></td>
                                                     <td><?php echo $val['account_date'];?></td>
-                                                    <td><?php if($val['is_push']){echo '是';}else{echo '否';};?></td>
                                                     <td><?php echo $val['push_num'];?></td>
                                                     <td><?php echo $val['push_date'];?></td>
                                                     <td>
