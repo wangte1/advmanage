@@ -88,7 +88,7 @@
                                          	<div class="col-sm-4">
                                                 <label class="col-sm-3 control-label no-padding-right" for="form-field-1"> token </label>
                                                 <div class="col-sm-9">
-                                                    <input type="text" id="form-field-1" name="token" value="<?php echo $token;?>" class="col-xs-10 col-sm-12">
+                                                    <input type="text" id="form-field-1" name="token" value="<?php if(isset($token)){ echo $token;}?>" class="col-xs-10 col-sm-12">
                                                 </div>
                                             </div>
                                             <div class="col-sm-4">
