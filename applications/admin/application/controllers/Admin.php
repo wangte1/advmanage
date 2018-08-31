@@ -350,6 +350,7 @@ class Admin extends MY_Controller{
         }
         $this->db->from('t_houses_points');
         $this->db->select('diy_area_id, count(`diy_area_id`) as number');
+        $this->db->where('is_del = 0');
         $this->db->group_by('diy_area_id');
         
         $result = $this->db->get();
