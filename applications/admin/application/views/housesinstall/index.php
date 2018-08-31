@@ -104,6 +104,12 @@
                                                 <th>结算日期</th>
                                                 <th>提成数量</th>
                                                 <th>提成日期</th>
+                                                <th>门禁卡数量</th>
+                                                <th>差额说明</th>
+                                                <th>验收备注</th>
+                                                <th>安装进度</th>
+                                                <th>安装对接人</th>
+                                                <th>可安装时间</th>
                                                 <th>操作</th>
                                             </tr>
                                         </thead>
@@ -132,6 +138,12 @@
                                                     <td><?php echo $val['account_date'];?></td>
                                                     <td><?php echo $val['push_num'];?></td>
                                                     <td><?php echo $val['push_date'];?></td>
+                                                    <td><?php echo $val['eg_card_num'];?></td>
+                                                    <td><?php echo $val['balance_desc'];?></td>
+                                                    <td><?php echo $val['check_desc'];?></td>
+                                                    <td><?php echo $val['install_progress'];?></td>
+                                                    <td><?php echo $val['install_jointer'];?></td>
+                                                    <td><?php echo $val['can_install_date'];?></td>
                                                     <td>
                                                         <div class="visible-md visible-lg hidden-sm hidden-xs action-buttons">
                                                             <a class="green tooltip-info" href="/housesinstall/edit/<?php echo $val['id'];?>" data-rel="tooltip" data-placement="top" data-original-title="修改">

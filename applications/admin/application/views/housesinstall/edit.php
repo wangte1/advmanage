@@ -174,6 +174,44 @@
                                 </div>
                             </div>
                         </div>
+                        <!-- start -->
+                        <div class="form-group">
+                            <label class="col-sm-3 control-label no-padding-right" for="form-field-1"> 门禁卡数量： </label>
+                            <div class="col-sm-9">
+                                <input type="number" name="eg_card_num" value="<?php echo $info['eg_card_num'];?>">
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="col-sm-3 control-label no-padding-right" for="form-field-1"> 差额说明： </label>
+                            <div class="col-sm-9">
+                                <textarea name="balance_desc" rows="2" class="autosize-transition col-xs-10 col-sm-3"><?php echo $info['balance_desc'];?></textarea>
+                                
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="col-sm-3 control-label no-padding-right" for="form-field-1"> 验收备注： </label>
+                            <div class="col-sm-9">
+                            	<textarea name="check_desc" rows="2" class="autosize-transition col-xs-10 col-sm-3"><?php echo $info['check_desc'];?></textarea>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="col-sm-3 control-label no-padding-right" for="form-field-1"> 安装进度： </label>
+                            <div class="col-sm-9">
+                                <input type="text" name="install_progress" value="<?php echo $info['install_progress'];?>">
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="col-sm-3 control-label no-padding-right" for="form-field-1"> 安装对接人： </label>
+                            <div class="col-sm-9">
+                                <input type="text" name="install_jointer" value="<?php echo $info['install_jointer'];?>">
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="col-sm-3 control-label no-padding-right" for="form-field-1"> 可安装时间： </label>
+                            <div class="col-sm-9">
+                                <input type="text" name="can_install_date" value="<?php echo $info['can_install_date'];?>">
+                            </div>
+                        </div>
 
                         <div class="clearfix form-actions">
                             <div class="col-md-offset-3 col-md-9">
