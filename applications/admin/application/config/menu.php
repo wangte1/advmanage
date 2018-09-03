@@ -121,7 +121,7 @@ $config = array(
     		    
     		    array(
     		        'url'=>'/report_list',
-    		        'name'=> '报损列表',
+    		        'name'=> '报修列表',
     		        'active'=> 'houses_report_list'
     		    ),
     		    
