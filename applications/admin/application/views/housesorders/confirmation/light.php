@@ -137,11 +137,18 @@
            		</tr>
            		<tr>
             		<td style="width: 33%;padding-left: 0px;">
-            			<img style="width:100%;" src="<?php echo $value['no_img'];?>">
+            			<img style="width:100%;" src="<?php echo  get_adv_img($value['no_img'],"common");?>">
             		</td>
             		<td rows="2" style="padding-left: 0px;">
-                		<img style="width:50%;" src="<?php echo $value['pano_img'];?>">
-                		<img style="width:49%;" src="<?php echo $value['news_img'];?>">
+            		<?php if ($value['pano_img']){
+            		    $src=get_adv_img($value["pano_img"],"common");
+            		    echo "<img style='width:50%;' src='{$src}'>";
+            		}
+            		if ($value['news_img']){
+            		    $src=get_adv_img($value["news_img"],"common");
+            		    echo "<img style='width:50%;' src='{$src}'>";
+            		}?>
+                		
             		</td>
            		</tr>
         	</tbody>
