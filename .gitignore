@@ -20,4 +20,5 @@ Uploads/*
 *logs*
 /vendor
 /applications/admin/excel
+/applications/admin/oss
 composer.lock
