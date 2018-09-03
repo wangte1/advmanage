@@ -19,7 +19,7 @@
                     <li>
                         <a href="#">社区资源管理</a>
                     </li>
-                    <li class="active">报损列表</li>
+                    <li class="active">报修列表</li>
                 </ul>
 
                 <div class="nav-search" id="nav-search">
@@ -102,7 +102,7 @@
                                         </div>
                                         <div class="form-group">
                                             <div class="col-sm-3">
-                                                <label class="col-sm-3 control-label no-padding-right" for="form-input-readonly"> 报损开始时间： </label>
+                                                <label class="col-sm-3 control-label no-padding-right" for="form-input-readonly"> 报修开始时间： </label>
                                                 <div class="col-sm-9">
                                                     <div class="input-group date datepicker">
                                                         <input class="form-control date-picker" type="text" name="start_time" value="<?php if(isset($start_time)){ echo $start_time;}?>" >
@@ -113,7 +113,7 @@
                                                 </div>
                                             </div>
                                             <div class="col-sm-3">
-                                                <label class="col-sm-3 control-label no-padding-right" for="form-input-readonly"> 报损结束时间： </label>
+                                                <label class="col-sm-3 control-label no-padding-right" for="form-input-readonly"> 报修结束时间： </label>
                                                 <div class="col-sm-9">
                                                     <div class="input-group date datepicker">
                                                         <input class="form-control date-picker" type="text" name="end_time" value="<?php if(isset($end_time)){ echo $end_time;}?>" >
@@ -124,7 +124,7 @@
                                                 </div>
                                             </div>
                                             <div class="col-sm-3">
-                                                <label class="col-sm-3 control-label no-padding-right" for="form-field-1"> 报损人： </label>
+                                                <label class="col-sm-3 control-label no-padding-right" for="form-field-1"> 报修人： </label>
                                                 <div class="col-sm-9">
                                                     <select class="select2" name="create_id">
                                                         <option value="0">全部</option>
@@ -137,7 +137,7 @@
                                                 </div>
                                             </div>
                                             <div class="col-sm-3">
-                                                <label class="col-sm-3 control-label no-padding-right" for="form-field-1"> 报损类型： </label>
+                                                <label class="col-sm-3 control-label no-padding-right" for="form-field-1"> 报修类型： </label>
                                                 <div class="col-sm-9">
                                                     <select class="select2" name="report" >
                                                         <option value="0">全部</option>
@@ -242,20 +242,20 @@
                                                 <th>楼盘</th>
                                                 <th>组团</th>
                                                 <th>详细地址</th>
-                                                <th>报损图片</th>
+                                                <th>报修图片</th>
                                                 <?php if($repair_time == '1' || $repair_time == '2'):?>
                                                 <th>修复图片</th>
                                                 <?php endif;?>
-                                                <th>报损人</th>
-                                                <th>报损类型</th>
+                                                <th>报修人</th>
+                                                <th>报修类型</th>
                                                 <th>说明</th>
                                                 <th>是否可以上画</th>
                                                 <th>安装公司</th>
                                                 <?php if($repair_time == '0'):?>
-                                                <th>报损日期</th>
+                                                <th>报修日期</th>
                                                 <th>操作</th>
                                                 <?php elseif($repair_time == '2'):?>
-                                                <th>报损日期</th>
+                                                <th>报修日期</th>
                                                 <th>修复人</th>
                                                 <th>修复日期</th>
                                                 <th>修复备注</th>

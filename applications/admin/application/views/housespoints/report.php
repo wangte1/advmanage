@@ -10,7 +10,7 @@
 	<div class="form">
     	<input type="hidden" id="id" name="id" value="<?php echo $id?>"/>
     	<div style="margin: 0 auto;width: 50%;height: 120px;text-align:center;margin-top:20px;" class="check-area">
-    		<p style="text-align: left;">报损选项：</p>
+    		<p style="text-align: left;">报修选项：</p>
     		<?php foreach (C('housespoint.report') as $k => $v):?>
     		<?php if($k!=14):?>
     		<label>
@@ -73,7 +73,7 @@
 		}
 		var report_img = $('input[name="cover_img[]"]').val();
 		if(!report_img || report_img =="") {
-			layer.alert('请上传报损图');return;
+			layer.alert('请上传报修图');return;
 		}
 		for(var i = 0; i < report.length; i++){
 			if(report[i] == 14){
