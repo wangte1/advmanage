@@ -269,51 +269,14 @@ class Housesconfirm extends MY_Controller{
     	$this->load->library('pagination');
     	$page =  intval($this->input->get("per_page",true)) ?  : 1;
     	$size = $pageconfig['per_page'];
-    	$data['type'] = $id = $this->input->get('type');
+    	$data['type'] = $type = $this->input->get('type');
     	$data['id'] = $id = $this->input->get('id');
-
-    	if(IS_POST){
-    		$post_data = $this->input->post();
-    		foreach ($post_data as $key => $value) {
-    			$where = array('order_id' => $order_id, 'assign_id' => $assign_id, 'point_id' => $key, 'type' => 1, 'assign_type' => $assign_type);
-    			$img = $this->Mhouses_order_inspect_images->get_one('*', $where);
-    
-    			//如果是修改验收图片，则先删除该订单下所有验收图片，再重新添加
-    			if ($img) {
-    				$this->Mhouses_order_inspect_images->delete($where);
-    			}
-    
-    			if (isset($value['front_img']) && count($value['front_img']) > 0) {
-    				foreach ($value['front_img'] as $k => $v) {
-    					$insert_data['order_id'] = $order_id;
-    					$insert_data['assign_id'] = $assign_id;
-    					$insert_data['assign_type'] = $assign_type;
-    					$insert_data['point_id'] = $key;
-    					$insert_data['front_img'] = $v;
-    					$insert_data['back_img'] = isset($value['back_img'][$k]) ? $value['back_img'][$k] : '';
-    					$insert_data['type'] = 1;
-    					$insert_data['create_user'] = $insert_data['update_user'] = $data['userInfo']['id'];
-    					$insert_data['create_time'] = $insert_data['update_time'] = date('Y-m-d H:i:s');
-    					$this->Mhouses_order_inspect_images->create($insert_data);
-    				}
-    			}
-    		}
-    
-    		
-    
-    		$this->write_log($data['userInfo']['id'], 2, "社区上传订单验收图片，订单id【".$order_id."】");
-    		
-    		$this->success("保存验收图片成功！");
-    		exit;
-    	}
-
     	$workDetailList = $this->Mhouses_work_order_detail->get_lists("*", ['pid' => $id], [], $size, ($page-1)*$size);
-        
         //提取点位
         $point_ids = array_column($workDetailList, 'point_id');
     	
-    	
         $data['list'] = $list = $this->Mhouses_points->get_points_lists(['in' => ['A.id' => $point_ids]]);
+
         foreach ($list as $k => $v){
             foreach ($workDetailList as $key => $val){
                 if($v['id'] == $val['point_id']){

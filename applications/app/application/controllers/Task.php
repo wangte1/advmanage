@@ -256,9 +256,7 @@ class Task extends MY_Controller {
     	$config = array(
     	    'upload_path'   => '../../admin/uploads/'.$file_dir,
     			'allowed_types' => 'gif|jpg|jpeg|png',
-    			'max_size'     => 1024*3,
-    			'max_width'    => 2000,
-    			'max_height'   => 2000,
+    			'max_size'     => 1024*8,
     			'encrypt_name' => TRUE,
     			'remove_spaces'=> TRUE,
     			'use_time_dir'  => TRUE,      //是否按上传时间分目录存放
@@ -268,7 +266,7 @@ class Task extends MY_Controller {
     	
     	if ( ! $this->upload->do_upload('file')){
     		$error = $this->upload->display_errors();
-    		$this->return_json(array('code' => 0, 'message' => '上传错误！'.$error));
+    		$this->return_json(array('code' => 0, 'message' => '上传错误！'.strip_tags($error)));
     	} else {
     		$data = $this->upload->data();
     		$name = $file_dir.$data['file_name'];
