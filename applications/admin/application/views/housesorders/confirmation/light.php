@@ -147,6 +147,7 @@
             		if ($value['news_img']){
             		    $src=get_adv_img($value["news_img"],"common");
             		    echo "<img style='width:50%;' src='{$src}'>";
+            		    echo "<img style='width:50%;' src='{$src}'>";
             		}?>
                 		
             		</td>
