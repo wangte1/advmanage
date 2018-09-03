@@ -240,7 +240,7 @@
                                                 <th>状态</th>
                                                 <th>占用客户</th>
                                                 <th>备注</th>
-                                                <th>报损</th>
+                                                <th>报修</th>
                                                 <th>巡视照片</th>
                                                 <th>操作</th>
                                             </tr>
@@ -318,7 +318,7 @@
 													<td><?php echo $val['remarks']?></td>
 													<td>
 														<?php if($val['point_status'] == 4):?>
-														<button class="btn-primary see-report">已报损</button>
+														<button class="btn-primary see-report">已报修</button>
 														<?php endif;?>
 													</td>
 													<td>			
@@ -332,12 +332,12 @@
                                                         	<!--a class="green tooltip-info reported" point_id="<?php echo $val['id'];?>" point_code="<?php echo $val['code'];?>" data-rel="tooltip" data-placement="top" data-original-title="修复">
                                                                 <i class="ace-icon glyphicon glyphicon-refresh bigger-130"></i>
                                                             </a-->
-                                                            <!--a class="green tooltip-info report_img" img="<?php echo $val['destroy_img'];?>" data-rel="tooltip" data-placement="top" data-original-title="查看报损图片">
+                                                            <!--a class="green tooltip-info report_img" img="<?php echo $val['destroy_img'];?>" data-rel="tooltip" data-placement="top" data-original-title="查看报修图片">
                                                                 <i class="ace-icon glyphicon glyphicon-picture bigger-130"></i>
                                                             </a-->
                                                             <?php endif;?>
                                                             <?php if($val['point_status'] != 4 && $val['can_report']):?>
-                                                        	<a class="green tooltip-info reportnow" point_id="<?php echo $val['id'];?>" point_code="<?php echo $val['code'];?>" data-status="<?php echo $val['point_status']?>" data-rel="tooltip" data-placement="top" data-original-title="报损">
+                                                        	<a class="green tooltip-info reportnow" point_id="<?php echo $val['id'];?>" point_code="<?php echo $val['code'];?>" data-status="<?php echo $val['point_status']?>" data-rel="tooltip" data-placement="top" data-original-title="报修">
                                                                 <i class="ace-icon fa fa-gavel bigger-130"></i>
                                                             </a>
                                                             <?php endif;?>
@@ -425,7 +425,7 @@
 	});
 
 	$('.see-report').on('click', function(){
-		layer.msg('请打开报损列表查看');
+		layer.msg('请打开报修列表查看');
 	});
     
     $('#houses').change(function(){
@@ -526,7 +526,7 @@
     //报修点位
     $('.report_img').on('click', function(){
 		var img = $(this).attr('img');
-		if(img == "") {layer.msg('该点位没有上传报损图片');return;}
+		if(img == "") {layer.msg('该点位没有上传报修图片');return;}
 		layer.open({
 			  type: 1,
 			  area: ['50%', '50%'], //宽高
@@ -540,7 +540,7 @@
 		var code = $(this).attr('point_code');
 		var status  =$(this).attr('data-status');
 		if(status == 3){
-			layer.alert('该点位已被占用，确认要提交报损吗？', function(){
+			layer.alert('该点位已被占用，确认要提交报修吗？', function(){
 				show_report_add(id, code);
 			});
 			return;
