@@ -257,8 +257,6 @@ class Task extends MY_Controller {
     	    'upload_path'   => '../../admin/uploads/'.$file_dir,
     			'allowed_types' => 'gif|jpg|jpeg|png',
     			'max_size'     => 1024*8,
-    			'max_width'    => 5000,
-    			'max_height'   => 5000,
     			'encrypt_name' => TRUE,
     			'remove_spaces'=> TRUE,
     			'use_time_dir'  => TRUE,      //是否按上传时间分目录存放
