@@ -119,7 +119,7 @@
             		<td width="20%"><?php  echo $value['code'];?></td>
            			<td width="30%"><?php echo $value['houses_name'].$value['houses_area_name'].$value['ban'].$value['unit'].$value['floor']?></td>
          			<?php if(!empty($value['img'])):?>
-         			<td width="30%"><img style="width:100%;" src="<?php echo $value['img'];?>"></td>
+         			<td width="30%"><img style="width:100%;" src="<?php echo get_adv_img( $value['img'],'common');?>"></td>
            			<?php else:?>
            			<td width="50%"></td>
            			<?php endif;?>
