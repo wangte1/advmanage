@@ -158,7 +158,6 @@
                                         <tbody>
                                         <?php
                                         if($list){
-                       
                                             foreach($list as $key=>$val){
                                                 ?>
                                                 <tr id="tr_<?php echo $val['id']?>">
