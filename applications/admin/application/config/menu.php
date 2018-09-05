@@ -290,6 +290,11 @@ $config = array(
                     'active' => 'login_android_list'
                 ),
                 array(
+                    'url' => '/operatelog/oss',
+                    'name' => 'oss上传列表',
+                    'active' => 'login_oss_list'
+                ),
+                array(
                     'url' => '/clear/index',
                     'name' => '清理临时数据',
                     'active' => 'login_clear_list'

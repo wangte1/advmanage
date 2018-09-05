@@ -12,7 +12,8 @@ class Operatelog extends MY_Controller{
             'Model_login_log' => 'Mlogin_log',
             'Model_admins_operate_log' => 'Moperate_log',
             'Model_admins' => 'Madmins',
-            'Model_admins_android_log' => 'Mandroid_log'
+            'Model_admins_android_log' => 'Mandroid_log',
+            'Model_file_oss_task' => 'Moss'
         ]);
         $this->pageconfig = C('page.page_lists');
         $this->load->library('pagination');
@@ -147,6 +148,38 @@ class Operatelog extends MY_Controller{
         $data["adminfullname"] = array_column($this->Madmins->get_lists("id,fullname",array()),"fullname","id");
         
         $this->load->view("log/operate",$data);
+    }
+    
+    public function oss(){
+        $data = $this->data;
+        $data['title'] = array("日志管理","oss上传列表");
+        //分页
+        $pageconfig = C('page.page_lists');
+        $install = C('install.install');
+        $this->load->library('pagination');
+        $page =  intval($this->input->get("per_page",true)) ?  : 1;
+        $size = $pageconfig['per_page'];
+        $where[1] = 1;
+        $local = trim($this->input->get("local"));
+        if($local){
+            $data['local'] = $local;
+            $where['like'] = ['local' => $local];
+        }
+        
+//         $data['list'] = $this->Moss->get_lists();
+        $data['list'] = $this->Moss->get_lists('*',$where,array("id"=>"desc"),$size,($page-1)*$size);
+        
+        //获取分页
+        $data_count = $this->Moss->count($where);
+        $data['page'] = $page;
+        $data['data_count'] = $data_count;
+        $pageconfig['base_url'] = "/operatelog/oss";
+        $pageconfig['total_rows'] = $data_count;
+        $this->pagination->initialize($pageconfig);
+        $data['pagestr'] = $this->pagination->create_links(); // 分页信息
+        $data['active'] = 'login_oss_list';
+        
+        $this->load->view("log/oss",$data);
     }
     
     public function androidlog(){
