@@ -97,11 +97,13 @@
 				<?php }?>
 			</tbody>
 		</table>
-		<div style="height: 50px;"></div>
+		<div style="height: 50px;">
+			<center>
+        		<button style="position: fixed;" class="sub-button" type="button">保存并通知</button>
+        	</center>
+		</div>
 	</div>
-	<center>
-		<button style="position: fixed;" class="sub-button" type="button">保存并通知</button>
-	</center>
+	
 </form>
 </div>
 
