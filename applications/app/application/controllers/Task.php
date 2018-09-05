@@ -21,6 +21,7 @@ class Task extends MY_Controller {
             'Model_houses_tour_points' => 'Mhouses_tour_points',
             'Model_houses_area' => 'Mhouses_area',
             'Model_houses' => 'Mhouses',
+            'Model_file_oss_task' => 'Mfile_oss_task',
             'Model_houses_customers' => 'Mhouses_customers',
             'Model_houses_work_order' => 'Mhouses_work_order',
             'Model_houses_points_report' => 'Mhouses_points_report',
@@ -270,9 +271,19 @@ class Task extends MY_Controller {
     	} else {
     		$data = $this->upload->data();
     		$name = $file_dir.$data['file_name'];
-    		$this->moveToOss($name);
+    		$this->add_task($name);//使用任务池模式解决阻塞问题
     		$this->return_json(array('code' => 1, 'url' => '/uploads/'.$name));
     	}
+    }
+    
+    public function add_task($path){
+        $allpath = C('root.path').$path;
+        $this->Mfile_oss_task->create(['local' => $allpath]);
+    }
+    
+    private function addRedisTask($path){
+        $allpath = C('root.path').$path;
+        $this->redis->lpush('imageOssTask', $allpath);
     }
     
     /**
@@ -307,10 +318,10 @@ class Task extends MY_Controller {
                 $ossclient->uploadFile($bucket, $ossFileName, $loclFileName);
                 return ['code' => 1, 'msg' => 'ok'];
             }catch (OssException $e){
-                return ['code' => 0, 'msg' => $e->getErrorMessage()];
+                return ['code' => 0, 'msg' => '超时 '.$e->getErrorMessage()];
             }
         }catch (OssException $e){
-            return ['code' => 0, 'msg' => $e->getErrorMessage()];
+            return ['code' => 0, 'msg' => '创建失败 '.$e->getErrorMessage()];
         }
     }
     

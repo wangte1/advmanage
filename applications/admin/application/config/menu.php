@@ -121,7 +121,7 @@ $config = array(
     		    
     		    array(
     		        'url'=>'/report_list',
-    		        'name'=> '报损列表',
+    		        'name'=> '报修列表',
     		        'active'=> 'houses_report_list'
     		    ),
     		    
@@ -288,6 +288,11 @@ $config = array(
                     'url' => '/operatelog/androidlog',
                     'name' => '安卓日志',
                     'active' => 'login_android_list'
+                ),
+                array(
+                    'url' => '/operatelog/oss',
+                    'name' => 'oss上传列表',
+                    'active' => 'login_oss_list'
                 ),
                 array(
                     'url' => '/clear/index',

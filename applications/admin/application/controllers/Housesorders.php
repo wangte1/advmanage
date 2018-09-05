@@ -948,6 +948,24 @@ class Housesorders extends MY_Controller{
         $list = array_chunk($data['points'], 80);
         $data['points_lists'] = $list;
         if($this->input->get("load")){
+            #先判断这些图片是否已经从oss下载完
+            $needDown = [];
+            $needDown = array_column($imglist, 'no_img');
+            
+            $number = 0;
+            
+            foreach ($needDown as $k => $v){
+                $v = trim($v, '/');
+                $rootDir = $_SERVER['DOCUMENT_ROOT']."/oss/";
+                $truePath = $rootDir.$v;
+                if(!file_exists($truePath)){
+                    $this->downloadFormOss($v);
+                    $number++;
+                }
+            }
+            if($number > 0){
+                echo "<h3>请等待还有{$number}张图片待准备 请等待几分钟</h3>";exit;
+            }
             $this->loadAll($list[$page-1], $page);
         }else{
             $this->load->view('housesorders/confirmation/imgpdf', $data);
@@ -1012,6 +1030,7 @@ class Housesorders extends MY_Controller{
                 $this->phpexcel->getActiveSheet(0)->getRowDimension($h)->setRowHeight(183);
                 if($v == "img" && !empty($val['img'])){
                     if(file_exists('.'.$val['img']) && is_readable('.'.$val['img'])){
+                        $val['img'] = '/oss/'.trim($val['img'], '/');
                         $objDrawing[$k] = new PHPExcel_Worksheet_Drawing();
                         $objDrawing[$k]->setPath(".".$val['img']);
                         $objDrawing[$k]->setCoordinates('D'.($h));
@@ -1066,6 +1085,26 @@ class Housesorders extends MY_Controller{
                 $imglist = $this->Mhouses_work_order_detail->get_lists('point_id, no_img, pano_img,status,pano_status,is_news_hand_img', ['in' => ['pid' => $pids]]);
             }
         }
+        
+        #先判断这些图片是否已经从oss下载完
+        $needDown1 = $needDown2 = [];
+        $needDown1 = array_column($imglist, 'no_img');
+        $needDown2 = array_column($imglist, 'pano_img');
+        $needDown = array_merge($needDown1, $needDown2);
+        $number = 0;
+        
+        foreach ($needDown as $k => $v){
+            $v = trim($v, '/');
+            $rootDir = $_SERVER['DOCUMENT_ROOT']."/oss/";
+            $truePath = $rootDir.$v;
+            if(!file_exists($truePath)){
+                $this->downloadFormOss($v);
+                $number++;
+            }
+        }
+        if($number > 0){
+            echo "<h3>请等待还有{$number}张图片待准备 请等待几分钟</h3>";exit;
+        }
         //获取点位列表
         $where['in'] = array('A.id' => explode(',', $data['info']['point_ids']));
         $data['points'] = $pointList = $this->Mhouses_points->get_points_lists($where);
@@ -1102,17 +1141,20 @@ class Housesorders extends MY_Controller{
                 if($v['houses_id'] == $v1['houses_id']){
                     if(!empty($v1['no_img'])){
                         if($v['no_img'] == ""){
-                            $tmp[$k]['no_img'] = $v1['no_img'];
+                            $v1['no_img'] = trim($v1['no_img'], '/');
+                            $tmp[$k]['no_img'] = '/oss/'.$v1['no_img'];
                         }
                     }
                     if($v1['pano_img']){
                         if($v['pano_img'] == ""){
-                            $tmp[$k]['pano_img'] = $v1['pano_img'];
+                            $v1['pano_img'] = trim($v1['pano_img'], '/');
+                            $tmp[$k]['pano_img'] = '/oss/'.$v1['pano_img'];
                         }
                     }
                     if($v1['is_news_hand_img'] == 1){
                         if($v['news_img'] == ""){
-                            $tmp[$k]['news_img'] = $v1['pano_img'];
+                            $v1['pano_img'] = trim($v1['pano_img'], '/');
+                            $tmp[$k]['news_img'] = '/oss/'.$v1['pano_img'];
                         }
                     }
                 }
@@ -1243,7 +1285,25 @@ class Housesorders extends MY_Controller{
                 $imglist = $this->Mhouses_work_order_detail->get_lists('point_id,no_img, pano_img', ['in' => ['pid' => $pids]]);
             }
         }
-
+        #先判断这些图片是否已经从oss下载完
+        $needDown1 = $needDown2 = [];
+        $needDown1 = array_column($imglist, 'no_img');
+        $needDown = array_merge($needDown1, $needDown2);
+        $number = 0;
+        
+        foreach ($needDown as $k => $v){
+            $v = trim($v, '/');
+            $rootDir = $_SERVER['DOCUMENT_ROOT']."/oss/";
+            $truePath = $rootDir.$v;
+            if(!file_exists($truePath)){
+                $this->downloadFormOss($v);
+                $number++;
+            }
+        }
+        if($number > 0){
+            echo "<h3>请等待几分钟还有{$number}张图片待准备</h3>";exit;
+        }
+        
         //获取点位列表
         $where['in'] = array('A.id' => explode(',', $data['info']['point_ids']));
         $data['points'] = $pointList = $this->Mhouses_points->get_points_lists($where);
@@ -1258,7 +1318,7 @@ class Housesorders extends MY_Controller{
             }
         }
         
-        $imgDir = '/mnt/www/advmanage/applications/admin';
+        $imgDir = '/mnt/www/advmanage/applications/admin/oss/';
         $saveDir = '/mnt/www/advmanage/applications/admin/excel/';
         $tmpDirName = date('Ymd').'/'.$this->data['userInfo']['id'];
         $allPath = $saveDir.$tmpDirName;
@@ -1269,6 +1329,7 @@ class Housesorders extends MY_Controller{
         $num = 0;
         foreach ($data['points'] as $k => $v){
             if(!empty($v['img'])){
+                $v['img'] = trim($v['img'], '/');
                 $copyName = $v['houses_name'].'-'.$v['code'].'.jpg';
                 $cmd = 'cp '.$imgDir.$v['img'].' '.$allPath.'/'.$copyName;
                 exec($cmd);
@@ -2586,6 +2647,31 @@ class Housesorders extends MY_Controller{
             }
         }
     }
-
+    
+    private function downloadFormOss($fileName){
+        //计算并创建文件将下载到的目录
+        $fileName = trim($fileName, '/');
+        $arr = explode('/', $fileName);
+        unset($arr[count($arr) -1]);
+        $fileDir = implode('/', $arr);
+        $rootDir = $_SERVER['DOCUMENT_ROOT']."/oss/".$fileDir;
+        if(!file_exists($rootDir)){
+            mkdir($rootDir,0777, true);
+        }
+        $client= new swoole_client(SWOOLE_SOCK_TCP);
+        if(!$client->connect('127.0.0.1', 9504, 1)){
+            throw new Exception(sprintf('Swoole Error: %s', $client->errCode));
+        }
+        if($client->isConnected()){
+            $data = json_encode(['fileName' => $fileName]);
+            if($client->send($data)){
+                $client->close();
+            }else{
+                throw new Exception(sprintf('Swoole Error: %s', $client->errCode));
+            }
+        }else{
+            throw new Exception('Swoole Server does not connected.');
+        }
+    }
 }
 

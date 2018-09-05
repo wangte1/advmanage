@@ -139,6 +139,7 @@ $(function(){
 		window.parent.$('#charge_<?php echo $houses_id;?>').val(charge_str);
 		window.parent.$('#remark_<?php echo $houses_id;?>').val(remark_str);
 		window.parent.$('#ban_count_<?php echo $houses_id;?>').val(ban_count);
+		window.parent.auto();
 	}
 });
 
