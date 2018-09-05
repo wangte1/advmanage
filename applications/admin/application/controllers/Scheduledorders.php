@@ -133,6 +133,7 @@ class Scheduledorders extends MY_Controller{
      * 获取点位列表和数量
      */
     public function get_points() {
+        $data = $this->data;
         $where['A.is_lock'] = 0;
         if($this->input->post('media_type')) $where['B.type'] = $this->input->post('media_type');
         if($this->input->post('media_id')) $where['A.media_id'] = $this->input->post('media_id');
@@ -146,7 +147,13 @@ class Scheduledorders extends MY_Controller{
                     $class = 'badge-danger';
                     break;
             }
-            $points_lists[$key]['point_status'] = '<span class="badge '.$class.'">'.C('public.points_status')[$value['point_status']].'</span>';
+            $points_lists[$key]['customer_name']='';
+            foreach ($data['customers'] as $k=> $val){
+                if($val['id']==$value['customer_id']){
+                    $points_lists[$key]['customer_name']=$val['customer_name'];                  
+                }
+            }
+            $points_lists[$key]['point_status'] = '<span class="badge '.$class.'">'.$points_lists[$key]['customer_name'].' '.C('public.points_status')[$value['point_status']].'</span>';
         }
         $this->return_json(array('flag' => true, 'points_lists' => $points_lists, 'count' => count($points_lists)));
     }
