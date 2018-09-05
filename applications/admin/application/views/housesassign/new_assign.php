@@ -24,6 +24,11 @@
 <div class="main-container" id="main-container">
 <form class="form-horizontal" role="form" method="post">
 	<input type="hidden" name="order_id" value="<?php echo $order_id;?>">
+	<div style="text-align: center;">
+	<?php foreach ($user_list as $k1 => $v1):?>
+		<div class="btn btn-default"><?php echo $v1?>： <span id= "pre_num_<?php echo $k1;?>">0</span> 个</div>
+    <?php endforeach;?>  
+	</div>
 	<div id="table-panel">
 	    <table id="sample-table-1" class="table table-striped table-bordered table-hover" >
 			<thead>
@@ -122,7 +127,7 @@ $(function(){
 			  title: '按楼栋派单',
 			  shadeClose: true,
 			  shade: 0.6,
-			  area: ['90%', '90%'],
+			  area: ['90%', '95%'],
 			  content: '/housesassign/show_ban?order_id='+order_id+'&houses_id='+houses_id+'&charge_id_str='+charge_id_str+'&assign_type='+assign_type+'&remark_str='+remark_str //iframe的url
 		}); 
 	});
@@ -156,7 +161,8 @@ $(function(){
 			}
 			
 		<?php }?>
-
+		//当页面数据发送变化时，发起请求获取统计数据
+		auto();
 	});
 	
 	$('.sub-button').click(function(){
@@ -180,7 +186,19 @@ $(function(){
 			 	$('form').submit();
 			});
 	});
+
 });
+function auto(){
+	var data = $('form').serialize();
+	$.post('/housesassign/statistical', data, function(data){
+		if(data.code == 1){
+			var _data = data.list;
+			$.each(_data, function(i,item){
+				$('#pre_num_'+item['id']).text(item['count']);
+			});
+		}
+	});
+}
 
 </script>
 <!-- 底部 -->

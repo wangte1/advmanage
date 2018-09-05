@@ -991,6 +991,121 @@ class Housesassign extends MY_Controller{
         }
         
     }
+    
+    public function statistical(){
+        $data = $this->data;
+        if ($this->input->get('order_id')) {
+            $data['order_id'] =  $this->input->get('order_id');
+        }
+        $assign_type = $this->input->get('assign_type');
+        if($assign_type == 3) {
+            //换画
+            $tmp_moudle = $this->Mhouses_changepicorders;
+        }else {
+            //1上画，2下画
+            $tmp_moudle = $this->Mhouses_orders;
+        }
+        if(IS_POST){
+            $post_data = $this->input->post();
+            $order_id = $this->input->post('order_id');
+            $houses_ids = $this->input->post('houses_id');
+            $points_counts = $this->input->post('points_count');
+            $charge_users = $this->input->post('charge_user');
+            $remark = $this->input->post('remark');
+            
+            $add_data = [];
+            $tmp_arr = [];
+            $i = $j = 0;
+            foreach ($houses_ids as $k => $v) {
+                
+                if($charge_users[$k] == '') {	//通过楼栋派单
+                    $tmp1 = array_filter(explode(',', $post_data['ban_charge'][$k]));
+                    $tmp2 = explode(',', $post_data['ban_remark'][$k]);
+                    $tmp3 = explode(',', $post_data['ban'][$k]);
+                    $tmp4 = explode(',', $post_data['ban_count'][$k]);
+                    $tmp5 = explode(',', $post_data['area_id'][$k]);
+                    foreach($tmp1 as $k1 => $v1) {
+                        $tmp_arr[$j]['type'] = $assign_type;
+                        $tmp_arr[$j]['order_id'] = $order_id;
+                        $tmp_arr[$j]['houses_id'] = $v;
+                        $tmp_arr[$j]['area_id'] = $tmp5[$k1];
+                        $tmp_arr[$j]['ban'] = $tmp3[$k1];
+                        $tmp_arr[$j]['points_count'] = $tmp4[$k1];
+                        $tmp_arr[$j]['charge_user'] = $v1;
+                        $tmp_arr[$j]['assign_user'] = $data['userInfo']['id'];
+                        $tmp_arr[$j]['assign_time'] = date("Y-m-d H:i:s");
+                        if(isset($tmp2[$k1])) {
+                            $tmp_arr[$j]['remark'] = $tmp2[$k1];
+                        }
+                        $j++;
+                    }
+                }else {
+                    $add_data[$i]['type'] = $assign_type;
+                    $add_data[$i]['order_id'] = $order_id;
+                    $add_data[$i]['houses_id'] = $v;
+                    $add_data[$i]['area_id'] = 0;
+                    $add_data[$i]['ban'] = '';
+                    $add_data[$i]['points_count'] = $points_counts[$k];
+                    $add_data[$i]['charge_user'] = $charge_users[$k];
+                    $add_data[$i]['assign_user'] = $data['userInfo']['id'];
+                    $add_data[$i]['assign_time'] = date("Y-m-d H:i:s");
+                    if(isset($remark[$k])) {
+                        $add_data[$i]['remark'] = $remark[$k];
+                    }
+                    $add_data[$i]['type'] = $this->input->get('assign_type');
+                }
+                $i++;
+            }
+            
+            if(count($tmp_arr) > 0) {
+                $add_data = array_merge_recursive($add_data,$tmp_arr);
+            }
+            //获取工程组长各自分配好的点位；
+            $group_data = [];
+            $group = array_unique(array_column($add_data, 'charge_user'));
+            //初始化组长数据
+            foreach ($group as $k => $v){
+                $group_data[$k]['id'] = $v;
+                $group_data[$k]['houses_ids'] = '';
+            }
+            
+            //匹配各个组长应分配的点位
+            $orderInfo = $tmp_moudle->get_one('*', ['id' => $order_id]);
+            $point_ids = array_unique(explode(',', $orderInfo['point_ids']));
+            $point_lists = $this->Mhouses_points->get_lists('*', ['in' => ['id' => $point_ids]]);
+            foreach ($group_data as $k => $v){
+                foreach ($add_data as $key => $val){
+                    if($val['charge_user'] == $v['id']){
+                        foreach ($point_lists as $keys => $vals){
+                            //如果一个人负责了一个楼盘
+                            if($val['area_id'] == "" && $val['ban'] ==""){
+                                if($vals['houses_id'] == $val['houses_id']){
+                                    $group_data[$k]['point_ids'][] = $vals['id'];
+                                }
+                            }
+                            //多人负责
+                            if($vals['houses_id'] == $val['houses_id'] && $vals['area_id'] == $val['area_id'] && $vals['ban'] == $val['ban']){
+                                $group_data[$k]['point_ids'][] = $vals['id'];
+                            }
+                        }
+                    }
+                }
+            }
+            $return_list = [];
+            if(empty($group_data)){
+                $this->return_json(['code' => 0, 'list'=> []]);
+            }
+            foreach ($group_data as $k => $v){
+                $arr = [
+                    'id' => $v['id'],
+                    'count' => count($v['point_ids'])
+                ];
+                $return_list[$k] = $arr;
+            }
+            unset($group_data);
+            $this->return_json(['code' => 1, 'list'=> $return_list]);
+        }
+    }
 
 }
 
