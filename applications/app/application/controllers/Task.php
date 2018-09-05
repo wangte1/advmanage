@@ -270,9 +270,14 @@ class Task extends MY_Controller {
     	} else {
     		$data = $this->upload->data();
     		$name = $file_dir.$data['file_name'];
-    		$this->moveToOss($name);
+    		$this->addRedisTask($name);//使用任务池模式解决阻塞问题
     		$this->return_json(array('code' => 1, 'url' => '/uploads/'.$name));
     	}
+    }
+    
+    private function addRedisTask($path){
+        $allpath = C('root.path').$path;
+        $this->redis->lpush('imageOssTask', $allpath);
     }
     
     /**
@@ -307,10 +312,10 @@ class Task extends MY_Controller {
                 $ossclient->uploadFile($bucket, $ossFileName, $loclFileName);
                 return ['code' => 1, 'msg' => 'ok'];
             }catch (OssException $e){
-                return ['code' => 0, 'msg' => $e->getErrorMessage()];
+                return ['code' => 0, 'msg' => '超时 '.$e->getErrorMessage()];
             }
         }catch (OssException $e){
-            return ['code' => 0, 'msg' => $e->getErrorMessage()];
+            return ['code' => 0, 'msg' => '创建失败 '.$e->getErrorMessage()];
         }
     }
     
