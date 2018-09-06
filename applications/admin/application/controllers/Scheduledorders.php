@@ -153,7 +153,7 @@ class Scheduledorders extends MY_Controller{
                     $points_lists[$key]['customer_name']=$val['customer_name'];                  
                 }
             }
-            $points_lists[$key]['point_status'] = '<span class="badge '.$class.'">'.$points_lists[$key]['customer_name'].' '.C('public.points_status')[$value['point_status']].'</span>';
+            $points_lists[$key]['point_status'] = '<span class="badge '.$class.'">'.$points_lists[$key]['customer_name'].C('public.points_status')[$value['point_status']].'</span>';
         }
         $this->return_json(array('flag' => true, 'points_lists' => $points_lists, 'count' => count($points_lists)));
     }
