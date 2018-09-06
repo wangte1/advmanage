@@ -97,11 +97,13 @@
 				<?php }?>
 			</tbody>
 		</table>
-		<div style="height: 50px;"></div>
+		<div style="height: 50px;">
+			<center>
+        		<button class="sub-button" type="button">确认分配</button>
+        	</center>
+		</div>
 	</div>
-	<center>
-		<button style="position: fixed;" class="sub-button" type="button">确认分配</button>
-	</center>
+	
 </form>
 </div>
 
