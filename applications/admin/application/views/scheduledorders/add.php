@@ -7,9 +7,19 @@
     }
     #scrollTable .div-thead {
     }
-    #scrollTable .div-tbody{
+    #scrollTable .div-tbody{ 
+      width:100%; 
+      height:450px; 
+       overflow:auto; 
+     } 
+ #scrollTable .div-thead{
       width:100%;
       height:450px;
+      overflow:auto;
+    }
+ #scrollTable .div-thead1{
+      width:100%;
+      height:1000px;
       overflow:auto;
     }
     .table thead>tr>th, .table tbody>tr>th, .table tfoot>tr>th, .table thead>tr>td, .table tbody>tr>td, .table tfoot>tr>td {
@@ -157,10 +167,9 @@
                                                                                 <th class="col-sm-2 center"><button class="btn btn-xs btn-info select-all" type="button" data-id="3">选择全部<i class="icon-arrow-right icon-on-right"></i></button></th>
                                                                             </tr>
                                                                         </thead>
-                                                                    </table>
-                                                                </div>
-                                                                <div class="div-tbody">
-                                                                    <table id="sample-table-1" class="table table-striped table-bordered table-hover">
+<!--                                                                    </table>                                                               </div> -->
+<!--                                                               <div class="div-tbody">  -->
+<!--                                                                    <table id="sample-table-1" class="table table-striped table-bordered table-hover">  -->
                                                                         <tbody id="points_lists">
                                                                         </tbody>
                                                                     </table>
@@ -216,10 +225,10 @@
                                 </span>
                             </div>
 
-                            <div class="widget-body" style="height:1538px">
+                            <div class="widget-body" style="height:1052px">
                                 <div class="widget-main">
                                     <div id="scrollTable">
-                                        <div class="div-thead">
+                                        <div class="div-thead1">
                                             <table id="sample-table-1" class="table table-striped table-bordered table-hover">
                                                 <thead>
                                                     <tr>
@@ -230,10 +239,10 @@
                                                         <th class="col-sm-2"><button class="btn btn-xs btn-info remove-all" type="button">移除全部<i class="fa fa-remove" aria-hidden="true"></i></button></th>
                                                     </tr>
                                                 </thead>
-                                            </table>
-                                        </div>
-                                        <div class="div-tbody" style="height: 1466px">
-                                            <table id="sample-table-1" class="table table-striped table-bordered table-hover">
+<!--                                             </table> -->
+<!--                                         </div> -->
+                                      
+<!--                                             <table id="sample-table-1" class="table table-striped table-bordered table-hover"> -->
                                                 <tbody id="selected_points">
                                                     <?php if(isset($selected_points)):?>
                                                         <?php foreach($selected_points as $value):?>
