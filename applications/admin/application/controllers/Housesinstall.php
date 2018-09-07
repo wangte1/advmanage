@@ -11,6 +11,9 @@ class Housesinstall extends MY_Controller{
         $this->load->model([
             'Model_houses' => 'Mhouses',
             'Model_admins' => 'Madmins',
+            'Model_houses_linkman' => 'Mhouses_linkman',
+            'Model_houses_area' => 'Mhouses_area'
+            
          ]);
         $this->data['code'] = 'community_manage';
         $this->data['active'] = 'houses_install_list';
@@ -69,6 +72,46 @@ class Housesinstall extends MY_Controller{
         $data['houses_grade'] = C("public.houses_grade");
         
         $this->load->view("housesinstall/index",$data);
+    }
+    
+    /**
+     * 楼盘安装详情查看
+     */
+    public function houses_detail($houses_id) {
+        $data = $this->data;
+        $where['A.houses_id'] = $houses_id;
+        
+        //$data['list'] = $this->Mhouses_linkman->get_houses_linkmans($where,[]);
+//         $this->Mhouses_linkman->get_lists('*',$where2)
+        $data['list'] = $this->Mhouses_linkman->get_houses_linkmans($where,[]);
+        $area_ids = array_column($data['list'], 'area_id');
+        $area_ids = array_unique($area_ids);
+        $temp_area = $this->Mhouses_area->get_lists('*',['in' => ['id' => $area_ids]]);
+        foreach ($data['list'] as $k => $v){
+            $data['list'][$k]['area_name'] = '';
+            foreach ($temp_area as $k1 => $v1){
+                if($v['area_id'] == $v1['id']){
+                    $data['list'][$k]['area_name'] = $v1['name'];
+                }
+            }
+        }
+        $data['data_count'] = count($data['list']);
+        
+        $this->load->view('housesinstall/houses_detail', $data);
+    }
+    /**
+     * ajax更新数据
+     */
+    public function ajax_update(){
+        $id = $this->input->post('id');
+        $data['linkman'] = $this->input->post('name');
+        $data['linkman_tel'] = $this->input->post('tel');
+        $data['linkman_duty'] = $this->input->post('duty');
+        $res = $this->Mhouses_linkman->update_info($data,['id' => $id]);
+        if(!$res){
+            $this->return_json(['code' => 0,'msg' => '更新失败']);
+        }
+        $this->return_json(['code' => 1,'msg' => '更新成功']);
     }
     
     /*
