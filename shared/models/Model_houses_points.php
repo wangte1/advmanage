@@ -11,7 +11,6 @@ class Model_houses_points extends MY_Model {
             'Model_houses_orders' => 'Mhouses_orders'
         ]);
     }
-    
     /*
      * 获取投放点位列表
      */

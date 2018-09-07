@@ -416,6 +416,44 @@ class Housesconfirm extends MY_Controller{
             //提取点位id
             $point_ids = array_column($point_list, 'point_id');
             $list = $this->Mhouses_points->get_points_lists(['in' => ['A.id' => $point_ids]]);
+            $case = '';
+            if(strpos($list[0]['code'],'G') !== false){
+                //var_dump('可以，这是一组广告机');
+                foreach ($list as $k => $v){
+                    $temp[$k] = $v['customer_id'];
+                    $temp[$k] = substr($temp[$k], 1);
+                    //$case = array_merge($case,$temp[$k]);
+                    $list[$k]['customer_ids'] = $temp[$k];
+                    $case = $case . $temp[$k] . ',';
+                    $list[$k]['customer_ids'] = explode(',', $list[$k]['customer_ids']);
+                }
+                $arr = explode(',', $case);
+                $arr = array_unique($arr);
+                $arr = array_values($arr);
+                array_pop($arr);
+                $where['in']['id'] = $arr;
+                $res = $this->Mhouses_customers->get_lists('name',$where);
+                $temparr = [];
+                foreach ($arr as $k => $v){
+                    $temparr[$v] = $res[$k];
+                }
+                foreach ($list as $k => $v){
+                    $list[$k]['kf'] = '';
+                    foreach ($temparr as $k1 => $v1){
+                        foreach ($list[$k]['customer_ids'] as $k2 => $v2){
+                            if($v2 == $k1){
+                                //$list[$k]['kf'] = $list[$k]['kf'] . $v1;
+                                $list[$k]['kf'] .= $v1['name'] . ',';
+                            }
+                        }
+                    }
+                    unset($list[$k]['customer_ids']);
+                }
+            }else{
+                foreach ($list as $k => $v){
+                    $list[$k]['kf'] = "";
+                }
+            }
             //获取客户信息
             $workOrder = $this->Mhouses_work_order->get_one('customer_id, charge_user', ['id' => $pid]);
             //获取工程人员信息
@@ -432,7 +470,8 @@ class Housesconfirm extends MY_Controller{
                     '楼栋'=>"ban",
                     '单元'=>"unit",
                     '楼层'=>"floor",
-                    '点位位置'=>"addr"
+                    '点位位置'=>"addr",
+                    '客户'=>'kf'
                 );
                 //设置表格标题格式 客户-点位数-上画人
                 $num = count($table_header) -1;
@@ -478,7 +517,6 @@ class Housesconfirm extends MY_Controller{
                     }
                     $h++;
                 }
-                
                 $this->phpexcel->setActiveSheetIndex(0);
                 // 输出
                 header('Content-Type: application/vnd.ms-excel');
