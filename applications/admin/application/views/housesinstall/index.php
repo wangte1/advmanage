@@ -145,6 +145,9 @@
                                                     <td><?php echo $val['install_jointer'];?></td>
                                                     <td><?php echo $val['can_install_date'];?></td>
                                                     <td>
+                                                    	<a class="green tooltip-info" onclick="show_points_detail(<?php echo $val['id'];?>);" href="#" data-rel="tooltip" data-placement="top" data-original-title="查看">
+                                                            <i class="icon-eye-open bigger-130"></i>
+                                                        </a>
                                                         <div class="visible-md visible-lg hidden-sm hidden-xs action-buttons">
                                                             <a class="green tooltip-info" href="/housesinstall/edit/<?php echo $val['id'];?>" data-rel="tooltip" data-placement="top" data-original-title="修改">
                                                                 <i class="icon-pencil bigger-130"></i>
@@ -166,7 +169,18 @@
         </div>
     </div>
 </div>
-
+<script>
+function show_points_detail(houses_id) {
+	layer.open({
+		  type: 2,
+		  title: '点位详情',
+		  shadeClose: true,
+		  shade: 0.8,
+		  area: ['70%', '70%'],
+		  content: '/housesinstall/houses_detail/'+houses_id//iframe的url
+		}); 
+}
+</script>
 <!-- 加载尾部公用js -->
 <?php $this->load->view("common/footer");?>
 
