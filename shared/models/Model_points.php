@@ -132,7 +132,7 @@ class Model_points extends MY_Model {
      * 获取投放点位列表
      */
     public function get_points_lists($where = array()){
-    	$this->db->select('A.id, A.points_code, A.price, A.address, A.point_status, B.code AS media_code, B.name AS media_name, C.name as specification_name, C.size');
+    	$this->db->select('A.id,A.customer_id,A.points_code, A.price, A.address, A.point_status, B.code AS media_code, B.name AS media_name, C.name as specification_name, C.size');
 		$this->db->from('t_points A');
         $this->db->join('t_medias B', 'A.media_id = B.id');
 		$this->db->join('t_specifications C', 'A.specification_id = C.id');
