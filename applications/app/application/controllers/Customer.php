@@ -119,6 +119,83 @@ class Customer extends MY_Controller {
     }
     
     /**
+     * 待审核的客户列表
+     */
+    public function check_customer_list(){
+        $data = $this->data;
+        $pageconfig = C('page.page_lists');
+        $this->load->library('pagination');
+        $page = (int) $this->input->get_post('page') ? : '1';
+        $size = (int) $this->input->get_post('size');
+        if(!$size) $size = $pageconfig['per_page'];
+        
+        $where = ['is_del' => 0, 'is_self' => 0, 'is_check' => 0];
+        $name = trim($this->input->get_post('name'));
+        if($name) $where['like']['name'] = $name;
+        $fields = "id,name,customer_type,salesman_id";
+        $list = $this->Mhouses_customers->get_lists($fields , $where, [], $size, ($page-1)*$size);
+        if(!$list) $this->return_json(['code' => 0, 'msg' => "暂无数据"]);
+        //提取业务员ids
+        $salesman_ids = array_column($list, 'salesman_id');
+        $salesman_list = $this->Madmins->get_lists('id, fullname', ['in' => ['id' => $salesman_ids]]);
+        //数据初始化
+        foreach ($list as $k => $v){
+            $list[$k]['salesman_name'] = '';
+        }
+        if($salesman_list){
+            foreach ($list as $k => $v){
+                foreach ($salesman_list as $key => $val){
+                    if($v['salesman_id'] == $val['id']){
+                        $list[$k]['salesman_name'] = $val['fullname'];break;
+                    }
+                }
+            }
+        }
+        $this->return_json(['code' => 1, 'data' => $list, 'msg' => 'ok', 'page' => $page]);
+    }
+    
+    /**
+     * 客户详情
+     */
+    public function detail(){
+        $id = (int) $this->input->get_post('id');
+        $where = ['id' => $id, 'is_check' => 0];
+        $field = "id,name,type,enterprise_type,customer_type,city,area,salesman_id,remarks";
+        $info = $this->Mhouses_customers->get_one($field, $where);
+        if(!$info) $this->return_json(['code' => 0, 'msg' => "暂无数据", 'data' => []]);
+        #获取业务员名字
+        $info['salesman_name'] = "";
+        if($info['salesman_id']){
+            $customer = $this->Madmins->get_one("fullname", ['id' => $info['salesman_id']]);
+            if($customer){
+                $info['salesman_name'] = $customer['fullname'];
+            }
+        }
+        $type = C('public.houses_customer_type');
+        if(isset($type[$info['type']])){
+            $info['type'] = $type[$info['type']];      
+        }
+        $this->return_json(['code' => 1, 'data' => $info, 'msg' => "ok"]);   
+    }
+    
+    /**
+     * 点击审核
+     */
+    public function check(){
+        $id = (int) $this->input->get_post('id');
+        $where = ['id' => $id, 'is_check' => 0];
+        $count = $this->Mhouses_customers->count($where);
+        if($count){
+            $token = decrypt($this->token);
+            $res = $this->Mhouses_customers->update_info(['is_check' => 1, 'check_id' => $token['user_id']], $where);
+            if($res){
+                $this->return_json(['code' => 1, 'msg' => "操作成功"]);
+            }
+        }
+        $this->return_json(['code' => 0, 'msg' => "操作失败"]);
+    }
+    
+    /**
      * 返回客户类型配置文件
      */
     public function getConfig(){
