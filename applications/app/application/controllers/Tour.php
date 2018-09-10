@@ -371,11 +371,16 @@ class Tour extends MY_Controller {
         $token = decrypt($this->token);
         $report_img = $this->input->get_post('report_img');
         $point_id = $this->input->get_post('point_id');
-        $count = $this->Mhouses_points_report->count(['point_id' => $point_id, 'repair_time' => 0]);
+        //判断是否有过报损记录
+        $count = $this->Mhouses_points_report->count(['point_id' => $point_id]);
         if($count){
-            $operate_content = "该点位id{$point_id}已报损，请勿重复提交";
-            $this->write_log($token['user_id'], 1, $operate_content);
-            $this->return_json(['code' => 0, 'msg' => $operate_content]);
+            //判断报损记录里是否有未修复的，有责不运行提交
+            $count = $this->Mhouses_points_report->count(['point_id' => $point_id, 'repair_time' => 0]);
+            if($count){
+                $operate_content = "该点位id{$point_id}已报损，请勿重复提交";
+                $this->write_log($token['user_id'], 1, $operate_content);
+                $this->return_json(['code' => 0, 'msg' => $operate_content]);
+            }
         }
         if(!$report_img){
             $operate_content = "点位id{$point_id}报损，请拍照上传图片";
