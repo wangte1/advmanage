@@ -389,7 +389,7 @@ class MY_Controller extends CI_Controller {
      */
     public function doCheckToken($token){
         if(!$this->checkToken($token)){
-           $this->return_json(['code' => -1, '登录信息已过期，请重新登录']); 
+           $this->return_json(['code' => -1, 'msg'=> '登录信息已过期，请重新登录']); 
         }
     }
     
