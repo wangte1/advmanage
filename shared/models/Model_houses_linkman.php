@@ -1,9 +1,6 @@
 <?php if (!defined('BASEPATH')) exit('No direct script access allowed');
-
 class Model_houses_linkman extends MY_Model {
-
     private $_table = 't_houses_linkman';
-
     public function __construct() {
         parent::__construct($this->_table);
     }
@@ -74,4 +71,4 @@ class Model_houses_linkman extends MY_Model {
         if(!$result) return [];
         return $result->result_array();
     }
-}
+} 
