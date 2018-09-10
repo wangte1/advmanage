@@ -269,24 +269,18 @@ class Housesconfirm extends MY_Controller{
     	$this->load->library('pagination');
     	$page =  intval($this->input->get("per_page",true)) ?  : 1;
     	$size = $pageconfig['per_page'];
-    	$data['type'] = $type = $this->input->get('type');
-    	$data['id'] = $id = $this->input->get('id');
-    	$workDetailList = $this->Mhouses_work_order_detail->get_lists("*", ['pid' => $id], [], $size, ($page-1)*$size);
-        //提取点位
-        $point_ids = array_column($workDetailList, 'point_id');
-    	
-        $data['list'] = $list = $this->Mhouses_points->get_points_lists(['in' => ['A.id' => $point_ids]]);
-
-        foreach ($list as $k => $v){
-            foreach ($workDetailList as $key => $val){
-                if($v['id'] == $val['point_id']){
-                    $data['list'][$k]['status'] = $val['status'];
-                    $data['list'][$k]['no_img'] = $val['no_img'];
-                    $data['list'][$k]['pano_img'] = $val['pano_img'];
-                }
-            }
-        }
-        $data['data_count'] = $this->Mhouses_work_order_detail->count(['pid' => $id]);
+    	$data['id'] = $where['A.pid'] = $this->input->get('id');
+    	if($this->input->get('point_code')){
+    	    $data['point_code'] = $this->input->get('point_code');
+    	    $where['B.code'] = $this->input->get('point_code');
+    	}
+    	if($this->input->get('houses_name')){
+    	    $data['houses_name'] = $this->input->get('houses_name');
+    	    $where['like']['B.houses_name'] = $this->input->get('houses_name');
+    	}
+    	$data['list'] = $this->Mhouses_work_order_detail->get_points_lists($where, [], $size, ($page-1)*$size);
+    	$temp = $this->Mhouses_work_order_detail->get_points_lists($where);
+    	$data['data_count'] = count($temp);
     	//获取分页
     	$pageconfig['base_url'] = "/housesconfirm/check_upload_img";
     	$pageconfig['total_rows'] = $data['data_count'];
