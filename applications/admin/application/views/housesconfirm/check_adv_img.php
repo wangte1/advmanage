@@ -33,71 +33,114 @@
 
 
             <div class="page-content">
-				<div class="row" style="height:50px;padding-left: 12px;">
-					<a href="javascript:;" class="btn btn-xs btn-info btn-export"  style="margin-bottom:10px">
+            	<div class="page-header">
+            		<a href="javascript:;" class="btn btn-xs btn-info btn-export"  style="margin-bottom:10px">
                          <i class="fa fa-download out_excel" aria-hidden="true"></i> 导出点位
                     </a>
-				</div>
-                <div class="row">
-                    <form action="" method="post">
-                        <div class="col-xs-12 table-responsive">
-                            <div class="row-fluid" style="margin-bottom: 100px;">
-                                <table class="table table-striped table-bordered table-hover">
-                                    <thead>
-                                        <tr>
-                                        	<th  nowrap>点位编号</th>
-                                        	<th class="center" nowrap>楼盘</th>
-                                            <th class="center" nowrap>组团</th>
-                                            <th class="center" nowrap>楼栋</th>
-                                            <th class="center" nowrap>单元</th>
-                                            <th class="center" nowrap>楼层</th>
-                                            <th class="center" nowrap>点位位置</th>
-                                            <th style="width:20%;" class="center" nowrap>图片</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody id="layer-photos-demo" class="layer-photos-demo">
-                                        <?php if(isset($list))foreach ($list as $key => $value) :?>
-                                        <tr>
-                                        	<td  style="text-align: center;vertical-align: middle;"><?php echo $value['code'];?></td>
-                                            <td  style="text-align: center;vertical-align: middle;"><?php echo $value['houses_name'];?></td>
-                                            <td  style="text-align: center;vertical-align: middle;"><?php echo $value['houses_area_name'];?></td>
-                                            <td  style="text-align: center;vertical-align: middle;"><?php echo $value['ban'];?></td>
-                                            <td  style="text-align: center;vertical-align: middle;"><?php echo $value['unit'];?></td>
-                                            <td  style="text-align: center;vertical-align: middle;"><?php echo $value['floor'];?></td>
-                                            
-                                            <td style="text-align: center;vertical-align: middle;"><?php if(isset($point_addr[$value['addr']])) echo $point_addr[$value['addr']];?></td>
-                                            <td class="center">
-                                                <?php 
-                                                	switch ($value['status']){
-                                                	    case 0 :
-                                                	        $msg = "未上传未审核";
-                                                	        break;
-                                                	    case 1 :
-                                                	        $msg = '<img style="width:120px;" src="'.get_adv_img($value["no_img"], "thumb").'" layer-src="'.get_adv_img($value["no_img"]).'" alt="点位编号：'.$value['code'].'"/>';
-                                                	        if($value['pano_img']){
-                                                	            $str = '<img style="width:120px;" layer-src="'.get_adv_img($value["pano_img"]).'" src="'.get_adv_img($value["pano_img"], "thumb").'" alt="点位编号：'.$value['code'].'"/>';
-                                                	            $msg = $msg.$str;
-                                                	        }
-                                                	        break;
-                                                	    case 2 :
-                                                	        $msg = "审核不通过";
-                                                	        break;
-                                                	}
-                                                	echo $msg;
-                                            	?>
-                                            </td>
-                                        </tr>
-                                        <?php endforeach;?>
-                                    </tbody>
-                                </table>
-                                
-                                <!-- 分页 -->
-                                <?php $this->load->view('common/page');?>
+                </div>
+				<div class="row" >
+					<div class="col-xs-12">
+						<div class="widget-box">
+                            <div class="widget-header">
+                                <h4>筛选条件</h4>
+                                <div class="widget-toolbar">
+                                    <a href="#" data-action="collapse">
+                                        <i class="icon-chevron-up"></i>
+                                    </a>
+                                </div>
+                            </div>
+                            <div class="widget-body">
+                                <div class="widget-main">
+                                    <form id="search-form" class="form-horizontal" role="form">
+                                        <div class="form-group">
+                                            <div class="col-sm-4">
+                                                <label class="col-sm-3 control-label no-padding-right" for="form-field-1"> 点位编号：</label>
+                                                <div class="col-sm-9">
+                                                	<input type="text" name="point_code" value="<?php echo $point_code?>">
+                                                	<input type="hidden" name="id" value="<?php echo $id?>">
+                                                </div>
+                                            </div>
+                                            <div class="col-sm-3">
+                                                <label class="col-sm-3 control-label no-padding-right" for="form-field-1"> 楼盘名称：</label>
+                                                <div class="col-sm-9">
+                                                	<input type="text" name="houses_name" value="<?php echo $houses_name?>">
+                                                </div>
+                                            </div>
+                                        </div>
+                                        
+                                        <div class="clearfix form-actions">
+                                            <div class="col-md-offset-3 col-md-9">
+                                                <button class="btn btn-info" type="submit">
+                                                    <i class="fa fa-search"></i>
+                                                    查询
+                                                </button>
+                                                <button class="btn" type="reset">
+                                                    <i class="icon-undo bigger-110"></i>
+                                                    重置
+                                                </button>
+                                            </div>
+                                        </div>
+                                    </form>
+                                </div>
                             </div>
                         </div>
-						
-                    </form>
-
+                <div class="row">
+                    <div class="col-xs-12 table-responsive">
+                        <div class="row-fluid" style="margin-bottom: 100px;">
+                            <table class="table table-striped table-bordered table-hover">
+                                <thead>
+                                    <tr>
+                                    	<th  nowrap>点位编号</th>
+                                    	<th class="center" nowrap>楼盘</th>
+                                        <th class="center" nowrap>组团</th>
+                                        <th class="center" nowrap>楼栋</th>
+                                        <th class="center" nowrap>单元</th>
+                                        <th class="center" nowrap>楼层</th>
+                                        <th class="center" nowrap>点位位置</th>
+                                        <th style="width:20%;" class="center" nowrap>图片</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="layer-photos-demo" class="layer-photos-demo">
+                                    <?php if(isset($list))foreach ($list as $key => $value) :?>
+                                    <tr>
+                                    	<td  style="text-align: center;vertical-align: middle;"><?php echo $value['code'];?></td>
+                                        <td  style="text-align: center;vertical-align: middle;"><?php echo $value['houses_name'];?></td>
+                                        <td  style="text-align: center;vertical-align: middle;"><?php echo $value['area_name'];?></td>
+                                        <td  style="text-align: center;vertical-align: middle;"><?php echo $value['ban'];?></td>
+                                        <td  style="text-align: center;vertical-align: middle;"><?php echo $value['unit'];?></td>
+                                        <td  style="text-align: center;vertical-align: middle;"><?php echo $value['floor'];?></td>
+                                        
+                                        <td style="text-align: center;vertical-align: middle;"><?php if(isset($point_addr[$value['addr']])) echo $point_addr[$value['addr']];?></td>
+                                        <td class="center">
+                                            <?php 
+                                            	switch ($value['status']){
+                                            	    case 0 :
+                                            	        $msg = "未上传未审核";
+                                            	        break;
+                                            	    case 1 :
+                                            	        $msg = '<img style="width:60px;" src="'.get_adv_img($value["no_img"], "thumb").'" layer-src="'.get_adv_img($value["no_img"]).'" alt="点位编号：'.$value['code'].'"/>';
+                                            	        if($value['pano_img']){
+                                            	            $str = '<img style="width:60px;" layer-src="'.get_adv_img($value["pano_img"]).'" src="'.get_adv_img($value["pano_img"], "thumb").'" alt="点位编号：'.$value['code'].'"/>';
+                                            	            $msg = $msg.$str;
+                                            	        }
+                                            	        break;
+                                            	    case 2 :
+                                            	        $msg = "审核不通过";
+                                            	        break;
+                                            	}
+                                            	echo $msg;
+                                        	?>
+                                        </td>
+                                    </tr>
+                                    <?php endforeach;?>
+                                </tbody>
+                            </table>
+                            
+                            <!-- 分页 -->
+                            <?php $this->load->view('common/page');?>
+                            </div>
+                        </div>
+                    </div>
                 </div>
             </div>
 		</div>
