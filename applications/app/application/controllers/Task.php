@@ -465,7 +465,7 @@ class Task extends MY_Controller {
             $this->return_json(['code' => 0, 'msg' => $operate_content]);
         }
         $img_url = $this->input->get_post('img_url2');
-        if($img_url){
+        if(empty($img_url)){
             $operate_content = "工单详情id{$id} 远景图片不能为空";
             $this->write_log($token['user_id'], 1, $operate_content);
             $this->return_json(['code' => 0, 'msg' => $operate_content]);
