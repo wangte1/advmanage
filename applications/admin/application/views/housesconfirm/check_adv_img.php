@@ -118,9 +118,9 @@
                                             	        $msg = "未上传未审核";
                                             	        break;
                                             	    case 1 :
-                                            	        $msg = '<img style="width:120px;" src="'.get_adv_img($value["no_img"], "thumb").'" layer-src="'.get_adv_img($value["no_img"]).'" alt="点位编号：'.$value['code'].'"/>';
+                                            	        $msg = '<img style="width:60px;" src="'.get_adv_img($value["no_img"], "thumb").'" layer-src="'.get_adv_img($value["no_img"]).'" alt="点位编号：'.$value['code'].'"/>';
                                             	        if($value['pano_img']){
-                                            	            $str = '<img style="width:120px;" layer-src="'.get_adv_img($value["pano_img"]).'" src="'.get_adv_img($value["pano_img"], "thumb").'" alt="点位编号：'.$value['code'].'"/>';
+                                            	            $str = '<img style="width:60px;" layer-src="'.get_adv_img($value["pano_img"]).'" src="'.get_adv_img($value["pano_img"], "thumb").'" alt="点位编号：'.$value['code'].'"/>';
                                             	            $msg = $msg.$str;
                                             	        }
                                             	        break;
