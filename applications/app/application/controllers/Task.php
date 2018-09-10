@@ -355,8 +355,8 @@ class Task extends MY_Controller {
     	$info = $this->Mhouses_work_order_detail->get_one('point_id,pid', ['id' => $id, 'status' => 0]);
     	if($info){
     	    $up = [
-    	        'status' => $status,
-    	        'no_img' => 1
+    	        'status' => 1,
+    	        'no_img' => $img_url
     	    ];
     	    $res = $this->Mhouses_work_order_detail->update_info($up, ['id' => $id]);
     	    if(!$res){
