@@ -340,14 +340,14 @@ class Task extends MY_Controller {
     	}
     	$img_url = $this->input->get_post('img_url');
     	if(empty($img_url)){
-    	    $operate_content = "工单图片参数没有传入";
+    	    $operate_content = "工单详情id{$id} 工单图片参数没有传入";
     	    $this->write_log($token['user_id'], 1, $operate_content);
     	    $this->return_json(['code' => 0, 'msg' => $operate_content]);
     	}
     	$status = $this->input->get_post('status');//临时接收
     	$count = $this->Mhouses_work_order_detail->count(['id' => $id, 'status' => 1]);
     	if($count){
-    	    $operate_content = "此工单已完成";
+    	    $operate_content = "工单详情id{$id} 此工单已完成";
     	    $this->write_log($token['user_id'], 1, $operate_content);
     	    $this->return_json(['code' => 0, 'msg' => $operate_content]);
     	}
@@ -360,7 +360,7 @@ class Task extends MY_Controller {
     	    ];
     	    $res = $this->Mhouses_work_order_detail->update_info($up, ['id' => $id]);
     	    if(!$res){
-    	        $this->write_log($token['user_id'], 2, '更新工单详情失败：'.$this->db->last_query());
+    	        $this->write_log($token['user_id'], 2, "更新工单详情id{$id}失败：".$this->db->last_query());
     	        $this->return_json(['code' => 0, 'msg' => '操作失败']);
     	    }
     	    
@@ -460,13 +460,13 @@ class Task extends MY_Controller {
         $id = (int) $this->input->get_post('id');
         $count = $this->Mhouses_work_order_detail->count(['id' => $id, 'pano_status' => 1]);
         if($count){
-            $operate_content = "请勿重复提交";
+            $operate_content = "工单详情id{$id} 请勿重复提交";
             $this->write_log($token['user_id'], 1, $operate_content);
             $this->return_json(['code' => 0, 'msg' => $operate_content]);
         }
         $img_url = $this->input->get_post('img_url2');
         if($img_url){
-            $operate_content = "远景图片不能为空";
+            $operate_content = "工单详情id{$id} 远景图片不能为空";
             $this->write_log($token['user_id'], 1, $operate_content);
             $this->return_json(['code' => 0, 'msg' => $operate_content]);
         }
@@ -480,7 +480,9 @@ class Task extends MY_Controller {
             ];
             $res = $this->Mhouses_work_order_detail->update_info($up, ['id' => $id]);
             if(!$res){
-                $this->return_json(['code' => 0, 'msg' => '操作失败']);
+                $operate_content = "工单详情id{$id} 远景图片保存失败";
+                $this->write_log($token['user_id'], 1, $operate_content);
+                $this->return_json(['code' => 0, 'msg' => $operate_content]);
             }
             
             $this->add_redisp(['user_id' => $token['user_id'], 'detail_id' => $id, 'pano_img' => $img_url]);
@@ -678,13 +680,16 @@ class Task extends MY_Controller {
             $this->write_log($token['user_id'], 1, $operate_content);
             $this->return_json(['code' => 0, 'msg' => $operate_content]);
         }
+        
         $report_img = $this->input->get_post('report_img');
         $this->write_log($token['user_id'], 1, '报损图片url'.$report_img);
+        
         if(!$report_img || empty($report_img)) {
-            $operate_content = "请拍照上传图片";
+            $operate_content = "工单详情id{$id} 请拍照上传报损图片";
             $this->write_log($token['user_id'], 1, $operate_content);
             $this->return_json(['code' => 0, 'msg' => $operate_content]);
         }
+        
         $report = $this->input->get_post('report');
         if(!$report) $this->return_json(['code' => 0, 'msg' => '请选择异常选项']);
         $report_msg = $this->input->get_post('report_msg');
