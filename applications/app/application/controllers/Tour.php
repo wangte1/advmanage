@@ -373,14 +373,22 @@ class Tour extends MY_Controller {
         $point_id = $this->input->get_post('point_id');
         $count = $this->Mhouses_points_report->count(['point_id' => $point_id, 'repair_time' => 0]);
         if($count){
-            $this->return_json(['code' => 0, 'msg' => '该点位已报损，请勿重复提交']);
+            $operate_content = "该点位id{$point_id}已报损，请勿重复提交";
+            $this->write_log($token['user_id'], 1, $operate_content);
+            $this->return_json(['code' => 0, 'msg' => $operate_content]);
         }
         if(!$report_img){
-            $this->return_json(['code' => 0, 'msg' => '请拍照上传图片']);
+            $operate_content = "点位id{$point_id}报损，请拍照上传图片";
+            $this->write_log($token['user_id'], 1, $operate_content);
+            $this->return_json(['code' => 0, 'msg' => $operate_content]);
         }
         $this->write_log($token['user_id'], 1, '巡视报损图片url'.$report_img);
         $report = $this->input->get_post('report');
-        if(!$report) $this->return_json(['code' => 0, 'msg' => '请选择异常选项']);
+        if(!$report) {
+            $operate_content = "点位id{$point_id}报损，请选择异常选项";
+            $this->write_log($token['user_id'], 1, $operate_content);
+            $this->return_json(['code' => 0, 'msg' => $operate_content]);
+        }
         $report_msg = $this->input->get_post('report_msg');
         $report_msg = $report_msg ? $report_msg : "";
         if($report == 14){
@@ -402,7 +410,9 @@ class Tour extends MY_Controller {
         ];
         $res = $this->Mhouses_points_report->create($up);
         if(!$res){
-            $this->return_json(['code' => 0, 'msg' => '操作失败，请重试']);
+            $operate_content = "点位id{$point_id}报损失败";
+            $this->write_log($token['user_id'], 1, $operate_content);
+            $this->return_json(['code' => 0, 'msg' => $operate_content]);
         }
         //如果不能上画，则更新为4
         if($usable == 0){
