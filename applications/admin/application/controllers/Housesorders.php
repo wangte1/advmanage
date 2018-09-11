@@ -1613,16 +1613,38 @@ class Housesorders extends MY_Controller{
                         }
                     }
                     if(count($point_ids_arr)){
-                        //释放锁定的客户和占用数
-                        $_result = $this->release($id, $tmp_list['customer_id']);
-                        $where_point['in']['id'] = $point_ids_arr;
-                        $where_point['field']['`ad_num` >'] = '`ad_use_num` + `lock_num`';
-                        $update_data['point_status'] = 1;
-                        $this->Mhouses_points->update_info($update_data, $where_point);
-                        $this->write_log($data['userInfo']['id'], 2, '释放点位：'.$this->db->last_query());
-                        
-                        //移除点位本次的order_id
-                        $res = $this->delOrderIdForPoint($id, $point_ids_arr);
+                        if($tmp_list['order_type'] == 1){
+                            //如果是冷光订单则批量重置点位
+                            $_up = [
+                                'customer_id' => "",
+                                'order_id' => "",
+                                'point_status' => 1,
+                                'ad_use_num' => 0,
+                                'lock_num' => 0
+                            ];
+                            //分批处理
+                            $arr = array_chunk($point_ids_arr, 500);
+                            foreach ($arr as $k => $v){
+                                $res = $this->Mhouses_points->update_info($_up, ['in' => ['id' => $v]]);
+                                $sql = $this->db->last_query();
+                                if(!$res){
+                                    $this->write_log($data['userInfo']['id'], 2, '释放订单失败：'.$sql);
+                                }else{
+                                    $this->write_log($data['userInfo']['id'], 2, '释放订单成功'.$sql);
+                                }
+                            }
+                        }else{
+                            //释放锁定的客户和占用数
+                            $_result = $this->release($id, $tmp_list['customer_id']);
+                            $where_point['in']['id'] = $point_ids_arr;
+                            $where_point['field']['`ad_num` >'] = '`ad_use_num` + `lock_num`';
+                            $update_data['point_status'] = 1;
+                            $this->Mhouses_points->update_info($update_data, $where_point);
+                            $this->write_log($data['userInfo']['id'], 2, '释放点位：'.$this->db->last_query());
+                            
+                            //移除点位本次的order_id
+                            $res = $this->delOrderIdForPoint($id, $point_ids_arr);
+                        }
                         
                         //更新该订单下所有换画订单的状态为已下画
                         $order_code = $this->Mhouses_orders->get_one('order_code', array('id' => $id))['order_code'];
