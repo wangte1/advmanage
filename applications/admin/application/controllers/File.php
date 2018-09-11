@@ -2,6 +2,12 @@
 use OSS\OssClient;
 use OSS\Core\OssException;
 class File extends MY_Controller {
+    public function __construct(){
+        parent::__construct();
+        $this->load->model([
+            "Model_file_oss_task" => "Mfile_oss_task"
+        ]);
+    }
     /**
      * 指定上传文件的服务器端程序
      */
@@ -27,9 +33,14 @@ class File extends MY_Controller {
         }
         $data = $this->upload->data();
         $name = $file_dir.$data['file_name'];
-        $this->moveToOss($name);
-        echo json_encode(array('error' => 0, 'url' => '/uploads/'.$file_dir.$data['file_name']));
+        $this->add_task($name);
+        echo json_encode(array('error' => 0, 'url' => '/uploads/'.$name));
         exit();
+    }
+    
+    public function add_task($path){
+        $allpath = C('root.path').$path;
+        $this->Mfile_oss_task->create(['local' => $allpath]);
     }
     
     /**
