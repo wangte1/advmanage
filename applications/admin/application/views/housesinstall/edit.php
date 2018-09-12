@@ -113,7 +113,7 @@
                         <div class="form-group">
                             <label class="col-sm-3 control-label no-padding-right" for="form-field-1"> 验收人： </label>
                             <div class="col-sm-9">
-                                <select class="col-xs-2 " name="check_user" id="select-font-size " >
+                                <select class="select2" name="check_user" id="select-font-size " >
                                 	<?php foreach ($admin as $k => $v):?>
                                 		<option value="<?php $v['id']?>" <?php if($v['id'] == $info['check_user']) {?>selected="selected"<?php }?>><?php echo $v['fullname']?></option>	
                                 	<?php endforeach;?>
@@ -240,6 +240,7 @@
 
 <script src="<?php echo css_js_url('jqdistpicker/distpicker.data.js','admin');?>"></script>
 <script src="<?php echo css_js_url('jqdistpicker/distpicker.js','admin');?>"></script>
+<script src="<?php echo css_js_url('select2.min.js','admin');?>"></script>
 
 <script type="text/javascript">
     var baseUrl = "<?php echo $domain['admin']['url'];?>";
@@ -251,6 +252,7 @@
 <script type="text/javascript" src="<?php echo css_js_url('admin_upload.js', 'admin');?>"></script>
 
 <script>
+$(".select2").css('width','230px').select2({allowClear:true});
 	$("#distpicker1").distpicker({
 		autoSelect: false,
 		province: "<?php echo $info['province'];?>",
