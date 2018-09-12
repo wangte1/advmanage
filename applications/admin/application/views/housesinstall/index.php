@@ -125,25 +125,45 @@
                                                     <td><?php echo $val['linkman_duty'];?></td>
                                                     <td><?php echo $val['linkman_tel'];?></td>
                                                     <td><?php echo $val['sign_num'];?></td>
-                                                    <td><?php echo $val['finish_date'];?></td>
+                                                    <td>
+                                                    	<?php if($val['finish_date'] != '0000-00-00'):?>
+                                                    		<?php echo $val['finish_date']?>
+                                                    	<?php endif;?>
+                                                    </td>
                                                     <td><?php echo $val['install_num'];?></td>
                                                     <td><?php echo $val['install_account_num'];?></td>
                                                     <td><?php echo $val['install_remake'];?></td>
                                                     <td><?php echo $val['fullname'];?></td>
-                                                    <td><?php echo $val['check_date'];?></td>
+                                                    <td>
+                                                    	<?php if($val['check_date'] != '0000-00-00'):?>
+                                                    		<?php echo $val['check_date']?>
+                                                    	<?php endif;?>
+													</td>
                                                     <td><?php if(!empty($val['check_img'])):?>
                                                     	<img src="<?php echo $val['check_img']?>" style="width:25px;height:25px;cursor:pointer;">
                                                     	<?php endif;?>
                                                 	</td>
-                                                    <td><?php echo $val['account_date'];?></td>
+                                                    <td>
+                                                    	<?php if($val['account_date'] != '0000-00-00'):?>
+                                                    		<?php echo $val['account_date']?>
+                                                    	<?php endif;?>
+													</td>
                                                     <td><?php echo $val['push_num'];?></td>
-                                                    <td><?php echo $val['push_date'];?></td>
+                                                    <td>
+                                                    	<?php if($val['push_date'] != '0000-00-00'):?>
+                                                    		<?php echo $val['push_date']?>
+                                                    	<?php endif;?>
+                                                    </td>
                                                     <td><?php echo $val['eg_card_num'];?></td>
                                                     <td><?php echo $val['balance_desc'];?></td>
                                                     <td><?php echo $val['check_desc'];?></td>
                                                     <td><?php echo $val['install_progress'];?></td>
                                                     <td><?php echo $val['install_jointer'];?></td>
-                                                    <td><?php echo $val['can_install_date'];?></td>
+                                                    <td>
+                                                    	<?php if($val['can_install_date'] != '0000-00-00'):?>
+                                                    		<?php echo $val['can_install_date']?>
+                                                    	<?php endif;?>
+                                                    </td>
                                                     <td>
                                                     	<a class="green tooltip-info" onclick="show_points_detail(<?php echo $val['id'];?>);" href="#" data-rel="tooltip" data-placement="top" data-original-title="查看">
                                                             <i class="icon-eye-open bigger-130"></i>
