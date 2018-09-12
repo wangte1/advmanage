@@ -140,7 +140,10 @@
                                                     	<?php endif;?>
 													</td>
                                                     <td><?php if(!empty($val['check_img'])):?>
-                                                    	<img src="<?php echo $val['check_img']?>" style="width:25px;height:25px;cursor:pointer;">
+                                                    	<?php $tmp = explode(',', $val['check_img']);?>
+                                                    	<?php foreach ($tmp as $k => $v):?>
+                                                    		<img layer-src="<?php echo get_adv_img($v, "common");?>" src="<?php echo get_adv_img($v, "thumb");?>" style="width:25px;height:25px;cursor:pointer;">
+                                                    	<?php endforeach;?>
                                                     	<?php endif;?>
                                                 	</td>
                                                     <td>

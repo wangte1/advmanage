@@ -137,7 +137,22 @@
                             <label class="col-sm-3 control-label no-padding-right" for="form-input-readonly"> 验收图片： </label>
                             <div class="col-sm-9">
                                 <ul class="ace-thumbnails" id="uploader_cover_img">
-                                    <li class="pic pic-add add-pic" id="<?php if(isset($info['check_img'])&&!empty($info['check_img'])){ echo 'hidden-div';}?>" style="float: left;width: 220px;height: 150px;clear:none; border: 1px solid #f18a1b">
+                                	<?php if(!empty($info['check_img'])):?>
+                                	<?php $tmp = explode(',', $info['check_img']);?>
+                                	<?php foreach ($tmp as $k => $v):?>
+                                	<li id="SWFUpload_0_0" class="pic pro_gre" style="margin-right: 20px; clear: none">
+                                    	<a data-rel="colorbox" class="cboxElement" href="<?php echo $v;?>">
+                                    		<img src="<?php echo $v;?>" style="width: 215px; height: 150px">
+                                    	</a> 
+                                    	<div class="tools"> 
+                                    		<a href="javascript:;"> <i class="icon-remove red"></i> </a>  
+                                    	</div>
+                                    	<input type="hidden" name="cover_img[]" value="<?php echo $v;?>">
+                                	</li>
+                                	<?php endforeach;?>
+                                	<?php endif;?>
+                                	
+                                    <li class="pic pic-add add-pic" style="float: left;width: 220px;height: 150px;clear:none; border: 1px solid #f18a1b">
                                         <a href="javascript:;" class="up-img"  id="file_cover_img"><span>+</span><br>添加照片</a>
                                     </li>
                                 </ul>

@@ -125,7 +125,7 @@ class Housesinstall extends MY_Controller{
         if(IS_POST){
             $post = $this->input->post();
             if(isset($post['cover_img']) && !empty($post['cover_img'])){
-                $post['check_img'] = $post['cover_img'][0];
+                $post['check_img'] = implode(',', $post['cover_img']);
                 unset($post['cover_img']);
             }
             unset($post['sub_put_trade']);
