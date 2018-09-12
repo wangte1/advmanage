@@ -115,7 +115,7 @@
                             <div class="col-sm-9">
                                 <select class="select2" name="check_user" id="select-font-size " >
                                 	<?php foreach ($admin as $k => $v):?>
-                                		<option value="<?php $v['id']?>" <?php if($v['id'] == $info['check_user']) {?>selected="selected"<?php }?>><?php echo $v['fullname']?></option>	
+                                		<option value="<?php echo $v['id']?>" <?php if($v['id'] == $info['check_user']) {?>selected="selected"<?php }?>><?php echo $v['fullname']?></option>
                                 	<?php endforeach;?>
                                 </select>
                             </div>
