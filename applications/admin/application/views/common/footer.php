@@ -122,5 +122,5 @@
     };
 </script>
 <script>
-document.getElementById('main-container').style.zoom=0.9
+//document.getElementById('main-container').style.zoom=0.9
 </script>
