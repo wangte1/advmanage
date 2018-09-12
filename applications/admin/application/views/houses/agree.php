@@ -170,7 +170,11 @@
                                                     <td><?php echo $val['property_owner']?></td>
                                                     <td><?php echo $val['principal_duty']?></td>
                                                     <td><?php echo $val['principal_tel']?></td>
-                                                    <td><?php echo $val['sign_date']?></td>
+                                                    <td>
+                                                    	<?php if($val['sign_date'] != '0000-00-00'):?>
+                                                    		<?php echo $val['sign_date']?>
+                                                    	<?php endif;?>
+                                                    </td>
                                                     <td><?php echo $val['house_list']?></td>
                                                     <td><?php echo $val['agree_price']?></td>
                                                     <td><?php echo $val['pay_method']?></td>
