@@ -120,9 +120,9 @@ class Housesassign extends MY_Controller{
 
         //未确认派单的数量
         $where1 = $where2 = $where3 = [];
-        $where1 = ['A.order_status'=> 3, 'A.assign_status'=>1];
-        $where2 = ['A.order_status'=> 7, 'A.assign_status'=>1];
-        $where3 = ['A.order_status'=> 3, 'A.assign_status'=>1];
+        $where1 = ['A.order_status'=> 3, 'A.assign_status'=>1, 'A.is_del' => 0];
+        $where2 = ['A.order_status'=> 7, 'A.assign_status'=>1, 'A.is_del' => 0];
+        $where3 = ['A.order_status'=> 3, 'A.assign_status'=>1, 'A.is_del' => 0];
         if($data['userInfo']['group_id'] == C('group.gc')){
             $where1['A.group_id'] = $where2['A.group_id'] = $where3['A.group_id'] = $data['userInfo']['id'];
         }
