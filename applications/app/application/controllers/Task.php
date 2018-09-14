@@ -368,8 +368,11 @@ class Task extends MY_Controller {
     	    
     	    $this->write_log($token['user_id'], 2, '结果:'.$res.'执行的sql:'.$this->db->last_query());
     	    //防止完成数大于总数
-    	    $this->Mhouses_work_order->update_info(['incr' => ['finish' => 1]], ['id' => $info['pid'], '`total`>' => '`finish`']);
-    	    
+    	    $res = $this->Mhouses_work_order->update_info(['incr' => ['finish' => 1]], ['id' => $info['pid'], '`total`>' => '`finish`']);
+    	    if(!$res){
+    	        $operate_content = "工单详情id{$id} 已结完成，但完成数未能+1 sql : ".$this->db->last_query();
+    	        $this->write_log($token['user_id'], 1, $operate_content);
+    	    }
     	    $pinfo = $this->Mhouses_work_order->get_one('order_id,type', ['id' => $info['pid']]);
     	    
     	    $this->checkDoAllHasFinish($pinfo['order_id'], $pinfo['type']);
