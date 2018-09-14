@@ -398,8 +398,9 @@
 			
 			$.post('/housespoints/ajax_houses_info',{province:province,city:city,area:area},function(data){
 				if(data) {
-					$('.select2-chosen:eq(2)').text('--请选择组团--');
-					$('.select2-chosen:eq(1)').text('--请选择楼盘--');
+					$('.select2-chosen:eq(0)').text('--请选择楼盘--');
+					$('.select2-chosen:eq(1)').text('--请选择组团--');
+					$('.select2-chosen:eq(2)').text('--请选择楼栋--');
 					var housesStr = '<option value="">--请选择楼盘--</option>';
 					for(var i = 0; i < data.length; i++) {
 
