@@ -3,7 +3,6 @@
 
 <!-- 头部 -->
 <?php $this->load->view('common/top');?>
-
 <style>
 .padding0 {
 	padding: 0;
@@ -15,10 +14,8 @@
 </style>
 <div class="main-container" id="main-container">
         <div class="main-container-inner">
-            <?php $this->load->view("common/left");?>
-
+		<?php $this->load->view("common/left");?>
         </div>
-
         <div class="main-content">
             <div class="breadcrumbs" id="breadcrumbs">
                 <script type="text/javascript">
@@ -39,7 +36,6 @@
 
 
             </div>
-
             <div class="page-content">
                 
                 <div class="row">
