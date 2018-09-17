@@ -1,8 +1,8 @@
 <?php if ( ! defined('BASEPATH')) exit('No direct script access allowed');
 /*
- * 
+ * @author tete
  * desc:广告定单相关信息
- * 254274509@qq.com
+ * 1517796462@qq.com
  */
 
 class Order extends MY_Controller {
@@ -20,7 +20,7 @@ class Order extends MY_Controller {
     /**
      * 广告画面相关信息
      */
-    public  function advertisement(){
+    public  function index(){
         $pageconfig = C('page.page_lists');
         $this->load->library('pagination');
         $page = (int) $this->input->get_post('page') ? : '1';
