@@ -51,13 +51,119 @@
                                 <div class="widget-main">
                                     <form id="search-form" class="form-horizontal" role="form">
                                         <div class="form-group">
-                                            <div class="col-sm-4">
+                                            <div class="col-sm-3">
                                                 <label class="col-sm-3 control-label no-padding-right" for="form-field-1"> 楼盘名称</label>
                                                 <div class="col-sm-9">
                                                 	<select class="select2" data-placeholder="Click to Choose..." name="name">
                                                 		<option value="">全部</option>
 				                                		<?php foreach ($hlist as $k => $v) {?>
 				                                    		<option value="<?php echo $v['id'];?>" <?php if($v['id'] == $name) {?>selected="selected"<?php }?>><?php echo $v['name'];?></option>
+				                                    	<?php }?>
+				                                    </select>
+                                                </div>
+                                            </div>
+                                            <div class="col-sm-3">
+                                                <label class="col-sm-3 control-label no-padding-right" for="form-input-readonly">完工日期（开始）： </label>
+                                                <div class="col-sm-9">
+                                                    <div class="input-group date datepicker">
+                                                        <input class="form-control date-picker" type="text" name="finish_date_start" value="<?php if(isset($finish_date_start)){ echo $finish_date_start;}?>" >
+                                                        <span class="input-group-addon">
+                                                            <i class="icon-calendar bigger-110"></i>
+                                                        </span>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="col-sm-3">
+                                                <label class="col-sm-3 control-label no-padding-right" for="form-input-readonly">完工日期（结束）： </label>
+                                                <div class="col-sm-9">
+                                                    <div class="input-group date datepicker">
+                                                        <input class="form-control date-picker" type="text" name="finish_date_end" value="<?php if(isset($finish_date_end)){ echo $finish_date_end;}?>" >
+                                                        <span class="input-group-addon">
+                                                            <i class="icon-calendar bigger-110"></i>
+                                                        </span>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="col-sm-3">
+                                                <label class="col-sm-3 control-label no-padding-right" for="form-field-1">安装进度</label>
+                                                <div class="col-sm-9">
+                                                	<select class="select2" data-placeholder="Click to Choose..." name="install_progress_name">
+                                                		<option value="">全部</option>
+				                                		<?php foreach ($install_progress as $k => $v) {?>
+				                                    		<option value="<?php echo $v['install_progress'];?>" <?php if($v['install_progress'] == $install_progress_name) {?>selected="selected"<?php }?>><?php echo $v['install_progress'];?></option>
+				                                    	<?php }?>
+				                                    </select>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="form-group">
+                                        	<div class="col-sm-3">
+                                                <label class="col-sm-3 control-label no-padding-right" for="form-input-readonly">验收日期（开始）： </label>
+                                                <div class="col-sm-9">
+                                                    <div class="input-group date datepicker">
+                                                        <input class="form-control date-picker" type="text" name="check_date_start" value="<?php if(isset($check_date_start)){ echo $check_date_start;}?>" >
+                                                        <span class="input-group-addon">
+                                                            <i class="icon-calendar bigger-110"></i>
+                                                        </span>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="col-sm-3">
+                                                <label class="col-sm-3 control-label no-padding-right" for="form-input-readonly">验收日期（结束）： </label>
+                                                <div class="col-sm-9">
+                                                    <div class="input-group date datepicker">
+                                                        <input class="form-control date-picker" type="text" name="check_date_end" value="<?php if(isset($check_date_end)){ echo $check_date_end;}?>" >
+                                                        <span class="input-group-addon">
+                                                            <i class="icon-calendar bigger-110"></i>
+                                                        </span>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            
+                                            <div class="col-sm-3">
+                                                <label class="col-sm-3 control-label no-padding-right" for="form-input-readonly">提成日期（开始）： </label>
+                                                <div class="col-sm-9">
+                                                    <div class="input-group date datepicker">
+                                                        <input class="form-control date-picker" type="text" name="push_date_start" value="<?php if(isset($push_date_start)){ echo $push_date_start;}?>" >
+                                                        <span class="input-group-addon">
+                                                            <i class="icon-calendar bigger-110"></i>
+                                                        </span>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="col-sm-3">
+                                                <label class="col-sm-3 control-label no-padding-right" for="form-input-readonly">提成日期（结束）： </label>
+                                                <div class="col-sm-9">
+                                                    <div class="input-group date datepicker">
+                                                        <input class="form-control date-picker" type="text" name="push_date_end" value="<?php if(isset($push_date_end)){ echo $push_date_end;}?>" >
+                                                        <span class="input-group-addon">
+                                                            <i class="icon-calendar bigger-110"></i>
+                                                        </span>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        
+                                        <div class="form-group">
+                                        	<div class="col-sm-3">
+                                                <label class="col-sm-3 control-label no-padding-right" for="form-field-1">门禁卡数量（最小） </label>
+                                                <div class="col-sm-9">
+                                                	<input type="text" name="eg_card_num_start" value="<?php if(isset($eg_card_num_start)) echo $eg_card_num_start;?>">
+                                                </div>
+                                            </div>
+                                            <div class="col-sm-3">
+                                                <label class="col-sm-3 control-label no-padding-right" for="form-field-1">门禁卡数量（最大） </label>
+                                                <div class="col-sm-9">
+                                                	<input type="text" name="eg_card_num_end" value="<?php if(isset($eg_card_num_end)) echo $eg_card_num_end;?>">
+                                                </div>
+                                            </div>
+                                            <div class="col-sm-3">
+                                                <label class="col-sm-3 control-label no-padding-right" for="form-field-1">安装对接人</label>
+                                                <div class="col-sm-9">
+                                                	<select class="select2" data-placeholder="Click to Choose..." name="install_jointer_name">
+                                                		<option value="">全部</option>
+				                                		<?php foreach ($install_jointer as $k => $v) {?>
+				                                    		<option value="<?php echo $v['install_jointer'];?>" <?php if($v['install_jointer'] == $install_jointer_name) {?>selected="selected"<?php }?>><?php echo $v['install_jointer'];?></option>
 				                                    	<?php }?>
 				                                    </select>
                                                 </div>

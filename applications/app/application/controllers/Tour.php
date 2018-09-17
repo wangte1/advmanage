@@ -191,6 +191,21 @@ class Tour extends MY_Controller {
         if(!$list){
             $this->return_json(['code' => 0, 'msg' => '暂无数据']);
         }
+        foreach ($list as $k => $v){
+            $tmp = "";
+            switch ((int)$v['addr']){
+                case 1 :
+                    $tmp = "门禁";
+                    break;
+                case 2 :
+                    $tmp= "地面电梯前室";
+                    break;
+                case 3 :
+                    $tmp= "地下电梯前室";
+                    break;
+            }
+            $list[$k]['addr'] = $tmp;
+        }
         //获取所有楼盘id
         $houses_ids = array_column($list, 'houses_id');
         if(count($houses_ids) > 1){
@@ -261,6 +276,21 @@ class Tour extends MY_Controller {
         
         $orderBy = ['area_id' => 'asc', 'ban' => 'asc'];
         $list = $this->Mhouses_points->get_lists("*", $where, $orderBy, $size, ($page-1)*$size);
+        foreach ($list as $k => $v){
+            $tmp = "";
+            switch ((int)$v['addr']){
+                case 1 :
+                    $tmp = "门禁";
+                    break;
+                case 2 :
+                    $tmp= "地面电梯前室";
+                    break;
+                case 3 :
+                    $tmp= "地下电梯前室";
+                    break;
+            }
+            $list[$k]['addr'] = $tmp;
+        }
         if(!$list){
             $this->return_json(['code' => 0, 'msg' => '暂无数据']);
         }
