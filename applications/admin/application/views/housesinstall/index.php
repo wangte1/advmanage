@@ -160,7 +160,12 @@
                                             <div class="col-sm-3">
                                                 <label class="col-sm-3 control-label no-padding-right" for="form-field-1">安装对接人</label>
                                                 <div class="col-sm-9">
-                                                	<input type="text" name="install_jointer" value="<?php if(isset($install_jointer)) echo $install_jointer;?>">
+                                                	<select class="select2" data-placeholder="Click to Choose..." name="install_jointer_name">
+                                                		<option value="">全部</option>
+				                                		<?php foreach ($install_jointer as $k => $v) {?>
+				                                    		<option value="<?php echo $v['install_jointer'];?>" <?php if($v['install_jointer'] == $install_jointer_name) {?>selected="selected"<?php }?>><?php echo $v['install_jointer'];?></option>
+				                                    	<?php }?>
+				                                    </select>
                                                 </div>
                                             </div>
                                         </div>

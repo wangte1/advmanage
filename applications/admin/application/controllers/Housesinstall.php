@@ -70,7 +70,7 @@ class Housesinstall extends MY_Controller{
             $where['eg_card_num <='] = $eg_card_num_end;
         }
         if ($this->input->get('install_progress_name')) $where['install_progress'] = $this->input->get('install_progress_name');
-        if ($this->input->get('install_jointer')) $where['install_jointer'] = $this->input->get('install_jointer');
+        if ($this->input->get('install_jointer_name')) $where['install_jointer'] = $this->input->get('install_jointer_name');
         
         $data['name'] = $this->input->get('name');
         $data['province'] = $this->input->get('province');
@@ -86,11 +86,12 @@ class Housesinstall extends MY_Controller{
         $data['push_date_end'] = $this->input->get('push_date_end');
         $data['eg_card_num_start'] = $this->input->get('eg_card_num_start');
         $data['eg_card_num_end'] = $this->input->get('eg_card_num_end');
-        $data['install_jointer'] = $this->input->get('install_jointer');
+        $data['install_jointer_name'] = $this->input->get('install_jointer_name');
         
         $list = $this->Mhouses->get_lists('*',$where,[],$size,($page-1)*$size);
         $data['hlist'] = $this->Mhouses->get_lists();
         $data['install_progress'] = $this->Mhouses->get_lists('install_progress',['install_progress !=' => ''],0,0,0,'install_progress');
+        $data['install_jointer'] = $this->Mhouses->get_lists('install_jointer',['install_jointer !=' => ''],0,0,0,'install_jointer');
         $admin = $this->Madmins->get_lists();
         foreach ($list as $k => $v){
             $list[$k]['fullname'] = '';
