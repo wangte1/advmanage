@@ -2,36 +2,10 @@
 <?php $this->load->view('common/header');?>
 
 <!-- 头部 -->
-<?php $this->load->view('common/top');?>
-
 <div class="main-container" id="main-container">
    <div class="main-container-inner">
 
      <!-- 左边导航菜单 -->
-        <?php $this->load->view('common/left');?>
-
-        <div class="main-content">
-            <div class="breadcrumbs" id="breadcrumbs">
-                <ul class="breadcrumb">
-                    <li>
-                        <i class="icon-home home-icon"></i>
-                        <a href="#">Home</a>
-                    </li>
-
-                    <li>
-                        <a href="#">社区资源管理</a>
-                    </li>
-                    
-                    <li>
-                        <span>组团管理</span>
-                    </li>
-
-                </ul>
-                <div class="nav-search" id="nav-search">
-                </div>
-            </div>
-
-            <div class="page-content">
                 <div class="page-header">
                     <a href="/housesarea/add" class="btn btn-sm btn-primary"><i class="fa fa-plus-square" aria-hidden="true"></i> 添加组团</a>
                 	<a href="javascript:;" class="btn btn-sm btn-primary btn-export"><i class="fa fa-download out_excel" aria-hidden="true"></i> 导出</a>
@@ -182,7 +156,6 @@
                             </div>
                         </div>
                     </div>
-                </div>
             </div>
         </div>
     </div>
