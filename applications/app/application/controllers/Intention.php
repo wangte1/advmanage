@@ -59,11 +59,12 @@ class Intention extends MY_Controller {
     public function check(){
         $id = (int) $this->input->get_post('id');
         $status = (int) $this->input->get_post('status');
+        $check_remark = $this->input->get_post('check_remark');
         $count = $this->Mhouses_want_orders->count(['id' => $id, 'is_del' => 0, 'status' => 1]);
         if(!$count){
             $this->return_json(['code' => 0, 'msg' => "数据不存在"]);
         }
-        $res = $this->Mhouses_want_orders->update(['status' => $status], ['id' => $id, 'is_del' => 0]);
+        $res = $this->Mhouses_want_orders->update(['status' => $status, 'check_remark'=> $check_remark], ['id' => $id, 'is_del' => 0]);
         if(!$res){
             $this->return_json(['code' => 0, 'msg' => "操作失败"]);
         }
