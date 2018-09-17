@@ -1,7 +1,7 @@
 <?php if ( ! defined('BASEPATH')) exit('No direct script access allowed');
 /*
  * 
- * desc:广告定单
+ * desc:广告定单相关信息
  * 254274509@qq.com
  */
 
@@ -9,10 +9,8 @@ class Order extends MY_Controller {
     private $token;
     public function __construct() {
         parent::__construct();
-        
-//         $this->token = trim($this->input->get_post('token'));
-//         $this->doCheckToken($this->token);
-        
+        $this->token = trim($this->input->get_post('token'));
+        $this->doCheckToken($this->token);
         $this->load->model([
             'Model_houses_orders' => 'Mhouses_orders',
             'Model_houses_customers' => 'Mhouses_customers'
@@ -20,7 +18,7 @@ class Order extends MY_Controller {
     }
     
     /**
-     * 广告画面
+     * 广告画面相关信息
      */
     public  function advertisement(){
         $pageconfig = C('page.page_lists');
@@ -53,7 +51,7 @@ class Order extends MY_Controller {
                     }
                 }
             }
-            $this->return_json(['code' => 1, 'order_list' =>  $order_list, 'msg' => "ok"]);
+             $this->return_json(['code' => 1, 'order_list' =>  $order_list, 'msg' => "ok"]);
         }
              $this->return_json(['code' => 0, 'order_list' => [], 'msg' => "null"]);
     }
