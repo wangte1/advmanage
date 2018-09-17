@@ -37,15 +37,60 @@ class Housesinstall extends MY_Controller{
         $where['is_del'] = 0;
 
         if ($this->input->get('name')) $where['id'] = $this->input->get('name');
-
+        if ($this->input->get('finish_date_start')){
+            $finish_date_start = $this->input->get('finish_date_start');
+            $where['finish_date >='] = $finish_date_start;
+        }
+        if ($this->input->get('finish_date_end')){
+            $finish_date_end = $this->input->get('finish_date_end');
+            $where['finish_date <='] = $finish_date_end;
+        }
+        if ($this->input->get('check_date_start')){
+            $check_date_start = $this->input->get('check_date_start');
+            $where['check_date >='] = $check_date_start;
+        }
+        if ($this->input->get('check_date_end')){
+            $check_date_end = $this->input->get('check_date_end');
+            $where['check_date <='] = $check_date_end;
+        }
+        if ($this->input->get('push_date_start')){
+            $push_date_start = $this->input->get('push_date_start');
+            $where['push_date >='] = $push_date_start;
+        }
+        if ($this->input->get('push_date_end')){
+            $push_date_end = $this->input->get('push_date_end');
+            $where['push_date <='] = $push_date_end;
+        }
+        if ($this->input->get('eg_card_num_start')){
+            $eg_card_num_start = $this->input->get('eg_card_num_start');
+            $where['eg_card_num >='] = $eg_card_num_start;
+        }
+        if ($this->input->get('eg_card_num_end')){
+            $eg_card_num_end = $this->input->get('eg_card_num_end');
+            $where['eg_card_num <='] = $eg_card_num_end;
+        }
+        if ($this->input->get('install_progress_name')) $where['install_progress'] = $this->input->get('install_progress_name');
+        if ($this->input->get('install_jointer')) $where['install_jointer'] = $this->input->get('install_jointer');
+        
         $data['name'] = $this->input->get('name');
         $data['province'] = $this->input->get('province');
         $data['city'] = $this->input->get('city');
         $data['area'] = $this->input->get('area');
         $data['is_check_out'] = $this->input->get('is_check_out');
+        $data['finish_date_start'] = $this->input->get('finish_date_start');
+        $data['finish_date_end'] = $this->input->get('finish_date_end');
+        $data['install_progress_name'] = $this->input->get('install_progress_name');
+        $data['check_date_start'] = $this->input->get('check_date_start');
+        $data['check_date_end'] = $this->input->get('check_date_end');
+        $data['push_date_start'] = $this->input->get('push_date_start');
+        $data['push_date_end'] = $this->input->get('push_date_end');
+        $data['eg_card_num_start'] = $this->input->get('eg_card_num_start');
+        $data['eg_card_num_end'] = $this->input->get('eg_card_num_end');
+        $data['install_jointer'] = $this->input->get('install_jointer');
         
         $list = $this->Mhouses->get_lists('*',$where,[],$size,($page-1)*$size);
         $data['hlist'] = $this->Mhouses->get_lists();
+        $data['install_progress'] = $this->Mhouses->get_lists('install_progress',['install_progress !=' => ''],0,0,0,'install_progress');
         $admin = $this->Madmins->get_lists();
         foreach ($list as $k => $v){
             $list[$k]['fullname'] = '';
@@ -56,7 +101,6 @@ class Housesinstall extends MY_Controller{
                 }
             }
         }
-        
         $data['list'] = $list;
         
         $data_count = $this->Mhouses->count($where);
