@@ -412,33 +412,38 @@ class Housesconfirm extends MY_Controller{
             $list = $this->Mhouses_points->get_points_lists(['in' => ['A.id' => $point_ids]]);
             $case = '';
             if(strpos($list[0]['code'],'G') !== false){
-                //var_dump('可以，这是一组广告机');
                 foreach ($list as $k => $v){
-                    $temp[$k] = $v['customer_id'];
-                    $temp[$k] = substr($temp[$k], 1);
-                    //$case = array_merge($case,$temp[$k]);
-                    $list[$k]['customer_ids'] = $temp[$k];
-                    $case = $case . $temp[$k] . ',';
-                    $list[$k]['customer_ids'] = explode(',', $list[$k]['customer_ids']);
+                    $list[$k]['customer_ids'] = [];
+                    if(!empty($v['customer_id'])){
+                        $arr = explode(',', $v['customer_id']);
+                        foreach ($arr as $key => $val){
+                            if(!$val){
+                                unset($arr[$key]);
+                            }
+                        }
+                    }
+                    if(count($arr)>0){
+                        $list[$k]['customer_ids'] = $arr;
+                    }
                 }
-                $arr = explode(',', $case);
-                $arr = array_unique($arr);
-                $arr = array_values($arr);
-                array_pop($arr);
-                $where['in']['id'] = $arr;
-                $res = $this->Mhouses_customers->get_lists('name',$where);
-                $temparr = [];
-                foreach ($arr as $k => $v){
-                    $temparr[$v] = $res[$k];
+                $_arr = [];
+                foreach ($list as $k => $v){
+                    if($v['customer_ids']){
+                        foreach ($v['customer_ids'] as $key => $val){
+                            if(!in_array($val, $_arr)){
+                                array_push($_arr, $val);
+                            }
+                        }
+                    }
                 }
+                $where['in']['id'] = array_unique($_arr);
+                $customerList = $this->Mhouses_customers->get_lists('id,name', $where);
+
                 foreach ($list as $k => $v){
                     $list[$k]['kf'] = '';
-                    foreach ($temparr as $k1 => $v1){
-                        foreach ($list[$k]['customer_ids'] as $k2 => $v2){
-                            if($v2 == $k1){
-                                //$list[$k]['kf'] = $list[$k]['kf'] . $v1;
-                                $list[$k]['kf'] .= $v1['name'] . ',';
-                            }
+                    foreach ($customerList as $k1 => $v1){
+                        if(in_array($v1['id'], $v['customer_ids'])){
+                            $list[$k]['kf'] .= $v1['name']." ";
                         }
                     }
                     unset($list[$k]['customer_ids']);
