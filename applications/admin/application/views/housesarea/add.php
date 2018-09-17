@@ -2,34 +2,9 @@
 <?php $this->load->view('common/header');?>
 
 <!-- 头部 -->
-<?php $this->load->view('common/top');?>
-
 <div class="main-container" id="main-container">
         <div class="main-container-inner">
-            <?php $this->load->view("common/left");?>
-
         </div>
-
-        <div class="main-content">
-            <div class="breadcrumbs" id="breadcrumbs">
-                <script type="text/javascript">
-                    try{ace.settings.check('breadcrumbs' , 'fixed')}catch(e){}
-                </script>
-
-                <ul class="breadcrumb">
-                    <li>
-                        <i class="icon-home home-icon"></i>
-                        <a href="#">Home</a>
-                    </li>
-
-                    <li>
-                        <a href="/housesarea">组团管理</a>
-                    </li>
-                    <li class="active">新增组团</li>
-                </ul><!-- .breadcrumb -->
-
-
-            </div>
 
             <div class="page-content">
                 <div class="page-header">

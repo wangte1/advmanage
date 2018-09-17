@@ -178,9 +178,9 @@ class Housesinstall extends MY_Controller{
             $result = $this->Mhouses->update_info($post,array("id"=>$id));
             if($result){
                 $this->write_log($data['userInfo']['id'],2,"编辑安装楼盘：".$post['name']);
-                $this->success("编辑成功","/housesinstall");
+                $this->success("编辑成功","/housesinstall",1);
             }else{
-                $this->error("编辑失败");
+                $this->error("编辑失败",'',1);
             }
 
         }

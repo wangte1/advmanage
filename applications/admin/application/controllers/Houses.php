@@ -55,6 +55,7 @@ class Houses extends MY_Controller{
         $data['city'] = $this->input->get('city');
         $data['area'] = $this->input->get('area');
         $data['is_check_out'] = $this->input->get('is_check_out');
+        $data['tab'] = 'basic';//默认显示基本信息tab
         
         $tmpList = $this->Mhouses->get_lists('*',$where,[],$size,($page-1)*$size);
         

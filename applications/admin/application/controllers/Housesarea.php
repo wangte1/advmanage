@@ -108,9 +108,9 @@ class Housesarea extends MY_Controller{
             $result = $this->Mhouses_area->create($post);
             if($result){
                 $this->write_log($data['userInfo']['id'],1,"新增楼盘区域：".$post['name']);
-                $this->success("添加成功","/housesarea");
+                $this->success("添加成功","/housesarea",1);
             }else{
-                $this->error("添加失败");
+                $this->error("添加失败",'',1);
             }
 
         }
@@ -141,9 +141,9 @@ class Housesarea extends MY_Controller{
             $result = $this->Mhouses_area->update_info($post,array("id"=>$id));
             if($result){
                 $this->write_log($data['userInfo']['id'],2,"编辑站台：".$post['name']);
-                $this->success("编辑成功","/housesarea");
+                $this->success("编辑成功","/housesarea",1);
             }else{
-                $this->error("编辑失败");
+                $this->error("编辑失败",'',1);
             }
 
         }
