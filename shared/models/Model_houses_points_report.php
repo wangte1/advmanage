@@ -206,6 +206,19 @@ class Model_houses_points_report extends MY_Model {
         return $result->result_array();
     }
     
+    public function getDetailById($id=0){
+        if(!$id) return null;
+        $this->db->select("A.*,C.name as houses_name,D.name as houses_area_name, B.code, B.houses_id, B.area_id, B.ban, B.unit, B.floor, B.addr");
+        $this->db->from("t_houses_points_report A");
+        $this->db->join("t_houses_points B", "A.point_id = B.id", "left");
+        $this->db->join("t_houses C", "B.houses_id = C.id", "left");
+        $this->db->join("t_houses_area D", "B.houses_id = D.id", "left");
+        $this->db->where(['A.id' => $id]);
+        $result = $this->db->get();
+        if(!$result) return null;
+        return $result->result_array()[0];
+    }
+    
     public function get_report_listv($where = [], $order_by =[],  $pagesize = 0,$offset = 0, $group_by =[]){
         $this->db->distinct();
         $this->db->select("C.id, C.name, count(A.point_id) as num");
