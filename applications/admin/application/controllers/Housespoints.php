@@ -66,6 +66,7 @@ class Housespoints extends MY_Controller{
         $data['houses_id'] = $this->input->get('houses_id');
         if($data['houses_id']) $data['area_list'] = $this->get_area_info($data['houses_id']);
         $data['point_code'] = $this->input->get('code');
+        $data['tab'] = 'basic';//默认显示基本信息tab
         
         $data['list'] = $this->Mhouses_points->get_points_lists($where,[],$size,($page-1)*$size);
         $data_count = $this->Mhouses_points->get_points_count($where);
@@ -133,7 +134,8 @@ class Housespoints extends MY_Controller{
         	$data['buf'] = $this->Mhouses_points->get_lists('ban,unit,floor',$where1,$order_by = array(), $pagesize = 0,$offset = 0,  $group_by = array('ban','unit','floor'));
         }
          
-        
+        //处理权限
+        $data['power'] = explode(',', $data['userInfo']['purview_ids']);
 
         $this->load->view("housespoints/index",$data);
     }

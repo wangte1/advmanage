@@ -136,12 +136,6 @@ $config = array(
     				'name'=> '客户管理',
     				'active'=> 'houses_customers_list'
     			),
-    		    
-    			array(
-    				'url'=>'/housesformat',
-    				'name'=> '点位规格管理',
-    				'active'=> 'points_type_list'
-    			),
     		    array(
     		        'url'=>'/housesagree',
     		        'name'=> '合同管理',
@@ -151,16 +145,6 @@ $config = array(
 	    			'url'=>'/houses',
 	    			'name'=> '楼盘管理',
 	    			'active'=> 'houses_list'
-    			),
-    		    array(
-    		        'url'=>'/housesinstall',
-    		        'name'=> '楼盘安装管理',
-    		        'active'=> 'houses_install_list'
-    		    ),
-    			array(
-    				'url'=>'/housesarea',
-    				'name'=> '组团管理',
-    				'active'=> 'houses_area_lists'
     			),
     		    array(
     		        'url'=>'/housesapp',
@@ -176,11 +160,6 @@ $config = array(
     		        'url'=>'/housestour',
     		        'name'=> '巡视记录',
     		        'active'=> 'tour_lists'
-    		    ),
-    		    array(
-    		        'url'=>'/housesareatype',
-    		        'name'=> '楼盘组团置业类型管理',
-    		        'active'=> 'houses_area_type_list'
     		    )
     		)
     	),

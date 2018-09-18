@@ -419,12 +419,12 @@ class MY_Controller extends CI_Controller {
      * @param string $message 错误信息
      * @param string $jumpUrl 页面跳转地址
      */
-    public function error($message='',$jumpUrl='') {
+    public function error($message='',$jumpUrl='',$status) {
         if(is_array($message))
         {
             $message = implode('<br>',$message);
         }
-        $this->dispatchJump($message,0,$jumpUrl);
+        $this->dispatchJump($message,0,$jumpUrl,$status);
     }
 
 
@@ -434,8 +434,8 @@ class MY_Controller extends CI_Controller {
      * @param string $message 错误信息
      * @param string $jumpUrl 页面跳转地址
      */
-    public function success($message='',$jumpUrl='') {
-        $this->dispatchJump($message,1,$jumpUrl);
+    public function success($message='',$jumpUrl='',$status=0) {
+        $this->dispatchJump($message,1,$jumpUrl,$status);
     }
 
     /**
@@ -447,7 +447,7 @@ class MY_Controller extends CI_Controller {
      * @access private
      * @return void
      */
-    private function dispatchJump($message,$status=1,$jumpUrl='') {
+    private function dispatchJump($message,$status=1,$jumpUrl='',$status=0) {
         $data = $this->data;
         $data['title'] = array("信息提示");
         // 提示标题
@@ -462,8 +462,11 @@ class MY_Controller extends CI_Controller {
                }else{
                    $data['jumpUrl'] = $_SERVER["HTTP_REFERER"];
                }
-
-             $this->load->view("common/msg",$data);
+               if($status){
+                   $this->load->view("common/msg2",$data);
+               }else{
+                   $this->load->view("common/msg",$data);
+               }
              $this->output->_display();
              die();
         }else{
@@ -474,7 +477,11 @@ class MY_Controller extends CI_Controller {
             // 默认发生错误的话自动返回上页
 
              $data['jumpUrl'] = "javascript:history.back(-1);";
-             $this->load->view("common/msg",$data);
+             if($status){
+                 $this->load->view("common/msg2",$data);
+             }else{
+                 $this->load->view("common/msg",$data);
+             }
              $this->output->_display();
              die();
         }

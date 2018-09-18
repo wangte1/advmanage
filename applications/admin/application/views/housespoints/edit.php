@@ -3,7 +3,6 @@
 
 <!-- 头部 -->
 <?php $this->load->view('common/top');?>
-
 <style>
 .padding0 {
 	padding: 0;
@@ -16,10 +15,9 @@
 
 <div class="main-container" id="main-container">
         <div class="main-container-inner">
-            <?php $this->load->view("common/left");?>
-
+			<?php $this->load->view("common/left");?>
         </div>
-
+        
         <div class="main-content">
             <div class="breadcrumbs" id="breadcrumbs">
                 <script type="text/javascript">
@@ -45,7 +43,7 @@
                 <div class="page-header">
                     <h1>
                        编辑点位
-                        <a  href="<?php echo $_COOKIE['lasturl'];?>" style="float: right; margin-right: 50px" class="btn btn-sm btn-primary">《返回列表页</a>
+                        <a  href="/housespoints" style="float: right; margin-right: 50px" class="btn btn-sm btn-primary">《返回列表页</a>
                     </h1>
                 </div><!-- /.page-header -->
 

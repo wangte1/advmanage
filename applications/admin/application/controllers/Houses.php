@@ -55,6 +55,7 @@ class Houses extends MY_Controller{
         $data['city'] = $this->input->get('city');
         $data['area'] = $this->input->get('area');
         $data['is_check_out'] = $this->input->get('is_check_out');
+        $data['tab'] = 'basic';//默认显示基本信息tab
         
         $tmpList = $this->Mhouses->get_lists('*',$where,[],$size,($page-1)*$size);
         
@@ -114,7 +115,8 @@ class Houses extends MY_Controller{
         //$data['houses_type'] = C("public.houses_type");
         
         $data['houses_grade'] = C("public.houses_grade");
-        
+        //处理权限
+        $data['power'] = explode(',', $data['userInfo']['purview_ids']);
         $this->load->view("houses/index",$data);
     }
 
