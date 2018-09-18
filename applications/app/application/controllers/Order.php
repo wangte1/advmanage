@@ -16,7 +16,7 @@ class Order extends MY_Controller {
             'Model_houses_customers' => 'Mhouses_customers'
         ]);
     }
-    
+
     /**
      * 广告画面相关信息
      */
@@ -26,7 +26,7 @@ class Order extends MY_Controller {
         $page = (int) $this->input->get_post('page') ? : '1';
         $size = (int) $this->input->get_post('size');
         if(!$size) $size = $pageconfig['per_page'];
-        $where = ['order_status'=> 1];
+        $where = ['order_status'=> 1,'is_del'=>0 ,'pid'=> 0];
         $orderBy = ['id' => 'asc'];
         $order_list = $this->Mhouses_orders->get_lists("order_code,order_type,release_start_time,release_end_time,customer_id,point_ids",$where, $orderBy, $size, ($page-1)*$size );
         $customer_list = $this->Mhouses_customers->get_lists("id,name",['is_del'=>0]);
@@ -55,4 +55,24 @@ class Order extends MY_Controller {
         }
              $this->return_json(['code' => 0, 'order_list' => [], 'msg' => "null"]);
     }
+    
+    /**
+     * 更新图片地址
+     */
+    public function updateImage(){
+        $id = (int) $this->input->get_post('id');
+        $adv_img =$this->input->get_post('adv_img');
+        if($id&&$adv_img){
+            $where = ['id' => $id];
+            $count = $this->Mhouses_orders->count($where);
+            if($count){
+                $res = $this->Mhouses_orders->update_info(['adv_img' => $adv_img], $where);
+                if($res){
+                    $this->return_json(['code' => 1, 'msg' => "操作成功"]);
+                }
+            }
+        }
+        $this->return_json(['code' => 0, 'msg' => "操作失败"]);
+    }
+    
 }
