@@ -424,7 +424,7 @@ class MY_Controller extends CI_Controller {
         {
             $message = implode('<br>',$message);
         }
-        $this->dispatchJump($message,0,$jumpUrl);
+        $this->dispatchJump($message,2,$jumpUrl);
     }
 
 
@@ -450,6 +450,7 @@ class MY_Controller extends CI_Controller {
     private function dispatchJump($message,$status=1,$jumpUrl='') {
         $data = $this->data;
         $data['title'] = array("信息提示");
+        $data['status'] = $status;
         // 提示标题
        if($status) { //发送成功信息
 
