@@ -87,9 +87,11 @@ class Tour extends MY_Controller {
                             $listData[$k]['areas'] = $val['city'].$val['area'];
                         }
                     }
-                    foreach ($needList as $key => $val){
-                        if($val['houses_id'] == $v['houses_id']){
-                            $listData[$k]['need_num'] = $val['num'];
+                    if($needList){
+                        foreach ($needList as $key => $val){
+                            if($val['houses_id'] == $v['houses_id']){
+                                $listData[$k]['need_num'] = $val['num'];
+                            }
                         }
                     }
                 }
@@ -155,9 +157,20 @@ class Tour extends MY_Controller {
         if(!$list){
             $this->return_json(['code' => 0, 'data' => [], 'msg' => '您所负责的组团暂无点位']);
         }
+        //统计楼盘待巡视数量
+        $where['tour_time<'] = date("Y-m-d H:i:s", (time()-(3600*24*7)) );//计算出待巡视点位的条件
+        $needList = $this->Mhouses_points->get_lists('houses_id, area_id, count(`id`) as num', $where, ['houses_id' => 'asc'], 0, 0, $group_by);
         foreach ($list as $k => $v){
+            $list[$k]['need_num'] = 0;
             if($v['area_id'] == 0){
                 $list[$k]['area_name'] = "无组团";
+            }
+            if($needList){
+                foreach ($needList as $key => $val){
+                    if($v['houses_id'] == $val['houses_id'] && $v['area_id'] == $val['area_id']){
+                        $list[$k]['need_num'] = $val['num'];
+                    }
+                }
             }
         }
         $this->return_json(['code' => 1, 'data' => $list]);
