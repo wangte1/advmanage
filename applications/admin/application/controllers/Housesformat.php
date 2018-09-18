@@ -65,9 +65,9 @@ class Housesformat extends MY_Controller{
             $result = $this->Mhouses_points_format->create($post);
             if($result){
                 $this->write_log($data['userInfo']['id'],1,"新增社区点位规格：".$post['type']);
-                $this->success("添加成功","/housesformat",1);
+                $this->success("添加成功","/housesformat");
             }else{
-                $this->error("添加失败",'',1);
+                $this->error("添加失败",'');
             }
 
         }
@@ -88,9 +88,9 @@ class Housesformat extends MY_Controller{
             $result = $this->Mhouses_points_format->update_info($post,array("id"=>$id));
             if($result){
                 $this->write_log($data['userInfo']['id'],2,"编辑社区点位规格：".$post['type']);
-                $this->success("编辑成功","/housesformat",1);
+                $this->success("编辑成功","/housesformat");
             }else{
-                $this->error("编辑失败",'',1);
+                $this->error("编辑失败",'');
             }
 
         }
