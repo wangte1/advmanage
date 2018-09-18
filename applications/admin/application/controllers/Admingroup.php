@@ -98,7 +98,7 @@ class Admingroup extends MY_Controller{
             $new = $this->Madmins_group->get_one('name',['id' => $id]);
             if($res){
                 $this->write_log($data['userInfo']['id'],2,"编辑角色：".$old['name'] ."，修改为：" .$new['name']);
-                $this->success("","/admingroup");
+                $this->success("操作成功","/admingroup");
             }else{
                 $this->error("编辑失败,请重新编辑");
             }
@@ -128,7 +128,7 @@ class Admingroup extends MY_Controller{
         if($res){
             $tmp = $this->Madmins_group->get_one('name',array('id'=>$id));
             $this->write_log($data['userInfo']['id'],3,"删除角色：".$tmp['name']);
-            $this->success("","/admingroup");
+            $this->success("操作成功","/admingroup");
         }else{
             $this->error("删除失败");
         }
@@ -170,7 +170,7 @@ class Admingroup extends MY_Controller{
             #保存权限
             $this->Madmins_group->update_info(array("purview_ids"=>implode(',',$_POST['purview'])),array("id"=>$id));
 
-            $this->success("","/admingroup");
+            $this->success("操作成功","/admingroup",0);
 
         }
 
