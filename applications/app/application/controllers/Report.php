@@ -201,9 +201,35 @@ class Report extends MY_Controller {
      */
     public function my(){
         $token = decrypt($this->token);
-        $list = $this->Mhouses_points_report->get_report_houses_list(['A.create_id' => $token['user_id']]);
+        $pageconfig = C('page.page_lists');
+        $this->load->library('pagination');
+        $page = (int) $this->input->get_post('page');
+        if(!$page) $page = 1;
+        $size = (int) $this->input->get_post('size');
+        if(!$size) $size = $pageconfig['per_page'];
+        $where = ['A.create_id' => $token['user_id']];
+        $order_by = ['A.create_time' => 'desc'];
+        $list = $this->Mhouses_points_report->get_my_report_list($where, $order_by, $size, ($page-1)*$size);
         if(!$list){
             $this->return_json(['code' => 0, 'data' => [], 'msg' => "暂无数据"]);
+        }
+        foreach ($list as $k => $v){
+            $tmp = "";
+            switch ($v['addr']){
+                case 1 :
+                    $tmp = "门禁";
+                    break;
+                case 2 :
+                    $tmp = "地面电梯前室";
+                    break;
+                case 3 :
+                    $tmp = "地下电梯前室";
+                    break;
+            }
+            $list[$k]['addr'] = $tmp;
+            if(!$v['houses_area_name']){
+                $list[$k]['houses_area_name'] = '';
+            }
         }
         $this->return_json(['code' => 1, 'data' => $list, 'msg' => "ok"]);
     }
