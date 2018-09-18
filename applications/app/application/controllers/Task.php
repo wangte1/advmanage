@@ -353,6 +353,7 @@ class Task extends MY_Controller {
     	}
     	
     	$info = $this->Mhouses_work_order_detail->get_one('point_id,pid', ['id' => $id, 'status' => 0]);
+    	$pinfo = $this->Mhouses_work_order->get_one("version", ['id' => $info['pid']]);
     	if($info){
     	    $up = [
     	        'status' => 1,
@@ -368,7 +369,9 @@ class Task extends MY_Controller {
     	    
     	    $this->write_log($token['user_id'], 2, '结果:'.$res.'执行的sql:'.$this->db->last_query());
     	    //防止完成数大于总数
-    	    $res = $this->Mhouses_work_order->update_info(['incr' => ['finish' => 1]], ['id' => $info['pid'], '`total`>' => '`finish`']);
+    	    $upWhere = ['id' => $info['pid'], 'version' => $pinfo['version']];
+    	    //完成数加1和版本号+1
+    	    $res = $this->Mhouses_work_order->update_info(['incr' => ['finish' => 1, 'version' => 1]], $upWhere);
     	    if(!$res){
     	        $operate_content = "工单详情id{$id} 已结完成，但完成数未能+1 sql : ".$this->db->last_query();
     	        $this->write_log($token['user_id'], 1, $operate_content);
