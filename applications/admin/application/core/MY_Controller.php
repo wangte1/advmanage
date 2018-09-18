@@ -434,7 +434,7 @@ class MY_Controller extends CI_Controller {
      * @param string $message 错误信息
      * @param string $jumpUrl 页面跳转地址
      */
-    public function success($message='',$jumpUrl='',$status) {
+    public function success($message='',$jumpUrl='',$status=0) {
         $this->dispatchJump($message,1,$jumpUrl,$status);
     }
 

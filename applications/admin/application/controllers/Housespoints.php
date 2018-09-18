@@ -134,7 +134,8 @@ class Housespoints extends MY_Controller{
         	$data['buf'] = $this->Mhouses_points->get_lists('ban,unit,floor',$where1,$order_by = array(), $pagesize = 0,$offset = 0,  $group_by = array('ban','unit','floor'));
         }
          
-        
+        //处理权限
+        $data['power'] = explode(',', $data['userInfo']['purview_ids']);
 
         $this->load->view("housespoints/index",$data);
     }
