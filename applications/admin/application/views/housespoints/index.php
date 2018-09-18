@@ -235,6 +235,7 @@ foreach ($power as $k => $v){
                                                                 <th>楼层</th>
                                                                 <th>点位位置</th>
                                                                 <th>类型</th>
+                                                                <th>置业类型</th>
                                                                 <th>可投放数量</th>
                                                                 <th>已投放数量</th>
                                                                 <th>总投放次数</th>
@@ -283,6 +284,15 @@ foreach ($power as $k => $v){
                                                                     			<?php echo $order_type_text[$v['type']];break;?>
                                                                     		<?php }?>
                                                                     	<?php }?>
+                                                                    </td>
+                                                                    <td>
+                                                                    	<?php 
+                                                                    	foreach (C('zhiye') as $k => $v){
+                                                                    	   if($k == $val['houses_type']){   
+                                                                    	       echo $v;
+                                                                    	   }
+                                                                    	}
+                                                                    	?>
                                                                     </td>
                 													<td><?php echo $val['ad_num']?></td>
                 													<td><?php echo $val['ad_use_num']?></td>

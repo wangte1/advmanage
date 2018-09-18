@@ -243,6 +243,18 @@
                                 </div>
                             </div>
                             
+                            <div class="form-group">
+                                <label class="col-sm-3 control-label no-padding-right" for="form-field-1"> <span class="middle" style="color: red">*</span>置业类型： </label>
+                                <div class="col-sm-9">
+                                	<select id="addr" data-placeholder="Click to Choose..." name="houses_type">
+	                                    <option value="">--请选择置业类型--</option>
+	                                    <?php foreach (C('zhiye') as $k => $v):?>
+                                        	<option value="<?php echo $k;?>" <?php if(isset($info['houses_type']) && $info['houses_type']== $k){echo 'selected="selected"';}?>><?php echo $v;?></option>
+                                    	<?php endforeach;?>
+                                    </select>
+                                </div>
+                            </div>
+                            
                             
                             <div class="form-group">
                                 <label class="col-sm-3 control-label no-padding-right" for="form-field-1">  备注： </label>

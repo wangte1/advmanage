@@ -202,6 +202,18 @@
                             </div>
                             
                             <div class="form-group">
+                                <label class="col-sm-3 control-label no-padding-right" for="form-field-1"> <span class="middle" style="color: red">*</span>置业类型： </label>
+                                <div class="col-sm-9">
+                                	<select data-placeholder="Click to Choose..." name="houses_type">
+	                                    <option value="0">--请选择置业类型--</option>
+	                                    <?php foreach (C('zhiye') as $k => $v):?>
+                                        	<option value="<?php echo $k;?>"><?php echo $v;?></option>
+                                    	<?php endforeach;?>
+                                    </select>
+                                </div>
+                            </div>
+                            
+                            <div class="form-group">
                                 <label class="col-sm-3 control-label no-padding-right" for="form-field-1">  备注： </label>
                                 <div class="col-sm-9">
                                     <textarea id="form-field-11" rows="5" name="remarks" placeholder="（选填）备注信息。最多200个字。" class="autosize-transition col-xs-6 col-sm-3" style="overflow: hidden; word-wrap: break-word; resize: horizontal;"></textarea>
