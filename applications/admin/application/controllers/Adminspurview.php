@@ -43,7 +43,7 @@ class Adminspurview extends MY_Controller{
             $_POST['url'] = strtolower(trim(trim($_POST['url']),'/'));
             $res = $this->Madmins_purview->replace_into($_POST);
             if($res){
-                $this->success("","/adminspurview");
+                $this->success("编辑成功","/adminspurview");
             }else{
                 $this->error("编辑失败,请重新编辑");
             }
@@ -98,7 +98,7 @@ class Adminspurview extends MY_Controller{
             $_POST['url'] = strtolower(trim(trim($_POST['url']),'/'));
             $insert_id = $this->Madmins_purview->create($_POST);
             if($insert_id){
-                $this->success("","/adminspurview");
+                $this->success("添加成功","/adminspurview");
             }else{
                 $this->error("添加失败,请重新添加");
             }
