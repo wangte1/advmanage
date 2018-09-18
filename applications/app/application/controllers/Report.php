@@ -195,5 +195,17 @@ class Report extends MY_Controller {
         }
         $this->return_json(['code' => 0, 'data' => [], "msg" => "无法读取配置文件"]);
     }
+    
+    /**
+     * 我的报损
+     */
+    public function my(){
+        $token = decrypt($this->token);
+        $list = $this->Mhouses_points_report->get_report_houses_list(['A.create_id' => $token['user_id']]);
+        if(!$list){
+            $this->return_json(['code' => 0, 'data' => [], 'msg' => "暂无数据"]);
+        }
+        $this->return_json(['code' => 1, 'data' => $list, 'msg' => "ok"]);
+    }
 
 }
