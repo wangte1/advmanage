@@ -138,7 +138,7 @@ class Model_houses_points_report extends MY_Model {
     
     public function get_my_report_list($where = [], $order_by =[],  $pagesize = 0,$offset = 0, $group_by =[]){
         $this->db->distinct();
-        $this->db->select("C.name as houses_name,D.name as houses_area_name, B.code, B.houses_id, B.area_id, B.ban, B.unit, B.floor, B.addr");
+        $this->db->select("A.id,C.name as houses_name,D.name as houses_area_name, B.code, B.houses_id, B.area_id, B.ban, B.unit, B.floor, B.addr");
         $this->db->from("t_houses_points_report A");
         $this->db->join("t_houses_points B", "A.point_id = B.id", "left");
         $this->db->join("t_houses C", "B.houses_id = C.id", "left");
