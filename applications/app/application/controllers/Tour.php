@@ -62,7 +62,9 @@ class Tour extends MY_Controller {
             }
         }
         $list = $this->Mhouses_points->get_lists('houses_id, houses_name, area_id, count(id) as num,area_name', $where, ['houses_id' => 'asc'], 0, 0, $group_by);
-        
+        //统计楼盘待巡视数量
+        $where['tour_time<'] = date("Y-m-d H:i:s", (time()-(3600*24*7)) );//计算出待巡视点位的条件
+        $needList = $this->Mhouses_points->get_lists('houses_id,count(`id`) as num', $where, ['houses_id' => 'asc'], 0, 0, $group_by);
         //提取楼盘ids
         $listData = [];
         if($list){
@@ -72,6 +74,7 @@ class Tour extends MY_Controller {
                 $listData[$k]['houses_name'] = '';
                 $listData[$k]['area'] = [];
                 $listData[$k]['num'] = 0;
+                $listData[$k]['need_num'] = 0;
             }
             //行政区域
             $areaList = $this->Mhouses->get_lists('id,name,city,area,position', ['in' => ['id' => $houses_ids]]);
@@ -82,6 +85,11 @@ class Tour extends MY_Controller {
                             $listData[$k]['position'] = $val['position'];
                             $listData[$k]['houses_name'] = $val['name'];
                             $listData[$k]['areas'] = $val['city'].$val['area'];
+                        }
+                    }
+                    foreach ($needList as $key => $val){
+                        if($val['houses_id'] == $v['houses_id']){
+                            $listData[$k]['need_num'] = $val['num'];
                         }
                     }
                 }
@@ -112,7 +120,7 @@ class Tour extends MY_Controller {
         foreach ($listData as $k => &$v){
             $v['area'] = array_values($v['area']);
         }
-        $this->return_json(['code' => 1, 'data' => $listData]);
+        $this->return_json(['code' => 1, 'data' => $listData, 'msg' => "ok"]);
     }
     
     /**
