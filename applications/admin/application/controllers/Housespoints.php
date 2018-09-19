@@ -580,6 +580,7 @@ class Housespoints extends MY_Controller{
     		'所属楼盘'=>"houses_name",
     	    '楼盘入住率' => 'occ_rate',
     	    '楼盘等级' => 'grade',
+    	    "楼层高" => "floor_num",
     		'所属组团'=>"houses_area_name",
     		'楼栋'=>"ban",
     		'单元'=>"unit",
@@ -598,6 +599,20 @@ class Housespoints extends MY_Controller{
     	}
     	
     	$list = $this->Mhouses_points->get_points_lists($where);
+    	//提取楼盘ids
+    	$houses_ids = array_unique(array_column($list, "houses_id"));
+    	//获取楼盘信息
+    	$houses_list = $this->Mhouses->get_lists('id, floor_num', ['in' => ['id' =>$houses_ids]]);
+    	if($houses_list){
+    	    foreach ($list as $k => $v){
+    	        $list[$k]['floor_num'] = 0;
+    	        foreach ($houses_list as $key => $val){
+    	            if($v['houses_id'] == $val['id']){
+    	                $list[$k]['floor_num'] = $val['floor_num'];
+    	            }
+    	        }
+    	    }
+    	}
     	$customerList = $this->Mhouses_customers->get_lists('id,name', ['is_del' => 0]);
     	$h = 2;
     	$addrList = C('housespoint.point_addr');
