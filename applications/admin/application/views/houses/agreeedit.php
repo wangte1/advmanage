@@ -164,6 +164,13 @@
                             </div>
                         </div>
                         <div id="write" style="width: 400px;height:100px;margin-left: 20%;">
+                        <?php foreach ($arr as $k => $v):?>
+                        	<div class="ttbtn" style="float: left;" data-id="<?php echo $k?>">
+                            	<button class="btn btn-xs btn-info do-sel" type="button" data-id="<?php echo $k?>"><?php echo $v?>
+                            	<i class="fa fa-remove" aria-hidden="true"></i></button>&thinsp;&thinsp;
+                            	<input type="hidden" name="housesarr[]" value="<?php echo $k?>">
+                        	</div>
+                        <?php endforeach;?>
 <!--                                 <button class="btn btn-xs btn-info do-sel" type="button" data-id="169">123 -->
 <!--                                 	<i class="fa fa-remove" aria-hidden="true"></i> -->
 <!--                             	</button> -->
@@ -209,6 +216,10 @@ $("#select").change(function(){
 });
 $("#write").on("click",".ttbtn",function(){
 	$(this).remove();
+	var houses_id = $(this).attr('data-id');
+	$.post('../ajax_del_houses',{houses_id:houses_id},function(data){
+		console.log(data);
+	});
 });
 
 	$(function(){
