@@ -23,6 +23,11 @@
 
 <div class="main-container" id="main-container">
 <form class="form-horizontal" role="form" method="post">
+	<div style="text-align: center;">
+	<?php foreach ($user_list as $k1 => $v1):?>
+		<div class="btn btn-default"><?php echo $v1['fullname']?>： <span class="user_num" id= "pre_num_<?php echo $v1['id'];?>">0</span> 个</div>
+    <?php endforeach;?>  
+	</div>
 	<div id="table-panel">
 	    <table id="sample-table-1" class="table table-striped table-bordered table-hover" >
 			<thead>
@@ -52,9 +57,9 @@
 						<?php }?>
 					</td>
 					<td><?php echo $v['ban']?></td>
-					<td><?php echo $v['count'];?></td>
+					<td id="count_<?php echo $k+1;?>"><?php echo $v['count'];?></td>
 					<td>
-						<select class="charge-sel" name="charge_user[]" data-area_id="<?php echo $v['area_id']?>">
+						<select class="charge-sel" name="charge_user[]" data-id="<?php echo $k+1?>" data-area_id="<?php echo $v['area_id']?>">
 							<option value=""></option>
 							<?php foreach($user_list as $k1 => $v1) {?>
 								<option value="<?php echo $v1['id'];?>"  <?php if(isset($charge_id_arr[$k]) && $charge_id_arr[$k] == $v1['id']) {?>selected="selected"<?php }?>><?php echo $v1['fullname'];?></option>
@@ -84,13 +89,32 @@
 $('[data-rel=popover]').popover({html:true});
 $(".select2").css('width','150px').select2({allowClear:true});
 $(function(){
-	
+	tongji();//统计
 	$('#table-panel').height($(window).height()-50);
 	var order_id = '<?php echo $order_id;?>';
 
 	$('.remark').change(function(){
 		doselect();
 	});
+	
+	//统计用户已分配的个数
+	function tongji(){
+		$('.charge-sel').each(function(){
+			//获取id
+			var countId = $(this).attr('data-id');
+			//获取已选择的工程人员
+			if($(this).val()){
+				//获取用户id
+				var userId = $(this).val();
+				//获取用户原数量
+				var oldNum = parseInt($('#pre_num_'+userId).text());
+				//获取数量
+				var num = parseInt($("#count_"+countId).text());
+				//重置
+				$('#pre_num_'+userId).text(num+oldNum);
+			}
+		});
+	}
 
 	$('.charge-sel').change(function(){
 		//获取组团id
@@ -140,6 +164,9 @@ $(function(){
 		window.parent.$('#remark_<?php echo $houses_id;?>').val(remark_str);
 		window.parent.$('#ban_count_<?php echo $houses_id;?>').val(ban_count);
 		window.parent.auto();
+		//每次执行时都清0
+		$('.user_num').text(0);
+		tongji();
 	}
 });
 

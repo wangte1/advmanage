@@ -1,12 +1,12 @@
 <?php 
-
+defined('BASEPATH') or exit('No direct script access allowed');
 use YYHSms\SendSms;
 
 /**
 * 派单管理控制器
 * @author 867332352@qq.com
 */
-defined('BASEPATH') or exit('No direct script access allowed');
+
 class Housesassign extends MY_Controller{
 
     public function __construct(){
