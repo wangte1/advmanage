@@ -107,9 +107,9 @@ class Housesinstall extends MY_Controller{
                 }
             }
             //安装公司
-            foreach (C('install')['install'] as $k2 => $v2){
-                if($v['install'] == $k2){
-                    $list[$k]['install'] = $v2;
+            foreach (C('install')['install'] as $key => $val){
+                if($v['install'] == $key){
+                    $list[$k]['install'] = $val;
                 }
             }
         }
