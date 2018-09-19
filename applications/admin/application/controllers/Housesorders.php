@@ -1021,7 +1021,6 @@ class Housesorders extends MY_Controller{
             $this->phpexcel->setActiveSheetIndex(0)->setCellValue($cell, $k);
             $i++;
         }
-        
         $h = 2;
         foreach($list as $key => $val){
             $j = 0;
@@ -1029,8 +1028,8 @@ class Housesorders extends MY_Controller{
                 //设置行高
                 $this->phpexcel->getActiveSheet(0)->getRowDimension($h)->setRowHeight(183);
                 if($v == "img" && !empty($val['img'])){
+                    $val['img'] = '/oss/'.trim($val['img'], '/');
                     if(file_exists('.'.$val['img']) && is_readable('.'.$val['img'])){
-                        $val['img'] = '/oss/'.trim($val['img'], '/');
                         $objDrawing[$k] = new PHPExcel_Worksheet_Drawing();
                         $objDrawing[$k]->setPath(".".$val['img']);
                         $objDrawing[$k]->setCoordinates('D'.($h));
@@ -1061,7 +1060,7 @@ class Housesorders extends MY_Controller{
     }
     
     /**
-     * 按楼栋
+     * 按楼盘分组导出
      */
     public function loadByHouse(){
         set_time_limit(0);
@@ -1288,16 +1287,19 @@ class Housesorders extends MY_Controller{
         #先判断这些图片是否已经从oss下载完
         $needDown1 = $needDown2 = [];
         $needDown1 = array_column($imglist, 'no_img');
+        $needDown2 = array_column($imglist, 'pano_img');
         $needDown = array_merge($needDown1, $needDown2);
         $number = 0;
         
         foreach ($needDown as $k => $v){
-            $v = trim($v, '/');
-            $rootDir = $_SERVER['DOCUMENT_ROOT']."/oss/";
-            $truePath = $rootDir.$v;
-            if(!file_exists($truePath)){
-                $this->downloadFormOss($v);
-                $number++;
+            if($v){
+                $v = trim($v, '/');
+                $rootDir = $_SERVER['DOCUMENT_ROOT']."/oss/";
+                $truePath = $rootDir.$v;
+                if(!file_exists($truePath)){
+                    $this->downloadFormOss($v);
+                    $number++;
+                }
             }
         }
         if($number > 0){
@@ -1309,10 +1311,12 @@ class Housesorders extends MY_Controller{
         $data['points'] = $pointList = $this->Mhouses_points->get_points_lists($where);
         foreach ($pointList as $k => $v){
             $data['points'][$k]['img'] = '';
+            $data['points'][$k]['img2'] = '';
             if(isset($imglist)){
                 foreach ($imglist as $key => $val){
                     if($v['id'] == $val['point_id']){
                         $data['points'][$k]['img'] = $val['no_img'];
+                        $data['points'][$k]['img2'] = $val['pano_img'];
                     }
                 }
             }
@@ -1320,7 +1324,7 @@ class Housesorders extends MY_Controller{
         
         $imgDir = '/mnt/www/advmanage/applications/admin/oss/';
         $saveDir = '/mnt/www/advmanage/applications/admin/excel/';
-        $tmpDirName = date('Ymd').'/'.$this->data['userInfo']['id'];
+        $tmpDirName = date('Ymd').'/'.$this->data['userInfo']['id']."/{$id}";
         $allPath = $saveDir.$tmpDirName;
         if(!file_exists($allPath)){
             exec("mkdir -p ".$allPath);
@@ -1335,9 +1339,16 @@ class Housesorders extends MY_Controller{
                 exec($cmd);
                 $num++;
             }
+            if(!empty($v['img2'])){
+                $v['img2'] = trim($v['img2'], '/');
+                $copyName = $v['houses_name'].'-'.$v['code'].'-远景.jpg';
+                $cmd = 'cp '.$imgDir.$v['img2'].' '.$allPath.'/'.$copyName;
+                exec($cmd);
+                $num++;
+            }
         }
         if($num){
-            $this->downloadAllImg();
+            $this->downloadAllImg($id);
         }else{
             echo "暂无验收图片";
         }
@@ -2514,11 +2525,11 @@ class Housesorders extends MY_Controller{
      * 打包并下载图片
      * @param array $list
      */
-    private function downloadAllImg(){
+    private function downloadAllImg($id){
         
         $downloadName = md5(time()).'.zip';
         $basedir = '/mnt/www/advmanage/applications/admin/excel/';
-        $allPath = $basedir.date('Ymd')."/".$this->data['userInfo']['id'];
+        $allPath = $basedir.date('Ymd')."/".$this->data['userInfo']['id']."/{$id}";
         
         $savePath = $basedir.$downloadName;
 

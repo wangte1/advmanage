@@ -54,7 +54,7 @@ class MY_Controller extends CI_Controller {
             $this->data['pur_code'] = $pur_view_info['pur_code'];
         } else {
             if($pur_view_info['pur_code'] == 1){
-                $this->error("您没有操作的权限");
+                $this->error("您没有操作的权限",0,1);
             }
         }
     }
@@ -419,12 +419,12 @@ class MY_Controller extends CI_Controller {
      * @param string $message 错误信息
      * @param string $jumpUrl 页面跳转地址
      */
-    public function error($message='',$jumpUrl='',$status) {
+    public function error($message='',$jumpUrl='') {
         if(is_array($message))
         {
             $message = implode('<br>',$message);
         }
-        $this->dispatchJump($message,0,$jumpUrl,$status);
+        $this->dispatchJump($message,2,$jumpUrl);
     }
 
 
@@ -434,8 +434,8 @@ class MY_Controller extends CI_Controller {
      * @param string $message 错误信息
      * @param string $jumpUrl 页面跳转地址
      */
-    public function success($message='',$jumpUrl='',$status) {
-        $this->dispatchJump($message,1,$jumpUrl,$status);
+    public function success($message='',$jumpUrl='') {
+        $this->dispatchJump($message,1,$jumpUrl);
     }
 
     /**
@@ -447,9 +447,10 @@ class MY_Controller extends CI_Controller {
      * @access private
      * @return void
      */
-    private function dispatchJump($message,$status=1,$jumpUrl='',$status=0) {
+    private function dispatchJump($message,$status=1,$jumpUrl='') {
         $data = $this->data;
         $data['title'] = array("信息提示");
+        $data['status'] = $status;
         // 提示标题
        if($status) { //发送成功信息
 
@@ -462,11 +463,7 @@ class MY_Controller extends CI_Controller {
                }else{
                    $data['jumpUrl'] = $_SERVER["HTTP_REFERER"];
                }
-               if($status){
-                   $this->load->view("common/msg2",$data);
-               }else{
-                   $this->load->view("common/msg",$data);
-               }
+               $this->load->view("common/msg",$data);
              $this->output->_display();
              die();
         }else{

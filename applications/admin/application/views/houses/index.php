@@ -3,6 +3,30 @@
 
 <!-- 头部 -->
 <?php $this->load->view('common/top');?>
+<?php 
+//权限处理
+//组团
+$area_status = false;
+foreach ($power as $k => $v){
+    if($v == '109'){
+        $area_status = true;
+    }
+}
+//置业类型
+$housesareatype_status = false;
+foreach ($power as $k => $v){
+    if($v == '229'){
+        $housesareatype_status = true;
+    }
+}
+//安装管理
+$housesinstall_status = false;
+foreach ($power as $k => $v){
+    if($v == '222'){
+        $housesinstall_status = true;
+    }
+}
+?>
 
 <div class="main-container" id="main-container">
    <div class="main-container-inner">
@@ -38,15 +62,21 @@
                                 <li <?php if($tab == 'basic'){echo 'class="active"';}?>>
                                     <a data-toggle="tab" href="#basic">基础信息</a>
                                 </li>
+                                <?php if($area_status):?>
                                 <li <?php if($tab == 'housesarea'){echo 'class="active"';}?>>
                                     <a data-toggle="tab" href="#housesarea">组团管理</a>
                                 </li>
+                                <?php endif;?>
+                                <?php if($housesareatype_status):?>
                                 <li <?php if($tab == 'housesareatype'){echo 'class="active"';}?>>
                                     <a data-toggle="tab" href="#housesareatype">置业类型</a>
                                 </li>
+                                <?php endif;?>
+                                <?php if($housesinstall_status):?>
                                 <li <?php if($tab == 'housesinstall'){echo 'class="active"';}?>>
                                     <a data-toggle="tab" href="#housesinstall">安装管理</a>
                                 </li>
+                                <?php endif;?>
                             </ul>
                             <div class="tab-content">
                             	<div id="basic" class="tab-pane <?php if($tab == 'basic'){echo 'in active';}?>">
@@ -217,15 +247,21 @@
                                         </div>
                                     </div>
                             	</div>
+                            	<?php if($area_status):?>
                             	<div id="housesarea" class="tab-pane <?php if($tab == 'housesarea'){echo 'in active';}?>">
                             		<iframe class="myiframe" src="/housesarea" frameborder="0" width="100%" height="100%" scrolling="no"></iframe>
                             	</div>
+                            	<?php endif;?>
+                            	<?php if($housesareatype_status):?>
                             	<div id="housesareatype" class="tab-pane <?php if($tab == 'housesareatype'){echo 'in active';}?>">
                             		<iframe class="myiframe" src="/housesareatype" frameborder="0" width="100%" height="100%" ></iframe>
                             	</div>
+                            	<?php endif;?>
+                            	<?php if($housesinstall_status):?>
                             	<div id="housesinstall" class="tab-pane <?php if($tab == 'housesinstall'){echo 'in active';}?>">
                             		<iframe class="myiframe" src="/housesinstall" frameborder="0" width="100%" height="100%"></iframe>
                             	</div>
+                            	<?php endif;?>
                             </div>
                         </div>
                     </div>

@@ -115,7 +115,8 @@ class Houses extends MY_Controller{
         //$data['houses_type'] = C("public.houses_type");
         
         $data['houses_grade'] = C("public.houses_grade");
-        
+        //处理权限
+        $data['power'] = explode(',', $data['userInfo']['purview_ids']);
         $this->load->view("houses/index",$data);
     }
 

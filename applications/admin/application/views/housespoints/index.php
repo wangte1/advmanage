@@ -3,7 +3,16 @@
 
 <!-- 头部 -->
 <?php $this->load->view('common/top');?>
-
+<?php 
+//权限处理
+//组团
+$housesformat_status = false;
+foreach ($power as $k => $v){
+    if($v == '107'){
+        $housesformat_status = true;
+    }
+}
+?>
 <div class="main-container" id="main-container">
    <div class="main-container-inner">
 
@@ -37,9 +46,11 @@
                                 <li <?php if($tab == 'basic'){echo 'class="active"';}?>>
                                     <a data-toggle="tab" href="#basic">点位信息</a>
                                 </li>
+                                <?php if($housesformat_status):?>
                                 <li <?php if($tab == 'housesformat'){echo 'class="active"';}?>>
                                     <a data-toggle="tab" href="#housesformat">点位规格</a>
                                 </li>
+                                <?php endif;?>
                             </ul>
                             <div class="tab-content">
                             	<div id="basic" class="tab-pane <?php if($tab == 'basic'){echo 'in active';}?>">
@@ -224,6 +235,7 @@
                                                                 <th>楼层</th>
                                                                 <th>点位位置</th>
                                                                 <th>类型</th>
+                                                                <th>置业类型</th>
                                                                 <th>可投放数量</th>
                                                                 <th>已投放数量</th>
                                                                 <th>总投放次数</th>
@@ -272,6 +284,15 @@
                                                                     			<?php echo $order_type_text[$v['type']];break;?>
                                                                     		<?php }?>
                                                                     	<?php }?>
+                                                                    </td>
+                                                                    <td>
+                                                                    	<?php 
+                                                                    	foreach (C('zhiye') as $k => $v){
+                                                                    	   if($k == $val['houses_type']){   
+                                                                    	       echo $v;
+                                                                    	   }
+                                                                    	}
+                                                                    	?>
                                                                     </td>
                 													<td><?php echo $val['ad_num']?></td>
                 													<td><?php echo $val['ad_use_num']?></td>
@@ -352,9 +373,11 @@
                                         </div>
                                 	</div>
                             	</div>
+                            	<?php if($housesformat_status):?>
                             	<div id="housesformat" class="tab-pane <?php if($tab == 'housesformat'){echo 'in active';}?>">
                             		<iframe class="myiframe" src="/housesformat" frameborder="0" width="100%" height="100%" scrolling="no"></iframe>
                             	</div>
+                            	<?php endif;?>
                             </div>
                         </div>
                     </div>
