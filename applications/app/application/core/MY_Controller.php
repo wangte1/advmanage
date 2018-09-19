@@ -68,7 +68,8 @@ class MY_Controller extends CI_Controller {
         header('Access-Control-Allow-Headers: X-Requested-With');
         header('Content-Type: application/json');
         header('Cache-Control: no-cache');
-        echo json_encode($arr);exit;
+       // echo json_encode($arr);exit;
+       echo str_replace('\/', '/', $data=json_encode($arr));exit;
     }
 
     /**
