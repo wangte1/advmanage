@@ -171,8 +171,8 @@ foreach ($power as $k => $v){
                                                         <tr>
                                                             <th>序号</th>
                                                             <th>楼盘名称</th>
-                                                            <th>地区</th>
-                                                            <th>具体位置</th>
+                                                            <th>区域</th>
+                                                            <th>地址</th>
                                                             <th>规划入住户数（户）</th>
                                                             <th>层数（层）</th>
                                                             <th>入住率</th>
@@ -183,11 +183,10 @@ foreach ($power as $k => $v){
                                                             <th>交付年份</th>
                                                             <th>发送物业审核</th>
                                                             <th>物业公司</th>
-                                                            <th>安装公司</th>
-                                                            <th>门禁点位数</th>
-                                                            <th>地面电梯前室点位数</th>
-                                                            <th>地下电梯前室点位数</th>
-                                                            <th>合计点位数</th>
+                                                            <th>门禁</th>
+                                                            <th>地面电梯前室</th>
+                                                            <th>地下电梯前室</th>
+                                                            <th>合计</th>
                                                             <th>备注</th>
                                                             <th>操作</th>
                                                         </tr>
@@ -200,7 +199,7 @@ foreach ($power as $k => $v){
                                                             <tr>
                                                                 <td><a href=""><?php echo $key+1;?></a></td>
                                                                 <td><a href=""><?php echo $val['name'];?></a></td>
-                                                                <td><?php echo $val['province'];?>-<?php echo $val['city'];?>-<?php echo $val['area'];?></td>
+                                                                <td><?php echo $val['area'];?></td>
                                                                 <td><?php echo $val['position'];?></td>
                                                                 <td><?php echo $val['households'];?></td>
                                                                 <td><?php echo $val['floor_num'];?></td>
@@ -221,7 +220,6 @@ foreach ($power as $k => $v){
             													<td><?php if($val['deliver_year'] == '0000') echo ''; else echo $val['deliver_year'];?></td>
             													<td><?php if($val['is_check_out'] == 1) echo '是'; else echo '否';?></td>
             													<td><?php echo $val['property_company'];?></td>
-            													<td><?php if($val['install'] != '0') echo $val['install'];else echo '';?></td>
             													<td><?php if($val['count_1']['count']) echo $val['count_1']['count'];?></td>
             													<td><?php if($val['count_2']['count']) echo $val['count_2']['count'];?></td>
             													<td><?php if($val['count_3']['count']) echo $val['count_3']['count'];?></td>

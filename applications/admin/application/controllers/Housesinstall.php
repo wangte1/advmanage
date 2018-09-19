@@ -69,6 +69,10 @@ class Housesinstall extends MY_Controller{
             $eg_card_num_end = $this->input->get('eg_card_num_end');
             $where['eg_card_num <='] = $eg_card_num_end;
         }
+        if ($this->input->get('install')){
+            $install_name = $this->input->get('install');
+            $where['install'] = $install_name;
+        }
         if ($this->input->get('install_progress_name')) $where['install_progress'] = $this->input->get('install_progress_name');
         if ($this->input->get('install_jointer_name')) $where['install_jointer'] = $this->input->get('install_jointer_name');
         
@@ -87,6 +91,7 @@ class Housesinstall extends MY_Controller{
         $data['eg_card_num_start'] = $this->input->get('eg_card_num_start');
         $data['eg_card_num_end'] = $this->input->get('eg_card_num_end');
         $data['install_jointer_name'] = $this->input->get('install_jointer_name');
+        $data['install'] = $this->input->get('install');
         
         $list = $this->Mhouses->get_lists('*',$where,[],$size,($page-1)*$size);
         $data['hlist'] = $this->Mhouses->get_lists();
@@ -99,6 +104,12 @@ class Housesinstall extends MY_Controller{
                 if($v['check_user'] == $v2['id']){
                     $list[$k]['fullname'] = $v2['fullname'];
                     break;
+                }
+            }
+            //安装公司
+            foreach (C('install')['install'] as $key => $val){
+                if($v['install'] == $key){
+                    $list[$k]['install'] = $val;
                 }
             }
         }
@@ -115,7 +126,6 @@ class Housesinstall extends MY_Controller{
         $data['pagestr'] = $this->pagination->create_links(); // 分页信息
 		
         $data['houses_grade'] = C("public.houses_grade");
-        
         $this->load->view("housesinstall/index",$data);
     }
     
