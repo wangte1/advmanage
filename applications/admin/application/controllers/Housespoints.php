@@ -193,7 +193,6 @@ class Housespoints extends MY_Controller{
         $data['title'] = array("站台管理","添加站台");
         if(IS_POST){
             $post = $this->input->post();
-            
             if(isset($post['cover_img'])){
             	$post['images'] = implode(';', $post['cover_img']);
             	unset($post['cover_img']);
@@ -210,6 +209,9 @@ class Housespoints extends MY_Controller{
                 $this->error("添加失败，请填写点位位置");
             }
             $post['update_time'] = date("Y-m-d H:i:s");
+            //查询楼盘和组团数据
+            $post['houses_name'] = $this->Mhouses->get_one('name',['id' => $post['houses_id']])['name'];
+            $post['area_name'] = $this->Mhouses_area->get_one('name',['id' => $post['area_id']])['name'];
             $result = $this->Mhouses_points->update_info($post,array("id"=>$id));
             if($result){
                 if($info['point_status'] != 4){
