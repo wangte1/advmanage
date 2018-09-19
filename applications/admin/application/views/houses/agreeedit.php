@@ -217,7 +217,7 @@ $("#select").change(function(){
 $("#write").on("click",".ttbtn",function(){
 	$(this).remove();
 	var houses_id = $(this).attr('data-id');
-	$.post('../ajax_del_houses',{houses_id:houses_id},function(data){
+	$.post('/housesagree/ajax_del_houses',{houses_id:houses_id},function(data){
 		console.log(data);
 	});
 });
