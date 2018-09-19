@@ -172,7 +172,26 @@ class Housesagree extends MY_Controller{
             die("非法参数");
         }
         $data['info'] = $info;
+        foreach ($houses as $k => $v){
+            if($data['info']['id'] == $v['agree_id']){
+                $arr[$v['id']] = $v['name'];
+            }
+        }
+        $data['arr'] = $arr;
         $this->load->view("houses/agreeedit",$data);
+    }
+    
+    /*
+     * ajax更新合同楼盘
+     */
+    public function ajax_del_houses(){
+        if($this->input->post('houses_id')) $houses_id = $this->input->post('houses_id');
+        if($houses_id){
+            $res = $this->Mhouses->update_info(['agree_id' => 0],['id' => $houses_id]);
+            if($res){
+                $this->return_json(['code' => 1]);
+            }
+        }
     }
     
     /**
