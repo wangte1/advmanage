@@ -136,7 +136,6 @@ class Housespoints extends MY_Controller{
          
         //处理权限
         $data['power'] = explode(',', $data['userInfo']['purview_ids']);
-
         $this->load->view("housespoints/index",$data);
     }
 

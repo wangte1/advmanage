@@ -31,7 +31,7 @@
             <div class="page-header">
                 <h1>
                    编辑合同
-                    <a  href="/houses" style="float: right; margin-right: 50px" class="btn btn-sm btn-primary">《返回列表页</a>
+                    <a  href="/housesagree" style="float: right; margin-right: 50px" class="btn btn-sm btn-primary">《返回列表页</a>
                 </h1>
             </div>
 
