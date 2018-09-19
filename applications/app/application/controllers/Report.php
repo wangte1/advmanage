@@ -201,11 +201,70 @@ class Report extends MY_Controller {
      */
     public function my(){
         $token = decrypt($this->token);
-        $list = $this->Mhouses_points_report->get_report_houses_list(['A.create_id' => $token['user_id']]);
+        $pageconfig = C('page.page_lists');
+        $this->load->library('pagination');
+        $page = (int) $this->input->get_post('page');
+        if(!$page) $page = 1;
+        $size = (int) $this->input->get_post('size');
+        if(!$size) $size = $pageconfig['per_page'];
+        $where = ['A.create_id' => $token['user_id']];
+        $order_by = ['A.create_time' => 'desc'];
+        $list = $this->Mhouses_points_report->get_my_report_list($where, $order_by, $size, ($page-1)*$size);
         if(!$list){
             $this->return_json(['code' => 0, 'data' => [], 'msg' => "暂无数据"]);
         }
+        foreach ($list as $k => $v){
+            $tmp = "";
+            switch ($v['addr']){
+                case 1 :
+                    $tmp = "门禁";
+                    break;
+                case 2 :
+                    $tmp = "地面电梯前室";
+                    break;
+                case 3 :
+                    $tmp = "地下电梯前室";
+                    break;
+            }
+            $list[$k]['addr'] = $tmp;
+            if(!$v['houses_area_name']){
+                $list[$k]['houses_area_name'] = '';
+            }
+        }
         $this->return_json(['code' => 1, 'data' => $list, 'msg' => "ok"]);
+    }
+    
+    /**
+     * 点位报损详情
+     * @return unknown
+     */
+    public function get_report_detail(){
+        $token = decrypt($this->token);
+        $id = (int) $this->input->get_post('id');
+        $info = $this->Mhouses_points_report->getDetailById($id);
+        if(!$info) $this->return_json(['code' => 0, 'data' => [], 'msg' => "暂无数据"]);
+        $tmp = "";
+        switch ($info['addr']){
+            case 1 :
+                $tmp = "门禁";
+                break;
+            case 2 :
+                $tmp = "地面电梯前室";
+                break;
+            case 3 :
+                $tmp = "地下电梯前室";
+                break;
+        }
+        $info['addr'] = $tmp;
+        $admin = $this->Madmins->get_one('fullname', ['id' => $info['create_id']]);
+        $info['report_name'] = $admin['fullname'];
+        if(!$info['houses_area_name']) $info['houses_area_name'] = "";
+        $info['usable'] = "可上画";
+        if(!$info['usable']) $info['usable'] = "不可上画";
+        $info['report_txt'] = C("housespoint.report")[$info['report']];
+        $info['create_time'] = date("Y-m-d", $info['create_time']);
+        if($info['report_img']) $info['report_img'] = get_adv_img($info['report_img'], "common");
+        return $this->return_json(['code' => 0, 'data' => $info, 'msg' => "OK"]);
     }
 
 }
