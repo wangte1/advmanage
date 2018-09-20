@@ -71,7 +71,7 @@ class PointReport extends MY_Controller {
         $repair_id = decrypt($this->token)['user_id'];
         $where = ['A.repair_id'=> $repair_id, "A.repair_time >"=>0];
         $orderBy = ['A.id' => 'asc'];
-        $reportpoint_list = $this->Mhouses_points->get_report_points("B.code,B.addr,B.houses_name,B.area_name,B.ban,B.unit,B.floor,A.id", $where, $orderBy, $size, ($page-1)*$size );
+        $reportpoint_list = $this->Mhouses_points_report->get_report_points("B.code,B.addr,B.houses_name,B.area_name,B.ban,B.unit,B.floor,A.id", $where, $orderBy, $size, ($page-1)*$size );
         if($reportpoint_list){
             foreach ($reportpoint_list as $k=>$v){
                 $reportpoint_list[$k]['addr_text']='';
