@@ -341,6 +341,17 @@ class Housesassign extends MY_Controller{
         $this->load->view('housesassign/new_assign', $data);
     }
     
+    /**
+     * @desc 更换组长 
+     */
+    public function changeGroup(){
+        $orderId = (int) $this->input->post('id');
+        $userId = (int) $this->input->post('userid');
+        $resualt = $this->Mhouses_orders->update_info(['group_id' => $userId], ['id' => $orderId]);
+        if(!$resualt) $this->return_json(['code' => 0, 'msg' => "操作失败"]);
+        $this->return_json(['code' => 1, 'msg' => "更新成功"]);
+    }
+    
     /*
      * 派单
      */
