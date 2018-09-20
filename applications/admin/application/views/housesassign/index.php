@@ -145,6 +145,7 @@
 			                                                <th class="phone-hide">下单日期</th>
 			                                                <th class="phone-hide">派单状态</th>
 			                                                <th nowrap class="phone-show">派单状态</th>
+			                                                <th>订单改派</th>
 			                                                <th class="phone-hide">创建人</th>
 			                                                <th nowrap>操作</th>
 			                                            </tr>
@@ -217,6 +218,16 @@
 			                                                        <?php echo $houses_assign_status[$value['assign_status']];?>
 			                                                    </span>
 			
+			                                                </td>
+			                                                <td>
+			                                                	<?php if(in_array($userInfo['group_id'], [C('group.gc'), 1]) && $value['assign_status'] == 1):?>
+			                                                	<select class="new-user" data-id="<?php echo $value['id']?>">
+			                                                		<option>请选择</option>
+			                                                		<?php foreach ($groupList as $k => $v):?>
+			                                                		<option value="<?php echo $v['id']?>"><?php echo $v['fullname']?></option>
+			                                                		<?php endforeach;?>
+			                                                	</select>
+			                                                	<?php endif;?>
 			                                                </td>
 			                                                <td class="phone-show"><?php echo $houses_assign_status[$value['assign_status']];?></td>
 			                                                <td class="phone-hide"><?php echo $admins[$value['creator']];?></td>
@@ -331,6 +342,14 @@
 				  area: ['70%', '70%'],
 				  content: 'housesassign/detail?order_id='+order_id+'&assign_type='+assign_type //iframe的url
 				}); 
+		});
+
+		$('.new-user').change(function(){
+			var userid = $(this).val();
+			var id = $(this).attr("data-id");
+			$.post('housesassign/changeGroup', {'id':id, "userid":userid}, function(data){
+				layer.msg(data.msg);
+			});
 		});
 	
 		$('.m-assign').click(function(){
