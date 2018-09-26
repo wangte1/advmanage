@@ -9,8 +9,8 @@ class PointReport extends MY_Controller {
     private $token;
     public function __construct() {
         parent::__construct();
-        $this->token = trim($this->input->get_post('token'));
-        $this->doCheckToken($this->token);
+//         $this->token = trim($this->input->get_post('token'));
+//         $this->doCheckToken($this->token);
         $this->load->model([
             'Model_houses_points_report' => 'Mhouses_points_report',
             'Model_admins' => 'Madmins',
@@ -22,6 +22,7 @@ class PointReport extends MY_Controller {
      * 报修列表相关信息
      */
     public  function index(){
+        
         $pageconfig = C('page.page_lists');
         $this->load->library('pagination');
         $page = (int) $this->input->get_post('page') ? : '1';
@@ -34,7 +35,10 @@ class PointReport extends MY_Controller {
         $repair_ids = array_unique(array_column($list, 'repair_id'));
         $create_ids = array_unique(array_column($list, 'create_id'));
         $all_admin_ids = array_merge($create_ids, $repair_ids);
+        var_dump( $all_admin_ids);
+//         echo  $this->db->last_query();exit();
         $adminList = $this->Madmins->get_lists("id,fullname",['in' =>['id' => $all_admin_ids]]);
+        echo  $this->db->last_query();exit();
         if($list && $adminList){
             foreach ($list as $k=>$v){
                 $list[$k]['create_name'] = '';

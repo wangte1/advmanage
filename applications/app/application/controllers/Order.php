@@ -9,8 +9,8 @@ class Order extends MY_Controller {
     private $token;
     public function __construct() {
         parent::__construct();
-        $this->token = trim($this->input->get_post('token'));
-        $this->doCheckToken($this->token);
+//         $this->token = trim($this->input->get_post('token'));
+//         $this->doCheckToken($this->token);
         $this->load->model([
             'Model_houses_orders' => 'Mhouses_orders',
             'Model_houses_customers' => 'Mhouses_customers'
